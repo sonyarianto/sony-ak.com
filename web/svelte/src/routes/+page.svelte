@@ -6,7 +6,7 @@
 	<title>Sony AK a.k.a Sony Arianto Kurniawan</title>
 	<meta
 		name="description"
-		content="Sony AK is a principal full-stack engineer and system integrator living in Jakarta, Indonesia."
+		content="Sony AK is a member of technical staff living in Jakarta, Indonesia."
 	/>
 	{#if !dev}
 		<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -44,7 +44,7 @@
 							>Hi. I'm Sony AK.</span
 						>
 					</h2>
-					<p class="opa">Principal Full-Stack Engineer. System Integrator.</p>
+					<p class="opa">Member of Technical Staff</p>
 					<div style="height:15px;" />
 					<iframe
 						src="https://github.com/sponsors/sonyarianto/button"
