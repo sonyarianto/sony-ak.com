@@ -48,7 +48,7 @@
 			>
 				Sony AK
 			</h1>
-			<p class="mt-1 text-gray-600">Member of Technical Staff</p>
+			<p class="mt-1 text-gray-600 text-sm">Member of Technical Staff</p>
 			<div class="divide-y divide-gray-300/50">
 				<div class="space-y-6 py-8 text-base leading-7 text-gray-600">
 					<ul class="space-y-2">
