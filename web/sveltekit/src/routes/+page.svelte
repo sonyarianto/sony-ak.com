@@ -73,8 +73,7 @@
 							</a>
 							<a href="https://github.com/sonyarianto" target="_blank">
 								<p class="ml-4">
-									GitHub, <span class="text-purple-600">educational materials.</span
-									>
+									GitHub, <span class="text-purple-600">educational materials.</span>
 								</p></a
 							>
 						</li>
