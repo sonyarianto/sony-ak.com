@@ -10,8 +10,8 @@ Source code for my personal website, which is hosted on Vercel and points to my 
 
 ## Technologies used
 
-- [SvelteKit](https://kit.svelte.dev/)
-- [Verti](https://html5up.net/uploads/demos/verti)
-- [Vercel](https://vercel.com/)
-- [Cloudflare](https://cloudflare.com)
-- [GitHub](https://github.com)
+- Framework: [SvelteKit](https://kit.svelte.dev/)
+- Layout: [Play Tailwind CSS](https://play.tailwindcss.com)
+- Hosting: [Vercel](https://vercel.com/)
+- DNS: [Cloudflare](https://cloudflare.com)
+- Repository: [GitHub](https://github.com)
