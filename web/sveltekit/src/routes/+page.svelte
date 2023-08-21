@@ -73,7 +73,7 @@
 							</a>
 							<a href="https://github.com/sonyarianto" target="_blank">
 								<p class="ml-4">
-									GitHub, <span class="text-purple-600">educational materials and experiments.</span
+									GitHub, <span class="text-purple-600">educational materials.</span
 									>
 								</p></a
 							>
@@ -99,7 +99,7 @@
 							>
 							<a href="https://youtube.com/@bljdev" target="_blank"
 								><p class="ml-4">
-									BLJ, <span class="text-orange-600">demo of some educational materials.</span>
+									BLJ, <span class="text-orange-600">educational materials.</span>
 								</p></a
 							>
 						</li>
@@ -124,7 +124,7 @@
 							</a>
 							<a href="https://youtube.com/@adayangtanya" target="_blank"
 								><p class="ml-4">
-									ada yang tanya, <span class="text-emerald-600">demo in Bahasa Indonesia.</span>
+									ada yang tanya, <span class="text-emerald-600">in Bahasa Indonesia.</span>
 								</p></a
 							>
 						</li>
@@ -149,7 +149,7 @@
 							</a>
 							<a href="https://www.google.com/search?q=Sony+AK+vs+Sony+corporation" target="_blank"
 								><p class="ml-4">
-									case study, <span class="text-sky-600">my domain vs Sony Corporation.</span>
+									case study, <span class="text-sky-600">my domain vs Sony Corp.</span>
 								</p></a
 							>
 						</li>
