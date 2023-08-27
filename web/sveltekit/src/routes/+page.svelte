@@ -63,6 +63,8 @@
 									viewBox="0 0 100 100"
 									xml:space="preserve"
 									class="h-6 w-6"
+									width="24"
+									height="24"
 								>
 									<g
 										><path
@@ -88,6 +90,8 @@
 									viewBox="0 0 409.592 409.592"
 									xml:space="preserve"
 									class="h-6 w-6"
+									width="24"
+									height="24"
 								>
 									<g
 										><path
@@ -113,6 +117,8 @@
 									viewBox="0 0 409.592 409.592"
 									xml:space="preserve"
 									class="h-6 w-6"
+									width="24"
+									height="24"
 								>
 									<g
 										><path
@@ -138,6 +144,8 @@
 									viewBox="0 0 512 512"
 									xml:space="preserve"
 									class="h-6 w-6"
+									width="24"
+									height="24"
 								>
 									<g
 										><path
