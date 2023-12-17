@@ -211,11 +211,11 @@
 							</a>
 							<a href="https://buka.sh" target="_blank"
 								><p class="ml-4">
-									Buka, <span class="text-emerald-600">something you will open everyday.</span>
+									Buka, <span class="text-emerald-600">something that you open everyday.</span>
 								</p></a
 							>
 						</li>
-						<li class="flex items-center">
+						<!--li class="flex items-center">
 							<a href="https://docs.sony-ak.com" target="_blank">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -245,7 +245,7 @@
 									Docs, <span class="text-fuchsia-600">my knowledge center.</span>
 								</p></a
 							>
-						</li>
+						</li-->
 					</ul>
 					<p>
 						Keep learning, stay relevant, relevancy increases value. Comfortable with being
