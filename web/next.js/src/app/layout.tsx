@@ -18,7 +18,6 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      {/* <body className={inter.className}>{children}</body> */}
       <body>{children}</body>
     </html>
   );
