@@ -121,10 +121,7 @@ export default function Home() {
               </p>
               <p className="text-sm text-gray-400">
                 &copy; 2003 - {new Date().getFullYear()} by Sony Arianto
-                Kurniawan - All rights reserved. Design based on{" "}
-                <a href="https://play.tailwindcss.com" target="_blank">
-                  play.tailwindcss.com
-                </a>
+                Kurniawan - All rights reserved.
               </p>
             </div>
           </div>
