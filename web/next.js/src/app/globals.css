@@ -31,3 +31,12 @@ body {
     text-wrap: balance;
   }
 }
+
+.rainbow-based-on-hellonext {
+  background-image: linear-gradient(
+    75deg,
+    #f83a3a 10%,
+    #f13dd4 50%,
+    #7000ff 90%
+  );
+}
