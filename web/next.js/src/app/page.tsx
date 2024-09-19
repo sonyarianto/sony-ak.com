@@ -113,6 +113,14 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
+                  <a href="https://corner.buka.sh" target="_blank">
+                    <p className="ml-4">
+                      Buka Corner,{" "}
+                      <span className="text-emerald-600">
+                        articles and thoughts.
+                      </span>
+                    </p>
+                  </a>
                 </li>
               </ul>
               <p>
