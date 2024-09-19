@@ -113,10 +113,19 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
+                </li>
+                <li className="flex items-center">
+                  <a href="https://corner.buka.sh" target="_blank">
+                    <img
+                      src="/assets/images/buka.svg"
+                      alt="Buka"
+                      className="h-6 w-6"
+                    />
+                  </a>
                   <a href="https://corner.buka.sh" target="_blank">
                     <p className="ml-4">
                       Buka Corner,{" "}
-                      <span className="text-emerald-600">
+                      <span className="text-purple-600">
                         articles and thoughts.
                       </span>
                     </p>
