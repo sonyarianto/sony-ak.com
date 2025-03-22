@@ -50,7 +50,7 @@ export default function Home() {
                   </a>
                   <a href="https://youtube.com/@sonyarianto" target="_blank">
                     <p className="ml-4">
-                      personal channel,{" "}
+                      Personal channel,{" "}
                       <span className="text-orange-600">
                         random things.
                       </span>
@@ -107,14 +107,14 @@ export default function Home() {
                     target="_blank"
                   >
                     <p className="ml-4">
-                      case study,{" "}
+                      Case study,{" "}
                       <span className="text-sky-600">
                         my domain vs Sony Corp.
                       </span>
                     </p>
                   </a>
                 </li>
-                <li className="flex items-center">
+                {/* <li className="flex items-center">
                   <a href="https://buka.sh" target="_blank">
                     <img
                       src="/assets/images/buka.svg"
@@ -130,7 +130,7 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
-                </li>
+                </li> */}
                 <li className="flex items-center">
                   <a href="https://corner.buka.sh" target="_blank">
                     <img
