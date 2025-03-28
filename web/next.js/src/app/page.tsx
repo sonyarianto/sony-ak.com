@@ -18,7 +18,7 @@ export default function Home() {
             alt="Sony AK"
             className="block h-[88px] w-[88px] rounded-lg border-[3px] border-solid border-slate-300 object-cover"
           />
-          <h1 className="rainbow-based-on-hellonext mt-1 bg-clip-text text-2xl font-extrabold text-gray-800 text-transparent">
+          <h1 className="rainbow-based-on-hellonext mt-1 bg-clip-text text-2xl font-extrabold text-transparent">
             Sony AK
           </h1>
           <p className="text-sm text-gray-600">Member of Technical Staff</p>
