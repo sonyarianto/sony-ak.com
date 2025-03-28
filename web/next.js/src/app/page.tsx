@@ -41,6 +41,23 @@ export default function Home() {
                   </a>
                 </li>
                 <li className="flex items-center">
+                  <a href="https://youtube.com/@sonyarianto" target="_blank">
+                    <img
+                      src="/assets/images/youtube.svg"
+                      alt="YouTube"
+                      className="h-6 w-6"
+                    />
+                  </a>
+                  <a href="https://youtube.com/@sonyarianto" target="_blank">
+                    <p className="ml-4">
+                      Personal channel,{" "}
+                      <span className="text-orange-600">
+                        random things.
+                      </span>
+                    </p>
+                  </a>
+                </li>
+                {/* <li className="flex items-center">
                   <a href="https://youtube.com/@bljdev" target="_blank">
                     <img
                       src="/assets/images/youtube.svg"
@@ -56,7 +73,7 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
-                </li>
+                </li>> */}
                 {/* <li className="flex items-center">
                   <a href="https://youtube.com/@adayangtanya" target="_blank">
                     <img
@@ -90,14 +107,14 @@ export default function Home() {
                     target="_blank"
                   >
                     <p className="ml-4">
-                      case study,{" "}
+                      Case study,{" "}
                       <span className="text-sky-600">
                         my domain vs Sony Corp.
                       </span>
                     </p>
                   </a>
                 </li>
-                <li className="flex items-center">
+                {/* <li className="flex items-center">
                   <a href="https://buka.sh" target="_blank">
                     <img
                       src="/assets/images/buka.svg"
@@ -113,7 +130,7 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
-                </li>
+                </li> */}
                 <li className="flex items-center">
                   <a href="https://corner.buka.sh" target="_blank">
                     <img
@@ -126,7 +143,7 @@ export default function Home() {
                     <p className="ml-4">
                       Buka Corner,{" "}
                       <span className="text-amber-600">
-                        articles and thoughts.
+                        guided intelligence knowledge.
                       </span>
                     </p>
                   </a>
