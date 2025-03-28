@@ -14,7 +14,8 @@ export default function Home() {
       <div className="relative bg-white px-6 pt-10 pb-8 shadow-md ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
         <div className="mx-auto max-w-md">
           <img
-            src="https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci84MjY0ODJlMzBmMmJmMDAxNTk2ZjZlYjkwODA4MjdjMz9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.ANFeUy_WPf1KrjHbaEIXRPdhekzE_PhlNU6j8PTVsuc"
+            // src="https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci84MjY0ODJlMzBmMmJmMDAxNTk2ZjZlYjkwODA4MjdjMz9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.ANFeUy_WPf1KrjHbaEIXRPdhekzE_PhlNU6j8PTVsuc"
+            src="https://gravatar.com/userimage/12053163/b014669557f8cfbdbb0bd2ac084db1af.jpeg?size=256"
             alt="Sony AK"
             className="block h-[88px] w-[88px] rounded-lg border-[3px] border-solid border-slate-300 object-cover"
           />
