@@ -1,9 +1,0 @@
-@import url('https://fonts.googleapis.com/css?family=Inter:300,300italic,600,600italic,800');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-.rainbow-based-on-hellonext {
-	background-image: linear-gradient(75deg, #f83a3a 10%, #f13dd4 50%, #7000ff 90%);
-}
