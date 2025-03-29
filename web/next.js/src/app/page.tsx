@@ -164,7 +164,7 @@ export default function Home() {
                     <p className="ml-4">
                       Buka Corner,{" "}
                       <span className="text-amber-600">
-                        guided intelligence knowledge.
+                        augmented knowledge.
                       </span>
                     </p>
                   </a>
