@@ -14,7 +14,6 @@ export default function Home() {
       <div className="relative bg-white px-6 pt-10 pb-8 shadow-md ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
         <div className="mx-auto max-w-md">
           <img
-            // src="https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci84MjY0ODJlMzBmMmJmMDAxNTk2ZjZlYjkwODA4MjdjMz9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.ANFeUy_WPf1KrjHbaEIXRPdhekzE_PhlNU6j8PTVsuc"
             src="https://gravatar.com/userimage/12053163/b014669557f8cfbdbb0bd2ac084db1af.jpeg?size=256"
             alt="Sony AK"
             className="block h-[88px] w-[88px] rounded-lg border-[3px] border-solid border-slate-300 object-cover"
@@ -23,17 +22,11 @@ export default function Home() {
             Sony AK
           </h1>
           <p className="text-sm text-gray-600">Member of Technical Staff</p>
-          <p className="text-sm text-gray-600">Technology Curator</p>
           <div className="divide-y divide-gray-300/50">
             <div className="space-y-6 py-8 text-base leading-7 text-gray-600">
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <a href="https://github.com/sonyarianto" target="_blank">
-                    {/* <img
-                      src="/assets/images/github.svg"
-                      alt="GitHub"
-                      className="h-6 w-6"
-                    /> */}
                     <svg
                       role="img"
                       viewBox="0 0 24 24"
@@ -55,11 +48,6 @@ export default function Home() {
                 </li>
                 <li className="flex items-center">
                   <a href="https://youtube.com/@sonyarianto" target="_blank">
-                    {/* <img
-                      src="/assets/images/youtube.svg"
-                      alt="YouTube"
-                      className="h-6 w-6"
-                    /> */}
                     <svg
                       role="img"
                       viewBox="0 0 24 24"
@@ -80,50 +68,11 @@ export default function Home() {
                     </p>
                   </a>
                 </li>
-                {/* <li className="flex items-center">
-                  <a href="https://youtube.com/@bljdev" target="_blank">
-                    <img
-                      src="/assets/images/youtube.svg"
-                      alt="YouTube"
-                      className="h-6 w-6"
-                    />
-                  </a>
-                  <a href="https://youtube.com/@bljdev" target="_blank">
-                    <p className="ml-4">
-                      BLJ,{" "}
-                      <span className="text-orange-600">
-                        educational materials.
-                      </span>
-                    </p>
-                  </a>
-                </li>> */}
-                {/* <li className="flex items-center">
-                  <a href="https://youtube.com/@adayangtanya" target="_blank">
-                    <img
-                      src="/assets/images/youtube.svg"
-                      alt="YouTube"
-                      className="h-6 w-6"
-                    />
-                  </a>
-                  <a href="https://youtube.com/@adayangtanya" target="_blank">
-                    <p className="ml-4">
-                      ada yang tanya,{" "}
-                      <span className="text-emerald-600">
-                        in Bahasa Indonesia.
-                      </span>
-                    </p>
-                  </a>
-                </li> */}
                 <li className="flex items-center">
                   <a
                     href="https://www.google.com/search?q=Sony+AK+vs+Sony+corporation"
                     target="_blank"
                   >
-                    {/* <img
-                      src="/assets/images/justice.svg"
-                      alt="Google"
-                      className="h-6 w-6"
-                    /> */}
                     <Scale className="h-6 w-6" />
                   </a>
                   <a
@@ -138,30 +87,8 @@ export default function Home() {
                     </p>
                   </a>
                 </li>
-                {/* <li className="flex items-center">
-                  <a href="https://buka.sh" target="_blank">
-                    <img
-                      src="/assets/images/buka.svg"
-                      alt="Buka"
-                      className="h-6 w-6"
-                    />
-                  </a>
-                  <a href="https://buka.sh" target="_blank">
-                    <p className="ml-4">
-                      Buka,{" "}
-                      <span className="text-emerald-600">
-                        something that you open everyday.
-                      </span>
-                    </p>
-                  </a>
-                </li> */}
                 <li className="flex items-center">
                   <a href="https://corner.buka.sh" target="_blank">
-                    {/* <img
-                      src="/assets/images/buka.svg"
-                      alt="Buka"
-                      className="h-6 w-6"
-                    /> */}
                     <BookMarked className="h-6 w-6" />
                   </a>
                   <a href="https://corner.buka.sh" target="_blank">
@@ -175,11 +102,6 @@ export default function Home() {
                 </li>
                 <li className="flex items-center">
                   <a href="https://corner.buka.sh" target="_blank">
-                    {/* <img
-                      src="/assets/images/buka.svg"
-                      alt="Buka"
-                      className="h-6 w-6"
-                    /> */}
                     <DoorOpen className="h-6 w-6" />
                   </a>
                   <a href="https://buka.sh" target="_blank">
