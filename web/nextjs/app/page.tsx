@@ -88,12 +88,12 @@ export default function Home() {
                   </a>
                 </li>
                 <li className="flex items-center">
-                  <a href="https://corner.buka.sh" target="_blank">
+                  <a href="https://knowledge.buka.sh" target="_blank">
                     <BookMarked className="h-6 w-6" />
                   </a>
                   <a href="https://corner.buka.sh" target="_blank">
                     <p className="ml-4">
-                      Buka Corner,{" "}
+                      Buka Knowledge,{" "}
                       <span className="text-amber-600">
                         augmented knowledge.
                       </span>
