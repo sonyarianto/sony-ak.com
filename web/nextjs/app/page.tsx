@@ -21,7 +21,7 @@ export default function Home() {
           <h1 className="rainbow-based-on-hellonext mt-1 bg-clip-text text-2xl font-extrabold text-transparent">
             Sony AK
           </h1>
-          <p className="text-sm text-gray-600">Member of Technical Staff</p>
+          <p className="text-sm text-gray-600">MTS & AI Navigator</p>
           <div className="divide-y divide-gray-300/50">
             <div className="space-y-6 py-8 text-base leading-7 text-gray-600">
               <ul className="space-y-2">
