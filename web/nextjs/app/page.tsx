@@ -21,7 +21,7 @@ export default function Home() {
           <h1 className="rainbow-based-on-hellonext mt-1 bg-clip-text text-2xl font-extrabold text-transparent">
             Sony AK
           </h1>
-          <p className="text-sm text-gray-600">Software Engineer, Directing AI</p>
+          <p className="text-sm text-gray-600">Communication Engineer, Directing AI</p>
           <div className="divide-y divide-gray-300/50">
             <div className="space-y-6 py-8 text-base leading-7 text-gray-600">
               <ul className="space-y-2">
@@ -87,7 +87,7 @@ export default function Home() {
                     </p>
                   </a>
                 </li>
-                <li className="flex items-center">
+                <!--li className="flex items-center">
                   <a href="https://knowledge.buka.sh" target="_blank">
                     <BookMarked className="h-6 w-6" />
                   </a>
@@ -99,8 +99,8 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
-                </li>
-                <li className="flex items-center">
+                </li-->
+                <!--li className="flex items-center">
                   <a href="https://buka.sh" target="_blank">
                     <DoorOpen className="h-6 w-6" />
                   </a>
@@ -112,7 +112,7 @@ export default function Home() {
                       </span>
                     </p>
                   </a>
-                </li>
+                </li-->
               </ul>
               <p>
                 Keep learning, stay relevant, relevancy increases value.
