@@ -87,32 +87,6 @@ export default function Home() {
                     </p>
                   </a>
                 </li>
-                <!--li className="flex items-center">
-                  <a href="https://knowledge.buka.sh" target="_blank">
-                    <BookMarked className="h-6 w-6" />
-                  </a>
-                  <a href="https://knowledge.buka.sh" target="_blank">
-                    <p className="ml-4">
-                      Buka Knowledge,{" "}
-                      <span className="text-amber-600">
-                        augmented knowledge.
-                      </span>
-                    </p>
-                  </a>
-                </li-->
-                <!--li className="flex items-center">
-                  <a href="https://buka.sh" target="_blank">
-                    <DoorOpen className="h-6 w-6" />
-                  </a>
-                  <a href="https://buka.sh" target="_blank">
-                    <p className="ml-4">
-                      Buka,{" "}
-                      <span className="text-emerald-600">
-                        something that you open everyday.
-                      </span>
-                    </p>
-                  </a>
-                </li-->
               </ul>
               <p>
                 Keep learning, stay relevant, relevancy increases value.
