@@ -45,7 +45,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <article>
         <header className="mb-8">
-          <time className="text-sm text-gray-500">{article.date}</time>
+          <time className="text-sm text-gray-500">
+            {new Date(article.date).toLocaleString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })}
+          </time>
           <h1 className="mt-2 text-4xl font-bold text-gray-900">
             {article.title}
           </h1>
