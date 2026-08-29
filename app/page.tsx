@@ -1,4 +1,5 @@
 import { BookMarked, DoorOpen, Scale } from "lucide-react";
+import Link from "next/link";
 
 /* eslint-disable @next/next/no-img-element */
 export default function Home() {
@@ -67,6 +68,19 @@ export default function Home() {
                       <span className="text-orange-600">random things.</span>
                     </p>
                   </a>
+                </li>
+                <li className="flex items-center">
+                  <Link href="/knowledge-center">
+                    <BookMarked className="h-6 w-6" />
+                  </Link>
+                  <Link href="/knowledge-center">
+                    <p className="ml-4">
+                      Knowledge Center,{" "}
+                      <span className="text-emerald-600">
+                        861 articles & counting.
+                      </span>
+                    </p>
+                  </Link>
                 </li>
                 <li className="flex items-center">
                   <a
