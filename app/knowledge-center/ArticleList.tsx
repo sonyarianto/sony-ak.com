@@ -58,7 +58,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Search articles..."
+          placeholder="Search knowledge..."
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
