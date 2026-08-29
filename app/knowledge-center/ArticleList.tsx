@@ -8,12 +8,13 @@ interface ArticleListProps {
   articles: Article[];
 }
 
-const ARTICLES_PER_PAGE = 5;
+const INITIAL_COUNT = 10;
+const LOAD_MORE_COUNT = 10;
 
 export default function ArticleList({ articles }: ArticleListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
@@ -38,24 +39,18 @@ export default function ArticleList({ articles }: ArticleListProps) {
     });
   }, [articles, searchQuery, selectedTag]);
 
-  // Reset to page 1 when filters change
+  const visibleArticles = filteredArticles.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredArticles.length;
+
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    setCurrentPage(1);
+    setVisibleCount(INITIAL_COUNT);
   };
 
   const handleTagChange = (tag: string | null) => {
     setSelectedTag(tag);
-    setCurrentPage(1);
+    setVisibleCount(INITIAL_COUNT);
   };
-
-  // Pagination
-  const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
-  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-  const paginatedArticles = filteredArticles.slice(
-    startIndex,
-    startIndex + ARTICLES_PER_PAGE
-  );
 
   return (
     <>
@@ -99,10 +94,10 @@ export default function ArticleList({ articles }: ArticleListProps) {
 
       {/* Articles List */}
       <div className="space-y-6">
-        {paginatedArticles.length === 0 ? (
+        {visibleArticles.length === 0 ? (
           <p className="text-center text-gray-500">No articles found.</p>
         ) : (
-          paginatedArticles.map((article) => (
+          visibleArticles.map((article) => (
             <Link
               key={article.slug}
               href={`/knowledge-center/${article.slug}`}
@@ -139,49 +134,22 @@ export default function ArticleList({ articles }: ArticleListProps) {
         )}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-2">
+      {/* Load More */}
+      {hasMore && (
+        <div className="mt-8 text-center">
           <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={() => setVisibleCount(visibleCount + LOAD_MORE_COUNT)}
+            className="rounded-lg border border-gray-300 px-6 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50"
           >
-            ← Previous
-          </button>
-
-          <div className="flex gap-1">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`rounded-lg px-3 py-2 text-sm ${
-                  currentPage === page
-                    ? "bg-purple-600 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Next →
+            Load More ({filteredArticles.length - visibleCount} remaining)
           </button>
         </div>
       )}
 
-      {/* Page Info */}
+      {/* Show count */}
       {filteredArticles.length > 0 && (
         <p className="mt-4 text-center text-sm text-gray-500">
-          Showing {startIndex + 1}–
-          {Math.min(startIndex + ARTICLES_PER_PAGE, filteredArticles.length)} of{" "}
-          {filteredArticles.length} articles
+          Showing {visibleArticles.length} of {filteredArticles.length} articles
         </p>
       )}
     </>
