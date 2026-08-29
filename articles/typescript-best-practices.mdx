@@ -1,0 +1,63 @@
+---
+title: "TypeScript Best Practices for 2026"
+date: "2026-08-28"
+description: "Essential TypeScript patterns and practices for modern development."
+tags: ["typescript", "javascript", "best practices"]
+---
+
+# TypeScript Best Practices for 2026
+
+TypeScript continues to evolve, and staying up-to-date with best practices is crucial for maintainable code.
+
+## Use Strict Mode
+
+Always enable strict mode in your `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+## Leverage Type Inference
+
+TypeScript is smart enough to infer types in many cases:
+
+```typescript
+// Good - let TypeScript infer
+const numbers = [1, 2, 3];
+const doubled = numbers.map(n => n * 2);
+
+// Avoid unnecessary type annotations
+const users: User[] = []; // Good
+const users = []; // Bad - loses type information
+```
+
+## Use Discriminated Unions
+
+Discriminated unions make state management safer:
+
+```typescript
+type State = 
+  | { status: 'loading' }
+  | { status: 'success', data: User }
+  | { status: 'error', error: string };
+```
+
+## Prefer Interface Over Type for Objects
+
+Use interfaces for object shapes:
+
+```typescript
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+```
+
+## Conclusion
+
+Following these practices will help you write more maintainable and type-safe TypeScript code.
