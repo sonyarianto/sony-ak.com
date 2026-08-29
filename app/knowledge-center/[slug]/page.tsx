@@ -37,7 +37,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       <Link
-        href="/articles"
+        href="/knowledge-center"
         className="mb-8 inline-flex items-center text-purple-600 hover:text-purple-800"
       >
         ← Back to Articles

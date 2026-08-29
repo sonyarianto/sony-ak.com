@@ -105,7 +105,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
           paginatedArticles.map((article) => (
             <Link
               key={article.slug}
-              href={`/articles/${article.slug}`}
+              href={`/knowledge-center/${article.slug}`}
               className="block rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-md"
             >
               <article>
