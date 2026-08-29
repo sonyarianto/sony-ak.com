@@ -2,6 +2,7 @@
 title: "Mastering array_key_first() and array_key_last() in PHP"
 date: "2025-05-03T04:15:58.000Z"
 description: "When working with arrays in PHP, it's often necessary to access the first or last element. Starting from PHP 7.3 , two dedicated functions — array_key_first() a..."
+tags: ["php","email"]
 ---
 
 <p>When working with arrays in PHP, it's often necessary to access the <strong>first</strong> or <strong>last</strong> element. Starting from <strong>PHP 7.3</strong>, two dedicated functions — <code>array_key_first()</code> and <code>array_key_last()</code> — make this task more explicit and reliable.</p><hr><h2 id="%F0%9F%94%8D-what-do-these-functions-do">🔍 <strong>What Do These Functions Do?</strong></h2><ul><li><strong><code>array_key_first(array $array)</code></strong><br>Returns the <strong>first key</strong> of the array.</li><li><strong><code>array_key_last(array $array)</code></strong><br>Returns the <strong>last key</strong> of the array.</li></ul><p>Unlike <code>reset()</code> or <code>end()</code>, which operate on the internal pointer and return values, these functions return the <strong>actual keys</strong>. This makes them especially useful when you need to work with both keys and values.</p><hr><h2 id="%F0%9F%A7%AA-basic-example">🧪 <strong>Basic Example</strong></h2><pre><code class="language-php">$array = [1, 2, 3, 4, 5];

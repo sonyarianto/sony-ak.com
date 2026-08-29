@@ -2,6 +2,7 @@
 title: "PHP sleep() vs usleep(): What's the Difference and When to Use Each"
 date: "2025-07-08T21:17:48.000Z"
 description: "When working with time delays in PHP, you'll often encounter two functions that seemingly do the same thing: sleep() and usleep() . While both are used to pause..."
+tags: ["php","bash","api","deployment"]
 ---
 
 <p>When working with time delays in PHP, you'll often encounter two functions that seemingly do the same thing: <code>sleep()</code> and <code>usleep()</code>. While both are used to <strong>pause code execution</strong>, they differ significantly in <strong>precision</strong>, <strong>unit of time</strong>, and <strong>appropriate use cases</strong>.</p><p>This article breaks down both functions in detail, explains their differences, provides use cases, and offers additional considerations that developers should be aware of.</p><hr><h2 id="%E2%8F%B1%EF%B8%8F-1-understanding-sleep">⏱️ <strong>1. Understanding <code>sleep()</code></strong></h2><p>The <code>sleep()</code> function in PHP <strong>pauses execution for a number of seconds</strong>.</p><pre><code class="language-php">sleep(2); // Pauses execution for 2 seconds

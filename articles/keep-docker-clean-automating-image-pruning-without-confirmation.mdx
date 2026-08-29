@@ -2,6 +2,7 @@
 title: "Keep Docker Clean: Automating Image Pruning Without Confirmation"
 date: "2025-05-28T22:36:07.000Z"
 description: "Managing Docker images efficiently is crucial, especially if you work on multiple projects or run long-lived servers. Over time, unused images accumulate, consu..."
+tags: ["docker","ci-cd","testing","career","logging"]
 ---
 
 <p>Managing <strong>Docker images</strong> efficiently is crucial, especially if you work on multiple projects or run long-lived servers. Over time, unused images accumulate, consuming significant disk space and cluttering your environment. Fortunately, Docker provides a handy command to clear these unnecessary images:</p><pre><code class="language-bash">docker image prune -a --filter "until=72h"

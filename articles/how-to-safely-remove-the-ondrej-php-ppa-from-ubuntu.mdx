@@ -2,6 +2,7 @@
 title: "How to Safely Remove the Ondřej PHP PPA from Ubuntu"
 date: "2024-11-22T23:09:39.000Z"
 description: "When you manage PHP versions on your Ubuntu system, you might use the popular Ondřej PHP PPA ( ppa:ondrej/php ) to access the latest or alternative PHP versions..."
+tags: ["php","linux","testing","deployment","productivity"]
 ---
 
 <p>When you manage PHP versions on your Ubuntu system, you might use the popular <strong>Ondřej PHP PPA</strong> (<code>ppa:ondrej/php</code>) to access the latest or alternative PHP versions. But there may come a time when you no longer need this repository, or you want to clean up your system. Here's how to safely remove it and ensure your system stays functional.</p><h3 id="removing-the-ond%C5%99ej-php-ppa">Removing the Ondřej PHP PPA</h3><p>The easiest way to remove the repository is by using the <code>add-apt-repository</code> command with the <code>--remove</code> flag. This command will not only delete the repository but also clean up your package manager’s reference to it. Simply run:</p><pre><code class="language-bash">sudo add-apt-repository --remove ppa:ondrej/php

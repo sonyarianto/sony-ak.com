@@ -2,6 +2,7 @@
 title: "Mastering Loop Control in Rust: How Labeled Breaks Save the Day"
 date: "2025-04-20T09:26:19.000Z"
 description: "In Rust, working with nested loops is a common scenario, whether you're building a complex algorithm, traversing a matrix, or performing multi-dimensional searc..."
+tags: ["javascript","rust","python","data-structures","clean-code"]
 ---
 
 <p>In Rust, working with nested loops is a common scenario, whether you're building a complex algorithm, traversing a matrix, or performing multi-dimensional searches. However, <strong>breaking out of nested loops cleanly</strong> can sometimes be tricky if you are not familiar with Rust's <strong>labeled loops</strong> feature.</p><p>Let’s explore <strong>why labeled breaks matter</strong>, <strong>how they work</strong>, and <strong>what considerations</strong> you should keep in mind when using them.</p><hr><h2 id="the-problem-with-regular-break">The Problem with Regular <code>break</code></h2><p>Normally, when you use <code>break</code> inside a loop, it only <strong>terminates the innermost loop</strong>. For instance:</p><pre><code class="language-rust">for i in 0..5 {

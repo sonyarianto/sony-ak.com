@@ -2,6 +2,7 @@
 title: "Deploying Without a Commit: A Practical Guide to Using Git Revert Safely"
 date: "2025-10-03T07:38:11.000Z"
 description: "In every development cycle, there are moments where you realize that one commit should not go into production yet . Maybe it introduces a half-finished feature,..."
+tags: ["ci-cd","testing","git","deployment","productivity"]
 ---
 
 <p>In every development cycle, there are moments where you realize that <strong>one commit should not go into production yet</strong>. Maybe it introduces a half-finished feature, a bug, or something that needs business approval. The problem is, this commit is already merged into your main branch alongside other valuable changes.</p><p>How do you deploy everything <strong>except that one commit</strong>? The safest and most common answer is: <strong>use <code>git revert</code></strong>.</p><hr><h2 id="what-git-revert-really-does">What <code>git revert</code> Really Does</h2><p>When you run:</p><pre><code class="language-bash">git revert &lt;commit-hash&gt;

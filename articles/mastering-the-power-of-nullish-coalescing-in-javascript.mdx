@@ -2,6 +2,7 @@
 title: "Mastering the Power of Nullish Coalescing in JavaScript"
 date: "2024-10-07T06:01:21.000Z"
 description: "In JavaScript, handling values that may be null or undefined can be a tricky part of coding, especially for beginners. You might have run into situations where ..."
+tags: ["javascript","api","productivity","logging"]
 ---
 
 <p>In JavaScript, handling values that may be <code>null</code> or <code>undefined</code> can be a tricky part of coding, especially for beginners. You might have run into situations where you need a fallback value when something is missing or not provided. This is where <strong>nullish coalescing (<code>??</code>)</strong> comes into play—a feature introduced in ECMAScript 2020 that helps deal with <code>null</code> and <code>undefined</code> without misinterpreting other "falsy" values like <code>0</code>, <code>false</code>, or <code>""</code> (empty string).</p><h3 id="why-nullish-coalescing-matters">Why Nullish Coalescing Matters</h3><p>JavaScript has several <strong>falsy values</strong>: <code>0</code>, <code>false</code>, <code>""</code> (empty string), <code>NaN</code>, <code>null</code>, and <code>undefined</code>. When you want to check for a missing or non-existent value, you often reach for <strong>logical OR (<code>||</code>)</strong>. While <code>||</code> is great for setting fallback values, it treats any falsy value as <code>false</code>. This can lead to unexpected behavior.</p><p>Let’s look at an example:</p><pre><code class="language-javascript">const userCount = 0;

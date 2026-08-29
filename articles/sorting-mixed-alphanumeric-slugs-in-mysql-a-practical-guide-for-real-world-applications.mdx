@@ -2,6 +2,7 @@
 title: "Sorting Mixed Alphanumeric Slugs in MySQL: A Practical Guide for Real-World Applications"
 date: "2025-11-15T03:28:29.000Z"
 description: "When working with identifiers like r1 , r20 , r100 , or smk1 , smk50 , smk200 , it is common to expect them to sort in a natural, human-friendly order. Unfortun..."
+tags: ["database","performance","regex","data-structures","clean-code"]
 ---
 
 <p>When working with identifiers like <strong><code>r1</code>, <code>r20</code>, <code>r100</code></strong>, or <strong><code>smk1</code>, <code>smk50</code>, <code>smk200</code></strong>, it is common to expect them to sort in a natural, human-friendly order. Unfortunately, default MySQL sorting follows <em>pure lexicographical rules</em>, which often leads to unintuitive results such as:</p><pre><code>smk1

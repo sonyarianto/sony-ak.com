@@ -2,6 +2,7 @@
 title: "Unlocking Mutability in TypeScript: How to Remove readonly from Types"
 date: "2025-04-09T04:20:41.000Z"
 description: "TypeScript is powerful for enforcing type safety, and one of its most useful features is the ability to express immutability through the readonly modifier. Howe..."
+tags: ["typescript","data-structures","clean-code"]
 ---
 
 <p>TypeScript is powerful for enforcing type safety, and one of its most useful features is the ability to express <strong>immutability</strong> through the <code>readonly</code> modifier. However, there are times when we want to <strong>reverse</strong> that behavior — making a type's properties <strong>mutable</strong> again. That's where the <code>Mutable&lt;T&gt;</code> utility type comes in.</p><p>Let’s explore how to use it effectively, and why it’s such a handy trick for TypeScript developers.</p><hr><h2 id="the-problem-readonly-types">The Problem: Readonly Types</h2><p>Imagine you’re working with a data structure where all fields are marked as <code>readonly</code>. This is great for safety — it prevents accidental mutation. But what if, at some point, you <strong>need to modify</strong> that data?</p><p>Here’s an example:</p><pre><code class="language-ts">type Example = {

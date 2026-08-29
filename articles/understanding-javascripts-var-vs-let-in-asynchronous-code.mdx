@@ -2,6 +2,7 @@
 title: "Understanding JavaScript's var vs. let in Asynchronous Code"
 date: "2024-10-07T05:39:39.000Z"
 description: "When working with JavaScript , one of the most common challenges for beginners is understanding how var and let behave in different situations, especially when ..."
+tags: ["javascript","logging"]
 ---
 
 <p>When working with <strong>JavaScript</strong>, one of the most common challenges for beginners is understanding how <strong><code>var</code></strong> and <strong><code>let</code></strong> behave in different situations, especially when dealing with <strong>asynchronous code</strong> like the <code>setTimeout</code> function. Let's explore this concept by analyzing two similar code blocks that produce different outputs.</p><p>Imagine you want to loop over a set of numbers and log each value after a slight delay. You might use a <code>for</code> loop with <code>setTimeout</code> like this:</p><pre><code class="language-javascript">for (var i = 0; i &lt; 3; i++) {

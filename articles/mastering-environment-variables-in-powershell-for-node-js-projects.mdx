@@ -2,6 +2,7 @@
 title: "Mastering Environment Variables in PowerShell for Node.js Projects"
 date: "2024-11-18T21:53:42.000Z"
 description: "When working with Node.js in a Windows environment , managing environment variables efficiently can significantly enhance your development workflow. A common ta..."
+tags: ["javascript","bash","testing","performance","deployment"]
 ---
 
 <p>When working with <strong>Node.js</strong> in a <strong>Windows environment</strong>, managing environment variables efficiently can significantly enhance your development workflow. A common task is suppressing specific warnings during dependency installation with <code>npm</code>. This article walks you through <strong>setting environment variables in PowerShell</strong>, highlights additional considerations, and provides best practices for seamless Node.js development.</p><h3 id="setting-environment-variables-in-powershell">Setting Environment Variables in PowerShell</h3><p>In PowerShell, you can set an environment variable using the <code>$env</code> prefix. Here's an example:</p><pre><code>$env:NODE_NO_WARNINGS=1; npm install

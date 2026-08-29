@@ -2,6 +2,7 @@
 title: "How to Validate Arrays with Specific Values in Laravel"
 date: "2024-12-09T04:28:05.000Z"
 description: "Laravel makes input validation straightforward, but when dealing with arrays containing specific allowed values , a more precise approach is needed. This articl..."
+tags: ["laravel","api","testing"]
 ---
 
 <p>Laravel makes input validation straightforward, but when dealing with <strong>arrays containing specific allowed values</strong>, a more precise approach is needed. This article will guide you through crafting robust validation rules, along with <strong>key considerations</strong> to handle edge cases effectively.</p><h2 id="understanding-the-challenge">Understanding the Challenge</h2><p>Suppose you’re designing an API where a <code>tags</code> field is optional but, when provided, must:</p><ul><li><strong>Be an array</strong> of strings.</li><li><strong>Only contain specific allowed values</strong>, such as <code>active</code>, <code>inactive</code>, <code>archived</code>, and <code>featured</code>.</li></ul><p>For such cases, Laravel provides tools like <code>in</code> rules and array validation, enabling precise control over input data.</p><h2 id="validation-rules-example">Validation Rules Example</h2><p>Here’s how you can define validation rules for such a scenario:</p><pre><code class="language-php">$rules = [

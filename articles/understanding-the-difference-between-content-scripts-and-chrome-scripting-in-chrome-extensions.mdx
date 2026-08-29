@@ -2,6 +2,7 @@
 title: "Understanding the Difference Between Content Scripts and chrome.scripting in Chrome Extensions"
 date: "2025-07-08T21:07:36.000Z"
 description: "When building a Chrome Extension, one of the most common tasks is injecting JavaScript into web pages . There are two main approaches to do this: Using content ..."
+tags: ["javascript","api","security","performance","design"]
 ---
 
 <p>When building a Chrome Extension, one of the most common tasks is <strong>injecting JavaScript into web pages</strong>. There are two main approaches to do this:</p><ol><li>Using <strong>content scripts</strong> declared in the manifest.</li><li>Using the <strong><code>chrome.scripting</code> API</strong> to inject scripts dynamically.</li></ol><p>At a glance, both seem to do the same thing — run JavaScript on web pages. But under the hood, they serve different purposes, behave differently, and are suitable for different scenarios.</p><p>In this article, we’ll explore the <strong>real differences</strong> between the two, their <strong>use cases</strong>, and <strong>when to choose which</strong> — especially if you're trying to write extensions that are simple, secure, and performant.</p><hr><h2 id="%F0%9F%93%8C-what-is-a-content-script">📌 What is a Content Script?</h2><p>A <strong>content script</strong> is a JavaScript file that your extension <strong>automatically injects into matching pages</strong>, based on the <code>manifest.json</code> configuration.</p><pre><code class="language-json">"content_scripts": [

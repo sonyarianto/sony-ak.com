@@ -2,6 +2,7 @@
 title: "The Hidden Danger of finally with await in JavaScript"
 date: "2025-03-08T21:23:06.000Z"
 description: "When working with asynchronous code in JavaScript, proper resource management is crucial. The try...finally construct is often used to ensure that cleanup logic..."
+tags: ["javascript","performance","debugging","logging"]
 ---
 
 <p>When working with <strong>asynchronous code</strong> in JavaScript, proper resource management is crucial. The <code>try...finally</code> construct is often used to ensure that cleanup logic always runs, even if an error occurs. However, <strong>placing <code>await</code> inside a <code>finally</code> block can introduce unintended issues</strong> that developers might overlook.</p><h2 id="understanding-the-problem">Understanding the Problem</h2><p>Consider the following code snippet:</p><pre><code class="language-javascript">try {

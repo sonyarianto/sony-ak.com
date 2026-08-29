@@ -2,6 +2,7 @@
 title: "Mastering JavaScript Import Syntax: How to Consume Any Module Like a Pro"
 date: "2025-05-14T20:24:55.000Z"
 description: "A Companion Guide to export with Practical Use Cases and Gotchas"
+tags: ["javascript","react","package-manager","json"]
 ---
 
 <p>If you’ve already familiarized yourself with the various ways to <strong>export</strong> in JavaScript modules, the next natural step is understanding how to <strong>import</strong> them efficiently.</p><p>This article walks you through <strong>all valid import patterns</strong> in JavaScript, how they relate to the different <code>export</code> types, and provides <strong>real-world usage tips</strong> to avoid confusion—especially when dealing with default vs named exports.</p><hr><h2 id="%F0%9F%94%B9-why-use-import">🔹 Why Use <code>import</code>?</h2><p>The <code>import</code> keyword allows your JavaScript file to <strong>consume exported functionality from another file or module</strong>. It’s a core feature of <strong>ES Modules (ESM)</strong>, which are now natively supported in all modern environments, including the browser and Node.js (with <code>.mjs</code> or <code>type: "module"</code> in <code>package.json</code>).</p><hr><h2 id="%E2%9C%85-basic-import-patterns">✅ Basic Import Patterns</h2><h3 id="1-importing-default-exports">1. <strong>Importing Default Exports</strong></h3><pre><code class="language-js">import MyModule from './my-module.js';

@@ -2,6 +2,7 @@
 title: "Why It’s Okay to Use Query Params for APIs (As Long As Your Routes Stay Human-Friendly)"
 date: "2025-05-04T19:12:40.000Z"
 description: "When building a modern Single Page Application (SPA) , one common debate is whether to use path parameters or query parameters in your API endpoints. Some argue..."
+tags: ["api","performance","architecture","seo","http"]
 ---
 
 <p>When building a modern <strong>Single Page Application (SPA)</strong>, one common debate is whether to use <strong>path parameters</strong> or <strong>query parameters</strong> in your API endpoints. Some argue that using query parameters for everything is a bad practice. But is that really true?</p><p>Let’s break it down — and clarify why it’s <em>totally valid</em> to use query parameters for API calls, <strong>as long as your frontend routes stay clean and readable.</strong></p><hr><h3 id="1-know-the-purpose-of-each-layer"><strong>1. Know the Purpose of Each Layer</strong></h3><p>There are two main layers you’re dealing with in an SPA architecture:</p><ul><li><strong>The API Layer</strong>: This is <strong>not meant to be SEO-friendly</strong>. It exists for data access, not for indexing or human consumption.</li><li><strong>The Frontend Routing Layer</strong>: This <em>is</em> what users see, share, bookmark, and what search engines crawl (if public).</li></ul><p>As long as you keep your <strong>frontend URLs</strong> well-structured (e.g. <code>/products/abc123</code>), it doesn’t matter if under the hood you're calling:</p><pre><code>GET /api/product?sku=abc123

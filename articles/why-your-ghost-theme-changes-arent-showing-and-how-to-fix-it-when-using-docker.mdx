@@ -2,6 +2,7 @@
 title: "Why Your Ghost Theme Changes Aren’t Showing (and How to Fix It When Using Docker)"
 date: "2025-04-06T09:36:25.000Z"
 description: "If you're running a self-hosted Ghost blog with Docker and you've made changes to your theme—only to find that nothing has changed on your site —you're not alon..."
+tags: ["javascript","css","docker","linux","testing"]
 ---
 
 <p>If you're running a <strong>self-hosted Ghost blog with Docker</strong> and you've made changes to your theme—only to find that <strong>nothing has changed on your site</strong>—you're not alone. This is a common pitfall when working with Ghost and Dockerized environments. Let's break down what might be going wrong and how to fix it properly.</p><hr><h2 id="1-ghost-doesn%E2%80%99t-auto-reload-themes"><strong>1. Ghost Doesn’t Auto-Reload Themes</strong></h2><p>First things first: <strong>Ghost doesn’t watch your theme files for changes</strong>.</p><p>If you edit theme files (like <code>default.hbs</code>, <code>post.hbs</code>, or CSS/JS assets), Ghost <strong>won’t apply those changes until you restart the container</strong>.</p><h3 id="%E2%9C%85-fix-restart-the-ghost-container">✅ Fix: Restart the Ghost container</h3><p>If you’re using Docker Compose and your service is called <code>service-ghost</code>, you just need to run:</p><pre><code class="language-bash">docker compose restart service-ghost

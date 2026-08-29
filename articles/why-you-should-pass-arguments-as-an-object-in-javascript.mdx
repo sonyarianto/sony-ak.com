@@ -2,6 +2,7 @@
 title: "Why You Should Pass Arguments as an Object in JavaScript"
 date: "2025-01-27T02:05:35.000Z"
 description: "In JavaScript, when writing functions, it’s common to pass multiple arguments directly to the function. However, there’s a more efficient, readable, and flexibl..."
+tags: ["javascript","typescript","clean-code"]
 ---
 
 <p>In JavaScript, when writing functions, it’s common to pass multiple arguments directly to the function. However, there’s a more <strong>efficient, readable, and flexible</strong> way to do this—pass your arguments as an <strong>object</strong> instead of using positional arguments. This small shift in how you write functions can have a huge impact on code clarity and maintainability.</p><p>Here’s why this approach works so well and why your teammates (and future you!) will thank you.</p><h2 id="what-does-it-look-like">What Does It Look Like?</h2><h3 id="positional-arguments-the-old-way">Positional Arguments (The "Old" Way)</h3><pre><code class="language-javascript">function createUser(name, age, isAdmin) {

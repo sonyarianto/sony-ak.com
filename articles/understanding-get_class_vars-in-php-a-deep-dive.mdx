@@ -2,6 +2,7 @@
 title: "Understanding get_class_vars() in PHP: A Deep Dive"
 date: "2025-02-11T18:33:31.000Z"
 description: "When working with classes in PHP, you may often need to retrieve the default values of a class's properties. PHP provides the get_class_vars() function to make ..."
+tags: ["php","testing","debugging","productivity"]
 ---
 
 <p>When working with <strong>classes</strong> in PHP, you may often need to retrieve the <strong>default values</strong> of a class's properties. PHP provides the <code>get_class_vars()</code> function to make this task easier. However, this function comes with some specific behaviors and limitations that you should be aware of.</p><h3 id="what-is-getclassvars"><strong>What is get_class_vars()?</strong></h3><p>The <code>get_class_vars()</code> function is used to <strong>retrieve an associative array of class properties along with their default values</strong>. This function does not require an instance of the class—it works directly on the class definition.</p><h3 id="syntax"><strong>Syntax</strong></h3><pre><code class="language-php">array get_class_vars(string $class_name)

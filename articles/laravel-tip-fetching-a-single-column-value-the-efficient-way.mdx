@@ -2,6 +2,7 @@
 title: "Laravel Tip: Fetching a Single Column Value the Efficient Way"
 date: "2025-08-10T04:14:19.000Z"
 description: "When working with Laravel’s Eloquent ORM , there are times when you only need to retrieve a single value from the database. A common mistake developers make is ..."
+tags: ["laravel","database","performance","email"]
 ---
 
 <p>When working with <strong>Laravel’s Eloquent ORM</strong>, there are times when you only need to retrieve <strong>a single value</strong> from the database. A common mistake developers make is fetching the <strong>entire model instance</strong> when they only need <strong>one field</strong>.</p><p>Let’s break it down with an example.</p><hr><h2 id="the-efficient-way-%E2%80%94-value-method"><strong>The Efficient Way — <code>value()</code> Method</strong></h2><p>Instead of loading the whole record, you can directly retrieve the value you need:</p><pre><code class="language-php">$email = User::where('id', $id)-&gt;value('email');

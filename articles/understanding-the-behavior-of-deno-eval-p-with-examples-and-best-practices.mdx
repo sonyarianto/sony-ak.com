@@ -2,6 +2,7 @@
 title: "Understanding the Behavior of deno eval -p with Examples and Best Practices"
 date: "2024-12-13T21:38:56.000Z"
 description: "The deno eval command is a powerful tool that allows developers to quickly run JavaScript or TypeScript code directly from the command line without needing a se..."
+tags: ["javascript","typescript","bash","testing","debugging"]
 ---
 
 <p>The <code>deno eval</code> command is a powerful tool that allows developers to quickly run JavaScript or TypeScript code directly from the command line without needing a separate file. It is particularly useful for testing small snippets of code, performing quick calculations, or debugging logic. However, there are nuances to its usage, especially when combined with the <code>-p</code> flag.</p><p>This article explains the behavior of <code>deno eval -p</code> with practical examples, common pitfalls, and additional considerations for using it effectively.</p><h3 id="what-is-deno-eval"><strong>What is <code>deno eval</code>?</strong></h3><p>The <code>deno eval</code> command executes JavaScript or TypeScript code provided as a string argument. This makes it ideal for one-liners or rapid experimentation.</p><p>When paired with the <code>-p</code> flag, the command not only executes the code but also <strong>prints the result of the last evaluated expression</strong> to the console.</p><h3 id="examples-and-behavior"><strong>Examples and Behavior</strong></h3><ol><li><strong>Basic Example</strong></li></ol><pre><code class="language-bash">deno eval -p "1 + 2"

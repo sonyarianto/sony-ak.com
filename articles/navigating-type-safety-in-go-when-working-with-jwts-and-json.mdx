@@ -2,6 +2,7 @@
 title: "Navigating Type Safety in Go When Working with JWTs and JSON"
 date: "2025-09-10T19:40:14.000Z"
 description: "When moving from PHP to Go , one of the first things developers notice is how different the two languages treat types . PHP is famously forgiving: it will happi..."
+tags: ["php","go","security","debugging","json"]
 ---
 
 <p>When moving from <strong>PHP</strong> to <strong>Go</strong>, one of the first things developers notice is how different the two languages treat <strong>types</strong>. PHP is famously forgiving: it will happily coerce strings into numbers, numbers into booleans, and so on, often without you realizing it. Go, on the other hand, is <strong>strict and explicit</strong>. It will not let you mix types without you acknowledging the conversion.</p><p>This difference becomes very important when working with <strong>JWTs</strong> and <strong>JSON data</strong>, because most JWT payloads are just JSON objects under the hood. Handling them correctly requires an awareness of Go’s type system, especially when dealing with <strong>interfaces</strong>, <strong>numbers</strong>, and <strong>strings</strong>.</p><hr><h2 id="php-vs-go-type-handling">PHP vs Go: Type Handling</h2><p>In <strong>Go</strong>:</p><pre><code class="language-go">var value interface{} = "123"

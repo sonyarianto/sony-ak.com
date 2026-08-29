@@ -2,6 +2,7 @@
 title: "Mastering Docker ps Command for Beginners: Customizing Container Display"
 date: "2024-10-20T00:57:49.000Z"
 description: "When working with Docker, you’ll often need to manage and monitor your containers. One of the most useful commands for this purpose is docker ps . This command ..."
+tags: ["docker","debugging","productivity","logging"]
 ---
 
 <p>When working with Docker, you’ll often need to manage and monitor your containers. One of the most useful commands for this purpose is <code>docker ps</code>. This command lists all the running containers, giving you insights into what’s happening inside your Docker environment. For beginners, understanding how to format this command can significantly improve how you monitor and interact with containers.</p><p>By default, <code>docker ps</code> provides a lot of information, but it might not always be presented in the most readable way. Fortunately, Docker allows you to customize the output using the <code>--format</code> option. This feature uses <strong>Go templates</strong> to define exactly what you want to see, how it’s displayed, and what order it appears in.</p><h3 id="breaking-down-the-command">Breaking Down the Command</h3><p>Let’s start with an example:</p><pre><code class="language-bash">docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"

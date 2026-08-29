@@ -2,6 +2,7 @@
 title: "Why instanceof Promise Is Not a Reliable Check in JavaScript"
 date: "2025-08-27T08:59:05.000Z"
 description: "When working with asynchronous programming in JavaScript, it is tempting to check whether a value is a Promise using instanceof Promise . At first glance, this ..."
+tags: ["javascript","testing","debugging","design"]
 ---
 
 <p>When working with <strong>asynchronous programming</strong> in JavaScript, it is tempting to check whether a value is a <code>Promise</code> using <code>instanceof Promise</code>. At first glance, this seems logical—after all, promises are the foundation of async/await, so why not verify them directly?</p><p>But here’s the catch: <strong><code>instanceof Promise</code> is not a good or reliable check.</strong> Let’s dive into why, and what better practices you should adopt.</p><hr><h2 id="the-problem-with-instanceof-promise">The Problem with <code>instanceof Promise</code></h2><h3 id="1-cross-realm-issues">1. <strong>Cross-Realm Issues</strong></h3><p>JavaScript runs in different "realms"—for example, inside an <strong>iframe</strong> or a <strong>worker thread</strong>, the global <code>Promise</code> constructor is technically a different object.</p><p>This means:</p><pre><code class="language-js">iframePromise instanceof Promise // false

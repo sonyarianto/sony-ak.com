@@ -2,6 +2,7 @@
 title: "Understanding Cron Jobs with Server Timezones: Schedule Tasks at the Right Moment"
 date: "2025-05-09T06:35:05.000Z"
 description: "If you've ever set up a cron job and found it running at the wrong time, chances are you're missing one small but critical detail: your server's timezone . When..."
+tags: ["php","debugging","career","environment","logging"]
 ---
 
 <p>If you've ever set up a <strong>cron job</strong> and found it running at the wrong time, chances are you're missing one small but critical detail: <strong>your server's timezone</strong>. When managing scheduled tasks like sending notifications, backups, or report generation, aligning the <strong>cron time with your actual intention</strong> is essential to prevent surprises.</p><p>Let’s walk through a real-world example and clarify how to do it right.</p><hr><h3 id="%F0%9F%95%92-the-situation">🕒 The Situation</h3><p>You log into your server and run:</p><pre><code class="language-bash">$ date

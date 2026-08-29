@@ -2,6 +2,7 @@
 title: "Understanding var and let in Loops: The Key to Timing Mysteries in JavaScript"
 date: "2024-11-19T01:05:36.000Z"
 description: "If you've ever worked with JavaScript's for loops and setTimeout , you've likely encountered puzzling behavior when using var and let . While they may seem inte..."
+tags: ["javascript","performance","debugging","logging"]
 ---
 
 <p>If you've ever worked with <strong>JavaScript's <code>for</code> loops</strong> and <code>setTimeout</code>, you've likely encountered puzzling behavior when using <code>var</code> and <code>let</code>. While they may seem interchangeable at first glance, their differences can dramatically impact the behavior of asynchronous code. Let’s dive deep into <strong>why <code>var</code> and <code>let</code> behave differently</strong> and uncover some key points you might have missed.</p><h2 id="the-scenario-a-tale-of-two-loops"><strong>The Scenario: A Tale of Two Loops</strong></h2><p>Here’s the code we’ll analyze:</p><pre><code class="language-javascript">for (var i = 0; i &lt; 3; i++) {

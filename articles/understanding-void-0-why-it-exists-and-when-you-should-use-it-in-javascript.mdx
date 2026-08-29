@@ -2,6 +2,7 @@
 title: "Understanding void 0: Why It Exists and When You Should Use It in JavaScript"
 date: "2024-10-03T18:56:02.000Z"
 description: "If you've been writing JavaScript for a while, you may have come across undefined . But have you ever seen void 0 ? At first glance, void 0 might seem cryptic, ..."
+tags: ["javascript","api","performance","logging"]
 ---
 
 <p>If you've been writing JavaScript for a while, you may have come across <code>undefined</code>. But have you ever seen <code>void 0</code>? At first glance, <code>void 0</code> might seem cryptic, but it’s a useful and intentional feature of JavaScript that provides a safe and immutable way to represent the value <code>undefined</code>.</p><p>In this article, we’ll break down why <code>void 0</code> exists, where it’s used, and the benefits it offers. Whether you're a beginner or just curious, this concept is easier to understand than it seems.</p><h3 id="why-does-void-0-exist">Why Does <code>void 0</code> Exist?</h3><p>In JavaScript, the global value <code>undefined</code> can actually be overwritten (though it's uncommon and discouraged). While modern JavaScript prevents this in strict mode, historically, it was possible for developers or third-party scripts to redefine <code>undefined</code> as something else, which could lead to bugs and unexpected behavior in your code.</p><p>For instance, in non-strict mode:</p><pre><code class="language-javascript">undefined = 42; // Redefines undefined (not recommended)

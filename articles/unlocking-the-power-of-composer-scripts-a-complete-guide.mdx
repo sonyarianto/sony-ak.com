@@ -2,6 +2,7 @@
 title: "Unlocking the Power of Composer Scripts: A Complete Guide"
 date: "2024-12-31T01:49:57.000Z"
 description: "Composer is the go-to dependency manager for PHP projects, but did you know it can do much more than just manage packages? Composer scripts provide a way to aut..."
+tags: ["php","bash","linux","testing","security"]
 ---
 
 <p>Composer is the go-to dependency manager for PHP projects, but did you know it can do much more than just manage packages? <strong>Composer scripts</strong> provide a way to automate tasks and streamline your development workflow. Let’s explore how to use this feature, its benefits, and additional tips for making the most of it.</p><h2 id="what-are-composer-scripts">What Are Composer Scripts?</h2><p>In Composer, <strong>scripts are custom commands</strong> you define in your <code>composer.json</code> file. These commands can be:</p><ul><li>Shell commands</li><li>Composer commands</li><li>PHP scripts</li></ul><p>They allow you to automate tasks such as running tests, starting a development server, or cleaning up files. Scripts are executed via the <code>composer run</code> command.</p><h2 id="how-to-define-composer-scripts">How to Define Composer Scripts</h2><p>You define scripts in the <code>scripts</code> section of the <code>composer.json</code> file. Here’s an example:</p><pre><code class="language-json">{

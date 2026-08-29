@@ -2,6 +2,7 @@
 title: "How to Create a Git Branch from a Specific Commit"
 date: "2025-01-23T22:49:59.000Z"
 description: "When working with Git, there may be situations where you need to create a new branch starting from a specific commit in the past . This can happen when you want..."
+tags: ["testing","git","deployment","debugging","productivity"]
 ---
 
 <p>When working with Git, there may be situations where you need to create a new branch starting from a <strong>specific commit in the past</strong>. This can happen when you want to start a new feature, fix a bug, or experiment with code changes that diverge from a particular point in the project's history. In this article, we'll cover the steps to create such a branch, <strong>highlight key points to remember</strong>, <strong>explore additional considerations</strong>, and discuss <strong>common use cases</strong> for this approach.</p><h2 id="step-by-step-guide">Step-by-Step Guide</h2><h3 id="1-find-the-commit-hash">1. Find the Commit Hash</h3><p>Every commit in Git is identified by a unique hash. To create a branch from a specific commit, you first need to identify the hash of that commit.</p><p>Run the following command to view the commit history:</p><pre><code class="language-bash">git log

@@ -2,6 +2,7 @@
 title: "Understanding Rust’s Borrowing Rules: Avoiding Dangling References"
 date: "2024-11-23T22:47:22.000Z"
 description: "Rust is known for its strong emphasis on memory safety, and one of the most important features that help achieve this is its ownership and borrowing system. Whi..."
+tags: ["rust","career"]
 ---
 
 <p>Rust is known for its strong emphasis on memory safety, and one of the most important features that help achieve this is its ownership and borrowing system. While it can be a bit tricky to get the hang of, once you understand it, Rust’s approach to memory safety will protect you from many common bugs, especially those related to memory leaks and <strong>dangling references</strong>.</p><p>In this article, we'll dive into one of the most common issues new Rust developers face: the error <strong>"x does not live long enough"</strong>. We’ll break down what this means and explore how to avoid it, along with other important borrowing concepts that might be new to you.</p><h3 id="what-does-x-does-not-live-long-enough-mean">What Does <strong>"x Does Not Live Long Enough"</strong> Mean?</h3><p>Consider the following Rust code:</p><pre><code class="language-rust">fn main() {

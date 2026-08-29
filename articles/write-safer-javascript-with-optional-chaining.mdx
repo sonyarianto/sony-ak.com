@@ -2,6 +2,7 @@
 title: "Write Safer JavaScript with Optional Chaining (?.)"
 date: "2025-08-05T07:38:27.000Z"
 description: "In the ever-evolving world of JavaScript, writing robust, error-resistant code is crucial — especially when dealing with deeply nested objects , API responses ,..."
+tags: ["javascript","api","design","data-structures"]
 ---
 
 <p>In the ever-evolving world of JavaScript, writing <strong>robust, error-resistant code</strong> is crucial — especially when dealing with <strong>deeply nested objects</strong>, <strong>API responses</strong>, or <strong>user-generated data</strong>. One of the most <strong>underrated but powerful features</strong> that can help us achieve this is <strong>optional chaining (<code>?.</code>)</strong>.</p><p>Let’s unpack this modern feature, explore <strong>why</strong> and <strong>how</strong> to use it effectively, and cover some <strong>real-world examples and caveats</strong>.</p><hr><h3 id="%F0%9F%A7%A9-the-problem-deep-property-access-can-break-things">🧩 The Problem: Deep Property Access Can Break Things</h3><p>If you’ve ever written something like this:</p><pre><code class="language-javascript">const city = user.profile.address.city;

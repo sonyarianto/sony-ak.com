@@ -2,6 +2,7 @@
 title: "Understanding JavaScript’s Map, WeakMap, Set, and WeakSet: A Beginner's Guide"
 date: "2024-10-07T18:47:04.000Z"
 description: "When working with JavaScript, managing collections of data is a common task. While arrays and objects can get you far, JavaScript offers more powerful structure..."
+tags: ["javascript","data-structures","logging"]
 ---
 
 <p>When working with JavaScript, managing collections of data is a common task. While arrays and objects can get you far, JavaScript offers more powerful structures: <strong>Map</strong>, <strong>WeakMap</strong>, <strong>Set</strong>, and <strong>WeakSet</strong>. These are specialized tools designed to handle collections with unique characteristics, and knowing when to use them can make your code more efficient and easier to maintain. Let’s explore each one, understand what makes them special, and when you should use them. Along the way, we'll look at examples for each structure.</p><h4 id="map-the-flexible-key-value-store"><strong>Map: The Flexible Key-Value Store</strong></h4><p>A <strong>Map</strong> is like an upgraded object. It allows you to store <strong>key-value pairs</strong>, but unlike regular objects, it doesn’t force you to use strings as keys. You can use <strong>objects, functions</strong>, or any other data type as keys.</p><p>Here’s an example of how a Map works:</p><pre><code class="language-javascript">let map = new Map();

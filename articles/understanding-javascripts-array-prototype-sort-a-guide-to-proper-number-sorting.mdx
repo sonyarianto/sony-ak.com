@@ -2,6 +2,7 @@
 title: "Understanding JavaScript's Array.prototype.sort(): A Guide to Proper Number Sorting"
 date: "2024-11-13T07:05:33.000Z"
 description: "When working with arrays in JavaScript, sorting can be a common operation. However, it’s important to understand how JavaScript handles the sorting process and ..."
+tags: ["javascript","performance","data-structures","logging"]
 ---
 
 <p>When working with arrays in JavaScript, sorting can be a common operation. However, it’s important to understand how JavaScript handles the sorting process and how you can ensure your numbers are sorted in the way you expect.</p><p>In JavaScript, the <code>sort()</code> method is used to sort the elements of an array in place. But here’s the catch—<strong><code>sort()</code> sorts elements as strings by default</strong>. This can lead to unexpected results, especially when dealing with numerical arrays.</p><p>Let’s break down this behavior and how you can handle it properly.</p><h3 id="the-default-behavior-of-sort">The Default Behavior of <code>sort()</code></h3><p>When you call the <code>sort()</code> method on an array, JavaScript automatically converts each element into a string and compares them based on lexicographical (alphabetical) order. This means it <strong>compares characters</strong>, not numerical values.</p><p>Consider the following array:</p><pre><code class="language-javascript">let nums = [3, 1, 10, 20];

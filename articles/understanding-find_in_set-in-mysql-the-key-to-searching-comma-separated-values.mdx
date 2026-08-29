@@ -2,6 +2,7 @@
 title: "Understanding FIND_IN_SET in MySQL: The Key to Searching Comma-Separated Values"
 date: "2024-12-06T02:13:25.000Z"
 description: "When working with relational databases, data normalization is often recommended. However, there are scenarios where a single column may hold comma-separated val..."
+tags: ["javascript","php","html","database","performance"]
 ---
 
 <p>When working with relational databases, data normalization is often recommended. However, there are scenarios where a single column may hold <strong>comma-separated values</strong> (CSV), typically for legacy systems or specific use cases. MySQL's <code>FIND_IN_SET</code> function is a lifesaver for handling such data. This article explores the <strong>usage, examples, and considerations</strong> for <code>FIND_IN_SET</code>, ensuring you can use it effectively.</p><h2 id="what-is-findinset"><strong>What Is <code>FIND_IN_SET</code>?</strong></h2><p><code>FIND_IN_SET</code> is a <strong>built-in MySQL function</strong> that searches for a specific string within a comma-separated list of strings. If the string is found, it returns its <strong>1-based position</strong> in the list. If not found, it returns <code>0</code>.</p><p>This function is particularly useful when filtering or sorting data stored in comma-separated fields, such as tags, categories, or options.</p><h2 id="syntax"><strong>Syntax</strong></h2><pre><code class="language-sql">FIND_IN_SET(string_to_find, string_list)

@@ -2,6 +2,7 @@
 title: "Why I Don’t Use TypeScript Enums (And You Might Not Want To Either)"
 date: "2025-05-13T20:19:24.000Z"
 description: "Over the years of working with TypeScript, I've found myself avoiding one particular feature—not because it's broken or doesn't work, but because it just feels ..."
+tags: ["javascript","typescript","debugging","productivity","logging"]
 ---
 
 <p>Over the years of working with TypeScript, I've found myself avoiding one particular feature—not because it's broken or doesn't work, but because it just <em>feels wrong</em> in modern, maintainable JavaScript codebases. That feature is <strong><code>enum</code></strong>.</p><p>Now don’t get me wrong: TypeScript enums <em>do</em> work. But if you're aiming for clean, predictable, and portable code, here’s why <strong>I think enums are better left out of most projects</strong>—and what I use instead.</p><hr><h2 id="%F0%9F%A7%A0-1-wysiwyg-what-you-see-is-what-you-get">🧠 1. <strong>WYSIWYG: What You See Is What You Get</strong></h2><p>When I write TypeScript, I want it to feel like a typed version of JavaScript—not some black box that hides complex output. And here’s the problem:</p><pre><code class="language-ts">enum Direction {

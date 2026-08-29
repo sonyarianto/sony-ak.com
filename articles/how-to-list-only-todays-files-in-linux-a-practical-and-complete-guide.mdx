@@ -2,6 +2,7 @@
 title: "How to List Only Today’s Files in Linux: A Practical and Complete Guide"
 date: "2025-11-15T03:33:58.000Z"
 description: "Managing files efficiently is part of every developer’s daily routine. One common need is to display only the files modified today . While the ls command is oft..."
+tags: ["ci-cd","linux","performance","deployment","productivity"]
 ---
 
 <p>Managing files efficiently is part of every developer’s daily routine. One common need is to display <strong>only the files modified today</strong>. While the <code>ls</code> command is often the first tool people think of, it is important to understand its limitations and the proper alternatives available in Linux.</p><p>This article walks you through the <strong>correct methods</strong>, highlights <strong>important considerations</strong>, and explains <strong>common pitfalls</strong> so you can reliably filter files by date like a pro.</p><hr><h2 id="why-ls-alone-cannot-filter-today%E2%80%99s-files"><strong>Why <code>ls</code> Alone Cannot Filter Today’s Files</strong></h2><p>It is a common misconception that <code>ls</code> can filter files based on dates. Although <code>ls</code> can display timestamps, it <strong>cannot perform date-based filtering</strong> by itself. Any attempt to “filter” using <code>ls</code> relies on using <code>grep</code> on the date string, which can work but is not fully reliable.</p><p>Example (works but not robust):</p><pre><code class="language-bash">ls -lt --time-style=+%F | grep "$(date +%F)"

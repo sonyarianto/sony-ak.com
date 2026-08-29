@@ -2,6 +2,7 @@
 title: "Speed Up Your Laravel Queries with whereIntegerInRaw()"
 date: "2025-06-27T07:18:41.000Z"
 description: "If you've been using Laravel for a while, you're likely familiar with the whereIn() method for filtering records by a list of values. It's clean, expressive, an..."
+tags: ["laravel","database","api","testing","security"]
 ---
 
 <p>If you've been using Laravel for a while, you're likely familiar with the <code>whereIn()</code> method for filtering records by a list of values. It's clean, expressive, and gets the job done. But did you know that when working with <strong>large arrays of integers</strong>, there's a significantly faster alternative?</p><p>In this article, we’ll uncover the <strong>performance benefits</strong> of using <code>whereIntegerInRaw()</code> over <code>whereIn()</code>, why it works, and when it's appropriate to make the switch. We’ll also explore other related tips and caveats you should be aware of.</p><hr><h2 id="%F0%9F%A7%A0-the-common-pattern-wherein">🧠 The Common Pattern: <code>whereIn()</code></h2><p>Here’s what most of us typically write:</p><pre><code class="language-php">Product::whereIn('id', range(1, 500))-&gt;get();

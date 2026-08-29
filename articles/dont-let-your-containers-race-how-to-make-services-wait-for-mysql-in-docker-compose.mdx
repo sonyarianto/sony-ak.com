@@ -2,6 +2,7 @@
 title: "Don’t Let Your Containers Race: How to Make Services Wait for MySQL in Docker Compose"
 date: "2025-04-15T20:38:21.000Z"
 description: "In the world of Docker Compose , defining service dependencies is easy — just list them under depends_on . But if you’ve ever run a PHP app , Directus , or Ghos..."
+tags: ["php","database","docker","kubernetes","testing"]
 ---
 
 <p>In the world of <strong>Docker Compose</strong>, defining service dependencies is easy — just list them under <code>depends_on</code>. But if you’ve ever run a <strong>PHP app</strong>, <strong>Directus</strong>, or <strong>Ghost CMS</strong> that talks to <strong>MySQL</strong>, you might have hit this problem:</p><blockquote>“My app container started fine... but immediately crashed with a MySQL connection error.”</blockquote><p>Why? Because <strong><code>depends_on</code> only waits for the container to <em>start</em>, not to be <em>ready</em></strong>.</p><p>Let’s break this down — and solve it properly.</p><hr><h2 id="%F0%9F%A7%A0-why-dependson-isn%E2%80%99t-enough">🧠 Why <code>depends_on</code> Isn’t Enough</h2><p>Here’s what a lot of people do:</p><pre><code class="language-yaml">services:

@@ -2,6 +2,7 @@
 title: "Why You Should Let TypeScript Infer Types from Your Schema"
 date: "2025-04-01T04:30:15.000Z"
 description: "When working with TypeScript , you might have seen advice like \"let the types be inferred instead of manually defining them.\" If you are wondering what this mea..."
+tags: ["typescript","api","database-design","clean-code"]
 ---
 
 <p>When working with <strong>TypeScript</strong>, you might have seen advice like <em>"let the types be inferred instead of manually defining them."</em> If you are wondering what this means and why many developers recommend it, this article will help you understand the concept, benefits, and some practical considerations you might be overlooking.</p><hr><h2 id="what-is-type-inference">What is Type Inference?</h2><p>In simple terms, <strong>inference</strong> means <strong>TypeScript will automatically figure out the type of a value without you telling it explicitly</strong>. TypeScript looks at your code, understands what structure a value has, and assigns an appropriate type to it.</p><p>For example:</p><pre><code class="language-ts">const username = "John"; // inferred as string

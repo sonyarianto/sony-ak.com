@@ -2,6 +2,7 @@
 title: "How to Properly Use Next.js <Link> with target=\"_blank\""
 date: "2025-03-30T03:00:12.000Z"
 description: "Next.js provides the &lt;Link&gt; component for client-side navigation , improving performance by enabling prefetching and reducing full-page reloads. However, ..."
+tags: ["javascript","nextjs","html","security","performance"]
 ---
 
 <p>Next.js provides the <code>&lt;Link&gt;</code> component for <strong>client-side navigation</strong>, improving performance by enabling <strong>prefetching</strong> and reducing full-page reloads. However, when linking to an <strong>external website</strong> and wanting to open it in a <strong>new tab</strong>, there are a few important considerations to keep in mind.</p><h2 id="basic-usage-of-link-with-targetblank"><strong>Basic Usage of <code>&lt;Link&gt;</code> with <code>target="_blank"</code></strong></h2><p>By default, <code>&lt;Link&gt;</code> in Next.js does not include <code>target="_blank"</code>, so if you want your link to open in a new tab, you need to add it manually:</p><pre><code class="language-tsx">import Link from "next/link";

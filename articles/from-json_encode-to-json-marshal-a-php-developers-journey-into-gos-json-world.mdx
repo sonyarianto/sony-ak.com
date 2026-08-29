@@ -2,6 +2,7 @@
 title: "From json_encode to json.Marshal: A PHP Developer’s Journey into Go’s JSON World"
 date: "2025-04-13T07:15:26.000Z"
 description: "As a PHP developer , working with JSON feels like second nature. You build arrays or objects, run json_encode() , and send it off. Done. Need to decode JSON? js..."
+tags: ["javascript","php","go","api","performance"]
 ---
 
 <p>As a <strong>PHP developer</strong>, working with JSON feels like second nature. You build arrays or objects, run <code>json_encode()</code>, and send it off. Done. Need to decode JSON? <code>json_decode()</code> and you're ready to manipulate data however you like. <strong>Dynamic, fast, and no fuss.</strong></p><p>But then comes <strong>Go</strong>, with its strong typing, structure-first approach, and something called "marshalling". Suddenly, JSON isn't as plug-and-play anymore.</p><p>Let me walk you through what I learned — and what I wish I knew earlier — when transitioning from PHP’s JSON handling to Go’s.</p><hr><h2 id="1-php-json-the-free-spirited-way"><strong>1. PHP: JSON the Free-Spirited Way</strong></h2><p>In PHP, you can build JSON from scratch without a care for types or structure:</p><pre><code class="language-php">$data = [

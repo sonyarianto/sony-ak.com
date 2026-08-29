@@ -2,6 +2,7 @@
 title: "Demystifying React.lazy() — Smarter Code Splitting for Faster Apps"
 date: "2025-05-09T06:27:37.000Z"
 description: "When building modern web apps with React, one of the biggest performance killers is loading too much JavaScript upfront. That’s where React.lazy() comes in. It’..."
+tags: ["javascript","react","nextjs","performance","design"]
 ---
 
 <p>When building modern web apps with React, one of the biggest performance killers is loading too much JavaScript upfront. That’s where <strong><code>React.lazy()</code></strong> comes in. It’s a powerful feature for <strong>code splitting</strong>, helping you load components only when they're actually needed.</p><hr><h3 id="what-is-reactlazy"><strong>What Is <code>React.lazy()</code>?</strong></h3><p>At its core, <code>React.lazy()</code> lets you <strong>dynamically import components</strong> — meaning a component’s code isn’t included in the main bundle, but instead loaded <strong>on demand</strong>. This is a <strong>lazy-loading</strong> strategy that reduces your initial load time and makes your app feel much faster.</p><pre><code class="language-js">const LazyComponent = React.lazy(() =&gt; import('./SomeComponent'));

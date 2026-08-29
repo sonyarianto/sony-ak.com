@@ -2,6 +2,7 @@
 title: "PHP's \"Strict\" Types That Aren’t So Strict: The Curious Case of Int-to-Float Coercion"
 date: "2025-05-28T22:51:12.000Z"
 description: "When PHP 7 introduced strict types , many developers breathed a sigh of relief. Finally, a way to enforce strict type checking in function arguments and return ..."
+tags: ["typescript","php","rust","performance","deployment"]
 ---
 
 <p>When PHP 7 introduced <strong>strict types</strong>, many developers breathed a sigh of relief. Finally, a way to enforce strict type checking in function arguments and return types! But if you’ve ever played around with <code>strict_types=1</code>, you may have noticed something <strong>peculiar</strong>: passing an <strong>integer</strong> to a function expecting a <strong>float</strong> doesn’t throw an error. Instead, it just works.</p><p>Let’s unpack this.</p><hr><h3 id="what-is-stricttypes1"><strong>What is <code>strict_types=1</code>?</strong></h3><p>When you write:</p><pre><code class="language-php">declare(strict_types=1);

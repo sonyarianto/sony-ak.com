@@ -2,6 +2,7 @@
 title: "Using Virtual Columns in Laravel Queries and Filtering with HAVING"
 date: "2025-03-10T21:11:33.000Z"
 description: "When working with Laravel’s Eloquent ORM, you may sometimes need to add virtual columns to your query results—columns that don’t exist in your database table bu..."
+tags: ["laravel","database","testing","security","performance"]
 ---
 
 <p>When working with Laravel’s Eloquent ORM, you may sometimes need to add <strong>virtual columns</strong> to your query results—columns that don’t exist in your database table but are generated dynamically. A common use case is adding a constant value, a computed field, or even an aggregated result.</p><p>One of the most effective ways to achieve this is by using <strong><code>DB::raw()</code></strong> with either <strong><code>selectRaw()</code></strong> or <strong><code>addSelect()</code></strong>. But there’s one crucial aspect many developers overlook: <strong>you cannot filter virtual columns using <code>WHERE</code>—you must use <code>HAVING</code> instead</strong>. Let’s explore why.</p><hr><h2 id="adding-a-virtual-column-in-laravel-queries"><strong>Adding a Virtual Column in Laravel Queries</strong></h2><p>Here’s how you can add a virtual column in Eloquent:</p><h3 id="using-addselect-recommended-for-extending-an-existing-selection"><strong>Using <code>addSelect()</code></strong> (Recommended for extending an existing selection)</h3><pre><code class="language-php">$query = UserModel::query()

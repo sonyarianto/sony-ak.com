@@ -2,6 +2,7 @@
 title: "Rust Variables and Mutability: Mastering the Basics with let and mut"
 date: "2024-11-03T19:25:57.000Z"
 description: "Rust is known for its safety-first approach , and one of the first things that sets it apart from other programming languages is its immutability by default . I..."
+tags: ["rust"]
 ---
 
 <p>Rust is known for its <strong>safety-first approach</strong>, and one of the first things that sets it apart from other programming languages is its <strong>immutability by default</strong>. In Rust, <strong>variables are immutable unless explicitly declared otherwise</strong>, which helps prevent many common errors, especially in multi-threaded environments. Let’s dive into the details of Rust's variable system, exploring the <code>let</code> and <code>mut</code> keywords, immutability, and some other essential concepts that will lay a solid foundation for Rust programming.</p><h3 id="1-immutability-by-default">1. <strong>Immutability by Default</strong></h3><p>In Rust, <strong>variables are immutable by default</strong>, meaning once you assign a value to a variable, you cannot change it. This default behavior is one of Rust’s core safety features. Here’s a simple example to illustrate this:</p><pre><code class="language-rust">fn main() {

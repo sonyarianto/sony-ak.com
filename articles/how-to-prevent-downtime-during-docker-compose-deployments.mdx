@@ -2,6 +2,7 @@
 title: "How to Prevent Downtime During Docker Compose Deployments"
 date: "2025-07-25T21:32:55.000Z"
 description: "Deploying updates to containerized applications using Docker Compose is a common practice in modern software delivery pipelines. However, a simple mistake in th..."
+tags: ["docker","web-server","kubernetes","testing","deployment"]
 ---
 
 <p>Deploying updates to containerized applications using Docker Compose is a common practice in modern software delivery pipelines. However, a simple mistake in the deployment script can cause <strong>unwanted downtime</strong>, interrupting services for end users. This article explores how to structure your Docker Compose deployment process to <strong>avoid downtime</strong>, with a detailed walkthrough, tips, and best practices.</p><hr><h2 id="%F0%9F%9B%91-the-problem-with-docker-compose-down">🛑 The Problem with <code>docker compose down</code></h2><p>A commonly used deployment command looks like this:</p><pre><code class="language-bash">docker compose build --progress=plain &amp;&amp; \

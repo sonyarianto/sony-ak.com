@@ -2,6 +2,7 @@
 title: "Leveraging match and enum in Modern PHP: A Beginner's Guide"
 date: "2024-10-19T00:26:52.000Z"
 description: "PHP has evolved significantly over the years, and with the introduction of PHP 8.0 and PHP 8.1 , two powerful features were added to its toolkit: match expressi..."
+tags: ["php","bash","debugging","logging","cli"]
 ---
 
 <p>PHP has evolved significantly over the years, and with the introduction of <strong>PHP 8.0</strong> and <strong>PHP 8.1</strong>, two powerful features were added to its toolkit: <strong><code>match</code> expressions</strong> and <strong><code>enum</code> types</strong>. These additions are aimed at making code more expressive, readable, and maintainable. If you're just getting started with them, let me walk you through how they work individually and how you can combine them to create more structured and readable code.</p><h3 id="the-beauty-of-match-expressions">The Beauty of <code>match</code> Expressions</h3><p>The <code>match</code> expression is an elegant replacement for the older <code>switch</code> statement. It allows for more concise and strict comparisons. Unlike <code>switch</code>, <strong><code>match</code> does not fall through</strong> to other cases accidentally, and it performs <strong>strict type comparisons</strong>.</p><p>Here's a simple example:</p><pre><code class="language-php">$action = 'delete';

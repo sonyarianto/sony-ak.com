@@ -2,6 +2,7 @@
 title: "Sorting Strings in PHP the Right Way: Why Locale Matters"
 date: "2025-08-26T19:16:07.000Z"
 description: "Sorting text might look trivial at first glance. You take an array of names, run sort() , and you’re done, right? Well, not exactly. When dealing with human nam..."
+tags: ["php","database","performance","frontend","backend"]
 ---
 
 <p>Sorting text might look trivial at first glance. You take an array of names, run <code>sort()</code>, and you’re done, right? Well, not exactly. When dealing with <strong>human names, words with accents, or different alphabets</strong>, plain sorting can lead to <strong>unexpected and incorrect results</strong>.</p><p>Let’s explore why <strong>locale-aware sorting</strong> is crucial in PHP and how the <strong>Intl extension’s Collator class</strong> solves this problem.</p><hr><h2 id="the-problem-with-default-sorting">The Problem with Default Sorting</h2><p>Consider the following PHP array:</p><pre><code class="language-php">$names = ['Ása', 'Zoë', 'Émile', 'Ana'];

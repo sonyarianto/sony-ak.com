@@ -2,6 +2,7 @@
 title: "CSS Gets Smarter: The New if() Function and reading-flow Property in Chrome 137"
 date: "2025-05-28T05:54:46.000Z"
 description: "Today marks a major milestone for CSS developers . With the release of Chrome 137 , the CSS if() function and reading-flow property are now available in product..."
+tags: ["javascript","css","performance","deployment","design"]
 ---
 
 <p>Today marks a <strong>major milestone for CSS developers</strong>. With the release of <strong>Chrome 137</strong>, the <strong>CSS <code>if()</code> function</strong> and <strong><code>reading-flow</code> property</strong> are now available in production. These two features—seemingly simple—hold the potential to <strong>transform the way we write CSS</strong>, making it <strong>smarter, cleaner, and more adaptable</strong>.</p><p>Let’s break them down.</p><hr><h3 id="%F0%9F%94%8D-the-if-function-conditional-logic-in-css">🔍 <strong>The <code>if()</code> Function: Conditional Logic in CSS</strong></h3><p>For years, we’ve relied on <strong>JavaScript or multiple CSS rules</strong> to achieve dynamic styling. Enter the <strong><code>if()</code> function</strong>, a feature that <strong>brings conditional logic directly into CSS</strong>.</p><p>Here’s how it works:</p><pre><code class="language-css">font-size: if(var(--is-large) == 1, 2rem, 1rem);

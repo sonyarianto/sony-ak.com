@@ -2,6 +2,7 @@
 title: "Mastering PostgreSQL 18+ in Docker: A Complete Guide to the New Data Directory Structure"
 date: "2025-11-23T01:31:55.000Z"
 description: "PostgreSQL 18 introduced a fundamental shift in how the official Docker image manages data directories. This change caught many developers off guard, especially..."
+tags: ["database","bash","docker","linux","testing"]
 ---
 
 <p>PostgreSQL 18 introduced a fundamental shift in how the official Docker image manages data directories. This change caught many developers off guard, especially those accustomed to the long-standing <code>/var/lib/postgresql/data</code> mount point. If you upgraded to PostgreSQL 18+ and suddenly saw warnings about “old-style data directories,” you're not alone.</p><p>This article walks you through <strong>what changed</strong>, <strong>why it changed</strong>, <strong>how to fix your Docker configuration</strong>, and <strong>what to consider for future PostgreSQL upgrades</strong>. The goal is to provide a comprehensive, human-written explanation with practical guidance and lessons learned.</p><hr><h2 id="%E2%9A%A1-1-understanding-the-shift-in-postgresql-18">⚡ <strong>1. Understanding the Shift in PostgreSQL 18+</strong></h2><p>Starting from version 18, the official Docker image now stores data under:</p><pre><code>/var/lib/postgresql/&lt;major-version&gt;/main

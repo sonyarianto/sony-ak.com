@@ -2,6 +2,7 @@
 title: "Why Go's Method Receivers Make Code Clearer and More Predictable"
 date: "2025-04-13T07:01:17.000Z"
 description: "One of the most elegant design choices in Go is how it handles methods. If you've ever worked with object-oriented languages like Java or PHP, you might be used..."
+tags: ["php","design","clean-code"]
 ---
 
 <p>One of the most <strong>elegant design choices</strong> in Go is how it handles methods. If you've ever worked with object-oriented languages like Java or PHP, you might be used to methods living inside a class. In Go, there's <strong>no <code>class</code> keyword</strong>, but you can still attach methods to types using <strong>receivers</strong> — and honestly, it's refreshing.</p><p>Let’s break down what that means and why many Go developers (myself included) find it <strong>simple, clean, and powerful</strong>.</p><hr><h2 id="%F0%9F%94%B9-what-is-a-receiver-in-go">🔹 <strong>What is a Receiver in Go?</strong></h2><p>In Go, you can define a function that <strong>belongs to a type</strong> using a <strong>receiver</strong>. This receiver appears between the <code>func</code> keyword and the function name.</p><p>Here’s a simple example:</p><pre><code class="language-go">type User struct {

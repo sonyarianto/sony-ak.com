@@ -2,6 +2,7 @@
 title: "Unlocking Native SQLite Access in Bun Using ES Module Imports"
 date: "2025-07-05T00:28:33.000Z"
 description: "In recent updates, Bun has been gaining traction for its speed, simplicity, and first-class TypeScript support. But one feature that often flies under the radar..."
+tags: ["javascript","typescript","database","performance","deployment"]
 ---
 
 <p>In recent updates, <strong>Bun</strong> has been gaining traction for its speed, simplicity, and first-class TypeScript support. But one feature that often flies under the radar—and frankly feels like magic—is Bun’s ability to <strong>import SQLite databases as native modules</strong> using the <strong>ES module import attribute</strong>.</p><p>This is not just syntactic sugar. It removes layers of boilerplate, simplifies local development, and encourages rapid prototyping for projects that need lightweight persistence without spinning up a full database server.</p><hr><h2 id="a-fresh-way-to-load-sqlite-in-bun"><strong>A Fresh Way to Load SQLite in Bun</strong></h2><p>Traditionally, accessing SQLite in Node.js requires setting up a client library like <code>better-sqlite3</code> or <code>sqlite3</code>, initializing a connection, and managing file paths. But with Bun, it’s this simple:</p><pre><code class="language-js">import db from "./mydb.sqlite" with { type: "sqlite" };

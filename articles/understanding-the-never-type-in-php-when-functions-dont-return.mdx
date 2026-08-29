@@ -2,6 +2,7 @@
 title: "Understanding the never Type in PHP: When Functions Don’t Return"
 date: "2025-06-20T03:07:49.000Z"
 description: "PHP has evolved significantly over the years, adding more robust type systems and better tooling for developers. One of the lesser-known but very powerful addit..."
+tags: ["php","api","debugging","productivity","cli"]
 ---
 
 <p>PHP has evolved significantly over the years, adding more robust type systems and better tooling for developers. One of the lesser-known but very <strong>powerful additions in PHP 8.1</strong> is the <code>never</code> type. If you’ve never encountered it before, don’t worry — it’s not commonly used, but when it is, it can make your code safer, clearer, and more predictable.</p><p>Let’s dive into what the <code>never</code> type is, why it exists, and when you might want to use it.</p><hr><h2 id="%F0%9F%93%8C-what-is-the-never-type">📌 What Is the <code>never</code> Type?</h2><p>The <code>never</code> type is a <strong>return type</strong> introduced in PHP 8.1 that explicitly tells the compiler and the developer:</p><blockquote>“This function will <strong>never return control</strong> back to the caller.”</blockquote><p>In other words, once this function is called, the script's flow <strong>will stop</strong> — either because the function <strong>throws an exception</strong>, <strong>calls <code>exit()</code></strong>, or maybe even <strong>runs an infinite loop</strong> (although that’s a more theoretical use case).</p><pre><code class="language-php">function terminateApp(): never {

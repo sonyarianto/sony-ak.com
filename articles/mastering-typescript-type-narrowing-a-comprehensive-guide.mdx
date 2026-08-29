@@ -2,6 +2,7 @@
 title: "Mastering TypeScript Type Narrowing: A Comprehensive Guide"
 date: "2025-01-01T20:42:56.000Z"
 description: "Type narrowing is one of the most powerful features of TypeScript. It allows you to write precise and safe code by ensuring that variables and properties confor..."
+tags: ["typescript","performance","clean-code"]
 ---
 
 <p>Type narrowing is one of the most powerful features of TypeScript. It allows you to write precise and safe code by ensuring that variables and properties conform to specific types at runtime. With TypeScript’s robust type system, there are numerous ways to narrow types. In this guide, we’ll explore these methods, highlight <strong>important scenarios</strong> where each excels, and uncover additional considerations for writing clean and effective TypeScript.</p><h2 id="1-typeof-type-guards">1. <strong><code>typeof</code> Type Guards</strong></h2><p>This is one of the simplest ways to narrow primitive types. By checking the type using <code>typeof</code>, you can limit a value to a subset of acceptable types.</p><p><strong>Example:</strong></p><pre><code class="language-typescript">if (typeof value === "string") {

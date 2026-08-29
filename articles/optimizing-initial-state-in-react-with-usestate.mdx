@@ -2,6 +2,7 @@
 title: "Optimizing Initial State in React with useState"
 date: "2024-10-03T06:30:24.000Z"
 description: "Saw this on X. Just saw this performance mistake in a React code review. Problem: If you invoke a function in useState's default, it's called on every render. (..."
+tags: ["javascript","react","api","performance","code-review"]
 ---
 
 <p>Saw this on X.</p><figure class="kg-card kg-embed-card"><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Just saw this performance mistake in a React code review.<br><br>Problem: If you invoke a function in useState's default, it's called on every render. (Not React's fault - that's how JS works).<br><br>Solution: Specify a function reference instead. Then React only invokes the function once. <a href="https://t.co/linDagwIRA">pic.twitter.com/linDagwIRA</a></p>— Cory House (@housecor) <a href="https://twitter.com/housecor/status/1841824760327532780?ref_src=twsrc%5Etfw">October 3, 2024</a></blockquote>

@@ -2,6 +2,7 @@
 title: "Understanding ENUMs in PostgreSQL — The Right Way to Define and Use Them"
 date: "2025-11-08T06:57:39.000Z"
 description: "When working with relational databases, data integrity and consistency are key principles that guide good schema design. One of the most common examples of this..."
+tags: ["database","performance","git","design","database-design"]
 ---
 
 <p>When working with relational databases, <strong>data integrity and consistency</strong> are key principles that guide good schema design. One of the most common examples of this is when we want to <strong>restrict a column’s possible values</strong> — for instance, a user’s status can only be <em>active</em>, <em>inactive</em>, or <em>banned</em>.</p><p>In <strong>MySQL</strong>, this is easy: you can simply declare an <code>ENUM</code> right inside the <code>CREATE TABLE</code> statement. However, <strong>PostgreSQL works differently</strong>. It enforces a more structured and reusable approach that might feel a bit verbose at first, but it comes with strong design benefits once you understand the reasoning behind it.</p><hr><h3 id="%F0%9F%A7%A9-the-difference-between-mysql-and-postgresql-enums">🧩 The Difference Between MySQL and PostgreSQL ENUMs</h3><p>In <strong>MySQL</strong>, you might write something like this:</p><pre><code class="language-sql">CREATE TABLE users (

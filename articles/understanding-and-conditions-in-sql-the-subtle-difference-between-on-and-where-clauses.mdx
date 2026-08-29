@@ -2,6 +2,7 @@
 title: "Understanding AND Conditions in SQL: The Subtle Difference Between ON and WHERE Clauses"
 date: "2024-11-02T02:13:26.000Z"
 description: "Ever found yourself staring at a SQL query, wondering whether to put that AND condition in the ON clause or the WHERE clause? You're not alone! Let's dive into ..."
+tags: ["database","security","performance"]
 ---
 
 <p>Ever found yourself staring at a SQL query, wondering whether to put that AND condition in the ON clause or the WHERE clause? You're not alone! Let's dive into this often-confusing aspect of SQL that can make a huge difference in your query results.</p><h2 id="the-key-difference-that-changes-everything">The Key Difference That Changes Everything</h2><p>Think of it this way: putting conditions with <strong>AND</strong> in different places is like having two different security checkpoints at an airport:</p><ul><li><strong>AND in ON clause</strong> = Security check at the gate (before boarding)</li><li><strong>AND in WHERE clause</strong> = Security check at the destination (after landing)</li></ul><h2 id="lets-break-it-down-with-real-examples">Let's Break It Down with Real Examples</h2><h3 id="scenario-1-customer-orders-database">Scenario 1: Customer Orders Database</h3><pre><code class="language-sql">-- Using AND in ON clause

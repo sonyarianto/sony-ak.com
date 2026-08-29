@@ -2,6 +2,7 @@
 title: "PHP Variable Variables: Useful Hack or Readability Trap?"
 date: "2025-07-05T05:17:41.000Z"
 description: "In the vast world of PHP quirks, there’s one feature that continues to spark debate among seasoned developers and newcomers alike— variable variables , aka the ..."
+tags: ["php","laravel","bash","deployment","debugging"]
 ---
 
 <p>In the vast world of PHP quirks, there’s one feature that continues to spark debate among seasoned developers and newcomers alike—<strong>variable variables</strong>, aka the double dollar sign: <code>$$</code>. It’s one of those features that feels clever at first, but quickly makes you question your choices during code review.</p><p>Let’s break it down like a fellow developer would over coffee.</p><hr><h3 id="%F0%9F%94%8D-what-are-variable-variables">🔍 What Are Variable Variables?</h3><p>A <strong>variable variable</strong> allows you to use the <em>value of one variable as the name of another variable</em>. Here's a simple example:</p><pre><code class="language-php">$name = "foo";

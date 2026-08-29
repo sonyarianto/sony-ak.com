@@ -2,6 +2,7 @@
 title: "How to Slugify a String in JavaScript"
 date: "2024-09-17T20:40:00.000Z"
 description: "Imagine you have a string like this \"Mind Body Spirit (2023)\" and you want to make it a slug like this \"mind-body-spirit-2023\". Mind Body Spirit is the title of..."
+tags: ["javascript","security","seo","http","logging"]
 ---
 
 <p>Imagine you have a string like this "Mind Body Spirit (2023)" and you want to make it a slug like this "mind-body-spirit-2023".</p><p>Mind Body Spirit is the title of a film released in 2023.</p><p>You might ask what's the point? This is usually used if you want to create a slug that will later become part of the URL.</p><p>For example, there is a film site that will display details of the film. So usually the site will create a URL like https://example.com/detail/1 or https://example.com/detail?id=1</p><p>Slugs can be used for this as a substitute for ID and usually these slugs are also unique. If the site uses a slug it will look like this https://example.com/detail/mind-body-sprit-2023. It's nicer to look at and is usually SEO friendly too.</p><p>Slug can also be used to name a file, so the final result will be easier to read, for example mind-body-spirit-2023.txt.</p><p>OK, enough opening remarks. Now how to create a slug from a string with JavaScript? Usually this is called slugify.</p><p>This is the code.</p><pre><code class="language-javascript">const str = "Mind Body Spirit (2023)"

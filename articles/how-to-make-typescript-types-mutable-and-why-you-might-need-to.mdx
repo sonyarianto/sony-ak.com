@@ -2,6 +2,7 @@
 title: "How to Make TypeScript Types Mutable (and Why You Might Need To)"
 date: "2025-04-09T04:16:20.000Z"
 description: "In TypeScript, immutability is a great feature that protects your data structures from unwanted changes. By using readonly properties, you can ensure that once ..."
+tags: ["typescript","testing","performance","design","career"]
 ---
 
 <p>In TypeScript, <strong>immutability</strong> is a great feature that protects your data structures from unwanted changes. By using <code>readonly</code> properties, you can ensure that once an object is created, its shape or values can’t be modified accidentally. But sometimes, you do need to mutate the data — especially in scenarios like form editing, cloning objects, or local modifications before pushing changes to a database.</p><p>Let’s talk about how to convert <strong>readonly</strong> properties into <strong>mutable</strong> ones using a clean, reusable pattern in TypeScript.</p><hr><h2 id="%F0%9F%A7%B1-the-problem-readonly-types">🧱 The Problem: Readonly Types</h2><p>Say you have this type:</p><pre><code class="language-ts">type Example = {

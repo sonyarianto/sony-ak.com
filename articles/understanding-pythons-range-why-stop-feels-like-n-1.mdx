@@ -2,6 +2,7 @@
 title: "Understanding Python’s range(): Why Stop Feels Like n+1"
 date: "2025-09-14T02:38:21.000Z"
 description: "When learning Python loops, one of the most common questions beginners ask is: “ Why do I need to put 7 in range(1, 7) just to print numbers from 1 to 6? ” The ..."
+tags: ["python","design"]
 ---
 
 <p>When learning Python loops, one of the most common questions beginners ask is:<br>“<strong>Why do I need to put 7 in <code>range(1, 7)</code> just to print numbers from 1 to 6?</strong>”</p><p>The answer lies in how <strong>Python’s <code>range()</code> function</strong> is designed. Let’s break it down thoroughly, so you can not only use it but also remember the reasoning behind it.</p><hr><h2 id="the-basics-of-range">The Basics of <code>range()</code></h2><p>The <code>range()</code> function generates a sequence of numbers. Its full signature is:</p><pre><code class="language-python">range(start, stop, step)

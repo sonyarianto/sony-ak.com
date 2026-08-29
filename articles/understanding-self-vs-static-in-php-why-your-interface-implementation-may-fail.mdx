@@ -2,6 +2,7 @@
 title: "Understanding self vs static in PHP: Why Your Interface Implementation May Fail"
 date: "2025-05-03T04:23:31.000Z"
 description: "When working with interfaces and return types in modern PHP (especially PHP 8.0 and PHP 8.1+), you might run into a confusing but very real error: Fatal error: ..."
+tags: ["php"]
 ---
 
 <p>When working with <strong>interfaces and return types</strong> in modern PHP (especially PHP 8.0 and PHP 8.1+), you might run into a confusing but very real error:</p><blockquote><code>Fatal error: Declaration of B::new(): B must be compatible with A::new(): static</code></blockquote><p>This error trips up many developers because it seems like you're doing everything right. After all, <code>self</code> and <code>static</code> often <em>feel</em> interchangeable. But <strong>PHP's type system sees them very differently</strong>—especially in the context of interfaces and inheritance.</p><hr><h3 id="the-root-of-the-problem">The Root of the Problem</h3><p>Let's start with an example:</p><pre><code class="language-php">interface A

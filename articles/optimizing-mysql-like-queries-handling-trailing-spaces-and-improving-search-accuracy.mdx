@@ -2,6 +2,7 @@
 title: "Optimizing MySQL LIKE Queries: Handling Trailing Spaces and Improving Search Accuracy"
 date: "2025-02-11T18:23:56.000Z"
 description: "When implementing search functionality in a Laravel application using Eloquent, it's common to allow users to search for names, emails, or other fields using th..."
+tags: ["laravel","database","performance","email"]
 ---
 
 <p>When implementing <strong>search functionality</strong> in a Laravel application using Eloquent, it's common to allow users to search for names, emails, or other fields using the <code>LIKE</code> operator in MySQL. However, <strong>trailing spaces</strong> in the search input can cause unexpected mismatches, leading to a poor user experience.</p><h3 id="understanding-the-issue"><strong>Understanding the Issue</strong></h3><p>Consider the following search logic:</p><pre><code class="language-php">if (!empty($data['search'])) {

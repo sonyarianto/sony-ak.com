@@ -2,6 +2,7 @@
 title: "Smarter Return Types in TypeScript: A Developer’s Guide"
 date: "2025-04-09T18:38:45.000Z"
 description: "As our TypeScript codebases grow, clarity and consistency become more important than clever tricks. One underrated but impactful practice is how we define retur..."
+tags: ["typescript","react","logging","clean-code"]
 ---
 
 <p>As our TypeScript codebases grow, <strong>clarity and consistency</strong> become more important than clever tricks. One underrated but impactful practice is how we <strong>define return types</strong>—or more accurately, when we should and when we shouldn't.</p><p>This article walks through my current recommendation (yes, it's changed a few times), and highlights some useful considerations that you might have overlooked.</p><hr><h2 id="%F0%9F%8E%AF-always-explicit-for-top-level-functions">🎯 Always Explicit for Top-Level Functions</h2><p>When you're writing a <strong>top-level function</strong>—especially one that’s exported or reused across multiple files—<strong>always declare the return type</strong>. This isn’t just for TypeScript. It’s for:</p><ul><li><strong>Human readers</strong> who want to understand what your function is supposed to do,</li><li><strong>Static analysis tools</strong> and <strong>AI assistants</strong> that can offer better support,</li><li><strong>Future-you</strong>, when you're trying to figure out why something is returning a weird value.</li></ul><pre><code class="language-ts">// ✅ Good

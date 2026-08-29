@@ -2,6 +2,7 @@
 title: "Why Go Chose Explicit Errors: A Deep Dive into Simplicity, Clarity, and Control"
 date: "2025-06-04T18:24:33.000Z"
 description: "One of the most debated—and arguably most misunderstood—aspects of Go (Golang) is its approach to error handling . Unlike many modern programming languages that..."
+tags: ["go","python","debugging","open-source","logging"]
 ---
 
 <p>One of the most debated—and arguably most misunderstood—aspects of <strong>Go (Golang)</strong> is its approach to <strong>error handling</strong>. Unlike many modern programming languages that lean on exceptions or implicit global error states, <strong>Go makes a deliberate choice</strong>: every error must be handled <strong>explicitly</strong>. This decision is not accidental; it’s a core part of Go's identity. But why was this choice made, and how does it compare to traditional error handling mechanisms in other languages like C, Java, or Python?</p><p>Let’s unpack it.</p><hr><h2 id="go%E2%80%99s-philosophy-make-errors-first-class-citizens"><strong>Go’s Philosophy: Make Errors First-Class Citizens</strong></h2><p>In Go, <strong>errors are just values</strong>—typically returned as the last result of a function. Developers are encouraged, even required, to check for errors explicitly right after calling a function.</p><pre><code class="language-go">data, err := os.ReadFile("file.txt")

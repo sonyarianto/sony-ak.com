@@ -2,6 +2,7 @@
 title: "Handling /news vs /news/:id in React Router v7 Without Breaking Nested Routes"
 date: "2025-09-25T20:55:37.000Z"
 description: "When working with React Router v7 , a common scenario arises where you want /news itself to return a 404 , while still keeping nested routes like /news/id/5 ful..."
+tags: ["react","api","testing","performance","seo"]
 ---
 
 <p>When working with <strong>React Router v7</strong>, a common scenario arises where you want <code>/news</code> itself to return a <strong>404</strong>, while still keeping nested routes like <code>/news/id/5</code> fully functional.</p><p>If you’re coming from v6, the good news is that <strong>v7 uses the same nested route structure</strong>, so the approach remains largely the same. Let’s walk through this step by step.</p><hr><h2 id="the-core-problem">The Core Problem</h2><p>If you only define:</p><pre><code class="language-jsx">&lt;Route path="/news/*" element={&lt;NewsRoutes /&gt;} /&gt;

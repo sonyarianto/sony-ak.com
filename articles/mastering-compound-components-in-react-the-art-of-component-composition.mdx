@@ -2,6 +2,7 @@
 title: "Mastering Compound Components in React: The Art of Component Composition"
 date: "2025-05-13T20:39:34.000Z"
 description: "If you’ve spent some time working with React, chances are you’ve come across a syntax like Form.Input or Menu.Item . It may look a little unusual at first, but ..."
+tags: ["javascript","typescript","react","api","testing"]
 ---
 
 <p>If you’ve spent some time working with React, chances are you’ve come across a syntax like <code>Form.Input</code> or <code>Menu.Item</code>. It may look a little unusual at first, but it represents a powerful pattern known as the <strong>Compound Component</strong>. This design pattern enables developers to build <strong>highly flexible and expressive component APIs</strong>, particularly useful for building design systems or UI libraries.</p><p>In this article, we’ll explore what compound components are, why they matter, how to implement them, and a few <strong>gotchas</strong> to keep in mind along the way.</p><hr><h2 id="what-are-compound-components"><strong>What Are Compound Components?</strong></h2><p>In essence, <strong>compound components</strong> are a set of components that work together as a <strong>unified abstraction</strong>, often sharing internal logic or state. Instead of scattering related components everywhere and hoping users will wire them up correctly, you encapsulate the relationship <strong>within a parent component</strong>.</p><p>Think of it like this:</p><pre><code class="language-jsx">&lt;Form&gt;

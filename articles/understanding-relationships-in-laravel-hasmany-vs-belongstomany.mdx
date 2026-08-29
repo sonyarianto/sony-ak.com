@@ -2,6 +2,7 @@
 title: "Understanding Relationships in Laravel: HasMany vs. BelongsToMany"
 date: "2024-11-28T18:09:25.000Z"
 description: "When working with Laravel's Eloquent ORM, relationships are the key to managing how different models in your application interact. Two common relationship types..."
+tags: ["laravel","database-design","clean-code"]
 ---
 
 <p>When working with Laravel's Eloquent ORM, relationships are the key to managing how different models in your application interact. Two common relationship types—<strong><code>HasMany</code></strong> and <strong><code>BelongsToMany</code></strong>—can sometimes cause confusion, especially in scenarios where a pivot table is involved. This article explains these relationships, their differences, and how to implement them correctly in your project.</p><h3 id="hasmany-one-to-many-relationship"><strong><code>HasMany</code>: One-to-Many Relationship</strong></h3><p>The <strong><code>HasMany</code></strong> relationship is used when one model <strong>owns multiple records</strong> in another model. This is a <strong>simple one-to-many relationship</strong>, where the dependent table contains a <strong>foreign key</strong> pointing to the parent model.</p><h4 id="example">Example:</h4><p>A <code>Restaurant</code> might have many <code>Reviews</code>. The <code>reviews</code> table would include a <code>restaurant_id</code> column to link each review to its respective restaurant.</p><pre><code class="language-php">class Restaurant extends Model

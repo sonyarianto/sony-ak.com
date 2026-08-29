@@ -2,6 +2,7 @@
 title: "Understanding Time Zones in PHP: A Beginner’s Guide Using Indonesia as an Example"
 date: "2024-10-06T18:43:06.000Z"
 description: "When developing applications that deal with dates and times, one of the most crucial aspects to consider is time zones . If your application serves users from d..."
+tags: ["php","logging"]
 ---
 
 <p>When developing applications that deal with dates and times, one of the most crucial aspects to consider is <strong>time zones</strong>. If your application serves users from different parts of the world, you need to ensure that you handle dates and times accurately according to their respective time zones. In this article, we'll explore how to retrieve time zone identifiers in PHP, specifically focusing on <strong>Indonesia</strong>.</p><p>Let’s dive into the world of PHP's DateTimeZone class, which provides us with all the tools we need to work with time zones effectively.</p><p>At its core, the <strong>DateTimeZone</strong> class is a built-in feature of PHP that allows you to manage and manipulate time zones. One of the most useful methods provided by this class is <strong>listIdentifiers()</strong>. This method can fetch a list of time zone identifiers based on specific criteria, such as geographic regions or countries.</p><p>To illustrate how this works, let’s focus on Indonesia. If we want to retrieve the time zones applicable to Indonesia, we can use the following line of code:</p><pre><code class="language-php">var_dump(DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, "ID"));

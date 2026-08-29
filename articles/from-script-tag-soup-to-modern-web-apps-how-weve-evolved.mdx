@@ -2,6 +2,7 @@
 title: "From Script Tag Soup to Modern Web Apps: How We’ve Evolved"
 date: "2025-05-24T22:49:43.000Z"
 description: "Back in the day , web development was all about getting something on the screen fast. The simplest way? Render your HTML on the server, slap some &lt;script&gt;..."
+tags: ["javascript","react","svelte","vue","html"]
 ---
 
 <p><strong>Back in the day</strong>, web development was all about getting something on the screen fast. The simplest way? Render your HTML on the server, slap some <strong><code>&lt;script&gt;</code> tags</strong> at the bottom of the page, and let your JavaScript take over from there. This approach was affectionately (or not-so-affectionately) called <strong>“Script Tag Soup”</strong>.</p><p>Let’s walk through <strong>how it worked, why it was messy</strong>, and <strong>why modern web frameworks have made it obsolete</strong>.</p><hr><h2 id="the-old-way-script-tag-soup">The Old Way: Script Tag Soup</h2><p>Imagine you’re building a <strong>product listing page</strong>. You want the products to load from the server, but you also want the user to filter them in the browser with a search box. You’d do something like this:</p><pre><code class="language-html">&lt;!-- Server-rendered HTML --&gt;

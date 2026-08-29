@@ -2,6 +2,7 @@
 title: "Understanding Aggregated Functions in SQL: A Beginner's Journey"
 date: "2024-09-27T23:37:45.000Z"
 description: "When you're new to SQL, one of the trickiest things to master is working with aggregated functions such as COUNT() , SUM() , and AVG() . These functions are ess..."
+tags: ["database"]
 ---
 
 <p>When you're new to SQL, one of the trickiest things to master is working with <strong>aggregated functions</strong> such as <code>COUNT()</code>, <code>SUM()</code>, and <code>AVG()</code>. These functions are essential for summarizing data, but incorrect usage can lead to confusing results.</p><p>In this article, we'll walk through a beginner's experience when trying to count how many stores had a specific movie in stock. Initially, there was confusion regarding the use of <code>COUNT()</code> and the <code>GROUP BY</code> clause, which led to an incorrect query. However, after reflecting on the logic and fixing the query, things became much clearer.</p><h3 id="creating-the-movies-and-inventory-tables">Creating the <code>movies</code> and <code>inventory</code> Tables</h3><p>To provide some context, let’s first define the two tables involved: <code>movies</code> and <code>inventory</code>. These tables store information about movies and the number of copies (inventory) available at different stores.</p><p>Here’s how the tables could be structured:</p><pre><code class="language-sql">-- Creating the `movies` table

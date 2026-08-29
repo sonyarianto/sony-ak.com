@@ -2,6 +2,7 @@
 title: "How to Fix “Permission Denied” When Running Docker Without Sudo"
 date: "2025-10-16T08:15:34.000Z"
 description: "If you’ve ever tried running a simple docker ps command and been greeted with a “permission denied while trying to connect to the Docker daemon socket” error, y..."
+tags: ["bash","docker","ci-cd","linux","api"]
 ---
 
 <p>If you’ve ever tried running a simple <code>docker ps</code> command and been greeted with a <strong>“permission denied while trying to connect to the Docker daemon socket”</strong> error, you’re not alone. This issue is one of the most common frustrations for developers who are new to Docker or managing multi-user environments on Linux.</p><p>Let’s walk through <strong>why this happens</strong>, <strong>how to fix it properly</strong>, and <strong>what security and operational considerations</strong> you should keep in mind.</p><hr><h2 id="%F0%9F%94%8D-understanding-the-root-cause">🔍 Understanding the Root Cause</h2><p>Docker runs as a <strong>daemon (background service)</strong> on Linux systems. This daemon (<code>dockerd</code>) listens on a <strong>Unix socket</strong> located at <code>/var/run/docker.sock</code>.<br>By default, this socket file is <strong>owned by root</strong> and accessible only by users in the <strong>docker group</strong>.</p><p>When you execute:</p><pre><code class="language-bash">docker ps

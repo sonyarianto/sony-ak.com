@@ -2,6 +2,7 @@
 title: "Safely Deleting Records in MySQL Based on a Reference Table"
 date: "2025-09-25T21:08:07.000Z"
 description: "When managing relational databases, one common scenario is the need to delete records from a main table based on a list of values stored in another table . This..."
+tags: ["database","performance","email","database-design"]
 ---
 
 <p>When managing relational databases, one common scenario is the need to <strong>delete records from a main table based on a list of values stored in another table</strong>. This is especially useful when you maintain a temporary table containing records that should no longer exist in the primary dataset.</p><p>For example:</p><ul><li>You have a <strong>main table</strong> of users, products, or transactions.</li><li>You also have a <strong>reference table</strong> that contains identifiers (such as email addresses, IDs, or codes) for records that should be deleted.</li></ul><p>The challenge: <strong>how to remove only those records from the main table that match the reference table.</strong></p><hr><h2 id="sql-syntax-in-mysql">SQL Syntax in MySQL</h2><p>MySQL supports a <strong>JOIN-based DELETE</strong> statement. This allows you to target rows in one table while comparing against another:</p><pre><code class="language-sql">DELETE m

@@ -2,6 +2,7 @@
 title: "SSH Tunnels: The Unsung Hero of Secure Networking"
 date: "2025-01-24T21:18:04.000Z"
 description: "In the world of system administration and network security, SSH tunnels are an age-old trick that continues to shine through, proving that some tools stand the ..."
+tags: ["database","aws","testing","security","productivity"]
 ---
 
 <p>In the world of system administration and network security, <strong>SSH tunnels</strong> are an age-old trick that continues to shine through, proving that some tools stand the test of time. Originally designed to encrypt traffic over insecure networks, SSH tunnels have evolved into a versatile solution for many use cases, from accessing remote databases to securely exposing local services. Let’s explore some common use cases, delve into a few advanced configurations, and highlight important considerations to make the most of this powerful tool.</p><h4 id="expose-a-local-service-to-the-internet"><strong>Expose a Local Service to the Internet</strong></h4><p>Imagine you're running a local web server on your development machine, but you need to share it with a colleague or client. Exposing local services to the internet used to require setting up a public-facing server or opening up ports on your router. Fortunately, <strong>SSH tunneling</strong> makes it incredibly easy to forward your local service to the outside world without the need for complex networking configurations.</p><p><strong>Command</strong>:</p><pre><code class="language-bash">ssh -R 8080:localhost:3000 user@remote-server

@@ -2,6 +2,7 @@
 title: "Understanding import type in TypeScript: The Right Way to Import Types"
 date: "2025-05-21T03:52:58.000Z"
 description: "When writing TypeScript code, it’s common to import types from other files to structure and annotate your code more effectively. However, there's a subtle but p..."
+tags: ["javascript","typescript","ci-cd","performance","debugging"]
 ---
 
 <p>When writing TypeScript code, it’s common to import types from other files to structure and annotate your code more effectively. However, there's a subtle but powerful distinction between a <strong>regular import</strong> and an <strong><code>import type</code></strong> statement that many developers overlook. Mastering this feature can lead to <strong>cleaner, more efficient, and safer TypeScript codebases</strong>—especially when targeting <strong>tree-shaking</strong> and <strong>optimized bundling</strong>.</p><hr><h3 id="what-is-import-type">What is <code>import type</code>?</h3><p>In TypeScript, you can import types using the <code>import type</code> syntax:</p><pre><code class="language-ts">import type { User } from './models'

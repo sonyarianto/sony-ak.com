@@ -2,6 +2,7 @@
 title: "How to Find All Tables with a Specific Column in MySQL (e.g., food_uid)"
 date: "2025-05-06T18:50:56.000Z"
 description: "When working with large or legacy databases, it’s common to forget exactly where a specific column exists — especially if that column (like food_uid ) is used w..."
+tags: ["database","debugging","database-design","clean-code"]
 ---
 
 <p>When working with large or legacy databases, it’s common to forget exactly <strong>where a specific column exists</strong> — especially if that column (like <code>food_uid</code>) is used widely for relationships, tracking, or categorization. Fortunately, <strong>MySQL provides a built-in way to explore your database schema</strong> without needing to open every table manually.</p><p>Here’s how to do it the right way.</p><hr><h3 id="%F0%9F%94%8D-the-reliable-way-query-informationschema">🔍 <strong>The Reliable Way: Query <code>INFORMATION_SCHEMA</code></strong></h3><p>MySQL includes a special database called <code>INFORMATION_SCHEMA</code>. It contains <strong>metadata about your actual databases</strong> — things like table names, column names, data types, and constraints. You can use it to <strong>programmatically find any column in any table</strong>.</p><p>To find all tables containing a column named <code>food_uid</code>, use this query:</p><pre><code class="language-sql">SELECT TABLE_NAME, COLUMN_NAME

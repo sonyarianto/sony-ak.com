@@ -2,6 +2,7 @@
 title: "Handling PostgreSQL ENUM Types: Fixing Errors When Filtering ENUM Values in Queries"
 date: "2024-09-25T20:42:06.000Z"
 description: "In PostgreSQL, ENUM types are a useful feature that allows developers to define a set of allowed values for a column, adding a layer of data integrity to the da..."
+tags: ["database"]
 ---
 
 <p>In PostgreSQL, <code>ENUM</code> types are a useful feature that allows developers to define a set of allowed values for a column, adding a layer of data integrity to the database. This guide will focus on an example where filtering <code>ENUM</code> values without the proper type casting causes an error and how to resolve it.</p><h3 id="understanding-the-setup">Understanding the Setup</h3><p>Let’s start by creating an <code>ENUM</code> type for movie ratings, using the standard Motion Picture Association of America (MPAA) ratings:</p><pre><code class="language-sql">CREATE TYPE mpaa_rating AS ENUM ('G', 'PG', 'PG-13', 'R', 'NC-17');

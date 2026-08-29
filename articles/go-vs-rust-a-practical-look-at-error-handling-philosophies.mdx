@@ -2,6 +2,7 @@
 title: "Go vs Rust – A Practical Look at Error Handling Philosophies"
 date: "2025-06-06T20:13:02.000Z"
 description: "In the world of systems and backend programming, Go and Rust stand out as two modern languages with radically different philosophies. One aims for simplicity an..."
+tags: ["rust","performance","debugging","backend","logging"]
 ---
 
 <p>In the world of systems and backend programming, <strong>Go</strong> and <strong>Rust</strong> stand out as two modern languages with radically different philosophies. One aims for <strong>simplicity and pragmatism</strong>, the other for <strong>safety and precision</strong>. A common battleground where their differences become especially clear is <strong>error handling</strong>. If you’ve ever debated which language “feels” better to work with, a simple division function that avoids divide-by-zero errors can reveal a lot.</p><hr><h3 id="go%E2%80%99s-approach-errors-as-values"><strong>Go’s Approach: Errors as Values</strong></h3><p>Go treats errors like <strong>just another return value</strong>. It doesn’t have exceptions or built-in pattern matching. Instead, error handling is kept <strong>minimal, explicit, and readable</strong>.</p><pre><code class="language-go">func div(x, y float64) (float64, error) {

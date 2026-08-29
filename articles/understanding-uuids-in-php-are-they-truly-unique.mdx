@@ -2,6 +2,7 @@
 title: "Understanding UUIDs in PHP: Are They Truly Unique?"
 date: "2025-02-11T18:30:04.000Z"
 description: "When working with UUIDs (Universally Unique Identifiers) in PHP, one of the most common concerns is whether they are truly unique . Developers use UUIDs for dat..."
+tags: ["php","api","performance","architecture"]
 ---
 
 <p>When working with <strong>UUIDs (Universally Unique Identifiers)</strong> in PHP, one of the most common concerns is <strong>whether they are truly unique</strong>. Developers use UUIDs for database keys, distributed systems, API identifiers, and more. But is UUID generation <strong>really collision-proof</strong>? Let's break it down.</p><hr><h2 id="what-is-a-uuid"><strong>What is a UUID?</strong></h2><p>A UUID is a <strong>128-bit identifier</strong> that is designed to be <strong>unique across time and space</strong>. It is typically represented as a <strong>string of 36 characters</strong>, including hyphens, like this:</p><pre><code>550e8400-e29b-41d4-a716-446655440000

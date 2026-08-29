@@ -2,6 +2,7 @@
 title: "Why Does npm version Create an Automatic Commit and Tag?"
 date: "2025-10-03T07:52:19.000Z"
 description: "If you have ever run the npm version command and suddenly noticed Git creating a commit and a tag without your explicit instruction, you are not alone. Many dev..."
+tags: ["ci-cd","testing","git","deployment","open-source"]
 ---
 
 <p>If you have ever run the <strong><code>npm version</code></strong> command and suddenly noticed Git creating a <strong>commit</strong> and a <strong>tag</strong> without your explicit instruction, you are not alone. Many developers are surprised the first time they encounter this behavior. Let’s dive into what’s happening, why npm does this by default, and what options you have to control it.</p><hr><h2 id="what-npm-version-actually-does">What <code>npm version</code> Actually Does</h2><p>When you run a command such as:</p><pre><code class="language-bash">npm version patch

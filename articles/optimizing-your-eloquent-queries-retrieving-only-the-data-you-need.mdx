@@ -2,6 +2,7 @@
 title: "Optimizing Your Eloquent Queries: Retrieving Only the Data You Need"
 date: "2025-02-01T02:14:25.000Z"
 description: "When working with Laravel's Eloquent ORM, it's common to fetch related records based on a specific condition. However, many developers unknowingly retrieve enti..."
+tags: ["php","laravel","performance"]
 ---
 
 <p>When working with Laravel's Eloquent ORM, it's common to fetch related records based on a specific condition. However, many developers unknowingly retrieve entire model objects when they only need a single field. This not only <strong>wastes memory</strong> but also <strong>slows down queries</strong>, especially when dealing with large datasets.</p><p>A common scenario is fetching a list of company IDs where a given company is the parent. Many developers might write something like this:</p><pre><code class="language-php">$companies = CompanyModel::where('parent_uid', $data['company_uid'])-&gt;get();

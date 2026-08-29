@@ -2,6 +2,7 @@
 title: "Best Practices for Setting Up a Web Domain: example.com with HTTPS and Redirects"
 date: "2024-09-27T22:33:39.000Z"
 description: "Setting up a web domain like example.com requires careful configuration to ensure security, performance, and user accessibility. Below are the best practices fo..."
+tags: ["web-server","security","performance","deployment","seo"]
 ---
 
 <p>Setting up a web domain like <code>example.com</code> requires careful configuration to ensure security, performance, and user accessibility. Below are the best practices for configuring a domain to support HTTPS, enforce redirections, and manage non-www to www (or vice versa) traffic redirection.</p><h4 id="obtain-and-install-ssl-certificates-for-https"><strong>Obtain and Install SSL Certificates for HTTPS</strong></h4><p>Securing your domain with HTTPS is essential to protect data transmission between your server and users. To do this, you need to obtain and install an SSL/TLS certificate.</p><p><strong>Steps:</strong></p><ul><li><strong>Purchase an SSL Certificate</strong>: You can obtain a certificate from trusted Certificate Authorities (CAs) like Let’s Encrypt (free), DigiCert, or Comodo.</li><li><strong>Install the SSL Certificate</strong>: Once obtained, install it on your web server. Configuration varies based on your server software (Nginx, Apache, etc.).</li></ul><p>For <strong>Nginx</strong>:</p><pre><code>server {

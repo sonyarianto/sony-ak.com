@@ -2,6 +2,7 @@
 title: "Go JSON Parsing: encoding/json vs jsontext, and Why You Might Want Both"
 date: "2025-04-13T07:22:37.000Z"
 description: "When working with JSON in Go, most developers naturally reach for the standard library's encoding/json package. It’s convenient, reliable , and has been the def..."
+tags: ["go","api","performance","productivity","json"]
 ---
 
 <p>When working with JSON in Go, most developers naturally reach for the standard library's <code>encoding/json</code> package. It’s <strong>convenient, reliable</strong>, and has been the default for years. But if you’ve ever found yourself needing <strong>more control, better performance for large payloads, or streaming JSON processing</strong>, you might want to look into <code>jsontext</code>.</p><p>This article will help you understand the <strong>difference between <code>encoding/json</code> and <code>golang.org/x/text/json/jsontext</code></strong>, why you might use both, and how they can <strong>complement</strong> each other.</p><hr><h2 id="%F0%9F%A7%B0-what-is-encodingjson">🧰 What Is <code>encoding/json</code>?</h2><p>The <code>encoding/json</code> package is the <strong>standard Go library</strong> for working with JSON. It provides <strong>high-level APIs</strong> to marshal and unmarshal Go structs.</p><pre><code class="language-go">import "encoding/json"

@@ -2,6 +2,7 @@
 title: "shouldNeverHappen: A Simple Trick for Catching the Impossible in TypeScript"
 date: "2025-04-09T18:44:17.000Z"
 description: "In every codebase, there are situations that should just never happen . Maybe it's a value that should have been validated earlier, or a branch in your logic th..."
+tags: ["typescript","api","testing","deployment","debugging"]
 ---
 
 <p>In every codebase, there are situations that should just <strong>never happen</strong>. Maybe it's a value that should have been validated earlier, or a branch in your logic that you’re 100% sure will never be executed. And yet… bugs happen.</p><p>Instead of scattering <code>throw new Error(...)</code> statements throughout your code, it’s better to <strong>encapsulate that logic</strong> with a dedicated utility function: <code>shouldNeverHappen</code>.</p><p>Let’s talk about why this pattern is useful, how to use it properly, and a few important <strong>considerations</strong> you might not have thought of.</p><hr><h2 id="%F0%9F%92%A1-what-is-shouldneverhappen">💡 What is <code>shouldNeverHappen</code>?</h2><p>It’s a small helper function that you can call when you hit a <strong>panic-level error</strong>—a defect that indicates your assumptions are broken.</p><p>Here’s a basic version:</p><pre><code class="language-ts">export const shouldNeverHappen = (msg?: string, ...args: any[]): never =&gt; {

@@ -2,6 +2,7 @@
 title: "Go’s Capital Letter Export Rule: Clever Minimalism or Design Flaw?"
 date: "2025-04-13T07:44:50.000Z"
 description: "In the world of programming languages, Go (Golang) is often praised for its simplicity and pragmatism. Its creators stripped away much of the traditional comple..."
+tags: ["rust","go","design","productivity","http"]
 ---
 
 <p>In the world of programming languages, <strong>Go (Golang)</strong> is often praised for its simplicity and pragmatism. Its creators stripped away much of the traditional complexity found in other languages, opting for a minimalist design. But with minimalism comes trade-offs, and one of the most debated ones is <strong>Go's rule that determines export visibility based on the capitalization of identifiers</strong>.</p><p>In Go, if you want a function, variable, struct, or constant to be visible outside its package, you <strong>capitalize its name</strong>. Otherwise, it remains <strong>unexported and private to the package</strong>.</p><pre><code class="language-go">// Exported

@@ -2,6 +2,7 @@
 title: "Build a Dynamic Real-Time Calculator with HTML and JavaScript, Using <output> Element"
 date: "2024-12-27T02:55:19.000Z"
 description: "In this article, we’ll walk through how to create a real-time calculator using basic HTML and JavaScript. The code snippet above showcases a straightforward imp..."
+tags: ["javascript","css","html","debugging","productivity"]
 ---
 
 <p>In this article, we’ll walk through how to create a <strong>real-time calculator</strong> using basic HTML and JavaScript. The code snippet above showcases a straightforward implementation, but there are additional considerations and enhancements we can explore to make it more robust and feature-rich.</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">Quick demo <a href="https://onecompiler.com/html/4349u772x" rel="noreferrer">here</a>.</div></div><h3 id="key-features-of-the-code">Key Features of the Code</h3><p>Let’s dissect the code step by step:</p><ol><li><strong>The <code>&lt;form&gt;</code> Element</strong>:<br>The <code>&lt;form&gt;</code> tag wraps the inputs and output, with an <code>oninput</code> event handler. This handler ensures that the calculation runs <strong>dynamically</strong> every time a value is updated in either of the input fields.</li></ol><pre><code class="language-html">&lt;form oninput="total.value=Number(amount1.value) + Number(amount2.value)"&gt;

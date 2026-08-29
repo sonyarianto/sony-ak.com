@@ -2,6 +2,7 @@
 title: "Mastering Exhaustiveness in TypeScript with never: Why It Matters and How to Do It Right"
 date: "2025-05-28T05:30:53.000Z"
 description: "When writing robust TypeScript code , one crucial aspect that often gets overlooked is exhaustiveness in switch statements. Many developers, especially when wor..."
+tags: ["typescript","testing","debugging","productivity","clean-code"]
 ---
 
 <p>When writing <strong>robust TypeScript code</strong>, one crucial aspect that often gets overlooked is <strong>exhaustiveness</strong> in <code>switch</code> statements. Many developers, especially when working with <strong>union types</strong>, risk leaving out cases unintentionally. This isn’t just a theoretical concern—it can lead to <strong>unhandled runtime behavior</strong> and <strong>silent bugs</strong> that slip through testing. Fortunately, <strong>TypeScript's <code>never</code> type</strong> gives us a powerful tool to enforce completeness.</p><p>Let’s break this down.</p><hr><h2 id="the-core-problem"><strong>The Core Problem</strong></h2><p>Imagine you define a simple union type:</p><pre><code class="language-ts">type Fruit = "apple" | "banana" | "orange";

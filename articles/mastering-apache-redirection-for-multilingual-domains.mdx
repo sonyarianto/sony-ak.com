@@ -2,6 +2,7 @@
 title: "Mastering Apache Redirection for Multilingual Domains"
 date: "2024-12-10T20:55:04.000Z"
 description: "Configuring Apache to handle domain redirection effectively is a critical step in ensuring a seamless user experience, especially when managing multilingual web..."
+tags: ["html","web-server","testing","security","performance"]
 ---
 
 <p>Configuring Apache to handle domain redirection effectively is a critical step in ensuring a seamless user experience, especially when managing multilingual websites. In this article, we’ll explore how to set up redirects for a website where a specific domain should append a language path (e.g., <code>/es</code> for Spanish users). <strong>Understanding and implementing such redirects properly ensures both usability and SEO benefits.</strong></p><h4 id="the-scenario"><strong>The Scenario</strong></h4><p>Suppose you own two domains:</p><ul><li><strong>example.es</strong> (used for Spanish users).</li><li><strong>example.com</strong> (the main website).</li></ul><p>Your goal is to redirect all traffic from <strong>example.es</strong> to <strong>example.com</strong>, with the <strong><code>/es</code> language path</strong> appended. Let’s break down how to achieve this, along with considerations to make your redirection flawless.</p><h4 id="rewrite-rules-explanation"><strong>Rewrite Rules Explanation</strong></h4><p>Here’s an optimized <code>.htaccess</code> file snippet for your use case:</p><pre><code>RewriteEngine On

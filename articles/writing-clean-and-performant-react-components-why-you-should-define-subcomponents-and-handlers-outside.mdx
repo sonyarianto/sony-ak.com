@@ -2,6 +2,7 @@
 title: "Writing Clean and Performant React Components: Why You Should Define Subcomponents and Handlers Outside"
 date: "2025-06-18T19:11:51.000Z"
 description: "In React development, clarity and performance are crucial. As our applications grow, a clean structure becomes just as important as speed and efficiency. One co..."
+tags: ["javascript","react","nextjs","testing","performance"]
 ---
 
 <p>In React development, <strong>clarity and performance</strong> are crucial. As our applications grow, a clean structure becomes just as important as speed and efficiency. One common discussion point among developers is:</p><blockquote><em>“Should I define subcomponents and event handler functions inside or outside the main component function?”</em></blockquote><p>This article explores the best practices, trade-offs, and performance implications of that choice, and why many experienced developers—including myself—prefer to <strong>define subcomponents and event handlers outside</strong> the main function body.</p><hr><h2 id="%E2%9C%85-what-we-mean-by-%E2%80%9Cdefining-inside%E2%80%9D-vs-%E2%80%9Coutside%E2%80%9D">✅ <strong>What We Mean by “Defining Inside” vs. “Outside”</strong></h2><p>Let’s start by clarifying the distinction.</p><h3 id="defining-inside-the-component">Defining <strong>inside</strong> the component:</h3><pre><code class="language-tsx">export default function About() {

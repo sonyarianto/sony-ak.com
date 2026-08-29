@@ -2,6 +2,7 @@
 title: "Writing Cleaner and More Maintainable Eloquent Queries with whereBelongsTo"
 date: "2025-08-10T03:42:36.000Z"
 description: "When working with Laravel's Eloquent ORM , it's common to write queries that filter records based on relationships. Unfortunately, many developers — especially ..."
+tags: ["php","laravel","database","performance","dns"]
 ---
 
 <p>When working with <strong>Laravel's Eloquent ORM</strong>, it's common to write queries that filter records based on relationships. Unfortunately, many developers — especially those coming from raw SQL or procedural PHP backgrounds — still rely on <strong>manual foreign key checks</strong> instead of taking full advantage of Eloquent's <strong>relationship-based querying</strong>.</p><p>In this article, we'll explore <strong>why you should prefer <code>whereBelongsTo()</code> over raw column filtering</strong>, how it works, and some important considerations to keep your code clean, expressive, and future-proof.</p><hr><h2 id="the-traditional-approach-and-why-it%E2%80%99s-not-ideal"><strong>The Traditional Approach (and Why It’s Not Ideal)</strong></h2><p>A typical query might look like this:</p><pre><code class="language-php">Post::where('category_id', $category-&gt;id)

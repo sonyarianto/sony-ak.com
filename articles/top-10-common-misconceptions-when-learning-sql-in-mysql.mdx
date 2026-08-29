@@ -2,6 +2,7 @@
 title: "Top 10 Common Misconceptions When Learning SQL in MySQL"
 date: "2024-09-25T07:37:54.000Z"
 description: "Learning SQL, particularly with MySQL, is an essential skill for many developers and data professionals. However, beginners often face various challenges due to..."
+tags: ["javascript","php","database","performance"]
 ---
 
 <p>Learning SQL, particularly with MySQL, is an essential skill for many developers and data professionals. However, beginners often face various challenges due to common misconceptions. Understanding and avoiding these pitfalls can significantly enhance your ability to work with databases efficiently. In this article, we’ll explore the top 10 misconceptions when learning SQL in MySQL.</p><h4 id="1-assuming-null-equals-an-empty-value">1. <strong>Assuming <code>NULL</code> Equals an Empty Value</strong></h4><p>One of the most frequent misunderstandings involves the <code>NULL</code> value. Many learners treat <code>NULL</code> as if it's an empty string (<code>""</code>) or zero (<code>0</code>), but this isn't the case. <code>NULL</code> represents the absence of any value, which requires special handling in SQL queries. For instance, instead of using <code>= NULL</code>, you should use <code>IS NULL</code> when checking for <code>NULL</code> values.</p><p><strong>Example</strong>:</p><pre><code class="language-sql">SELECT * FROM users WHERE name IS NULL;

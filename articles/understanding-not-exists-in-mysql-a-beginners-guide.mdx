@@ -2,6 +2,7 @@
 title: "Understanding NOT EXISTS in MySQL: A Beginner's Guide"
 date: "2024-09-27T22:43:59.000Z"
 description: "In MySQL, the NOT EXISTS condition is a useful tool for filtering data based on the absence of a certain relationship between two tables. It allows you to query..."
+tags: ["database","performance","productivity"]
 ---
 
 <p>In MySQL, the <code>NOT EXISTS</code> condition is a useful tool for filtering data based on the absence of a certain relationship between two tables. It allows you to query rows from one table that do not have corresponding entries in another table. This is particularly helpful when you need to find data that is missing from one table but present in another.</p><h4 id="what-is-not-exists">What is <code>NOT EXISTS</code>?</h4><p><code>NOT EXISTS</code> is used in a subquery to check for non-existence. It returns <code>TRUE</code> if the subquery does not return any rows. If the subquery finds a row, <code>NOT EXISTS</code> returns <code>FALSE</code>.</p><h3 id="basic-syntax-of-not-exists">Basic Syntax of <code>NOT EXISTS</code></h3><pre><code class="language-sql">SELECT columns

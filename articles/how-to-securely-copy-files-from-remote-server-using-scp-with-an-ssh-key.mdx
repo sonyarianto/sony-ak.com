@@ -2,6 +2,7 @@
 title: "How to Securely Copy Files from Remote Server Using scp with an SSH Key"
 date: "2025-04-29T18:24:01.000Z"
 description: "When working with remote servers, transferring files back and forth is a common task. One of the simplest ways to securely download files from a remote machine ..."
+tags: ["bash","linux","deployment","productivity","logging"]
 ---
 
 <p>When working with remote servers, transferring files back and forth is a common task. One of the simplest ways to <strong>securely download files</strong> from a remote machine is using the <code>scp</code> command — a tool that comes with the <strong>OpenSSH</strong> suite and works on <strong>Windows, Linux, and macOS</strong>.</p><hr><h3 id="%E2%9C%85-what-is-scp">✅ <strong>What is <code>scp</code>?</strong></h3><p><code>scp</code> stands for <strong>secure copy</strong>. It’s a command-line tool that lets you <strong>transfer files over SSH</strong>, meaning your data stays <strong>encrypted</strong> and secure during transmission.</p><hr><h3 id="%F0%9F%94%91-using-scp-with-an-identity-file">🔑 <strong>Using <code>scp</code> with an Identity File</strong></h3><p>If your server uses <strong>key-based authentication</strong> (instead of a password), you’ll need to specify the path to your <strong>private key</strong> with the <code>-i</code> option.</p><h4 id="basic-syntax"><strong>Basic Syntax</strong>:</h4><pre><code class="language-bash">scp -i /path/to/private_key username@remote_host:/path/to/remote/file /path/to/local/destination

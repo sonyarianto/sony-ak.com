@@ -2,6 +2,7 @@
 title: "Cleaner Code with Grouped use Statements in PHP"
 date: "2025-08-05T20:09:26.000Z"
 description: "How to simplify your imports and reduce clutter"
+tags: ["php","laravel","git","clean-code","symfony"]
 ---
 
 <p>When working with PHP—especially in large Laravel or Symfony projects—you may find yourself importing multiple classes from the same namespace. Over time, this can lead to <strong>visual clutter</strong> at the top of your files. Fortunately, <strong>PHP 7.0 introduced grouped <code>use</code> declarations</strong>, which offer a <strong>cleaner</strong>, <strong>more readable</strong>, and <strong>maintainable</strong> way to import related classes.</p><p>Let’s break it down.</p><hr><h2 id="%F0%9F%A7%B1-the-problem-repetitive-imports">🧱 The Problem: Repetitive Imports</h2><p>Consider this common scenario:</p><pre><code class="language-php">use App\Models\User;

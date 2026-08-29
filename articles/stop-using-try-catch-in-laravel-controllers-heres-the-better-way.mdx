@@ -2,6 +2,7 @@
 title: "Stop Using Try-Catch in Laravel Controllers: Here's the Better Way"
 date: "2025-05-03T04:36:03.000Z"
 description: "If you’re sprinkling try-catch blocks inside your Laravel controllers, it’s time to stop and take a step back. This pattern might feel safe, like you’re protect..."
+tags: ["php","laravel","html","api","testing"]
 ---
 
 <p>If you’re sprinkling <code>try-catch</code> blocks inside your Laravel controllers, it’s time to stop and take a step back. This pattern might feel safe, like you’re protecting your application from breaking. But in reality, it’s often a <strong>code smell</strong> — and there’s a cleaner, more scalable approach built right into Laravel.</p><p>Let’s walk through why <code>try-catch</code> in controllers is a bad idea, and what you should be doing instead.</p><hr><h2 id="why-try-catch-in-controllers-is-a-code-smell"><strong>Why <code>try-catch</code> in Controllers is a Code Smell</strong></h2><h3 id="1-breaks-separation-of-concerns">1. <strong>Breaks Separation of Concerns</strong></h3><p>Controllers should do one thing: <strong>receive input and return a response</strong>. When you put error handling logic directly into them, you’re mixing responsibilities. It makes controllers bloated and harder to test or maintain.</p><hr><h3 id="2-you%E2%80%99re-ignoring-laravel%E2%80%99s-exception-system">2. <strong>You’re Ignoring Laravel’s Exception System</strong></h3><p>Laravel already provides a global exception handler at:</p><pre><code>app/Exceptions/Handler.php

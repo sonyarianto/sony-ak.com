@@ -2,6 +2,7 @@
 title: "How to Check for Remote Git Changes Without Pulling"
 date: "2025-02-01T02:19:20.000Z"
 description: "When working with Git , especially in a production environment, you may want to check if there are updates on the remote repository before actually pulling them..."
+tags: ["performance","git","deployment","productivity","logging"]
 ---
 
 <p>When working with <strong>Git</strong>, especially in a production environment, you may want to check if there are updates on the <strong>remote repository</strong> before actually pulling them. This helps avoid unwanted surprises and lets you decide when and how to update your local repository.</p><p>In this article, we'll cover how to check for remote changes without pulling, <strong>list the changes</strong>, and discuss other important considerations.</p><hr><h2 id="1-checking-if-remote-has-new-changes">1. Checking if Remote Has New Changes</h2><p>To check if your remote branch has new commits, use the following command:</p><pre><code class="language-bash">sudo -u www-data git fetch

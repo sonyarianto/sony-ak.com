@@ -2,6 +2,7 @@
 title: "Mastering Merge Sort in PHP: A Step-by-Step Guide"
 date: "2024-10-29T19:50:06.000Z"
 description: "Merge Sort is one of the most efficient sorting algorithms, especially useful for handling large datasets due to its predictable $O(n \\log n)$ performance. Unli..."
+tags: ["php","testing","performance","data-structures","logging"]
 ---
 
 <p>Merge Sort is one of the most efficient sorting algorithms, especially useful for handling large datasets due to its predictable <strong>$O(n \log n)$</strong> performance. Unlike simpler algorithms, Merge Sort divides the problem, conquers each part recursively, and combines them in sorted order. Today, we'll dive into how Merge Sort works and implement it in PHP.</p><h3 id="what-is-merge-sort">What is Merge Sort?</h3><p>The <strong>Merge Sort algorithm</strong> works by recursively dividing an array into smaller halves until each subarray contains a single element or no elements (making it trivially sorted). Then, it merges these subarrays back together in sorted order. The divide-and-conquer approach makes Merge Sort highly effective, particularly for sorting large datasets that might overwhelm simpler sorting methods like bubble sort or insertion sort.</p><h3 id="pseudocode">Pseudocode</h3><pre><code>function mergeSort(A : Array of Element; lo, hi : Integer)

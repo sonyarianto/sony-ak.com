@@ -2,6 +2,7 @@
 title: "Protecting Sensitive Files and Directories with .htaccess: Essential Tips for Securing Your PHP Application"
 date: "2024-11-01T09:51:41.000Z"
 description: "In a web development environment, especially when working with PHP applications, it’s crucial to protect sensitive files and directories from unauthorized acces..."
+tags: ["php","web-server","api","testing","security"]
 ---
 
 <p>In a web development environment, especially when working with PHP applications, it’s crucial to protect sensitive files and directories from unauthorized access. These resources can contain configuration details, dependencies, and project-specific information that, if exposed, can lead to security vulnerabilities or expose your source code. This article explains how you can secure these files using <code>.htaccess</code> and provides additional considerations for creating a secure web application.</p><h3 id="the-power-of-redirectmatch-in-htaccess">The Power of RedirectMatch in .htaccess</h3><p>The <code>.htaccess</code> file allows you to set directives that control the behavior of your server. By using the <code>RedirectMatch</code> directive, you can hide certain files and folders from the public by returning a <strong>404 Not Found</strong> error when they are accessed. This approach effectively protects sensitive resources by making them appear as if they don’t exist.</p><p>Here's an example of a line you might add to your <code>.htaccess</code> file:</p><pre><code>RedirectMatch 404 /\.git|logs|\.gitignore|composer\.json|composer\.lock|README\.md|vendor

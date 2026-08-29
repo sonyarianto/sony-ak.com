@@ -2,6 +2,7 @@
 title: "Ensuring Proper Email Validation in PHP: Avoiding False Positives"
 date: "2025-02-15T20:50:16.000Z"
 description: "When working with email validation in PHP , you might assume that using FILTER_VALIDATE_EMAIL is enough. However, this built-in filter can sometimes allow inval..."
+tags: ["php","api","dns","email"]
 ---
 
 <p>When working with <strong>email validation in PHP</strong>, you might assume that using <code>FILTER_VALIDATE_EMAIL</code> is enough. However, this built-in filter <strong>can sometimes allow invalid email formats</strong>, leading to unexpected issues in your application. A common example is a string like <code>+44112233</code>, which is clearly not an email, yet PHP may not flag it as invalid.</p><h3 id="why-filtervalidateemail-alone-is-not-enough"><strong>Why <code>FILTER_VALIDATE_EMAIL</code> Alone Is Not Enough</strong></h3><p>PHP's <code>filter_var($email, FILTER_VALIDATE_EMAIL)</code> function <strong>only checks for a valid email syntax</strong> based on the RFC 822 standard. However, this standard is quite broad, allowing many unusual formats that are technically valid but <strong>not suitable for real-world applications</strong>.</p><p>For example:</p><pre><code class="language-php">$email = "+44112233";

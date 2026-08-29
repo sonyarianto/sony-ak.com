@@ -2,6 +2,7 @@
 title: "Avoiding the N+1 Query Trap in Laravel with withCount()"
 date: "2025-05-06T18:40:43.000Z"
 description: "When working with Laravel Eloquent, one of the most common performance pitfalls is the N+1 query problem —and it often happens without developers realizing it. ..."
+tags: ["laravel","database","performance","clean-code"]
 ---
 
 <p>When working with Laravel Eloquent, one of the most common performance pitfalls is the <strong>N+1 query problem</strong>—and it often happens without developers realizing it.</p><p>Imagine you're displaying a list of blog posts along with the number of comments each one has. You might think this is straightforward:</p><pre><code class="language-php">$posts = Post::all();

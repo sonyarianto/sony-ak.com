@@ -2,6 +2,7 @@
 title: "React Hook Tip: Handling Events Directly for Cleaner Code"
 date: "2024-10-11T20:55:49.000Z"
 description: "When starting out with React, the useEffect hook is often used for various side effects, like data fetching, subscription, or modifying the DOM. But what if I t..."
+tags: ["react","testing","productivity","clean-code"]
 ---
 
 <p>When starting out with React, the <strong>useEffect</strong> hook is often used for various side effects, like data fetching, subscription, or modifying the DOM. But what if I told you that <strong>using <code>useEffect</code> for handling state updates might not always be the best approach</strong>? In fact, you can make your React code simpler, more readable, and even avoid some unnecessary re-renders by <strong>handling events directly</strong>.</p><p>Let's talk about a common pattern that beginners encounter. Take a chat component, for example. Whenever a new message is added, you want to update the state of your messages and persist them somewhere, like in local storage.</p><p>Here’s one way to handle this (the <strong>indirect</strong> way):</p><pre><code class="language-javascript">function ChatView() {

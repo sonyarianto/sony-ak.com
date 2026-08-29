@@ -2,6 +2,7 @@
 title: "Querying Price Ranges in MySQL Without Splitting the Column"
 date: "2025-04-07T10:37:02.000Z"
 description: "When designing a restaurant database , it's common to store a price range—for example, \"$8-$4000\"—as a single string. It’s simple, user-friendly, and works well..."
+tags: ["database","performance","design","database-design"]
 ---
 
 <p>When designing a <strong>restaurant database</strong>, it's common to store a price range—for example, "$8-$4000"—as a single string. It’s simple, user-friendly, and works well for display. However, this structure poses a challenge when you need to <strong>filter or sort</strong> based on the <strong>minimum or maximum price</strong>.</p><p>Instead of creating separate columns for the <strong>lowest</strong> and <strong>highest price</strong>, we can extract and process these values on-the-fly directly from the <code>price_range</code> column using <strong>MySQL string functions</strong>.</p><hr><h2 id="%F0%9F%8E%AF-use-case">🎯 Use Case</h2><p>You want to query something like:</p><ul><li><strong>Restaurants with a minimum price of at least $10</strong></li><li><strong>Restaurants with a maximum price of no more than $100</strong></li><li><strong>Sort by lowest price first</strong></li></ul><p>But your <code>price_range</code> column contains strings like:</p><pre><code>$8-$4000

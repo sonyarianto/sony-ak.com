@@ -2,6 +2,7 @@
 title: "Why I Will Always Love Model::query() in Laravel — And You Should Too"
 date: "2025-05-03T04:30:25.000Z"
 description: "There’s a special place in my heart for one of Laravel’s most elegant and powerful features: Model::query() . As a PHP developer, especially one who works a lot..."
+tags: ["php","laravel","database","api","security"]
 ---
 
 <p>There’s a special place in my heart for one of Laravel’s most elegant and powerful features: <code>Model::query()</code>. As a PHP developer, especially one who works a lot with Eloquent ORM, I’ve come to appreciate how much <strong>control</strong>, <strong>flexibility</strong>, and <strong>readability</strong> this one little method offers.</p><hr><h2 id="the-magic-behind-modelquery"><strong>The Magic Behind <code>Model::query()</code></strong></h2><p>At a glance, calling <code>Model::query()</code> just returns a new instance of the Eloquent query builder for that model. But in practice, it opens the door to <strong>cleaner</strong>, <strong>more dynamic</strong>, and <strong>composable</strong> queries. It’s the best way to start building a query when the conditions are <strong>not yet fully known</strong> at the start.</p><p>Example:</p><pre><code class="language-php">$query = User::query();

@@ -2,6 +2,7 @@
 title: "first() vs get()->map() in Laravel: How to Choose the Right Approach"
 date: "2025-08-15T19:36:42.000Z"
 description: "When working with Laravel’s Query Builder or Eloquent ORM , developers often face a subtle but important choice: should you use first() to grab one record, or g..."
+tags: ["laravel","performance","json","clean-code"]
 ---
 
 <p>When working with Laravel’s <strong>Query Builder</strong> or <strong>Eloquent ORM</strong>, developers often face a subtle but important choice: should you use <strong><code>first()</code></strong> to grab one record, or <strong><code>get()-&gt;map()</code></strong> to transform a collection of records?</p><p>At first glance, they might look interchangeable, but their behavior is very different. Misusing them can lead to confusing bugs, especially when handling <strong>JSON fields, nullable results, or large datasets</strong>.</p><hr><h2 id="what-first-really-does">What <code>first()</code> Really Does</h2><p>The <strong><code>first()</code></strong> method is designed to return <strong>a single record</strong>. It does not return a collection; instead, it gives you a <strong>single object</strong> (an instance of <code>stdClass</code> if you use Query Builder, or an Eloquent model if you use Eloquent).</p><ul><li>If a record exists, you’ll get an object with all its fields.</li><li>If no record is found, it simply returns <code>null</code>.</li></ul><h3 id="generic-example">Generic Example</h3><pre><code class="language-php">$record = DB::table('orders')

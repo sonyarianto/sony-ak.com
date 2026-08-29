@@ -2,6 +2,7 @@
 title: "The Ultimate Guide to Managing Assets in React Projects"
 date: "2025-01-27T07:39:02.000Z"
 description: "When working with React, managing assets such as images, videos, fonts, or other static files is an essential part of building a clean and efficient application..."
+tags: ["javascript","react","html","performance","deployment"]
 ---
 
 <p>When working with React, managing assets such as images, videos, fonts, or other static files is an essential part of building a clean and efficient application. While React provides a lot of flexibility in handling assets, it’s important to follow the right approach based on your project's needs. This article explores the two primary strategies for managing assets in React, along with some additional considerations that you might find useful.</p><h2 id="1-using-the-public-folder">1. <strong>Using the <code>public</code> Folder</strong></h2><p>The <code>public</code> folder is a special directory in React that holds static files accessible to the public. Any files placed in this folder can be referenced directly using an <strong>absolute path</strong>. For example, if you add an image named <code>logo.png</code> to the <code>public/images</code> folder, you can access it as follows:</p><pre><code class="language-jsx">&lt;img src="/images/logo.png" alt="Logo" /&gt;

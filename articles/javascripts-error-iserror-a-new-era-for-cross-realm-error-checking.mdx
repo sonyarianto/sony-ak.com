@@ -2,6 +2,7 @@
 title: "JavaScript’s Error.isError(): A New Era for Cross-Realm Error Checking"
 date: "2025-05-28T23:08:43.000Z"
 description: "In the ever-evolving world of JavaScript , the recent advancement of Error.isError() to Stage 4 at TC39 marks a major milestone in error handling. This simple y..."
+tags: ["javascript","testing","security","performance","debugging"]
 ---
 
 <p>In the ever-evolving world of <strong>JavaScript</strong>, the recent advancement of <strong><code>Error.isError()</code></strong> to <strong>Stage 4</strong> at <strong>TC39</strong> marks a major milestone in error handling. This simple yet powerful method promises to <strong>revolutionize how developers detect error instances</strong>, especially in complex environments where multiple execution contexts (or <em>realms</em>) coexist.</p><p>Let’s break it down.</p><hr><h3 id="the-problem-with-instanceof"><strong>The Problem with <code>instanceof</code></strong></h3><p>For years, <strong><code>instanceof</code></strong> has been the go-to tool for determining if a value is an instance of <strong><code>Error</code></strong>:</p><pre><code class="language-javascript">if (err instanceof Error) {

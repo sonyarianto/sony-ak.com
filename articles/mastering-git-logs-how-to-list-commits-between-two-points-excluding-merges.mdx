@@ -2,6 +2,7 @@
 title: "Mastering Git Logs: How to List Commits Between Two Points (Excluding Merges)"
 date: "2025-10-02T23:08:05.000Z"
 description: "When working with Git, it’s common to review a series of commits between two points in history. Maybe you want to generate release notes , review code history ,..."
+tags: ["git","debugging","productivity","http","email"]
 ---
 
 <p>When working with Git, it’s common to review a series of commits between two points in history. Maybe you want to <strong>generate release notes</strong>, <strong>review code history</strong>, or <strong>export commit data</strong> for auditing. But if you’ve worked with teams, you’ll often see <strong>merge commits</strong> cluttering the history, which aren’t always useful in such reports.</p><p>This article will walk you through how to <strong>list commits from a specific commit hash up to the latest (HEAD)</strong> while excluding merge commits, and also include details such as the <strong>commit hash, author, date, subject, and description</strong>.</p><hr><h2 id="the-core-command">The Core Command</h2><p>Let’s say you want all commits starting from commit:</p><pre><code>fd78c6c93fa424234aba70f15f125a6382b07038

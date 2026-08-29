@@ -2,6 +2,7 @@
 title: "Optimizing Laravel Queries: Eager Loading vs Lazy Loading"
 date: "2025-02-01T02:09:56.000Z"
 description: "When working with Laravel's Eloquent ORM , you might frequently encounter the terms eager loading and lazy loading . These concepts directly impact the performa..."
+tags: ["laravel","performance"]
 ---
 
 <p>When working with <strong>Laravel's Eloquent ORM</strong>, you might frequently encounter the terms <strong>eager loading</strong> and <strong>lazy loading</strong>. These concepts directly impact the <strong>performance</strong> of your application, especially when dealing with related database models.</p><h2 id="understanding-lazy-loading-default-behavior"><strong>Understanding Lazy Loading (Default Behavior)</strong></h2><p>By default, Eloquent uses <strong>lazy loading</strong>, which means related models are only loaded when they are accessed. This behavior can lead to the <strong>N+1 query problem</strong>, where Laravel executes one query to fetch the main records and then an additional query for each related record.</p><h3 id="example-of-lazy-loading"><strong>Example of Lazy Loading</strong></h3><pre><code class="language-php">$users = User::all();

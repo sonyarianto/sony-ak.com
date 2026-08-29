@@ -2,6 +2,7 @@
 title: "Understanding MySQL GRANT Errors: The Case of Mistaken Identity"
 date: "2024-10-22T19:10:30.000Z"
 description: "If you’re new to MySQL and trying to manage users and permissions, it's easy to run into errors, especially when dealing with the GRANT command. Recently, I enc..."
+tags: ["database","security"]
 ---
 
 <p>If you’re new to MySQL and trying to manage users and permissions, it's easy to run into errors, especially when dealing with the <code>GRANT</code> command. Recently, I encountered <strong>ERROR 1410 (42000): You are not allowed to create a user with GRANT</strong>, and the cause turned out to be a simple mistake. Let’s walk through what this error means, how it occurred, and what you can do to avoid similar issues in the future.</p><h3 id="the-mistake-misidentifying-users-and-databases">The Mistake: Misidentifying Users and Databases</h3><p>The command I was running looked like this:</p><pre><code class="language-sql">GRANT ALL PRIVILEGES ON booking_app_db.* TO 'booking_app_user'@'localhost';

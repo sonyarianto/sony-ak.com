@@ -2,6 +2,7 @@
 title: "Simplifying Image URL Size Replacements in JavaScript"
 date: "2024-12-14T05:21:54.000Z"
 description: "When working with dynamic image URLs in JavaScript, you often need to manipulate the image dimensions to ensure that the right size is loaded for different use ..."
+tags: ["javascript","testing","performance","debugging","regex"]
 ---
 
 <p>When working with dynamic image URLs in JavaScript, you often need to manipulate the image dimensions to ensure that the right size is loaded for different use cases. A common pattern involves replacing image size specifications like <code>100x100</code>, <code>360x360</code>, etc., with a uniform size such as <code>600x600</code>. However, writing repetitive code to handle each case can be inefficient and harder to maintain.</p><p>In this article, we'll explore how to <strong>simplify</strong> this process using a reusable function. We'll break down the problem, provide a clean solution, and discuss additional considerations that will make your code more maintainable and scalable.</p><h4 id="the-problem">The Problem</h4><p>Imagine you have a piece of code that needs to replace various image sizes with a consistent one, like this:</p><pre><code class="language-javascript">let artworkUrl = currentTrackMetadata?.data?.iImg;

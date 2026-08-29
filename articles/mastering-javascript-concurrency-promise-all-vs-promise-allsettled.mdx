@@ -2,6 +2,7 @@
 title: "Mastering JavaScript Concurrency: Promise.all vs Promise.allSettled"
 date: "2025-08-28T18:14:40.000Z"
 description: "JavaScript is designed to handle asynchronous operations gracefully. Whether you are fetching data from APIs, reading files, or executing time-consuming computa..."
+tags: ["javascript","api","performance","debugging","productivity"]
 ---
 
 <p>JavaScript is designed to handle <strong>asynchronous operations</strong> gracefully. Whether you are fetching data from APIs, reading files, or executing time-consuming computations, <strong>Promises</strong> give you a structured way to manage asynchronous results.</p><p>Two of the most commonly used Promise combinators are <strong><code>Promise.all</code></strong> and <strong><code>Promise.allSettled</code></strong>. At first glance, they may seem similar, but their behavior can have very different implications for your applications. Let’s dive deep.</p><hr><h2 id="what-is-promiseall">What is <code>Promise.all</code>?</h2><p><code>Promise.all</code> is best thought of as an <strong>all-or-nothing strategy</strong>.</p><ul><li>If <strong>all promises succeed</strong>, you get a single resolved promise containing an array of results.</li><li>If <strong>any promise fails</strong>, the entire <code>Promise.all</code> immediately rejects, discarding results from other promises (even if they already resolved).</li></ul><p><strong>Example:</strong></p><pre><code class="language-js">const fetchUser = fetch("/api/user");

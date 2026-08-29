@@ -2,6 +2,7 @@
 title: "Docker Is Not Just Packaging: Why Mixing Host and Container Workflows Breaks Your App"
 date: "2026-04-27T20:33:00.000Z"
 description: "There is a subtle but very common misunderstanding when people start using Docker. They think Docker is just a way to “wrap” an already working application. So ..."
+tags: ["php","html","docker","linux","git"]
 ---
 
 <p>There is a subtle but <strong>very common misunderstanding</strong> when people start using Docker. They think Docker is just a way to “wrap” an already working application. So they keep doing their usual workflow on the host machine, then simply copy the result into a container. It feels convenient. It works… until it doesn’t.</p><p>The real purpose of Docker is not packaging. It is <strong>reproducibility</strong>.</p><hr><h2 id="the-invisible-problem-host-vs-container-reality"><strong>The Invisible Problem: Host vs Container Reality</strong></h2><p>Let’s start with a scenario that looks harmless:</p><pre><code class="language-bash">composer install   # run on host

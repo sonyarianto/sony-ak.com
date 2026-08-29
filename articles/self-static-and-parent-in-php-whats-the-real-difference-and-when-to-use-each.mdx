@@ -2,6 +2,7 @@
 title: "self, static, and parent in PHP — What's the Real Difference and When to Use Each"
 date: "2025-05-03T04:25:42.000Z"
 description: "In PHP, object-oriented programming gives us several powerful keywords— self , static , and parent —to refer to classes within the class hierarchy. While they m..."
+tags: ["php","testing","design"]
 ---
 
 <p>In PHP, object-oriented programming gives us several powerful keywords—<code>self</code>, <code>static</code>, and <code>parent</code>—to refer to classes within the class hierarchy. While they may seem similar, each has <strong>very specific behaviors</strong>, especially when dealing with inheritance, method resolution, and instantiation.</p><p>Understanding these keywords deeply is crucial for writing <strong>clean, predictable, and extensible code</strong>.</p><hr><h3 id="%F0%9F%94%B9-self-the-declaring-class">🔹 <code>self</code>: The Declaring Class</h3><p><strong><code>self</code> refers to the class where the code is written</strong>, not where it is <em>called from</em>. This is a <strong>compile-time reference</strong>.</p><pre><code class="language-php">class A {

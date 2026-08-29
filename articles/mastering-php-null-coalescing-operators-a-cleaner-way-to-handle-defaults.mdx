@@ -2,6 +2,7 @@
 title: "Mastering PHP Null Coalescing Operators: A Cleaner Way to Handle Defaults"
 date: "2025-02-10T18:07:40.000Z"
 description: "When working with PHP, setting default values is a common practice, especially when dealing with user input or optional parameters. Traditionally, developers re..."
+tags: ["php","performance","clean-code"]
 ---
 
 <p>When working with PHP, setting default values is a common practice, especially when dealing with user input or optional parameters. Traditionally, developers relied on the <strong>ternary operator (<code>?:</code>)</strong> or the <strong><code>isset()</code> function</strong>, but PHP introduced <strong>null coalescing operators (<code>??</code> and <code>??=</code>)</strong> to make this process much cleaner and more readable. Let’s dive into these approaches, their differences, and best practices.</p><h2 id="1-the-classical-ternary-operator">1. The Classical Ternary Operator</h2><p>The ternary operator is a shorthand way to write an <code>if-else</code> statement, commonly used to assign a default value when a variable is not set.</p><pre><code class="language-php">// Classical ternary operator

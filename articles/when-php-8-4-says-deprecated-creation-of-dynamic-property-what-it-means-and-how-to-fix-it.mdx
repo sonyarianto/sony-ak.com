@@ -2,6 +2,7 @@
 title: "When PHP 8.4 Says “Deprecated: Creation of Dynamic Property” — What It Means and How to Fix It"
 date: "2025-11-15T03:59:01.000Z"
 description: "Upgrading to PHP 8.4 brings a wave of performance improvements and cleaner language features. But along with that comes one of the most commonly encountered war..."
+tags: ["php","laravel","bash","ci-cd","linux"]
 ---
 
 <p>Upgrading to <strong>PHP 8.4</strong> brings a wave of performance improvements and cleaner language features. But along with that comes one of the most commonly encountered warnings developers now see:</p><blockquote><strong>Deprecated</strong>: Creation of dynamic property <em>SomeClass::$propertyName</em> is deprecated.</blockquote><p>If you’re seeing messages like this across your project — especially after upgrading from PHP 7.x or early 8.x — you’re not alone. This change touches a lot of legacy code written before strict property declarations became the norm.</p><p>Let’s dive deep into what’s going on, why it matters, and how to fix it <em>the right way</em>.</p><hr><h2 id="%F0%9F%A7%A0-what-are-dynamic-properties">🧠 What Are Dynamic Properties?</h2><p>In older versions of PHP, you could freely add properties to any object, even if the class didn’t declare them:</p><pre><code class="language-php">class User {}

@@ -2,6 +2,7 @@
 title: "Mastering Docker Compose Logs: Viewing the Last 100 Lines and More"
 date: "2024-10-30T20:28:31.000Z"
 description: "When working with Docker Compose, efficient log management is key to monitoring, debugging, and optimizing your containerized applications. One common task for ..."
+tags: ["docker","aws","web-server","performance","deployment"]
 ---
 
 <p>When working with Docker Compose, efficient log management is key to monitoring, debugging, and optimizing your containerized applications. One common task for developers is retrieving the latest logs to understand what’s happening within their containers, especially when troubleshooting or analyzing recent activities. Docker Compose’s logging capabilities make this straightforward, but there are a few nuances and best practices to get the most out of it.</p><h3 id="retrieving-the-last-100-lines-of-logs">Retrieving the Last 100 Lines of Logs</h3><p>To get a quick snapshot of recent logs across all containers, you can use the <code>--tail</code> option, which limits the output to a specified number of lines. For example, to see the <strong>last 100 lines</strong> of logs for every container managed by your <code>docker-compose.yml</code> file, the following command works seamlessly:</p><pre><code>docker-compose logs --tail=100

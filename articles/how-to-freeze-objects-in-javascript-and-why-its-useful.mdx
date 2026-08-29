@@ -2,6 +2,7 @@
 title: "How to Freeze Objects in JavaScript and Why It’s Useful"
 date: "2024-12-25T08:10:38.000Z"
 description: "When working with JavaScript objects, you might encounter scenarios where you need to prevent changes to an object . This is where Object.freeze() comes into pl..."
+tags: ["javascript","testing","performance","data-structures","logging"]
 ---
 
 <p>When working with JavaScript objects, you might encounter scenarios where you need to <strong>prevent changes to an object</strong>. This is where <code>Object.freeze()</code> comes into play. By freezing an object, you can make it immutable, ensuring that its properties and structure remain the same throughout the program. Let’s dive into the details of <code>Object.freeze()</code> and explore some considerations and limitations.</p><h3 id="what-does-objectfreeze-do"><strong>What Does <code>Object.freeze()</code> Do?</strong></h3><p><code>Object.freeze()</code> is a built-in JavaScript method that <strong>freezes an object, preventing modifications</strong> to its properties. Once an object is frozen:</p><ul><li><strong>Existing properties cannot be changed.</strong></li><li><strong>New properties cannot be added.</strong></li><li><strong>Existing properties cannot be deleted.</strong></li></ul><p>Here’s an example to illustrate how it works:</p><pre><code class="language-javascript">const person = {

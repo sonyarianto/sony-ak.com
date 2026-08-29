@@ -2,6 +2,7 @@
 title: "Why Your Internal System Should Use Internal IDs (Not External Auth IDs)"
 date: "2025-07-25T21:35:41.000Z"
 description: "Many systems today integrate with external identity providers —services that handle user authentication and issue secure tokens for login. These providers typic..."
+tags: ["api","security","performance","email","database-design"]
 ---
 
 <p>Many systems today integrate with <strong>external identity providers</strong>—services that handle user authentication and issue secure tokens for login. These providers typically return a unique user identifier (like an <code>external_oid</code>, <code>sub</code>, or <code>auth_id</code>) with each session.</p><p>It might seem convenient to use these external identifiers as the <strong>primary key</strong> across your database. After all, they are unique and already available from the identity provider.</p><p>However, using external IDs as your system’s core identity is a <strong>bad idea</strong>. Here’s why you should always generate and use an <strong>internal <code>uid</code></strong>, and treat external IDs only as <strong>lookup references</strong>.</p><hr><h2 id="1-use-internal-uid-as-primary-key"><strong>1. Use Internal <code>uid</code> as Primary Key</strong></h2><p>Your <code>users</code> table should have a system-generated internal ID like:</p><pre><code class="language-sql">uid BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY

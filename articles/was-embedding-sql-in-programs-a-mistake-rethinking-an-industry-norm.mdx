@@ -2,6 +2,7 @@
 title: "Was Embedding SQL in Programs a Mistake? Rethinking an Industry Norm"
 date: "2025-04-30T23:01:56.000Z"
 description: "In the early days of software engineering, SQL wasn't born to be embedded in code . It was designed as a console-based, declarative language , meant for busines..."
+tags: ["javascript","typescript","laravel","database","api"]
 ---
 
 <p>In the early days of software engineering, <strong>SQL wasn't born to be embedded in code</strong>. It was designed as a <strong>console-based, declarative language</strong>, meant for <strong>business analysts and data operators</strong> to pull reports from a relational database. Simple, focused, and readable—it was never meant to live inside the guts of C or Java.</p><p>Yet here we are, decades later, with millions of lines of application code tightly interwoven with raw SQL queries. So, the question arises: <strong>Was embedding SQL into programs one of the gravest mistakes of our industry?</strong></p><hr><h2 id="the-original-intent-of-sql"><strong>The Original Intent of SQL</strong></h2><p><strong>SQL (Structured Query Language)</strong> originated at IBM in the 1970s as part of the System R project. Its creators designed it to <strong>express what data is needed</strong>, not how to retrieve it. This <strong>declarative approach</strong> made it ideal for <strong>interactive querying</strong>, where business users could type:</p><pre><code class="language-sql">SELECT name FROM employees WHERE department = 'Engineering';

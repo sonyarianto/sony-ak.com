@@ -2,6 +2,7 @@
 title: "Understanding JavaScript's + Operator and Type Coercion: What Happens Behind the Scenes?"
 date: "2024-11-23T01:06:18.000Z"
 description: "JavaScript is a powerful language, but its type coercion behavior can sometimes leave us scratching our heads. One of the most common and perplexing operators i..."
+tags: ["javascript","json","data-structures","logging"]
 ---
 
 <p>JavaScript is a powerful language, but its type coercion behavior can sometimes leave us scratching our heads. One of the most common and perplexing operators is the <code>+</code> operator, especially when dealing with non-primitive types like <strong>arrays</strong> and <strong>objects</strong>. In this article, we’ll dive into how JavaScript handles these cases and what happens when you use the <code>+</code> operator with arrays and objects. By the end, you’ll have a clearer understanding of how JavaScript treats different data types and how to avoid some common pitfalls.</p><h3 id="1-the-mystery-of"><strong>1. The Mystery of <code>[] + []</code></strong></h3><p>Let’s start with a basic example:</p><pre><code class="language-javascript">console.log([] + []);
