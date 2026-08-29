@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "./GoogleAnalytics";
+import "highlight.js/styles/github.css";
 import "./globals.css";
 
 export const metadata: Metadata = {

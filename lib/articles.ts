@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { marked } from "marked";
+import { Marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import hljs from "highlight.js";
 
 export interface Article {
   slug: string;
@@ -13,6 +15,19 @@ export interface Article {
 }
 
 const articlesDirectory = path.join(process.cwd(), "articles");
+
+// Configure marked with highlight.js
+const marked = new Marked(
+  markedHighlight({
+    langPrefix: "hljs language-",
+    highlight(code, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+        return hljs.highlight(code, { language: lang }).value;
+      }
+      return hljs.highlightAuto(code).value;
+    },
+  })
+);
 
 export function getAllArticles(): Article[] {
   const files = fs.readdirSync(articlesDirectory);
@@ -49,7 +64,7 @@ export function getArticleBySlug(slug: string): Article | null {
   const { data, content } = matter(fileContents);
 
   // Convert markdown to HTML
-  const htmlContent = marked(content) as string;
+  const htmlContent = marked.parse(content) as string;
 
   return {
     slug,
