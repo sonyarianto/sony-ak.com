@@ -5,19 +5,64 @@ description: "A decimal literal in JavaScript is a numeric literal that represen
 tags: ["javascript","logging"]
 ---
 
-<p>A <strong>decimal literal</strong> in JavaScript is a numeric literal that represents a base-10 (decimal) number, which is the most common way we represent numbers in everyday life. It consists of a series of digits (0-9) without any prefix. Decimal literals can be integers or floating-point numbers.</p><h3 id="types-of-decimal-literals">Types of Decimal Literals:</h3><ol><li><strong>Integer Decimal Literal</strong>: These are whole numbers without any fractional or decimal part.</li></ol><p>Examples: <code>10</code>, <code>42</code>, <code>-7</code>, <code>0</code></p><ol start="2"><li><strong>Floating-point Decimal Literal</strong>: These are numbers that include a decimal point and may have a fractional part. You can also use floating-point notation for large or small numbers.</li></ol><p>Examples: <code>3.14</code>, <code>0.5</code>, <code>-2.718</code>, <code>1e6</code> (which represents <code>1 * 10^6</code> or <code>1000000</code>)</p><h3 id="examples-of-decimal-literals">Examples of Decimal Literals:</h3><h4 id="integer-decimal-literal">Integer Decimal Literal:</h4><pre><code class="language-javascript">let a = 10;   // Decimal integer literal
+A **decimal literal** in JavaScript is a numeric literal that represents a base-10 (decimal) number, which is the most common way we represent numbers in everyday life. It consists of a series of digits (0-9) without any prefix. Decimal literals can be integers or floating-point numbers.
+
+### Types of Decimal Literals:
+
+1.  **Integer Decimal Literal**: These are whole numbers without any fractional or decimal part.
+
+Examples: `10`, `42`, `-7`, `0`
+
+2.  **Floating-point Decimal Literal**: These are numbers that include a decimal point and may have a fractional part. You can also use floating-point notation for large or small numbers.
+
+Examples: `3.14`, `0.5`, `-2.718`, `1e6` (which represents `1 * 10^6` or `1000000`)
+
+### Examples of Decimal Literals:
+
+#### Integer Decimal Literal:
+
+```javascript
+let a = 10;   // Decimal integer literal
 let b = 42;   // Another integer
 let c = -5;   // Negative integer
-</code></pre><h3 id="floating-point-decimal-literal">Floating-point Decimal Literal:</h3><pre><code class="language-javascript">let d = 3.14;   // Floating-point literal
+```
+
+### Floating-point Decimal Literal:
+
+```javascript
+let d = 3.14;   // Floating-point literal
 let e = 0.5;    // Another floating-point literal
 let f = -0.75;  // Negative floating-point literal
-</code></pre><h3 id="exponential-notation-for-large-or-small-floating-point-numbers">Exponential Notation (for large or small floating-point numbers):</h3><pre><code class="language-javascript">let g = 1e6;    // 1 * 10^6, or 1000000
+```
+
+### Exponential Notation (for large or small floating-point numbers):
+
+```javascript
+let g = 1e6;    // 1 * 10^6, or 1000000
 let h = 2.5e-4; // 2.5 * 10^-4, or 0.00025
-</code></pre><h3 id="characteristics">Characteristics:</h3><ul><li>A <strong>decimal literal</strong> is the default numeric literal in JavaScript when you don't use prefixes like <code>0x</code> (for hexadecimal), <code>0b</code> (for binary), or <code>0o</code> (for octal).</li><li>Decimal literals support both integer and floating-point numbers.</li></ul><h3 id="example-usage">Example Usage:</h3><pre><code class="language-javascript">console.log(10);      // Outputs: 10 (integer)
+```
+
+### Characteristics:
+
+-   A **decimal literal** is the default numeric literal in JavaScript when you don't use prefixes like `0x` (for hexadecimal), `0b` (for binary), or `0o` (for octal).
+-   Decimal literals support both integer and floating-point numbers.
+
+### Example Usage:
+
+```javascript
+console.log(10);      // Outputs: 10 (integer)
 console.log(3.14);    // Outputs: 3.14 (floating-point)
 console.log(2e3);     // Outputs: 2000 (exponential notation)
-</code></pre><h3 id="decimal-vs-other-numeral-systems">Decimal vs Other Numeral Systems:</h3><ul><li><strong>Decimal literals</strong> are base-10 numbers.</li><li>JavaScript also supports other number systems like:<ul><li><strong>Hexadecimal</strong> (base-16) with <code>0x</code> prefix.</li><li><strong>Binary</strong> (base-2) with <code>0b</code> prefix.</li><li><strong>Octal</strong> (base-8) with <code>0o</code> prefix.</li></ul></li></ul><p>Now you should understand, <strong>decimal literals</strong> are the most commonly used numeric literals in JavaScript and represent numbers in base-10, either as integers or floating-point numbers.</p><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### Decimal vs Other Numeral Systems:
+
+-   **Decimal literals** are base-10 numbers.
+-   JavaScript also supports other number systems like:
+    -   **Hexadecimal** (base-16) with `0x` prefix.
+    -   **Binary** (base-2) with `0b` prefix.
+    -   **Octal** (base-8) with `0o` prefix.
+
+Now you should understand, **decimal literals** are the most commonly used numeric literals in JavaScript and represent numbers in base-10, either as integers or floating-point numbers.
+
+Hope it helps.

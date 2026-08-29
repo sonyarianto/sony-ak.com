@@ -5,29 +5,134 @@ description: "As PHP continues to evolve, so do its standards for better perform
 tags: ["php","ci-cd","testing","security","performance"]
 ---
 
-<p>As PHP continues to evolve, so do its standards for better performance, reliability, and clarity. One such change that caught many developers off guard was introduced in <strong>PHP 8.2</strong> — the <strong>deprecation of dynamic property creation</strong> on classes that do not explicitly declare them. If you’ve recently upgraded your PHP version and are now seeing a flood of warnings like this:</p><pre><code>Deprecated: Creation of dynamic property MyClass::$someProperty is deprecated
-</code></pre><p>You're not alone.</p><p>Let’s break down what this means, why it's important, and how you can future-proof your codebase the right way.</p><hr><h2 id="what-are-dynamic-properties"><strong>What Are Dynamic Properties?</strong></h2><p>Dynamic properties are properties that you assign to an object even though they weren’t declared in the class beforehand.</p><pre><code class="language-php">class MyClass {}
+As PHP continues to evolve, so do its standards for better performance, reliability, and clarity. One such change that caught many developers off guard was introduced in **PHP 8.2** — the **deprecation of dynamic property creation** on classes that do not explicitly declare them. If you’ve recently upgraded your PHP version and are now seeing a flood of warnings like this:
+
+```
+Deprecated: Creation of dynamic property MyClass::$someProperty is deprecated
+```
+
+You're not alone.
+
+Let’s break down what this means, why it's important, and how you can future-proof your codebase the right way.
+
+* * *
+
+## **What Are Dynamic Properties?**
+
+Dynamic properties are properties that you assign to an object even though they weren’t declared in the class beforehand.
+
+```php
+class MyClass {}
 
 $obj = new MyClass();
-$obj-&gt;foo = 'bar'; // This is a dynamic property.
-</code></pre><p>This behavior has long been accepted in PHP. However, starting from <strong>PHP 8.2</strong>, this is <strong>deprecated</strong>, and in <strong>PHP 9.0</strong>, it will become a <strong>fatal error</strong>.</p><hr><h2 id="why-the-change"><strong>Why the Change?</strong></h2><p>Dynamic properties:</p><ul><li><strong>Bypass visibility constraints</strong> (public/protected/private)</li><li><strong>Make code harder to maintain</strong> and refactor</li><li><strong>Lead to bugs</strong> that are difficult to trace due to typos or undeclared properties</li><li><strong>Contradict static analysis</strong> and auto-completion in modern IDEs</li></ul><p>This change encourages more explicit and robust class design, improving long-term maintainability.</p><hr><h2 id="how-do-you-fix-it"><strong>How Do You Fix It?</strong></h2><p>The solution is simple, but it requires <strong>auditing your classes</strong>.</p><h3 id="%E2%9C%85-declare-all-properties-explicitly">✅ <strong>Declare all properties explicitly</strong>:</h3><p>Before:</p><pre><code class="language-php">class DataUser {}
+$obj->foo = 'bar'; // This is a dynamic property.
+```
+
+This behavior has long been accepted in PHP. However, starting from **PHP 8.2**, this is **deprecated**, and in **PHP 9.0**, it will become a **fatal error**.
+
+* * *
+
+## **Why the Change?**
+
+Dynamic properties:
+
+-   **Bypass visibility constraints** (public/protected/private)
+-   **Make code harder to maintain** and refactor
+-   **Lead to bugs** that are difficult to trace due to typos or undeclared properties
+-   **Contradict static analysis** and auto-completion in modern IDEs
+
+This change encourages more explicit and robust class design, improving long-term maintainability.
+
+* * *
+
+## **How Do You Fix It?**
+
+The solution is simple, but it requires **auditing your classes**.
+
+### ✅ **Declare all properties explicitly**:
+
+Before:
+
+```php
+class DataUser {}
 
 $user = new DataUser();
-$user-&gt;queryData = ...;
-</code></pre><p>After:</p><pre><code class="language-php">class DataUser {
+$user->queryData = ...;
+```
+
+After:
+
+```php
+class DataUser {
     public $queryData;
 }
-</code></pre><p>You should also declare any other dynamic properties you were assigning, such as:</p><pre><code class="language-php">class DataUser {
+```
+
+You should also declare any other dynamic properties you were assigning, such as:
+
+```php
+class DataUser {
     public $queryData;
     public $auth;
     public $helperFunctions;
 }
-</code></pre><p>Repeat this process for <strong>every class</strong> that’s triggering the deprecated notice.</p><hr><h2 id="what-if-you-can%E2%80%99t-modify-the-classes"><strong>What If You Can’t Modify the Classes?</strong></h2><p>If you're dealing with vendor code or legacy modules you cannot modify, you can make use of the <strong><code>#[\AllowDynamicProperties]</code> attribute</strong>, available in PHP 8.2+:</p><pre><code class="language-php">#[\AllowDynamicProperties]
-class LegacyClass {}
-</code></pre><p>⚠️ <strong>Important:</strong> This is just a temporary compatibility workaround. It does <strong>not solve the core issue</strong>, and you should still plan to migrate to explicitly defined properties.</p><hr><h2 id="suppressing-warnings-not-recommended"><strong>Suppressing Warnings (Not Recommended)</strong></h2><p>You may be tempted to just <strong>suppress the warning</strong> in <code>php.ini</code>:</p><pre><code class="language-ini">error_reporting = E_ALL &amp; ~E_DEPRECATED
-</code></pre><p>Or in your script:</p><pre><code class="language-php">error_reporting(E_ALL &amp; ~E_DEPRECATED);
-</code></pre><p>While this hides the warning, it’s only a <strong>band-aid</strong>, and will <strong>not work when PHP 9.0</strong> enforces this as a hard error. Avoid this unless you need a very short-term fix while migrating.</p><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><h3 id="%F0%9F%A7%AA-use-static-analysis-tools">🧪 <strong>Use Static Analysis Tools</strong></h3><p>Tools like <strong>PHPStan</strong> or <strong>Psalm</strong> can help detect dynamic properties across large codebases. Run them regularly as part of your CI/CD pipeline.</p><h3 id="%F0%9F%94%8D-audit-and-refactor-carefully">🔍 <strong>Audit and Refactor Carefully</strong></h3><p>Some objects might be dynamically injected or manipulated in runtime-heavy frameworks. Be cautious and test extensively after adding property declarations.</p><h3 id="%F0%9F%94%84-watch-for-magic-methods">🔄 <strong>Watch for Magic Methods</strong></h3><p>Some classes use <code>__get()</code> / <code>__set()</code> magic methods for dynamic behavior. These will <strong>not</strong> trigger deprecation notices but should still be reviewed for proper structure.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>The deprecation of dynamic properties in PHP 8.2 is more than a nuisance — it's a wake-up call for better class design and type safety. Instead of relying on the language to "just work," we are now encouraged to define our data structures clearly and consistently.</p><p><strong>Modern PHP is about clarity, intention, and reliability.</strong> Declaring your properties isn't just future-proofing — it’s writing better code.</p><p>By acting now, you’ll save yourself (and your team) from potential headaches down the road. It’s time to audit those classes and get your code ready for PHP 9.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Repeat this process for **every class** that’s triggering the deprecated notice.
+
+* * *
+
+## **What If You Can’t Modify the Classes?**
+
+If you're dealing with vendor code or legacy modules you cannot modify, you can make use of the **`#[\AllowDynamicProperties]` attribute**, available in PHP 8.2+:
+
+```php
+#[\AllowDynamicProperties]
+class LegacyClass {}
+```
+
+⚠️ **Important:** This is just a temporary compatibility workaround. It does **not solve the core issue**, and you should still plan to migrate to explicitly defined properties.
+
+* * *
+
+## **Suppressing Warnings (Not Recommended)**
+
+You may be tempted to just **suppress the warning** in `php.ini`:
+
+```ini
+error_reporting = E_ALL & ~E_DEPRECATED
+```
+
+Or in your script:
+
+```php
+error_reporting(E_ALL & ~E_DEPRECATED);
+```
+
+While this hides the warning, it’s only a **band-aid**, and will **not work when PHP 9.0** enforces this as a hard error. Avoid this unless you need a very short-term fix while migrating.
+
+* * *
+
+## **Other Considerations**
+
+### 🧪 **Use Static Analysis Tools**
+
+Tools like **PHPStan** or **Psalm** can help detect dynamic properties across large codebases. Run them regularly as part of your CI/CD pipeline.
+
+### 🔍 **Audit and Refactor Carefully**
+
+Some objects might be dynamically injected or manipulated in runtime-heavy frameworks. Be cautious and test extensively after adding property declarations.
+
+### 🔄 **Watch for Magic Methods**
+
+Some classes use `__get()` / `__set()` magic methods for dynamic behavior. These will **not** trigger deprecation notices but should still be reviewed for proper structure.
+
+* * *
+
+## **Finally**
+
+The deprecation of dynamic properties in PHP 8.2 is more than a nuisance — it's a wake-up call for better class design and type safety. Instead of relying on the language to "just work," we are now encouraged to define our data structures clearly and consistently.
+
+**Modern PHP is about clarity, intention, and reliability.** Declaring your properties isn't just future-proofing — it’s writing better code.
+
+By acting now, you’ll save yourself (and your team) from potential headaches down the road. It’s time to audit those classes and get your code ready for PHP 9.

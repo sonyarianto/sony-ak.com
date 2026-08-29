@@ -2,20 +2,114 @@
 title: "Mastering Monorepo Builds: Translating pnpm Commands to npm"
 date: "2024-11-28T18:03:52.000Z"
 description: "Managing a monorepo can be both exciting and challenging. Tools like pnpm make it easy to handle tasks like building all packages in a monorepo in parallel with..."
-tags: ["debugging","productivity","package-manager","json","clean-code"]
+tags: ["bash","debugging","productivity","package-manager","json"]
 ---
 
-<p>Managing a monorepo can be both exciting and challenging. Tools like <code>pnpm</code> make it easy to handle tasks like building all packages in a monorepo in parallel with filters. However, if you're using <code>npm</code> and want to replicate a <code>pnpm</code> workflow such as <code>pnpm --parallel --filter "./**" build</code>, you’ll need to adapt and understand a few nuances. This article will guide you through <strong>creating an equivalent <code>npm</code> command</strong>, highlight the key differences between <code>npm</code> and <code>pnpm</code>, and cover additional considerations for efficient monorepo management.</p><hr><h2 id="breaking-down-the-command"><strong>Breaking Down the Command</strong></h2><p>The <code>pnpm</code> command:</p><pre><code class="language-bash">pnpm --parallel --filter "./**" build
-</code></pre><h3 id="what-it-does">What it does:</h3><ol><li><strong><code>--parallel</code>:</strong> Runs the <code>build</code> script in all matched packages <strong>simultaneously</strong>.</li><li><strong><code>--filter "./**"</code>:</strong> Filters the packages to include everything in the monorepo.</li><li><strong><code>build</code>:</strong> Refers to the <code>build</code> script defined in the <code>package.json</code> of each package.</li></ol><p>With <code>npm</code>, you can achieve a similar result using workspaces and some adjustments.</p><hr><h2 id="the-equivalent-npm-command"><strong>The Equivalent <code>npm</code> Command</strong></h2><p>For a native <code>npm</code> workspace setup, the closest equivalent command is:</p><pre><code class="language-bash">npm run build --workspaces --if-present
-</code></pre><h3 id="explanation">Explanation:</h3><ol><li><strong><code>--workspaces</code>:</strong> This ensures the command is executed in all workspace packages.</li><li><strong><code>--if-present</code>:</strong> Prevents errors for packages that don't have a <code>build</code> script. This is especially useful for monorepos where not all packages need a build step.</li></ol><p>However, <code>npm</code> <strong>does not natively support parallel execution</strong>. By default, it processes scripts sequentially. This is a key difference from <code>pnpm</code>.</p><h2 id="adding-parallel-execution"><strong>Adding Parallel Execution</strong></h2><p>To truly run <code>npm</code> scripts in parallel, you’ll need a tool like <strong><code>concurrently</code></strong>. Here’s how you can do it:</p><ol><li><strong>Install concurrently</strong>:</li></ol><pre><code class="language-bash">npm install -g concurrently
-</code></pre><ol start="2"><li><strong>Run builds in parallel</strong>:</li></ol><pre><code class="language-bash">concurrently "npm run build -w package1" "npm run build -w package2"
-</code></pre><p>If you want to dynamically include all workspaces, consider writing a small script to automate this.</p><h2 id="key-considerations-for-monorepo-builds"><strong>Key Considerations for Monorepo Builds</strong></h2><h3 id="1-understand-workspace-scripts">1. <strong>Understand Workspace Scripts</strong></h3><ul><li>In a monorepo, <code>npm</code> treats <code>workspaces</code> as first-class citizens.</li><li>Make sure your <code>package.json</code> has a <code>workspaces</code> field, like this:</li></ul><pre><code class="language-json">{
+Managing a monorepo can be both exciting and challenging. Tools like `pnpm` make it easy to handle tasks like building all packages in a monorepo in parallel with filters. However, if you're using `npm` and want to replicate a `pnpm` workflow such as `pnpm --parallel --filter "./**" build`, you’ll need to adapt and understand a few nuances. This article will guide you through **creating an equivalent `npm` command**, highlight the key differences between `npm` and `pnpm`, and cover additional considerations for efficient monorepo management.
+
+* * *
+
+## **Breaking Down the Command**
+
+The `pnpm` command:
+
+```bash
+pnpm --parallel --filter "./**" build
+```
+
+### What it does:
+
+1.  **`--parallel`:** Runs the `build` script in all matched packages **simultaneously**.
+2.  **`--filter "./**"`:** Filters the packages to include everything in the monorepo.
+3.  **`build`:** Refers to the `build` script defined in the `package.json` of each package.
+
+With `npm`, you can achieve a similar result using workspaces and some adjustments.
+
+* * *
+
+## **The Equivalent `npm` Command**
+
+For a native `npm` workspace setup, the closest equivalent command is:
+
+```bash
+npm run build --workspaces --if-present
+```
+
+### Explanation:
+
+1.  **`--workspaces`:** This ensures the command is executed in all workspace packages.
+2.  **`--if-present`:** Prevents errors for packages that don't have a `build` script. This is especially useful for monorepos where not all packages need a build step.
+
+However, `npm` **does not natively support parallel execution**. By default, it processes scripts sequentially. This is a key difference from `pnpm`.
+
+## **Adding Parallel Execution**
+
+To truly run `npm` scripts in parallel, you’ll need a tool like **`concurrently`**. Here’s how you can do it:
+
+1.  **Install concurrently**:
+
+```bash
+npm install -g concurrently
+```
+
+2.  **Run builds in parallel**:
+
+```bash
+concurrently "npm run build -w package1" "npm run build -w package2"
+```
+
+If you want to dynamically include all workspaces, consider writing a small script to automate this.
+
+## **Key Considerations for Monorepo Builds**
+
+### 1\. **Understand Workspace Scripts**
+
+-   In a monorepo, `npm` treats `workspaces` as first-class citizens.
+-   Make sure your `package.json` has a `workspaces` field, like this:
+
+```json
+{
   "workspaces": ["packages/*"]
 }
-</code></pre><h3 id="efficient-dependency-management"><strong>Efficient Dependency Management</strong></h3><ul><li><code>pnpm</code> is more space-efficient for managing dependencies, thanks to its content-addressable store.</li><li>If you're using <code>npm</code>, be aware that <strong>duplicate dependencies</strong> across packages might take up unnecessary space.</li></ul><h3 id="3-add-missing-filters">3. <strong>Add Missing Filters</strong></h3><p>If you need to include or exclude specific packages, you’ll need to implement filtering manually with <code>npm</code>. For example:</p><ul><li>Only include packages with a certain name:</li></ul><pre><code class="language-bash">npm run build --workspace=package-name
-</code></pre><ul><li>Exclude certain packages by modifying your script logic or workspace definitions.</li></ul><h3 id="4-error-handling">4. <strong>Error Handling</strong></h3><p><strong><code>pnpm</code> provides better error isolation</strong>. If one package fails, the others can still proceed. For <code>npm</code>, you may need to add error handling logic, especially when using parallel tools like <code>concurrently</code>.</p><h2 id="why-consider-pnpm-for-monorepos"><strong>Why Consider <code>pnpm</code> for Monorepos?</strong></h2><p>If you're struggling to replicate <code>pnpm</code> features with <code>npm</code>, it might be worth reconsidering your toolchain. Here are a few reasons:</p><ul><li><strong>Speed:</strong> <code>pnpm</code> is faster for many operations, especially in large monorepos.</li><li><strong>Efficiency:</strong> It avoids duplicate node_modules installations.</li><li><strong>Built-in Filtering:</strong> Features like <code>--filter</code> are powerful for managing specific tasks.</li></ul><h2 id="finally"><strong>Finally</strong></h2><p>While you can replicate most <code>pnpm</code> workflows with <code>npm</code>, <strong>the process often requires additional tools or scripts</strong>. The equivalent <code>npm</code> command for <code>pnpm --parallel --filter "./**" build</code> is:</p><pre><code class="language-bash">npm run build --workspaces --if-present
-</code></pre><p>However, for <strong>parallel execution</strong>, you’ll need tools like <code>concurrently</code>.</p><p>If your monorepo’s complexity grows, you might find that <code>pnpm</code> provides a more intuitive and performant workflow. Regardless of your tool of choice, understanding the nuances of each system will help you create a scalable and maintainable build process for your monorepo.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### **Efficient Dependency Management**
+
+-   `pnpm` is more space-efficient for managing dependencies, thanks to its content-addressable store.
+-   If you're using `npm`, be aware that **duplicate dependencies** across packages might take up unnecessary space.
+
+### 3\. **Add Missing Filters**
+
+If you need to include or exclude specific packages, you’ll need to implement filtering manually with `npm`. For example:
+
+-   Only include packages with a certain name:
+
+```bash
+npm run build --workspace=package-name
+```
+
+-   Exclude certain packages by modifying your script logic or workspace definitions.
+
+### 4\. **Error Handling**
+
+**`pnpm` provides better error isolation**. If one package fails, the others can still proceed. For `npm`, you may need to add error handling logic, especially when using parallel tools like `concurrently`.
+
+## **Why Consider `pnpm` for Monorepos?**
+
+If you're struggling to replicate `pnpm` features with `npm`, it might be worth reconsidering your toolchain. Here are a few reasons:
+
+-   **Speed:** `pnpm` is faster for many operations, especially in large monorepos.
+-   **Efficiency:** It avoids duplicate node\_modules installations.
+-   **Built-in Filtering:** Features like `--filter` are powerful for managing specific tasks.
+
+## **Finally**
+
+While you can replicate most `pnpm` workflows with `npm`, **the process often requires additional tools or scripts**. The equivalent `npm` command for `pnpm --parallel --filter "./**" build` is:
+
+```bash
+npm run build --workspaces --if-present
+```
+
+However, for **parallel execution**, you’ll need tools like `concurrently`.
+
+If your monorepo’s complexity grows, you might find that `pnpm` provides a more intuitive and performant workflow. Regardless of your tool of choice, understanding the nuances of each system will help you create a scalable and maintainable build process for your monorepo.

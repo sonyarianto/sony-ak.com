@@ -5,17 +5,51 @@ description: "When working with JavaScript, one common challenge is dealing with
 tags: ["javascript","api","logging"]
 ---
 
-<p>When working with JavaScript, one common challenge is dealing with deeply nested objects. Imagine a situation where you need to access a property buried within multiple levels of an object, but not every object might exist at every level. If you try to access a property that doesn’t exist, JavaScript throws an error that can break your code. This is where optional chaining (<code>?.</code>) becomes incredibly useful. It simplifies accessing deeply nested properties, safely checking for <code>null</code> or <code>undefined</code> without writing additional checks.</p><h3 id="what-is-optional-chaining">What Is Optional Chaining?</h3><p>Optional chaining is a feature introduced in ES2020 (ECMAScript 2020) that allows you to safely access properties of an object or call a method without worrying about whether each reference in the chain exists. If any value in the chain is <code>null</code> or <code>undefined</code>, the expression automatically returns <code>undefined</code> instead of throwing an error.</p><p>Consider the example where you want to retrieve a user's city from a user object that contains address information. Before optional chaining, you'd have to check each level of the object to ensure it exists:</p><pre><code class="language-javascript">let user = { profile: { name: 'John' } };
+When working with JavaScript, one common challenge is dealing with deeply nested objects. Imagine a situation where you need to access a property buried within multiple levels of an object, but not every object might exist at every level. If you try to access a property that doesn’t exist, JavaScript throws an error that can break your code. This is where optional chaining (`?.`) becomes incredibly useful. It simplifies accessing deeply nested properties, safely checking for `null` or `undefined` without writing additional checks.
+
+### What Is Optional Chaining?
+
+Optional chaining is a feature introduced in ES2020 (ECMAScript 2020) that allows you to safely access properties of an object or call a method without worrying about whether each reference in the chain exists. If any value in the chain is `null` or `undefined`, the expression automatically returns `undefined` instead of throwing an error.
+
+Consider the example where you want to retrieve a user's city from a user object that contains address information. Before optional chaining, you'd have to check each level of the object to ensure it exists:
+
+```javascript
+let user = { profile: { name: 'John' } };
 
 // Without optional chaining
-let city = user &amp;&amp; user.address &amp;&amp; user.address.city;
+let city = user && user.address && user.address.city;
 console.log(city); // undefined
-</code></pre><p>This approach works, but it is tedious and can clutter your code quickly. Optional chaining simplifies this process:</p><pre><code class="language-javascript">let city = user?.address?.city;
+```
+
+This approach works, but it is tedious and can clutter your code quickly. Optional chaining simplifies this process:
+
+```javascript
+let city = user?.address?.city;
 console.log(city); // undefined
-</code></pre><p>If <code>user.address</code> or <code>user.address.city</code> doesn’t exist, the expression gracefully returns <code>undefined</code> without throwing an error. This makes your code shorter and easier to read.</p><h3 id="key-uses-of-optional-chaining">Key Uses of Optional Chaining</h3><h4 id="accessing-object-properties">Accessing Object Properties</h4><p>Optional chaining is especially helpful when dealing with deeply nested objects. Instead of checking if each object in the chain exists, you can simply use <code>?.</code> to avoid potential errors:</p><pre><code class="language-javascript">let user = { profile: { name: 'John' } };
+```
+
+If `user.address` or `user.address.city` doesn’t exist, the expression gracefully returns `undefined` without throwing an error. This makes your code shorter and easier to read.
+
+### Key Uses of Optional Chaining
+
+#### Accessing Object Properties
+
+Optional chaining is especially helpful when dealing with deeply nested objects. Instead of checking if each object in the chain exists, you can simply use `?.` to avoid potential errors:
+
+```javascript
+let user = { profile: { name: 'John' } };
 console.log(user?.profile?.name); // "John"
 console.log(user?.address?.city); // undefined (no error)
-</code></pre><p>In the example above, if <code>user.profile</code> exists, it accesses <code>name</code>. If <code>user.address</code> doesn’t exist, the expression returns <code>undefined</code> rather than trying to access a non-existent <code>city</code> and throwing an error.</p><h4 id="calling-methods">Calling Methods</h4><p>In addition to accessing properties, you can use optional chaining to call methods safely. If a method may not be available, <code>?.</code> prevents errors from being thrown if the method is <code>null</code> or <code>undefined</code>:</p><pre><code class="language-javascript">let user = {
+```
+
+In the example above, if `user.profile` exists, it accesses `name`. If `user.address` doesn’t exist, the expression returns `undefined` rather than trying to access a non-existent `city` and throwing an error.
+
+#### Calling Methods
+
+In addition to accessing properties, you can use optional chaining to call methods safely. If a method may not be available, `?.` prevents errors from being thrown if the method is `null` or `undefined`:
+
+```javascript
+let user = {
   getName: function() {
     return 'John';
   }
@@ -23,13 +57,41 @@ console.log(user?.address?.city); // undefined (no error)
 
 console.log(user?.getName?.()); // "John"
 console.log(user?.getAge?.());  // undefined (no error)
-</code></pre><p>Here, if the method <code>getName</code> exists, it is called normally. However, <code>getAge</code> doesn’t exist, so the optional chaining returns <code>undefined</code> instead of throwing an error.</p><h4 id="working-with-arrays">Working with Arrays</h4><p>Optional chaining can be used with arrays as well. It allows you to safely access elements in an array without worrying about out-of-bound indexes:</p><pre><code class="language-javascript">let users = [{ name: 'John' }, { name: 'Jane' }];
+```
+
+Here, if the method `getName` exists, it is called normally. However, `getAge` doesn’t exist, so the optional chaining returns `undefined` instead of throwing an error.
+
+#### Working with Arrays
+
+Optional chaining can be used with arrays as well. It allows you to safely access elements in an array without worrying about out-of-bound indexes:
+
+```javascript
+let users = [{ name: 'John' }, { name: 'Jane' }];
 console.log(users?.[0]?.name); // "John"
 console.log(users?.[5]?.name); // undefined (no error)
-</code></pre><p>In this example, attempting to access an element at an index that doesn’t exist (like <code>users[5]</code>) safely returns <code>undefined</code> instead of causing an error.</p><h3 id="why-use-optional-chaining">Why Use Optional Chaining?</h3><p>Optional chaining offers several advantages:</p><ul><li><strong>Improved readability</strong>: By eliminating the need for multiple checks at each level, it makes your code cleaner and more readable.</li><li><strong>Fewer errors</strong>: Optional chaining prevents errors caused by trying to access properties or methods of <code>null</code> or <code>undefined</code> values.</li><li><strong>Concise syntax</strong>: You no longer need to write repetitive code for checking if an object or method exists. The syntax is minimal and direct.</li></ul><p>Imagine dealing with data coming from an external API. You might not always know if all the fields will be present in the data. Optional chaining allows you to handle such uncertainties smoothly.</p><h3 id="limitations-of-optional-chaining">Limitations of Optional Chaining</h3><p>While optional chaining is a powerful feature, it’s important to be aware of its limitations. It only short-circuits when it encounters <code>null</code> or <code>undefined</code>. If a property exists and has a falsy value such as <code>0</code>, <code>false</code>, or an empty string (<code>""</code>), optional chaining will not short-circuit. Instead, it will return that falsy value:</p><pre><code class="language-javascript">let user = { profile: { age: 0 } };
-console.log(user?.profile?.age); // 0, not undefined
-</code></pre><h3 id="finally">Finally</h3><p>Optional chaining is a valuable addition to JavaScript, simplifying how we work with objects, methods, and arrays by preventing errors related to <code>null</code> or <code>undefined</code> values. For beginners, it’s a simple yet powerful feature that can make your code easier to maintain and more error-proof. Whether you're working with deeply nested objects, dynamic data, or API responses, optional chaining provides a clean and efficient solution for safely accessing properties and methods.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+In this example, attempting to access an element at an index that doesn’t exist (like `users[5]`) safely returns `undefined` instead of causing an error.
+
+### Why Use Optional Chaining?
+
+Optional chaining offers several advantages:
+
+-   **Improved readability**: By eliminating the need for multiple checks at each level, it makes your code cleaner and more readable.
+-   **Fewer errors**: Optional chaining prevents errors caused by trying to access properties or methods of `null` or `undefined` values.
+-   **Concise syntax**: You no longer need to write repetitive code for checking if an object or method exists. The syntax is minimal and direct.
+
+Imagine dealing with data coming from an external API. You might not always know if all the fields will be present in the data. Optional chaining allows you to handle such uncertainties smoothly.
+
+### Limitations of Optional Chaining
+
+While optional chaining is a powerful feature, it’s important to be aware of its limitations. It only short-circuits when it encounters `null` or `undefined`. If a property exists and has a falsy value such as `0`, `false`, or an empty string (`""`), optional chaining will not short-circuit. Instead, it will return that falsy value:
+
+```javascript
+let user = { profile: { age: 0 } };
+console.log(user?.profile?.age); // 0, not undefined
+```
+
+### Finally
+
+Optional chaining is a valuable addition to JavaScript, simplifying how we work with objects, methods, and arrays by preventing errors related to `null` or `undefined` values. For beginners, it’s a simple yet powerful feature that can make your code easier to maintain and more error-proof. Whether you're working with deeply nested objects, dynamic data, or API responses, optional chaining provides a clean and efficient solution for safely accessing properties and methods.

@@ -2,13 +2,66 @@
 title: "How to Clean Up Docker Images: A Beginner's Guide to Using docker image prune"
 date: "2024-10-20T00:50:54.000Z"
 description: "If you’re using Docker for development or deployment, you may have noticed that over time, your system begins to accumulate a large number of images. These imag..."
-tags: ["docker","performance","deployment","productivity"]
+tags: ["bash","docker","performance","deployment","productivity"]
 ---
 
-<p>If you’re using Docker for development or deployment, you may have noticed that over time, your system begins to accumulate a large number of images. These images can take up a lot of space, especially if they are not used. To keep things tidy and your system running smoothly, Docker provides a simple yet powerful command to help you clean up: <code>docker image prune</code>.</p><p>I have this command from my friend.</p><pre><code class="language-bash">docker image prune -a --filter "until=72h"</code></pre><p>In this article, we’ll dive into explanation and how to use this command and explore some important concepts that will help you maintain a clean and efficient Docker environment. Even if you're new to Docker, by the end of this guide, you’ll understand how to free up space by removing unused images and how to do it safely.</p><h3 id="what-is-docker-image-prune">What is <code>docker image prune</code>?</h3><p>The <code>docker image prune</code> command is designed to remove <strong>unused Docker images</strong> from your system. Over time, as you build and run containers, Docker creates a variety of images, many of which might no longer be in use. Running this command tells Docker to automatically clean up those images, helping you save disk space.</p><p>By default, <code>docker image prune</code> only removes <strong>dangling images</strong>—images that have no tags and are not referenced by any containers. However, you can customize its behavior to target more than just dangling images.</p><h3 id="a-closer-look-at-the-command">A Closer Look at the Command</h3><p>Let's break down the command you're curious about:</p><pre><code class="language-bash">docker image prune -a --filter "until=72h"
-</code></pre><p>This command does a few key things:</p><ul><li><strong>Remove unused images</strong>: By running <code>docker image prune</code>, you're telling Docker to get rid of images that aren’t being used by any running or stopped containers.</li><li><strong>All unused images, not just dangling ones</strong>: The <code>-a</code> option, or <code>--all</code>, extends the scope of the pruning. Instead of just removing dangling images, it removes <strong>all images</strong> that are not being used by any containers. This is particularly useful if you want a thorough clean-up.</li><li><strong>Time filter</strong>: The <code>--filter "until=72h"</code> argument tells Docker to only remove images that are <strong>at least 72 hours old</strong>. This is a safety mechanism to avoid accidentally deleting recently built or pulled images that you might still need.</li></ul><h3 id="why-use-docker-image-prune">Why Use <code>docker image prune</code>?</h3><p>As you work with Docker, especially in development environments, it’s easy to end up with multiple images—old versions of your app, images you tested and discarded, etc. If left unchecked, these unused images can start consuming significant disk space. The <strong>main benefit</strong> of using <code>docker image prune</code> is to <strong>free up space</strong> by getting rid of images that are no longer necessary.</p><p>However, there’s more to consider:</p><ul><li><strong>Improve Performance</strong>: Keeping a clean Docker environment can speed up operations like building images and pulling new ones. A cluttered system slows things down.</li><li><strong>Avoid Confusion</strong>: If you have too many images lying around, it can become harder to manage and remember which ones are actually in use. Regularly pruning images helps avoid this confusion.</li></ul><h3 id="additional-considerations">Additional Considerations</h3><p>While <code>docker image prune -a --filter "until=72h"</code> is a powerful tool, it’s important to be aware of a few more points:</p><ul><li><strong>Containers and Volumes</strong>: This command only removes images, not containers or volumes. If you also have unused containers or volumes, you might want to look into commands like <code>docker container prune</code> or <code>docker volume prune</code> to clean those up as well.</li><li><strong>Running Containers</strong>: Docker will never remove images that are being used by running containers, so there’s no risk of accidentally breaking a currently active service. However, be careful when using the <code>-a</code> flag, as it will remove <strong>any image</strong> not tied to a running container, even if the image might be useful in the future.</li><li><strong>Use Filters Wisely</strong>: The <code>--filter</code> option is quite versatile. Beyond filtering by time (as in the example), you can also filter by things like labels. For example, if you’ve tagged certain images with a label during the build process, you can specify a filter to only remove images without that label. This gives you more granular control over what gets deleted.</li></ul><h3 id="how-to-safely-use-this-command">How to Safely Use This Command</h3><p>Before running <code>docker image prune -a</code>, especially with filters, it’s a good idea to check which images are currently in use. You can do this with the <code>docker images</code> command, which lists all the images on your system. By carefully inspecting the images, you can decide if you need them or not.</p><p>You can also run the prune command in <strong>dry-run mode</strong> by using the <code>--dry-run</code> flag, which shows what would be removed without actually deleting anything. This is helpful if you're unsure and want to preview the cleanup process before committing.</p><pre><code class="language-bash">docker image prune -a --filter "until=72h" --dry-run
-</code></pre><h3 id="finally">Finally</h3><p>Keeping your Docker environment clean doesn’t have to be a hassle. By using the <code>docker image prune -a --filter "until=72h"</code> command, you can quickly and safely remove unused images that are no longer needed. This helps <strong>free up space</strong>, improve performance, and keep things organized. Just remember to double-check what you're pruning and to use the filters effectively. With these simple tips, maintaining a clean Docker setup becomes a breeze.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you’re using Docker for development or deployment, you may have noticed that over time, your system begins to accumulate a large number of images. These images can take up a lot of space, especially if they are not used. To keep things tidy and your system running smoothly, Docker provides a simple yet powerful command to help you clean up: `docker image prune`.
 
+I have this command from my friend.
+
+```bash
+docker image prune -a --filter "until=72h"
+```
+
+In this article, we’ll dive into explanation and how to use this command and explore some important concepts that will help you maintain a clean and efficient Docker environment. Even if you're new to Docker, by the end of this guide, you’ll understand how to free up space by removing unused images and how to do it safely.
+
+### What is `docker image prune`?
+
+The `docker image prune` command is designed to remove **unused Docker images** from your system. Over time, as you build and run containers, Docker creates a variety of images, many of which might no longer be in use. Running this command tells Docker to automatically clean up those images, helping you save disk space.
+
+By default, `docker image prune` only removes **dangling images**—images that have no tags and are not referenced by any containers. However, you can customize its behavior to target more than just dangling images.
+
+### A Closer Look at the Command
+
+Let's break down the command you're curious about:
+
+```bash
+docker image prune -a --filter "until=72h"
+```
+
+This command does a few key things:
+
+-   **Remove unused images**: By running `docker image prune`, you're telling Docker to get rid of images that aren’t being used by any running or stopped containers.
+-   **All unused images, not just dangling ones**: The `-a` option, or `--all`, extends the scope of the pruning. Instead of just removing dangling images, it removes **all images** that are not being used by any containers. This is particularly useful if you want a thorough clean-up.
+-   **Time filter**: The `--filter "until=72h"` argument tells Docker to only remove images that are **at least 72 hours old**. This is a safety mechanism to avoid accidentally deleting recently built or pulled images that you might still need.
+
+### Why Use `docker image prune`?
+
+As you work with Docker, especially in development environments, it’s easy to end up with multiple images—old versions of your app, images you tested and discarded, etc. If left unchecked, these unused images can start consuming significant disk space. The **main benefit** of using `docker image prune` is to **free up space** by getting rid of images that are no longer necessary.
+
+However, there’s more to consider:
+
+-   **Improve Performance**: Keeping a clean Docker environment can speed up operations like building images and pulling new ones. A cluttered system slows things down.
+-   **Avoid Confusion**: If you have too many images lying around, it can become harder to manage and remember which ones are actually in use. Regularly pruning images helps avoid this confusion.
+
+### Additional Considerations
+
+While `docker image prune -a --filter "until=72h"` is a powerful tool, it’s important to be aware of a few more points:
+
+-   **Containers and Volumes**: This command only removes images, not containers or volumes. If you also have unused containers or volumes, you might want to look into commands like `docker container prune` or `docker volume prune` to clean those up as well.
+-   **Running Containers**: Docker will never remove images that are being used by running containers, so there’s no risk of accidentally breaking a currently active service. However, be careful when using the `-a` flag, as it will remove **any image** not tied to a running container, even if the image might be useful in the future.
+-   **Use Filters Wisely**: The `--filter` option is quite versatile. Beyond filtering by time (as in the example), you can also filter by things like labels. For example, if you’ve tagged certain images with a label during the build process, you can specify a filter to only remove images without that label. This gives you more granular control over what gets deleted.
+
+### How to Safely Use This Command
+
+Before running `docker image prune -a`, especially with filters, it’s a good idea to check which images are currently in use. You can do this with the `docker images` command, which lists all the images on your system. By carefully inspecting the images, you can decide if you need them or not.
+
+You can also run the prune command in **dry-run mode** by using the `--dry-run` flag, which shows what would be removed without actually deleting anything. This is helpful if you're unsure and want to preview the cleanup process before committing.
+
+```bash
+docker image prune -a --filter "until=72h" --dry-run
+```
+
+### Finally
+
+Keeping your Docker environment clean doesn’t have to be a hassle. By using the `docker image prune -a --filter "until=72h"` command, you can quickly and safely remove unused images that are no longer needed. This helps **free up space**, improve performance, and keep things organized. Just remember to double-check what you're pruning and to use the filters effectively. With these simple tips, maintaining a clean Docker setup becomes a breeze.

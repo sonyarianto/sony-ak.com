@@ -5,8 +5,100 @@ description: "In software development, there’s a saying borrowed from the worl
 tags: ["javascript","testing","performance","deployment","design"]
 ---
 
-<p>In software development, there’s a saying borrowed from the world of clothing: the <strong>“belt and braces”</strong> (or <em>“belt and suspenders”</em> in the US). It’s the idea of using <strong>redundant layers of protection</strong> to make absolutely sure something doesn't fail.</p><p>Sounds excessive? Maybe.<br>But in practice? It’s often the reason your app didn’t crash, your data didn’t disappear, or your team didn’t spend Saturday night firefighting.</p><p>Let’s walk through <strong>how this principle applies</strong> to different layers of modern software engineering—from code to infrastructure, and even manual QA.</p><hr><h3 id="1-in-programming-guard-rails-on-guard-rails"><strong>1. In Programming: Guard Rails on Guard Rails</strong></h3><p>Let’s start with the basics.</p><p>Take a form input.</p><p>A junior developer might just add a <strong>JavaScript validation</strong> rule that says, “this field is required.”<br>A more experienced one will <strong>add the same validation on the backend</strong>—because they know that JavaScript can be bypassed or fail silently.</p><p><strong>Why?</strong><br>Because if you trust only the client, you’ve built a bridge without checking if both ends meet.</p><p>Other examples of <strong>belt and braces in code</strong>:</p><ul><li><strong>Validating data types in the code and the database schema</strong> (e.g., using a <code>CHECK</code> constraint <em>and</em> type checking in the app).</li><li><strong>Using try/catch blocks</strong> <em>and</em> validating inputs before executing critical operations.</li><li><strong>Saving data to a database</strong> <em>and</em> backing it up via <strong>write-ahead logs</strong>, <strong>file-based archives</strong>, or <strong>Kafka topics</strong>.</li></ul><hr><h3 id="2-in-system-design-redundancy-means-resilience"><strong>2. In System Design: Redundancy Means Resilience</strong></h3><p>System architects love this approach—and for good reason.</p><p>When you’re dealing with <strong>critical infrastructure</strong>, a single point of failure is not just a possibility; it’s a <strong>time bomb</strong>.</p><p>Here’s how belt and braces shows up in infrastructure:</p><ul><li><strong>Load balancers + Auto-healing groups</strong>: If one instance fails, traffic is rerouted and a replacement spins up.</li><li><strong>Database replicas + backups</strong>: Even if a replica fails, you still have a backup from 30 minutes ago.</li><li><strong>Multi-region deployments + DNS failover</strong>: If a whole region goes down (yes, it happens), users are seamlessly routed elsewhere.</li></ul><p>Even <strong>error logging</strong> follows this mindset:</p><ul><li>Log to disk? Fine. But <strong>also ship logs to a centralized service</strong> like ELK or Datadog.</li><li>One alerting channel? Dangerous. <strong>Set up backup alerts via Slack <em>and</em> email <em>and</em> PagerDuty.</strong></li></ul><hr><h3 id="3-in-manual-qa-redundancy-helps-catch-the-edge-cases"><strong>3. In Manual QA: Redundancy Helps Catch the Edge Cases</strong></h3><p>Quality assurance is more than “just testing.” It’s about <strong>catching what no one else thought about.</strong></p><p>A solid QA team uses the belt and braces mindset:</p><ul><li><strong>Scripted tests</strong> ensure that expected flows are covered.</li><li><strong>Exploratory testing</strong> catches the unexpected.</li><li>Testers often <strong>record screen sessions</strong> <em>and</em> write detailed bug reports—so even if one detail is missed, the other fills the gap.</li></ul><p>Good QA teams also <strong>retest critical flows before and after deployment</strong>, even if they passed CI.<br>Why? Because sometimes, <strong>things break in prod</strong> that don't show in staging. CDNs, caching, browser versions—you name it.</p><hr><h3 id="4-bonus-layer-documentation-and-human-handoffs"><strong>4. Bonus Layer: Documentation and Human Handoffs</strong></h3><p>Sometimes redundancy isn’t technical—it’s <strong>process-oriented</strong>.</p><ul><li>You write a script? <strong>Document how to use it.</strong></li><li>You do a critical deployment? <strong>Tag someone else to review.</strong></li><li>You have a failover plan? <strong>Test it quarterly.</strong><br>(Yes, it's annoying. But so is not knowing what to do during a real outage.)</li></ul><p>This kind of discipline might feel excessive… until something goes wrong.</p><hr><h3 id="5-considerations-when-is-it-too-much"><strong>5. Considerations: When Is It <em>Too Much</em>?</strong></h3><p>The belt and braces approach should <strong>not</strong> be mistaken for overengineering.<br>The goal isn’t to build <em>three</em> backup systems for every minor function—it’s to <strong>apply redundancy where failure would be costly</strong>.</p><p>Ask:</p><ul><li><em>What would break if this failed?</em></li><li><em>What’s the cost of that failure—data loss, downtime, user frustration?</em></li><li><em>How easy is it to add a secondary safety net?</em></li></ul><p>If the answers suggest <strong>high risk + low effort</strong>, it’s a perfect place to double up.</p><hr><h3 id="finally"><strong>Finally</strong></h3><p>The “belt and braces” mindset isn’t about paranoia.<br>It’s about <strong>resilience</strong>, <strong>professionalism</strong>, and the maturity to accept that things will fail—so you design with that in mind.</p><p>In a world where users expect 99.99% uptime, where every bug can be a tweet, and where <em>data loss can end careers</em>, <strong>redundancy isn’t optional. It’s smart.</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In software development, there’s a saying borrowed from the world of clothing: the **“belt and braces”** (or _“belt and suspenders”_ in the US). It’s the idea of using **redundant layers of protection** to make absolutely sure something doesn't fail.
 
+Sounds excessive? Maybe.  
+But in practice? It’s often the reason your app didn’t crash, your data didn’t disappear, or your team didn’t spend Saturday night firefighting.
+
+Let’s walk through **how this principle applies** to different layers of modern software engineering—from code to infrastructure, and even manual QA.
+
+* * *
+
+### **1\. In Programming: Guard Rails on Guard Rails**
+
+Let’s start with the basics.
+
+Take a form input.
+
+A junior developer might just add a **JavaScript validation** rule that says, “this field is required.”  
+A more experienced one will **add the same validation on the backend**—because they know that JavaScript can be bypassed or fail silently.
+
+**Why?**  
+Because if you trust only the client, you’ve built a bridge without checking if both ends meet.
+
+Other examples of **belt and braces in code**:
+
+-   **Validating data types in the code and the database schema** (e.g., using a `CHECK` constraint _and_ type checking in the app).
+-   **Using try/catch blocks** _and_ validating inputs before executing critical operations.
+-   **Saving data to a database** _and_ backing it up via **write-ahead logs**, **file-based archives**, or **Kafka topics**.
+
+* * *
+
+### **2\. In System Design: Redundancy Means Resilience**
+
+System architects love this approach—and for good reason.
+
+When you’re dealing with **critical infrastructure**, a single point of failure is not just a possibility; it’s a **time bomb**.
+
+Here’s how belt and braces shows up in infrastructure:
+
+-   **Load balancers + Auto-healing groups**: If one instance fails, traffic is rerouted and a replacement spins up.
+-   **Database replicas + backups**: Even if a replica fails, you still have a backup from 30 minutes ago.
+-   **Multi-region deployments + DNS failover**: If a whole region goes down (yes, it happens), users are seamlessly routed elsewhere.
+
+Even **error logging** follows this mindset:
+
+-   Log to disk? Fine. But **also ship logs to a centralized service** like ELK or Datadog.
+-   One alerting channel? Dangerous. **Set up backup alerts via Slack _and_ email _and_ PagerDuty.**
+
+* * *
+
+### **3\. In Manual QA: Redundancy Helps Catch the Edge Cases**
+
+Quality assurance is more than “just testing.” It’s about **catching what no one else thought about.**
+
+A solid QA team uses the belt and braces mindset:
+
+-   **Scripted tests** ensure that expected flows are covered.
+-   **Exploratory testing** catches the unexpected.
+-   Testers often **record screen sessions** _and_ write detailed bug reports—so even if one detail is missed, the other fills the gap.
+
+Good QA teams also **retest critical flows before and after deployment**, even if they passed CI.  
+Why? Because sometimes, **things break in prod** that don't show in staging. CDNs, caching, browser versions—you name it.
+
+* * *
+
+### **4\. Bonus Layer: Documentation and Human Handoffs**
+
+Sometimes redundancy isn’t technical—it’s **process-oriented**.
+
+-   You write a script? **Document how to use it.**
+-   You do a critical deployment? **Tag someone else to review.**
+-   You have a failover plan? **Test it quarterly.**  
+    (Yes, it's annoying. But so is not knowing what to do during a real outage.)
+
+This kind of discipline might feel excessive… until something goes wrong.
+
+* * *
+
+### **5\. Considerations: When Is It _Too Much_?**
+
+The belt and braces approach should **not** be mistaken for overengineering.  
+The goal isn’t to build _three_ backup systems for every minor function—it’s to **apply redundancy where failure would be costly**.
+
+Ask:
+
+-   _What would break if this failed?_
+-   _What’s the cost of that failure—data loss, downtime, user frustration?_
+-   _How easy is it to add a secondary safety net?_
+
+If the answers suggest **high risk + low effort**, it’s a perfect place to double up.
+
+* * *
+
+### **Finally**
+
+The “belt and braces” mindset isn’t about paranoia.  
+It’s about **resilience**, **professionalism**, and the maturity to accept that things will fail—so you design with that in mind.
+
+In a world where users expect 99.99% uptime, where every bug can be a tweet, and where _data loss can end careers_, **redundancy isn’t optional. It’s smart.**

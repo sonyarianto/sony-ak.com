@@ -5,50 +5,147 @@ description: "In JavaScript, when writing functions, it’s common to pass multi
 tags: ["javascript","typescript","clean-code"]
 ---
 
-<p>In JavaScript, when writing functions, it’s common to pass multiple arguments directly to the function. However, there’s a more <strong>efficient, readable, and flexible</strong> way to do this—pass your arguments as an <strong>object</strong> instead of using positional arguments. This small shift in how you write functions can have a huge impact on code clarity and maintainability.</p><p>Here’s why this approach works so well and why your teammates (and future you!) will thank you.</p><h2 id="what-does-it-look-like">What Does It Look Like?</h2><h3 id="positional-arguments-the-old-way">Positional Arguments (The "Old" Way)</h3><pre><code class="language-javascript">function createUser(name, age, isAdmin) {
+In JavaScript, when writing functions, it’s common to pass multiple arguments directly to the function. However, there’s a more **efficient, readable, and flexible** way to do this—pass your arguments as an **object** instead of using positional arguments. This small shift in how you write functions can have a huge impact on code clarity and maintainability.
+
+Here’s why this approach works so well and why your teammates (and future you!) will thank you.
+
+## What Does It Look Like?
+
+### Positional Arguments (The "Old" Way)
+
+```javascript
+function createUser(name, age, isAdmin) {
   return { name, age, isAdmin };
 }
 
 // Calling the function
 const user = createUser("Alice", 25, true);
-</code></pre><p>While this works, there’s one immediate issue—without looking at the function definition, <strong>it’s unclear what the boolean <code>true</code> represents.</strong> Is it <code>isAdmin</code> or something else? You’ll have to constantly refer back to the function definition.</p><h3 id="passing-arguments-as-an-object-the-better-way">Passing Arguments as an Object (The Better Way)</h3><pre><code class="language-javascript">function createUser({ name, age, isAdmin }) {
+```
+
+While this works, there’s one immediate issue—without looking at the function definition, **it’s unclear what the boolean `true` represents.** Is it `isAdmin` or something else? You’ll have to constantly refer back to the function definition.
+
+### Passing Arguments as an Object (The Better Way)
+
+```javascript
+function createUser({ name, age, isAdmin }) {
   return { name, age, isAdmin };
 }
 
 // Calling the function
 const user = createUser({ name: "Alice", age: 25, isAdmin: true });
-</code></pre><p><strong>What’s better here?</strong></p><ul><li>The <strong>property names</strong> (like <code>name</code>, <code>age</code>, and <code>isAdmin</code>) make the function’s usage self-explanatory.</li><li><strong>Optional parameters</strong> become much easier to handle, which we’ll discuss shortly.</li></ul><p>The <strong>order doesn’t matter anymore</strong>, so you can pass the arguments in any sequence:</p><pre><code class="language-javascript">const user = createUser({ isAdmin: true, name: "Alice", age: 25 });
-</code></pre><h2 id="why-passing-arguments-as-an-object-is-better">Why Passing Arguments as an Object Is Better</h2><h3 id="1-improves-clarity">1. <strong>Improves Clarity</strong></h3><p>When you pass arguments as an object, the function call becomes more <strong>self-documenting</strong>. You don’t need to dig into the function definition or write extra comments to explain what each argument means.</p><p>Compare these two calls:</p><pre><code class="language-javascript">createUser("Alice", 25, true);  // What does true mean?
+```
+
+**What’s better here?**
+
+-   The **property names** (like `name`, `age`, and `isAdmin`) make the function’s usage self-explanatory.
+-   **Optional parameters** become much easier to handle, which we’ll discuss shortly.
+
+The **order doesn’t matter anymore**, so you can pass the arguments in any sequence:
+
+```javascript
+const user = createUser({ isAdmin: true, name: "Alice", age: 25 });
+```
+
+## Why Passing Arguments as an Object Is Better
+
+### 1\. **Improves Clarity**
+
+When you pass arguments as an object, the function call becomes more **self-documenting**. You don’t need to dig into the function definition or write extra comments to explain what each argument means.
+
+Compare these two calls:
+
+```javascript
+createUser("Alice", 25, true);  // What does true mean?
 
 createUser({ name: "Alice", age: 25, isAdmin: true }); // Instantly clear
-</code></pre><p>The second example is <strong>easier to read and understand at a glance.</strong></p><h3 id="2-order-of-arguments-doesnt-matter">2. <strong>Order of Arguments Doesn't Matter</strong></h3><p>When passing arguments as an object, the order becomes irrelevant. This is especially helpful for functions with many parameters.</p><p>Example:</p><pre><code class="language-javascript">// Works the same
+```
+
+The second example is **easier to read and understand at a glance.**
+
+### 2\. **Order of Arguments Doesn't Matter**
+
+When passing arguments as an object, the order becomes irrelevant. This is especially helpful for functions with many parameters.
+
+Example:
+
+```javascript
+// Works the same
 const user1 = createUser({ name: "Alice", age: 25, isAdmin: true });
 const user2 = createUser({ isAdmin: true, name: "Alice", age: 25 });
-</code></pre><p>This eliminates the risk of mixing up arguments when calling a function.</p><h3 id="3-optional-arguments-are-a-breeze">3. <strong>Optional Arguments Are a Breeze</strong></h3><p>When your function has optional parameters, object destructuring makes it much easier to handle default values. Here’s an example:</p><pre><code class="language-javascript">function createUser({ name, age, isAdmin = false }) {
+```
+
+This eliminates the risk of mixing up arguments when calling a function.
+
+### 3\. **Optional Arguments Are a Breeze**
+
+When your function has optional parameters, object destructuring makes it much easier to handle default values. Here’s an example:
+
+```javascript
+function createUser({ name, age, isAdmin = false }) {
   return { name, age, isAdmin };
 }
 
 // You can omit optional properties
 const user = createUser({ name: "Alice", age: 25 }); // isAdmin defaults to false
-</code></pre><p>In contrast, using positional arguments would require additional effort to specify <code>undefined</code> for skipped parameters.</p><h3 id="4-easier-refactoring">4. <strong>Easier Refactoring</strong></h3><p>As your application grows, your functions may need additional parameters. Passing arguments as an object allows you to add new properties without affecting existing calls. This <strong>avoids breaking changes.</strong></p><p>Example:</p><pre><code class="language-javascript">function createUser({ name, age, isAdmin, role = "user" }) {
+```
+
+In contrast, using positional arguments would require additional effort to specify `undefined` for skipped parameters.
+
+### 4\. **Easier Refactoring**
+
+As your application grows, your functions may need additional parameters. Passing arguments as an object allows you to add new properties without affecting existing calls. This **avoids breaking changes.**
+
+Example:
+
+```javascript
+function createUser({ name, age, isAdmin, role = "user" }) {
   return { name, age, isAdmin, role };
 }
 
 // Existing calls still work
 const user = createUser({ name: "Alice", age: 25, isAdmin: true });
-</code></pre><p>With positional arguments, you’d need to update all the places where the function is called.</p><h2 id="additional-tips-and-considerations">Additional Tips and Considerations</h2><h3 id="1-use-default-values-for-better-flexibility">1. <strong>Use Default Values for Better Flexibility</strong></h3><p>When destructuring the object, you can set default values for parameters to avoid undefined errors:</p><pre><code class="language-javascript">function createUser({ name, age, isAdmin = false } = {}) {
+```
+
+With positional arguments, you’d need to update all the places where the function is called.
+
+## Additional Tips and Considerations
+
+### 1\. **Use Default Values for Better Flexibility**
+
+When destructuring the object, you can set default values for parameters to avoid undefined errors:
+
+```javascript
+function createUser({ name, age, isAdmin = false } = {}) {
   return { name, age, isAdmin };
 }
 
 // Safe even if no arguments are passed
 const user = createUser();
-</code></pre><p>This prevents errors like “Cannot destructure property ‘name’ of ‘undefined’.”</p><h3 id="2-validate-input-to-avoid-unexpected-behavior">2. <strong>Validate Input to Avoid Unexpected Behavior</strong></h3><p>While using objects is powerful, it’s important to validate the input to ensure all required properties are present.</p><p>Example:</p><pre><code class="language-javascript">function createUser({ name, age, isAdmin } = {}) {
+```
+
+This prevents errors like “Cannot destructure property ‘name’ of ‘undefined’.”
+
+### 2\. **Validate Input to Avoid Unexpected Behavior**
+
+While using objects is powerful, it’s important to validate the input to ensure all required properties are present.
+
+Example:
+
+```javascript
+function createUser({ name, age, isAdmin } = {}) {
   if (!name || !age) {
     throw new Error("Name and age are required.");
   }
   return { name, age, isAdmin };
 }
-</code></pre><h3 id="3-don%E2%80%99t-overdo-it">3. <strong>Don’t Overdo It</strong></h3><p>While this approach works great for functions with multiple parameters, <strong>don’t use it unnecessarily for simple functions</strong> with one or two arguments. For instance, this would be overkill:</p><pre><code class="language-javascript">// Over-engineered for a single argument
+```
+
+### 3\. **Don’t Overdo It**
+
+While this approach works great for functions with multiple parameters, **don’t use it unnecessarily for simple functions** with one or two arguments. For instance, this would be overkill:
+
+```javascript
+// Over-engineered for a single argument
 function greet({ name }) {
   return `Hello, ${name}!`;
 }
@@ -57,7 +154,14 @@ function greet({ name }) {
 function greet(name) {
   return `Hello, ${name}!`;
 }
-</code></pre><h3 id="4-combine-with-typescript-for-even-more-clarity">4. <strong>Combine with TypeScript for Even More Clarity</strong></h3><p>If you’re using TypeScript, you can define a type or interface for the object parameter to make your code even more robust:</p><pre><code class="language-typescript">interface CreateUserParams {
+```
+
+### 4\. **Combine with TypeScript for Even More Clarity**
+
+If you’re using TypeScript, you can define a type or interface for the object parameter to make your code even more robust:
+
+```typescript
+interface CreateUserParams {
   name: string;
   age: number;
   isAdmin?: boolean;
@@ -66,8 +170,19 @@ function greet(name) {
 function createUser({ name, age, isAdmin = false }: CreateUserParams) {
   return { name, age, isAdmin };
 }
-</code></pre><p>This provides autocomplete and compile-time checks, making the development experience even better.</p><h2 id="finally">Finally</h2><p>Switching to passing arguments as an object in JavaScript functions is a simple yet powerful way to write <strong>cleaner, more maintainable code.</strong> Here’s a quick recap of the benefits:</p><ul><li><strong>Improved readability</strong></li><li><strong>Order-independent arguments</strong></li><li><strong>Easier handling of optional parameters</strong></li><li><strong>Safe and flexible refactoring</strong></li></ul><p>However, as with any practice, use it thoughtfully. For small, simple functions, sticking to regular arguments is perfectly fine. But when your functions grow in complexity, or you want to future-proof your code, passing arguments as an object is the way to go!</p><p>Try it in your next project and see the difference. Your teammates will thank you! 🙌</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This provides autocomplete and compile-time checks, making the development experience even better.
+
+## Finally
+
+Switching to passing arguments as an object in JavaScript functions is a simple yet powerful way to write **cleaner, more maintainable code.** Here’s a quick recap of the benefits:
+
+-   **Improved readability**
+-   **Order-independent arguments**
+-   **Easier handling of optional parameters**
+-   **Safe and flexible refactoring**
+
+However, as with any practice, use it thoughtfully. For small, simple functions, sticking to regular arguments is perfectly fine. But when your functions grow in complexity, or you want to future-proof your code, passing arguments as an object is the way to go!
+
+Try it in your next project and see the difference. Your teammates will thank you! 🙌

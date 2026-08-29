@@ -5,58 +5,171 @@ description: "When your Linux system feels sluggish, unresponsive, or you simply
 tags: ["bash","linux","performance","deployment","debugging"]
 ---
 
-<p>When your Linux system feels sluggish, unresponsive, or you simply want to <strong>understand what's going on under the hood</strong>, there are four powerful command-line tools that every sysadmin and developer should know: <strong><code>top</code>, <code>htop</code>, <code>iotop</code>, and <code>dmesg</code></strong>.</p><p>Each of these tools gives you a unique window into your system’s health—from CPU and memory consumption to disk usage and hardware/kernel-level messages. While they seem technical at first, once you know how to read and use them, they become your <strong>first line of defense</strong> in diagnosing performance issues.</p><hr><h2 id="%F0%9F%A7%A0-1-top-the-classic-real-time-process-viewer">🧠 1. <code>top</code>: The Classic Real-Time Process Viewer</h2><p><code>top</code> is one of the oldest and most commonly used Linux utilities. It shows <strong>real-time statistics</strong> of system processes including <strong>CPU, memory, and load averages</strong>.</p><h3 id="%F0%9F%94%8D-key-features">🔍 Key Features:</h3><ul><li>Lists all running processes sorted by <strong>CPU usage by default</strong>.</li><li>Shows system load averages and total memory/swap usage.</li><li>Updates the data in real-time.</li></ul><h3 id="%E2%9C%85-useful-shortcuts">✅ Useful Shortcuts:</h3><ul><li><strong><code>P</code></strong>: Sort by CPU usage.</li><li><strong><code>M</code></strong>: Sort by memory usage.</li><li><strong><code>1</code></strong>: Display individual CPU cores.</li><li><strong><code>k</code></strong>: Kill a process by entering its PID.</li><li><strong><code>R</code></strong>: Reverse the current sort order.</li></ul><h3 id="%F0%9F%92%A1-hidden-tip">💡 Hidden Tip:</h3><p>Want to monitor just one process? Use:</p><pre><code class="language-bash">top -p &lt;PID&gt;
-</code></pre><hr><h2 id="%F0%9F%8E%A8-2-htop-the-visual-upgrade-to-top">🎨 2. <code>htop</code>: The Visual Upgrade to <code>top</code></h2><p>If you find <code>top</code> too dense or hard to read, meet <code><strong>htop</strong></code>, the user-friendly, interactive version of <code>top</code>. It’s a <strong>colorful, scrollable, and mouse-supported tool</strong> that makes system monitoring a breeze.</p><h3 id="%F0%9F%8C%9F-highlights">🌟 Highlights:</h3><ul><li>Tree view for processes using <strong>F5</strong>, useful for seeing parent-child relationships.</li><li>Easy navigation with <strong>arrow keys</strong> or mouse.</li><li>Kill processes via <strong>F9</strong> and select signal (e.g., <code>SIGTERM</code>, <code>SIGKILL</code>).</li></ul><h3 id="%F0%9F%9B%A0-pro-tips">🛠 Pro Tips:</h3><ul><li>Use <strong>F6</strong> to dynamically change sort order.</li></ul><p>Launch sorted by memory:</p><pre><code class="language-bash">htop --sort-key=PERCENT_MEM
-</code></pre><hr><h2 id="%F0%9F%92%BD-3-iotop-find-the-disk-io-hogs">💽 3. <code>iotop</code>: Find the Disk I/O Hogs</h2><p>Sometimes your CPU and RAM look fine, but the system still feels slow. That’s when <strong><code>iotop</code></strong> comes in. It shows you <strong>which processes are doing the most disk I/O</strong>—something <code>top</code> and <code>htop</code> can’t do well.</p><blockquote><strong>Note:</strong> Requires <code>sudo</code> to access detailed I/O stats.</blockquote><h3 id="%F0%9F%9A%80-basic-usage">🚀 Basic Usage:</h3><pre><code class="language-bash">sudo iotop
-</code></pre><h3 id="%F0%9F%A7%B0-pro-options">🧰 Pro Options:</h3><ul><li><strong><code>-a</code></strong>: Show accumulated I/O instead of live numbers.</li></ul><p><strong><code>-o</code></strong>: Only show processes actually doing I/O:</p><pre><code class="language-bash">sudo iotop -o
-</code></pre><hr><h2 id="%F0%9F%A7%AC-4-dmesg-dive-into-kernel-and-hardware-messages">🧬 4. <code>dmesg</code>: Dive into Kernel and Hardware Messages</h2><p><code>dmesg</code> displays the <strong>kernel ring buffer</strong>, which logs hardware messages, driver issues, and system boot logs. It’s a <strong>powerful tool for debugging hardware problems</strong>, disk failures, driver issues, or sudden system crashes.</p><h3 id="%F0%9F%94%8D-common-use">🔍 Common Use:</h3><pre><code class="language-bash">dmesg | less
-</code></pre><h3 id="%F0%9F%A7%AA-pro-tips">🧪 Pro Tips:</h3><p>Combine with <code>tail</code> for real-time hardware events:</p><pre><code class="language-bash">dmesg --follow
-</code></pre><p>Filter by keyword:</p><pre><code class="language-bash">dmesg | grep -i error
-</code></pre><p>Use <strong><code>-T</code></strong> to convert timestamps to human-readable format:</p><pre><code class="language-bash">dmesg -T
-</code></pre><hr><h2 id="%F0%9F%A7%AD-real-world-scenario-investigating-a-slow-server">🧭 Real-World Scenario: Investigating a Slow Server</h2><p>Let’s say your server is <strong>unresponsive or lagging</strong>. Here's how you might debug it:</p><ol><li><strong>Check Load Average</strong> in <code>top</code>:<br>Look at the numbers at the top. If they’re consistently higher than your core count, your system might be overloaded.</li></ol><p><strong>Check Kernel Logs</strong>:</p><pre><code class="language-bash">dmesg -T | grep -i error
-</code></pre><p>Look for disk errors, memory failures, or driver issues.</p><p><strong>Check Disk I/O</strong>:</p><pre><code class="language-bash">sudo iotop -o
-</code></pre><p>Is some process writing/reading too much?</p><p><strong>Check CPU/memory</strong>:</p><pre><code class="language-bash">htop
-</code></pre><p>See if any process is maxing out resources.</p><hr><h2 id="%F0%9F%92%A1-bonus-tools-worth-exploring">💡 Bonus Tools Worth Exploring</h2><ul><li><code><strong>glances</strong></code>: Combines <code>top</code>, <code>iotop</code>, <code>df</code>, and more into one dashboard.</li><li><code><strong>atop</strong></code>: Advanced version of <code>top</code>, ideal for historical performance logging.</li><li><strong><code>vmstat</code> / <code>iostat</code></strong>: For detailed memory, process, and I/O stats over time.</li></ul><hr><h2 id="%F0%9F%93%8C-final-tips-best-practices">📌 Final Tips &amp; Best Practices</h2><ul><li>Run these tools as <strong>root</strong> (or via <code>sudo</code>) when possible, especially <code>iotop</code> and <code>dmesg</code>.</li><li>Combine tools for better insights. Example: <code>htop</code> + <code>iotop</code> for full process and I/O context.</li><li>If monitoring production systems, consider installing <strong>persistent monitoring tools</strong> like <strong>Prometheus + Grafana</strong>, or <strong>Netdata</strong>.</li></ul><hr><h2 id="%F0%9F%A7%A9-summary-table">🧩 Summary Table</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Tool</th>
-<th>Focus Area</th>
-<th>Needs <code inline="">sudo</code></th>
-<th>Highlight</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code inline="">top</code></td>
-<td>CPU/Memory</td>
-<td>❌</td>
-<td>Lightweight, quick overview</td>
-</tr>
-<tr>
-<td><code inline="">htop</code></td>
-<td>Interactive <code inline="">top</code></td>
-<td>❌ / ✅ for full info</td>
-<td>Tree view, better UX</td>
-</tr>
-<tr>
-<td><code inline="">iotop</code></td>
-<td>Disk I/O</td>
-<td>✅</td>
-<td>Find disk-heavy processes</td>
-</tr>
-<tr>
-<td><code inline="">dmesg</code></td>
-<td>Kernel/Hardware</td>
-<td>❌ / ✅ for more logs</td>
-<td>Debug boot &amp; hardware issues</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="%F0%9F%94%9A-finally">🔚 Finally</h2><p><strong>Learning these tools is an investment.</strong> They’re not just for sysadmins—they’re for any developer who wants to understand what’s happening in their machine or server. Whether you’re debugging a laggy backend, investigating high disk usage, or preparing for production deployment, mastering <code>top</code>, <code>htop</code>, <code>iotop</code>, and <code>dmesg</code> will give you <strong>confidence and clarity</strong> in navigating your Linux environment.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When your Linux system feels sluggish, unresponsive, or you simply want to **understand what's going on under the hood**, there are four powerful command-line tools that every sysadmin and developer should know: **`top`, `htop`, `iotop`, and `dmesg`**.
 
+Each of these tools gives you a unique window into your system’s health—from CPU and memory consumption to disk usage and hardware/kernel-level messages. While they seem technical at first, once you know how to read and use them, they become your **first line of defense** in diagnosing performance issues.
+
+* * *
+
+## 🧠 1. `top`: The Classic Real-Time Process Viewer
+
+`top` is one of the oldest and most commonly used Linux utilities. It shows **real-time statistics** of system processes including **CPU, memory, and load averages**.
+
+### 🔍 Key Features:
+
+-   Lists all running processes sorted by **CPU usage by default**.
+-   Shows system load averages and total memory/swap usage.
+-   Updates the data in real-time.
+
+### ✅ Useful Shortcuts:
+
+-   **`P`**: Sort by CPU usage.
+-   **`M`**: Sort by memory usage.
+-   **`1`**: Display individual CPU cores.
+-   **`k`**: Kill a process by entering its PID.
+-   **`R`**: Reverse the current sort order.
+
+### 💡 Hidden Tip:
+
+Want to monitor just one process? Use:
+
+```bash
+top -p <PID>
+```
+
+* * *
+
+## 🎨 2. `htop`: The Visual Upgrade to `top`
+
+If you find `top` too dense or hard to read, meet `**htop**`, the user-friendly, interactive version of `top`. It’s a **colorful, scrollable, and mouse-supported tool** that makes system monitoring a breeze.
+
+### 🌟 Highlights:
+
+-   Tree view for processes using **F5**, useful for seeing parent-child relationships.
+-   Easy navigation with **arrow keys** or mouse.
+-   Kill processes via **F9** and select signal (e.g., `SIGTERM`, `SIGKILL`).
+
+### 🛠 Pro Tips:
+
+-   Use **F6** to dynamically change sort order.
+
+Launch sorted by memory:
+
+```bash
+htop --sort-key=PERCENT_MEM
+```
+
+* * *
+
+## 💽 3. `iotop`: Find the Disk I/O Hogs
+
+Sometimes your CPU and RAM look fine, but the system still feels slow. That’s when **`iotop`** comes in. It shows you **which processes are doing the most disk I/O**—something `top` and `htop` can’t do well.
+
+> **Note:** Requires `sudo` to access detailed I/O stats.
+
+### 🚀 Basic Usage:
+
+```bash
+sudo iotop
+```
+
+### 🧰 Pro Options:
+
+-   **`-a`**: Show accumulated I/O instead of live numbers.
+
+**`-o`**: Only show processes actually doing I/O:
+
+```bash
+sudo iotop -o
+```
+
+* * *
+
+## 🧬 4. `dmesg`: Dive into Kernel and Hardware Messages
+
+`dmesg` displays the **kernel ring buffer**, which logs hardware messages, driver issues, and system boot logs. It’s a **powerful tool for debugging hardware problems**, disk failures, driver issues, or sudden system crashes.
+
+### 🔍 Common Use:
+
+```bash
+dmesg | less
+```
+
+### 🧪 Pro Tips:
+
+Combine with `tail` for real-time hardware events:
+
+```bash
+dmesg --follow
+```
+
+Filter by keyword:
+
+```bash
+dmesg | grep -i error
+```
+
+Use **`-T`** to convert timestamps to human-readable format:
+
+```bash
+dmesg -T
+```
+
+* * *
+
+## 🧭 Real-World Scenario: Investigating a Slow Server
+
+Let’s say your server is **unresponsive or lagging**. Here's how you might debug it:
+
+1.  **Check Load Average** in `top`:  
+    Look at the numbers at the top. If they’re consistently higher than your core count, your system might be overloaded.
+
+**Check Kernel Logs**:
+
+```bash
+dmesg -T | grep -i error
+```
+
+Look for disk errors, memory failures, or driver issues.
+
+**Check Disk I/O**:
+
+```bash
+sudo iotop -o
+```
+
+Is some process writing/reading too much?
+
+**Check CPU/memory**:
+
+```bash
+htop
+```
+
+See if any process is maxing out resources.
+
+* * *
+
+## 💡 Bonus Tools Worth Exploring
+
+-   `**glances**`: Combines `top`, `iotop`, `df`, and more into one dashboard.
+-   `**atop**`: Advanced version of `top`, ideal for historical performance logging.
+-   **`vmstat` / `iostat`**: For detailed memory, process, and I/O stats over time.
+
+* * *
+
+## 📌 Final Tips & Best Practices
+
+-   Run these tools as **root** (or via `sudo`) when possible, especially `iotop` and `dmesg`.
+-   Combine tools for better insights. Example: `htop` + `iotop` for full process and I/O context.
+-   If monitoring production systems, consider installing **persistent monitoring tools** like **Prometheus + Grafana**, or **Netdata**.
+
+* * *
+
+## 🧩 Summary Table
+
+* * *
+
+## 🔚 Finally
+
+**Learning these tools is an investment.** They’re not just for sysadmins—they’re for any developer who wants to understand what’s happening in their machine or server. Whether you’re debugging a laggy backend, investigating high disk usage, or preparing for production deployment, mastering `top`, `htop`, `iotop`, and `dmesg` will give you **confidence and clarity** in navigating your Linux environment.

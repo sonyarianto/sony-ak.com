@@ -5,22 +5,116 @@ description: "Git is an essential tool for version control, allowing developers 
 tags: ["git","open-source","productivity","email"]
 ---
 
-<p>Git is an essential tool for version control, allowing developers to collaborate efficiently. One of the first things you need to do when setting up Git is configuring your <strong>username</strong> and <strong>email</strong>. This ensures that your commits are correctly attributed to you. Let’s walk through the process step by step and explore some additional considerations.</p><hr><h2 id="1-setting-your-git-username-and-email"><strong>1. Setting Your Git Username and Email</strong></h2><p>Git allows you to set your <strong>name and email globally</strong> (for all repositories) or locally (for a specific repository). Here’s how:</p><h3 id="setting-global-username-and-email"><strong>Setting Global Username and Email</strong></h3><p>If you want Git to use the same name and email across all your projects, use the following commands:</p><pre><code class="language-sh">git config --global user.name "Your Name"
+Git is an essential tool for version control, allowing developers to collaborate efficiently. One of the first things you need to do when setting up Git is configuring your **username** and **email**. This ensures that your commits are correctly attributed to you. Let’s walk through the process step by step and explore some additional considerations.
+
+* * *
+
+## **1\. Setting Your Git Username and Email**
+
+Git allows you to set your **name and email globally** (for all repositories) or locally (for a specific repository). Here’s how:
+
+### **Setting Global Username and Email**
+
+If you want Git to use the same name and email across all your projects, use the following commands:
+
+```sh
+git config --global user.name "Your Name"
 git config --global user.email "your.email@example.com"
-</code></pre><h3 id="setting-username-and-email-for-a-specific-repository"><strong>Setting Username and Email for a Specific Repository</strong></h3><p>Sometimes, you may need to use different credentials for different projects. To set your name and email for just the current repository, navigate to the repository folder and run:</p><pre><code class="language-sh">git config user.name "Your Name"
+```
+
+### **Setting Username and Email for a Specific Repository**
+
+Sometimes, you may need to use different credentials for different projects. To set your name and email for just the current repository, navigate to the repository folder and run:
+
+```sh
+git config user.name "Your Name"
 git config user.email "your.email@example.com"
-</code></pre><hr><h2 id="2-verifying-your-git-configuration"><strong>2. Verifying Your Git Configuration</strong></h2><p>To check if your <strong>username and email</strong> are correctly configured, use these commands:</p><p><strong>Current repository settings:</strong></p><pre><code class="language-sh">git config --list
-</code></pre><p><strong>Global settings:</strong></p><pre><code class="language-sh">git config --global --list
-</code></pre><p>If you see your name and email listed, everything is set up correctly.</p><hr><h2 id="3-editing-git-configuration-directly"><strong>3. Editing Git Configuration Directly</strong></h2><p>If you prefer a more manual approach, you can edit the configuration files directly:</p><ul><li><strong>Global configuration file:</strong> <code>~/.gitconfig</code></li><li><strong>Repository-specific configuration file:</strong> <code>.git/config</code> (inside the repo folder)</li></ul><p>To open and edit the global Git config, use:</p><pre><code class="language-sh">git config --global --edit
-</code></pre><p>This will open the file in your default text editor, allowing you to make changes.</p><hr><h2 id="4-other-important-considerations"><strong>4. Other Important Considerations</strong></h2><h3 id="using-different-emails-for-work-and-personal-projects"><strong>Using Different Emails for Work and Personal Projects</strong></h3><p>If you work on multiple projects and want to use different emails, you can set them per repository (as shown earlier). Alternatively, you can use conditional configurations in <code>~/.gitconfig</code> like this:</p><pre><code class="language-ini">[includeIf "gitdir:~/work/"]
+```
+
+* * *
+
+## **2\. Verifying Your Git Configuration**
+
+To check if your **username and email** are correctly configured, use these commands:
+
+**Current repository settings:**
+
+```sh
+git config --list
+```
+
+**Global settings:**
+
+```sh
+git config --global --list
+```
+
+If you see your name and email listed, everything is set up correctly.
+
+* * *
+
+## **3\. Editing Git Configuration Directly**
+
+If you prefer a more manual approach, you can edit the configuration files directly:
+
+-   **Global configuration file:** `~/.gitconfig`
+-   **Repository-specific configuration file:** `.git/config` (inside the repo folder)
+
+To open and edit the global Git config, use:
+
+```sh
+git config --global --edit
+```
+
+This will open the file in your default text editor, allowing you to make changes.
+
+* * *
+
+## **4\. Other Important Considerations**
+
+### **Using Different Emails for Work and Personal Projects**
+
+If you work on multiple projects and want to use different emails, you can set them per repository (as shown earlier). Alternatively, you can use conditional configurations in `~/.gitconfig` like this:
+
+```ini
+[includeIf "gitdir:~/work/"]
     path = ~/.gitconfig-work
 [includeIf "gitdir:~/personal/"]
     path = ~/.gitconfig-personal
-</code></pre><p>Then, create separate config files (<code>~/.gitconfig-work</code> and <code>~/.gitconfig-personal</code>) for different email addresses.</p><h3 id="avoiding-mistakes-in-public-commits"><strong>Avoiding Mistakes in Public Commits</strong></h3><p>If you accidentally commit with the wrong email, you can amend the last commit:</p><pre><code class="language-sh">git commit --amend --author="Your Name &lt;your.email@example.com&gt;"
-</code></pre><p>If the commit is already pushed, use:</p><pre><code class="language-sh">git push --force-with-lease
-</code></pre><p><em>(Be careful with force-pushing, especially in shared repositories!)</em></p><h3 id="ensuring-privacy-with-github"><strong>Ensuring Privacy with GitHub</strong></h3><p>If you don’t want your real email exposed on GitHub, you can use their <strong>noreply email</strong>:</p><pre><code class="language-sh">git config --global user.email "your-username@users.noreply.github.com"
-</code></pre><p>You can find this email in your GitHub <strong>Settings → Emails</strong> section.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>Setting up your <strong>Git username and email</strong> correctly is a small but crucial step in ensuring that your contributions are properly credited. Whether you use a <strong>global configuration</strong> or <strong>per-repository settings</strong>, understanding these configurations will help you maintain a professional and organized workflow.</p><p>Take a moment to verify your settings and consider using <strong>different emails for different projects</strong> or <strong>privacy-focused emails for public commits</strong>. Now, you’re ready to contribute to projects with confidence!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Then, create separate config files (`~/.gitconfig-work` and `~/.gitconfig-personal`) for different email addresses.
+
+### **Avoiding Mistakes in Public Commits**
+
+If you accidentally commit with the wrong email, you can amend the last commit:
+
+```sh
+git commit --amend --author="Your Name <your.email@example.com>"
+```
+
+If the commit is already pushed, use:
+
+```sh
+git push --force-with-lease
+```
+
+_(Be careful with force-pushing, especially in shared repositories!)_
+
+### **Ensuring Privacy with GitHub**
+
+If you don’t want your real email exposed on GitHub, you can use their **noreply email**:
+
+```sh
+git config --global user.email "your-username@users.noreply.github.com"
+```
+
+You can find this email in your GitHub **Settings → Emails** section.
+
+* * *
+
+## **Finally**
+
+Setting up your **Git username and email** correctly is a small but crucial step in ensuring that your contributions are properly credited. Whether you use a **global configuration** or **per-repository settings**, understanding these configurations will help you maintain a professional and organized workflow.
+
+Take a moment to verify your settings and consider using **different emails for different projects** or **privacy-focused emails for public commits**. Now, you’re ready to contribute to projects with confidence!

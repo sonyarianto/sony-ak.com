@@ -5,17 +5,43 @@ description: "In PHP, understanding how objects and references work is crucial f
 tags: ["php"]
 ---
 
-<p>In PHP, understanding how objects and references work is crucial for writing effective code. If you're just starting out, the concept of references might seem confusing, especially when they interact with object-oriented programming. Let’s break down a simple example to clarify these concepts.</p><p>Consider the following code snippet:</p><pre><code class="language-php">class x
+In PHP, understanding how objects and references work is crucial for writing effective code. If you're just starting out, the concept of references might seem confusing, especially when they interact with object-oriented programming. Let’s break down a simple example to clarify these concepts.
+
+Consider the following code snippet:
+
+```php
+class x
 {
     public function __construct()
     {
-        $x =&amp; $this;           
+        $x =& $this;           
         $x = new stdClass;    
         var_dump($this);      
     }
 }
-</code></pre><p>At first glance, this might look like a lot of complex operations, but it’s quite straightforward once you dig into it.</p><p>The <strong>class</strong> <code>x</code> is defined with a constructor, which is a special method that is called when an object of the class is created. Inside the constructor, we have two important lines that deserve our attention.</p><p>The first line, <code>$x =&amp; $this;</code>, creates a <strong>reference</strong> to the current instance of the class. In PHP, <code>$this</code> is a special variable that refers to the object currently being constructed. By using the <code>&amp;</code> symbol, we’re telling PHP to create a reference variable <code>$x</code> that points directly to the same object as <code>$this</code>.</p><p>Now, here’s where it gets interesting. The next line, <code>$x = new stdClass;</code>, reassigns <code>$x</code> to a new instance of the <code>stdClass</code>. This means that <code>$x</code> no longer points to the original instance of <code>x</code>, but instead now points to this newly created object. It's important to note that although we initially referenced <code>$this</code>, changing <code>$x</code> to something else does not alter what <code>$this</code> points to.</p><p>Finally, the line <code>var_dump($this);</code> is called to output the current state of the object. Since <code>$this</code> still refers to the original instance of class <code>x</code>, the output will display details about that object rather than the new <code>stdClass</code> instance.</p><p>So, what does this tell us? It highlights the behavior of references in PHP. When you create a reference to an object, you can manipulate that reference. However, if you reassign that reference to something else, the original object remains unchanged.</p><p>When you instantiate the class by writing <code>new x();</code>, you will see an output indicating the properties and methods of the object of class <code>x</code>. The reassignment of <code>$x</code> to a new object is hidden from view because that variable’s scope is limited to the constructor.</p><p>This example serves as a valuable lesson in understanding how <strong>object references</strong> work in PHP. It shows us that while we can create references to objects, we need to be careful with reassigning those references, as it can lead to confusion about which object we are actually working with.</p><h3 id="key-points">Key Points</h3><ul><li><strong>Reference Variables</strong>: When you assign a variable by reference in PHP (using <code>&amp;</code>), any changes to that reference affect the original variable. However, reassigning the reference to a new object does not affect the original object; it simply makes the reference point to something else.</li><li><strong>Object Context</strong>: <code>$this</code> remains the same throughout the constructor's execution. It is bound to the instance of class <code>x</code> that is being created.</li></ul><h3 id="finally">Finally</h3><p>Mastering how references and objects interact is fundamental in PHP programming. Understanding these concepts will help you write cleaner, more efficient code. Keep experimenting with small examples like this to solidify your knowledge, and soon you’ll feel more comfortable navigating the world of PHP object-oriented programming.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+At first glance, this might look like a lot of complex operations, but it’s quite straightforward once you dig into it.
+
+The **class** `x` is defined with a constructor, which is a special method that is called when an object of the class is created. Inside the constructor, we have two important lines that deserve our attention.
+
+The first line, `$x =& $this;`, creates a **reference** to the current instance of the class. In PHP, `$this` is a special variable that refers to the object currently being constructed. By using the `&` symbol, we’re telling PHP to create a reference variable `$x` that points directly to the same object as `$this`.
+
+Now, here’s where it gets interesting. The next line, `$x = new stdClass;`, reassigns `$x` to a new instance of the `stdClass`. This means that `$x` no longer points to the original instance of `x`, but instead now points to this newly created object. It's important to note that although we initially referenced `$this`, changing `$x` to something else does not alter what `$this` points to.
+
+Finally, the line `var_dump($this);` is called to output the current state of the object. Since `$this` still refers to the original instance of class `x`, the output will display details about that object rather than the new `stdClass` instance.
+
+So, what does this tell us? It highlights the behavior of references in PHP. When you create a reference to an object, you can manipulate that reference. However, if you reassign that reference to something else, the original object remains unchanged.
+
+When you instantiate the class by writing `new x();`, you will see an output indicating the properties and methods of the object of class `x`. The reassignment of `$x` to a new object is hidden from view because that variable’s scope is limited to the constructor.
+
+This example serves as a valuable lesson in understanding how **object references** work in PHP. It shows us that while we can create references to objects, we need to be careful with reassigning those references, as it can lead to confusion about which object we are actually working with.
+
+### Key Points
+
+-   **Reference Variables**: When you assign a variable by reference in PHP (using `&`), any changes to that reference affect the original variable. However, reassigning the reference to a new object does not affect the original object; it simply makes the reference point to something else.
+-   **Object Context**: `$this` remains the same throughout the constructor's execution. It is bound to the instance of class `x` that is being created.
+
+### Finally
+
+Mastering how references and objects interact is fundamental in PHP programming. Understanding these concepts will help you write cleaner, more efficient code. Keep experimenting with small examples like this to solidify your knowledge, and soon you’ll feel more comfortable navigating the world of PHP object-oriented programming.

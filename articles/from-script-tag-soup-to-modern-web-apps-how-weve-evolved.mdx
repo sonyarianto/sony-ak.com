@@ -5,21 +5,97 @@ description: "Back in the day , web development was all about getting something 
 tags: ["javascript","react","svelte","vue","html"]
 ---
 
-<p><strong>Back in the day</strong>, web development was all about getting something on the screen fast. The simplest way? Render your HTML on the server, slap some <strong><code>&lt;script&gt;</code> tags</strong> at the bottom of the page, and let your JavaScript take over from there. This approach was affectionately (or not-so-affectionately) called <strong>“Script Tag Soup”</strong>.</p><p>Let’s walk through <strong>how it worked, why it was messy</strong>, and <strong>why modern web frameworks have made it obsolete</strong>.</p><hr><h2 id="the-old-way-script-tag-soup">The Old Way: Script Tag Soup</h2><p>Imagine you’re building a <strong>product listing page</strong>. You want the products to load from the server, but you also want the user to filter them in the browser with a search box. You’d do something like this:</p><pre><code class="language-html">&lt;!-- Server-rendered HTML --&gt;
-&lt;input type="search" id="search" /&gt;
-&lt;ul id="products"&gt;
-  &lt;li&gt;Product 1&lt;/li&gt;
-  &lt;li&gt;Product 2&lt;/li&gt;
-  &lt;!-- ... --&gt;
-&lt;/ul&gt;
+**Back in the day**, web development was all about getting something on the screen fast. The simplest way? Render your HTML on the server, slap some **`<script>` tags** at the bottom of the page, and let your JavaScript take over from there. This approach was affectionately (or not-so-affectionately) called **“Script Tag Soup”**.
 
-&lt;!-- Client-side search functionality --&gt;
-&lt;script src="/static/search.js"&gt;&lt;/script&gt;
-&lt;script&gt;
+Let’s walk through **how it worked, why it was messy**, and **why modern web frameworks have made it obsolete**.
+
+* * *
+
+## The Old Way: Script Tag Soup
+
+Imagine you’re building a **product listing page**. You want the products to load from the server, but you also want the user to filter them in the browser with a search box. You’d do something like this:
+
+```html
+<!-- Server-rendered HTML -->
+<input type="search" id="search" />
+<ul id="products">
+  <li>Product 1</li>
+  <li>Product 2</li>
+  <!-- ... -->
+</ul>
+
+<!-- Client-side search functionality -->
+<script src="/static/search.js"></script>
+<script>
   window.initSearch({ selector: 'ul' });
-&lt;/script&gt;
-</code></pre><p>Here’s what’s going on:</p><ul><li>The <strong>HTML</strong> is rendered by the server, with the products already in the list.</li><li>The <strong>search input</strong> and the product list are part of the static markup.</li><li>At the bottom, you include the <strong>JavaScript file (<code>search.js</code>)</strong> and run an <strong>inline script</strong> to initialize your search functionality.</li></ul><hr><h2 id="why-this-was-a-mess">Why This Was a Mess</h2><p>This “Script Tag Soup” approach had a few <strong>big drawbacks</strong>:</p><ol><li><strong>Fragile Loading Order</strong>: Your scripts had to load <strong>after the HTML</strong>, otherwise your JavaScript wouldn’t find the DOM elements it needed. If someone accidentally moved a script to the <code>&lt;head&gt;</code>, things would break.</li><li><strong>Tight Coupling</strong>: Your HTML and JavaScript were tightly coupled by <strong>DOM IDs</strong> (<code>#search</code>, <code>#products</code>), making your code hard to maintain and refactor.</li><li><strong>Inline Scripts and Global Variables</strong>: Often, you had to declare functions or configuration on the <code>window</code> object (like <code>window.initSearch</code>). This cluttered the global scope and could cause conflicts if other scripts used the same names.</li><li><strong>Data Injection</strong>: If you needed to pass dynamic data from the server to the client (like the product list), you’d either:<ul><li>Inline it in a <code>&lt;script&gt;</code> tag as JSON.</li><li>Use <code>data-*</code> attributes on HTML elements.<br>Both were <strong>hacky</strong> and easy to mess up.</li></ul></li><li><strong>Scaling Issues</strong>: As your app grew, managing multiple script files and dependencies became a nightmare. Different parts of the page might have their own scripts, loaded in specific orders, with <strong>no real modularity</strong>.</li></ol><hr><h2 id="what-we-learned-from-script-tag-soup">What We Learned from Script Tag Soup</h2><p>This pattern wasn’t all bad. It worked fine for <strong>small sites</strong> and gave us an early taste of <strong>progressive enhancement</strong>—adding interactivity on top of server-rendered HTML. However, it <strong>didn’t scale well</strong>.</p><p>Here are some key lessons:</p><ul><li><strong>Separation of Concerns is Key</strong>: Mixing structure (HTML), behavior (JavaScript), and data (JSON or <code>data-*</code>) in one big soup was <strong>messy and fragile</strong>.</li><li><strong>Global State is Dangerous</strong>: Storing app state in global variables like <code>window.initSearch</code> is a recipe for <strong>naming collisions</strong> and bugs.</li><li><strong>Modularity and Reusability</strong>: Splitting functionality into isolated components or modules is much cleaner than lumping everything into one page.</li></ul><hr><h2 id="how-modern-frameworks-fixed-this">How Modern Frameworks Fixed This</h2><p>With frameworks like <strong>React, Vue, Svelte</strong>, and even newer approaches like <strong>Astro</strong>, we’ve moved away from <strong>Script Tag Soup</strong> towards <strong>component-based architectures</strong>.</p><p>Here’s how modern frameworks solve the problems:</p><ul><li><strong>Hydration</strong>: The server renders HTML (just like before), but the JavaScript framework “hydrates” the static markup, taking over interactivity without relying on global variables.</li><li><strong>Scoped State and Styles</strong>: Components encapsulate their state, making it easier to manage and debug.</li><li><strong>Data Flow</strong>: Instead of injecting raw data into the page, frameworks fetch data on the server (via APIs or server-side rendering) and hydrate the page with it.</li><li><strong>Modular Scripts</strong>: Modern build tools (like <strong>Vite</strong> or <strong>Webpack</strong>) bundle scripts efficiently, load them asynchronously, and ensure correct execution order.</li></ul><hr><h2 id="extra-considerations-you-shouldn%E2%80%99t-miss">Extra Considerations You Shouldn’t Miss</h2><p>Even with modern frameworks, it’s essential to remember:</p><ul><li><strong>Performance Matters</strong>: Hydration can be expensive. Consider <strong>partial hydration</strong> or <strong>islands architecture</strong> (used by frameworks like Astro) for large apps.</li><li><strong>SEO and Accessibility</strong>: Server-rendered HTML is still crucial for SEO and accessibility. Avoid relying solely on client-side rendering for critical content.</li><li><strong>Graceful Degradation</strong>: If JavaScript fails to load, your page should still render usable content. This principle from the old days still applies.</li><li><strong>Security</strong>: Avoid inline scripts when possible to reduce <strong>Cross-Site Scripting (XSS)</strong> risks. Use <strong>Content Security Policies (CSP)</strong>.</li></ul><hr><h2 id="finally-clean-code-better-apps">Finally: Clean Code, Better Apps</h2><p>“Script Tag Soup” was a <strong>necessary stepping stone</strong>, but modern frameworks and best practices have made it <strong>obsolete for most projects</strong>. Today, we focus on:</p><ul><li><strong>Separation of concerns</strong>.</li><li><strong>Component-based architecture</strong>.</li><li><strong>Secure, maintainable, scalable code</strong>.</li></ul><p>Understanding where we came from helps us appreciate how much web development has evolved. Whether you’re maintaining an old project or building the next big thing, the key is to keep your code <strong>clean, modular, and future-proof</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+</script>
+```
 
+Here’s what’s going on:
+
+-   The **HTML** is rendered by the server, with the products already in the list.
+-   The **search input** and the product list are part of the static markup.
+-   At the bottom, you include the **JavaScript file (`search.js`)** and run an **inline script** to initialize your search functionality.
+
+* * *
+
+## Why This Was a Mess
+
+This “Script Tag Soup” approach had a few **big drawbacks**:
+
+1.  **Fragile Loading Order**: Your scripts had to load **after the HTML**, otherwise your JavaScript wouldn’t find the DOM elements it needed. If someone accidentally moved a script to the `<head>`, things would break.
+2.  **Tight Coupling**: Your HTML and JavaScript were tightly coupled by **DOM IDs** (`#search`, `#products`), making your code hard to maintain and refactor.
+3.  **Inline Scripts and Global Variables**: Often, you had to declare functions or configuration on the `window` object (like `window.initSearch`). This cluttered the global scope and could cause conflicts if other scripts used the same names.
+4.  **Data Injection**: If you needed to pass dynamic data from the server to the client (like the product list), you’d either:
+    -   Inline it in a `<script>` tag as JSON.
+    -   Use `data-*` attributes on HTML elements.  
+        Both were **hacky** and easy to mess up.
+5.  **Scaling Issues**: As your app grew, managing multiple script files and dependencies became a nightmare. Different parts of the page might have their own scripts, loaded in specific orders, with **no real modularity**.
+
+* * *
+
+## What We Learned from Script Tag Soup
+
+This pattern wasn’t all bad. It worked fine for **small sites** and gave us an early taste of **progressive enhancement**—adding interactivity on top of server-rendered HTML. However, it **didn’t scale well**.
+
+Here are some key lessons:
+
+-   **Separation of Concerns is Key**: Mixing structure (HTML), behavior (JavaScript), and data (JSON or `data-*`) in one big soup was **messy and fragile**.
+-   **Global State is Dangerous**: Storing app state in global variables like `window.initSearch` is a recipe for **naming collisions** and bugs.
+-   **Modularity and Reusability**: Splitting functionality into isolated components or modules is much cleaner than lumping everything into one page.
+
+* * *
+
+## How Modern Frameworks Fixed This
+
+With frameworks like **React, Vue, Svelte**, and even newer approaches like **Astro**, we’ve moved away from **Script Tag Soup** towards **component-based architectures**.
+
+Here’s how modern frameworks solve the problems:
+
+-   **Hydration**: The server renders HTML (just like before), but the JavaScript framework “hydrates” the static markup, taking over interactivity without relying on global variables.
+-   **Scoped State and Styles**: Components encapsulate their state, making it easier to manage and debug.
+-   **Data Flow**: Instead of injecting raw data into the page, frameworks fetch data on the server (via APIs or server-side rendering) and hydrate the page with it.
+-   **Modular Scripts**: Modern build tools (like **Vite** or **Webpack**) bundle scripts efficiently, load them asynchronously, and ensure correct execution order.
+
+* * *
+
+## Extra Considerations You Shouldn’t Miss
+
+Even with modern frameworks, it’s essential to remember:
+
+-   **Performance Matters**: Hydration can be expensive. Consider **partial hydration** or **islands architecture** (used by frameworks like Astro) for large apps.
+-   **SEO and Accessibility**: Server-rendered HTML is still crucial for SEO and accessibility. Avoid relying solely on client-side rendering for critical content.
+-   **Graceful Degradation**: If JavaScript fails to load, your page should still render usable content. This principle from the old days still applies.
+-   **Security**: Avoid inline scripts when possible to reduce **Cross-Site Scripting (XSS)** risks. Use **Content Security Policies (CSP)**.
+
+* * *
+
+## Finally: Clean Code, Better Apps
+
+“Script Tag Soup” was a **necessary stepping stone**, but modern frameworks and best practices have made it **obsolete for most projects**. Today, we focus on:
+
+-   **Separation of concerns**.
+-   **Component-based architecture**.
+-   **Secure, maintainable, scalable code**.
+
+Understanding where we came from helps us appreciate how much web development has evolved. Whether you’re maintaining an old project or building the next big thing, the key is to keep your code **clean, modular, and future-proof**.

@@ -5,7 +5,18 @@ description: "In PHP, object-oriented programming gives us several powerful keyw
 tags: ["php","testing","design"]
 ---
 
-<p>In PHP, object-oriented programming gives us several powerful keywords—<code>self</code>, <code>static</code>, and <code>parent</code>—to refer to classes within the class hierarchy. While they may seem similar, each has <strong>very specific behaviors</strong>, especially when dealing with inheritance, method resolution, and instantiation.</p><p>Understanding these keywords deeply is crucial for writing <strong>clean, predictable, and extensible code</strong>.</p><hr><h3 id="%F0%9F%94%B9-self-the-declaring-class">🔹 <code>self</code>: The Declaring Class</h3><p><strong><code>self</code> refers to the class where the code is written</strong>, not where it is <em>called from</em>. This is a <strong>compile-time reference</strong>.</p><pre><code class="language-php">class A {
+In PHP, object-oriented programming gives us several powerful keywords—`self`, `static`, and `parent`—to refer to classes within the class hierarchy. While they may seem similar, each has **very specific behaviors**, especially when dealing with inheritance, method resolution, and instantiation.
+
+Understanding these keywords deeply is crucial for writing **clean, predictable, and extensible code**.
+
+* * *
+
+### 🔹 `self`: The Declaring Class
+
+**`self` refers to the class where the code is written**, not where it is _called from_. This is a **compile-time reference**.
+
+```php
+class A {
     public static function who() {
         echo "A\n";
     }
@@ -22,7 +33,18 @@ class B extends A {
 }
 
 B::test(); // Output: A
-</code></pre><p>Even though <code>B</code> extends <code>A</code>, calling <code>B::test()</code> still prints <code>A</code> because <code>self::who()</code> is <strong>bound to class A</strong>. This is <strong>not polymorphic</strong>.</p><hr><h3 id="%F0%9F%94%B9-static-late-static-binding">🔹 <code>static</code>: Late Static Binding</h3><p><strong><code>static</code> uses late static binding</strong>, meaning it resolves to the class that was actually called at runtime, even if it’s a subclass. This is <strong>runtime-bound</strong>.</p><pre><code class="language-php">class A {
+```
+
+Even though `B` extends `A`, calling `B::test()` still prints `A` because `self::who()` is **bound to class A**. This is **not polymorphic**.
+
+* * *
+
+### 🔹 `static`: Late Static Binding
+
+**`static` uses late static binding**, meaning it resolves to the class that was actually called at runtime, even if it’s a subclass. This is **runtime-bound**.
+
+```php
+class A {
     public static function who() {
         echo "A\n";
     }
@@ -39,7 +61,24 @@ class B extends A {
 }
 
 B::test(); // Output: B
-</code></pre><p>Here, <code>static::who()</code> correctly resolves to class <code>B</code>. This is <strong>polymorphic</strong> and what you want when you expect child classes to override behavior.</p><p><strong>Use <code>static</code></strong> when:</p><ul><li>You expect <strong>inheritance</strong></li><li>You want the behavior to be <strong>overridden correctly</strong></li><li>You are working with <strong>factories</strong>, <strong>fluent APIs</strong>, or <strong>interfaces with <code>static</code> return types</strong></li></ul><hr><h3 id="%F0%9F%94%B9-parent-accessing-the-superclass">🔹 <code>parent</code>: Accessing the Superclass</h3><p><strong><code>parent</code> is used to call methods from the immediate parent class</strong>. It’s strictly for accessing the parent’s implementation, often inside an override.</p><pre><code class="language-php">class A {
+```
+
+Here, `static::who()` correctly resolves to class `B`. This is **polymorphic** and what you want when you expect child classes to override behavior.
+
+**Use `static`** when:
+
+-   You expect **inheritance**
+-   You want the behavior to be **overridden correctly**
+-   You are working with **factories**, **fluent APIs**, or **interfaces with `static` return types**
+
+* * *
+
+### 🔹 `parent`: Accessing the Superclass
+
+**`parent` is used to call methods from the immediate parent class**. It’s strictly for accessing the parent’s implementation, often inside an override.
+
+```php
+class A {
     public function greet() {
         echo "Hello from A\n";
     }
@@ -53,44 +92,39 @@ class B extends A {
 }
 
 $b = new B();
-$b-&gt;greet();
-</code></pre><p><strong>Output:</strong></p><pre><code>Hello from A
-And hello from B
-</code></pre><p><strong>Use <code>parent</code></strong> when:</p><ul><li>You override a method but still want to call the <strong>parent’s version</strong></li><li>You're working in an <strong>inheritance chain</strong> and want to build on base behavior</li></ul><hr><h3 id="%F0%9F%94%8D-comparison-summary">🔍 Comparison Summary</h3>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Keyword</th>
-<th>Bound At</th>
-<th>Refers To</th>
-<th>Use Case</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>self</strong></td>
-<td>Compile-time</td>
-<td>Class where code is written</td>
-<td>Internal helper methods, fixed behavior</td>
-</tr>
-<tr>
-<td><strong>static</strong></td>
-<td>Runtime</td>
-<td>Class that was called</td>
-<td>Factory methods, polymorphic behavior</td>
-</tr>
-<tr>
-<td><strong>parent</strong></td>
-<td>Compile-time</td>
-<td>Immediate parent class</td>
-<td>Overridden methods needing base behavior</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h3 id="%E2%9C%85-real-world-considerations">✅ Real-World Considerations</h3><ul><li><strong><code>self</code> can break polymorphism.</strong> Be cautious when writing base class methods that use <code>self</code>, as they won't behave well when extended.</li><li><strong><code>static</code> is powerful</strong> but introduces complexity. Use it for <em>factories</em> or <em>fluent interfaces</em> when subclassing is expected.</li><li><strong><code>parent</code> is safe</strong> but very specific. Don't use it unless you're overriding methods and still need parent logic.</li></ul><hr><h3 id="%F0%9F%92%A1-bonus-tip">💡 Bonus Tip</h3><p>When using static methods that return new instances (<code>new static()</code>), avoid <code>new self()</code> unless you're <strong>sure</strong> that the method won’t be extended or overridden. Even in a <code>final</code> class, using <code>static</code> is often more future-proof.</p><hr><p>Understanding these keywords isn't just about syntax—it’s about design. Use the right keyword for the right behavior, and your codebase will be <strong>easier to maintain</strong>, <strong>less error-prone</strong>, and <strong>ready for change</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+$b->greet();
+```
 
+**Output:**
+
+```
+Hello from A
+And hello from B
+```
+
+**Use `parent`** when:
+
+-   You override a method but still want to call the **parent’s version**
+-   You're working in an **inheritance chain** and want to build on base behavior
+
+* * *
+
+### 🔍 Comparison Summary
+
+* * *
+
+### ✅ Real-World Considerations
+
+-   **`self` can break polymorphism.** Be cautious when writing base class methods that use `self`, as they won't behave well when extended.
+-   **`static` is powerful** but introduces complexity. Use it for _factories_ or _fluent interfaces_ when subclassing is expected.
+-   **`parent` is safe** but very specific. Don't use it unless you're overriding methods and still need parent logic.
+
+* * *
+
+### 💡 Bonus Tip
+
+When using static methods that return new instances (`new static()`), avoid `new self()` unless you're **sure** that the method won’t be extended or overridden. Even in a `final` class, using `static` is often more future-proof.
+
+* * *
+
+Understanding these keywords isn't just about syntax—it’s about design. Use the right keyword for the right behavior, and your codebase will be **easier to maintain**, **less error-prone**, and **ready for change**.

@@ -5,10 +5,24 @@ description: "I’ve been playing with Go recently — not just reading about it
 tags: ["javascript","testing","debugging","design","productivity"]
 ---
 
-<p>I’ve been playing with Go recently — not just reading about it, but actually building things. And honestly, I’m impressed. Not in a “oh this is neat” way, but in a <em>why aren’t more languages like this?</em> kind of way.</p><p>It’s not about syntax. It’s about how <strong>Go’s design respects your time</strong>.</p><p>Let’s start with something small but powerful: in Go, if you write a function like this:</p><pre><code class="language-go">package main
+I’ve been playing with Go recently — not just reading about it, but actually building things. And honestly, I’m impressed. Not in a “oh this is neat” way, but in a _why aren’t more languages like this?_ kind of way.
+
+It’s not about syntax. It’s about how **Go’s design respects your time**.
+
+Let’s start with something small but powerful: in Go, if you write a function like this:
+
+```go
+package main
 
 func SetupRouter() {}
-</code></pre><p>Boom — <code>SetupRouter</code> is <strong>exported</strong>. No <code>export</code> keyword. No default vs named exports. No module headaches. Just capitalize it. That’s the rule. And that one rule covers all types, functions, and variables.</p><p>In contrast, JavaScript gives you a buffet of ways to export and import:</p><pre><code class="language-js">// CommonJS
+```
+
+Boom — `SetupRouter` is **exported**. No `export` keyword. No default vs named exports. No module headaches. Just capitalize it. That’s the rule. And that one rule covers all types, functions, and variables.
+
+In contrast, JavaScript gives you a buffet of ways to export and import:
+
+```js
+// CommonJS
 module.exports = function setupRouter() {}
 
 // ESM named export
@@ -16,7 +30,18 @@ export function setupRouter() {}
 
 // ESM default export
 export default function setupRouter() {}
-</code></pre><p>You get flexibility, sure — but with it comes complexity. And worse, <strong>the rules vary by environment</strong>.</p><hr><h3 id="the-package-system-invisible-imports-zero-friction">The Package System: Invisible Imports, Zero Friction</h3><p>Go goes further. All files in the same package can use each other’s functions <strong>without imports</strong>. You just write them. They're there.</p><pre><code class="language-go">// fileA.go
+```
+
+You get flexibility, sure — but with it comes complexity. And worse, **the rules vary by environment**.
+
+* * *
+
+### The Package System: Invisible Imports, Zero Friction
+
+Go goes further. All files in the same package can use each other’s functions **without imports**. You just write them. They're there.
+
+```go
+// fileA.go
 package main
 
 func DoSomething() {}
@@ -27,12 +52,73 @@ package main
 func Use() {
     DoSomething() // just works
 }
-</code></pre><p>That’s it. No <code>import './fileA'</code>. No circular dependency pitfalls. No bundling surprises.</p><p>In JavaScript, even in the same folder, you’d need:</p><pre><code class="language-js">// fileB.js
+```
+
+That’s it. No `import './fileA'`. No circular dependency pitfalls. No bundling surprises.
+
+In JavaScript, even in the same folder, you’d need:
+
+```js
+// fileB.js
 import { DoSomething } from './fileA.js';
 
 DoSomething();
-</code></pre><p>And if you mess up the extension or file path or export syntax? You’ll find out at runtime (or during bundling).</p><hr><h3 id="one-runtime-model-vs-the-javascript-triangle-of-pain">One Runtime Model vs The JavaScript Triangle of Pain</h3><p>Here’s the thing: Go <strong>has one way to run</strong>. One module system. One entrypoint (<code>main</code>). Done.</p><p>JavaScript? You’re often juggling between:</p><ul><li>CommonJS (<code>require</code>)</li><li>ESM (<code>import</code>)</li><li>Global scripts (<code>window.DoSomething = function () {}...</code>)</li></ul><p>Each of these has different rules for how modules work, how code loads, and how dependencies resolve. And converting between them? That’s a trap.</p><p>Ever tried to use a CommonJS module inside an ESM project? Or import an ESM-only package in a Node.js app that still runs CJS? Or embed a module in a <code>&lt;script&gt;</code> tag only to get an error because you forgot <code>type="module"</code>?</p><p>Exactly.</p><p>Go just <strong>runs</strong>.</p><hr><h3 id="tooling-that-doesnt-fight-you">Tooling That Doesn't Fight You</h3><p>Another thing that struck me is how consistent and helpful Go’s built-in tools are. <code>go fmt</code> formats your code. <code>go test</code> runs your tests. <code>go build</code> compiles your app. <code>go run</code> executes it. <code>go mod</code> manages dependencies.</p><p>No configuration. No <code>webpack.config.js</code>, <code>.babelrc</code>, <code>.eslintrc</code>, or 20 variations of <code>tsconfig.json</code>. No “just use this plugin to make that plugin work with this tool.” You don’t lose half a day tweaking a bundler. You just write code and it runs.</p><p>And the compile times? <strong>Stupid fast.</strong></p><hr><h3 id="a-design-philosophy-you-can-feel">A Design Philosophy You Can Feel</h3><p>Go wasn’t built to be clever. It was built to be clear. That shows in decisions like:</p><ul><li>Only one looping construct: <code>for</code> — no <code>while</code>, <code>do...while</code>, <code>forEach</code>, <code>map</code>, or other sugar</li><li>Error handling that’s explicit and linear — no <code>try/catch</code> gymnastics</li><li>Minimal syntax, enforced formatting, and no semicolon drama</li></ul><p>Some developers complain that Go is “too simple.” But when you’re building software — especially for the long run — <em>simple is powerful</em>.</p><p>Compare this to JavaScript, where even small differences in syntax (<code>==</code> vs <code>===</code>) or behavior (<code>this</code> binding inside arrow functions vs regular ones) can introduce subtle bugs.</p><hr><h3 id="in-the-end-go-feels-like-a-well-designed-tool">In the End, Go Feels Like a Well-Designed Tool</h3><p>When you build with Go, you feel like the language is <strong>on your side</strong>. It has opinions, and they’re good ones. You’re not constantly second-guessing your environment or structure. You can open a Go project and understand it in minutes.</p><p>With JavaScript, that same clarity can take hours — and only if you know whether the code is running in the browser, in Node, in Deno, in Vite, or behind 17 layers of build tooling.</p><p>JavaScript is wildly flexible, but that flexibility comes at a cost. Go bets on <strong>consistency and predictability</strong>, and it pays off. It's not flashy, but it's reliable — and honestly, that’s a superpower.</p><p>So yeah, I’m impressed. And a little jealous I didn’t pick it up earlier.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+And if you mess up the extension or file path or export syntax? You’ll find out at runtime (or during bundling).
+
+* * *
+
+### One Runtime Model vs The JavaScript Triangle of Pain
+
+Here’s the thing: Go **has one way to run**. One module system. One entrypoint (`main`). Done.
+
+JavaScript? You’re often juggling between:
+
+-   CommonJS (`require`)
+-   ESM (`import`)
+-   Global scripts (`window.DoSomething = function () {}...`)
+
+Each of these has different rules for how modules work, how code loads, and how dependencies resolve. And converting between them? That’s a trap.
+
+Ever tried to use a CommonJS module inside an ESM project? Or import an ESM-only package in a Node.js app that still runs CJS? Or embed a module in a `<script>` tag only to get an error because you forgot `type="module"`?
+
+Exactly.
+
+Go just **runs**.
+
+* * *
+
+### Tooling That Doesn't Fight You
+
+Another thing that struck me is how consistent and helpful Go’s built-in tools are. `go fmt` formats your code. `go test` runs your tests. `go build` compiles your app. `go run` executes it. `go mod` manages dependencies.
+
+No configuration. No `webpack.config.js`, `.babelrc`, `.eslintrc`, or 20 variations of `tsconfig.json`. No “just use this plugin to make that plugin work with this tool.” You don’t lose half a day tweaking a bundler. You just write code and it runs.
+
+And the compile times? **Stupid fast.**
+
+* * *
+
+### A Design Philosophy You Can Feel
+
+Go wasn’t built to be clever. It was built to be clear. That shows in decisions like:
+
+-   Only one looping construct: `for` — no `while`, `do...while`, `forEach`, `map`, or other sugar
+-   Error handling that’s explicit and linear — no `try/catch` gymnastics
+-   Minimal syntax, enforced formatting, and no semicolon drama
+
+Some developers complain that Go is “too simple.” But when you’re building software — especially for the long run — _simple is powerful_.
+
+Compare this to JavaScript, where even small differences in syntax (`==` vs `===`) or behavior (`this` binding inside arrow functions vs regular ones) can introduce subtle bugs.
+
+* * *
+
+### In the End, Go Feels Like a Well-Designed Tool
+
+When you build with Go, you feel like the language is **on your side**. It has opinions, and they’re good ones. You’re not constantly second-guessing your environment or structure. You can open a Go project and understand it in minutes.
+
+With JavaScript, that same clarity can take hours — and only if you know whether the code is running in the browser, in Node, in Deno, in Vite, or behind 17 layers of build tooling.
+
+JavaScript is wildly flexible, but that flexibility comes at a cost. Go bets on **consistency and predictability**, and it pays off. It's not flashy, but it's reliable — and honestly, that’s a superpower.
+
+So yeah, I’m impressed. And a little jealous I didn’t pick it up earlier.

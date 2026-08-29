@@ -5,38 +5,104 @@ description: "There’s a special place in my heart for one of Laravel’s most 
 tags: ["php","laravel","database","api","security"]
 ---
 
-<p>There’s a special place in my heart for one of Laravel’s most elegant and powerful features: <code>Model::query()</code>. As a PHP developer, especially one who works a lot with Eloquent ORM, I’ve come to appreciate how much <strong>control</strong>, <strong>flexibility</strong>, and <strong>readability</strong> this one little method offers.</p><hr><h2 id="the-magic-behind-modelquery"><strong>The Magic Behind <code>Model::query()</code></strong></h2><p>At a glance, calling <code>Model::query()</code> just returns a new instance of the Eloquent query builder for that model. But in practice, it opens the door to <strong>cleaner</strong>, <strong>more dynamic</strong>, and <strong>composable</strong> queries. It’s the best way to start building a query when the conditions are <strong>not yet fully known</strong> at the start.</p><p>Example:</p><pre><code class="language-php">$query = User::query();
+There’s a special place in my heart for one of Laravel’s most elegant and powerful features: `Model::query()`. As a PHP developer, especially one who works a lot with Eloquent ORM, I’ve come to appreciate how much **control**, **flexibility**, and **readability** this one little method offers.
 
-if ($request-&gt;filled('status')) {
-    $query-&gt;where('status', $request-&gt;input('status'));
+* * *
+
+## **The Magic Behind `Model::query()`**
+
+At a glance, calling `Model::query()` just returns a new instance of the Eloquent query builder for that model. But in practice, it opens the door to **cleaner**, **more dynamic**, and **composable** queries. It’s the best way to start building a query when the conditions are **not yet fully known** at the start.
+
+Example:
+
+```php
+$query = User::query();
+
+if ($request->filled('status')) {
+    $query->where('status', $request->input('status'));
 }
 
-$users = $query-&gt;orderBy('created_at', 'desc')-&gt;paginate(10);
-</code></pre><p>Compare this to chaining <code>User::where(...)</code> directly — it becomes harder to maintain and more repetitive when you need <strong>conditional logic</strong>.</p><hr><h2 id="why-i-keep-coming-back-to-it"><strong>Why I Keep Coming Back to It</strong></h2><h3 id="1-it-encourages-clean-and-readable-code">1. <strong>It Encourages Clean and Readable Code</strong></h3><p>Instead of nesting <code>if</code> statements and spreading <code>where</code> clauses all over the place, you build the query once and modify it along the way. Your logic becomes much easier to follow.</p><h3 id="2-perfect-for-dynamic-filters">2. <strong>Perfect for Dynamic Filters</strong></h3><p>If you’re building a search API or an admin listing page, you almost always need to apply different filters depending on the input. <code>Model::query()</code> makes it effortless.</p><pre><code class="language-php">$query = Product::query();
+$users = $query->orderBy('created_at', 'desc')->paginate(10);
+```
 
-if ($request-&gt;has('category')) {
-    $query-&gt;where('category_id', $request-&gt;input('category'));
+Compare this to chaining `User::where(...)` directly — it becomes harder to maintain and more repetitive when you need **conditional logic**.
+
+* * *
+
+## **Why I Keep Coming Back to It**
+
+### 1\. **It Encourages Clean and Readable Code**
+
+Instead of nesting `if` statements and spreading `where` clauses all over the place, you build the query once and modify it along the way. Your logic becomes much easier to follow.
+
+### 2\. **Perfect for Dynamic Filters**
+
+If you’re building a search API or an admin listing page, you almost always need to apply different filters depending on the input. `Model::query()` makes it effortless.
+
+```php
+$query = Product::query();
+
+if ($request->has('category')) {
+    $query->where('category_id', $request->input('category'));
 }
 
-if ($request-&gt;has('min_price')) {
-    $query-&gt;where('price', '&gt;=', $request-&gt;input('min_price'));
+if ($request->has('min_price')) {
+    $query->where('price', '>=', $request->input('min_price'));
 }
 
-if ($request-&gt;has('max_price')) {
-    $query-&gt;where('price', '&lt;=', $request-&gt;input('max_price'));
+if ($request->has('max_price')) {
+    $query->where('price', '<=', $request->input('max_price'));
 }
-</code></pre><p>Try doing that cleanly with <code>Model::where(...)</code> — you’ll start to feel the pain quickly.</p><hr><h2 id="hidden-gems-you-might-be-missing"><strong>Hidden Gems You Might Be Missing</strong></h2><ul><li><strong>Pass the query to services or repositories</strong><br>Start with <code>Model::query()</code> and then inject more logic elsewhere. It improves <strong>testability</strong> and <strong>separation of concerns</strong>.</li></ul><p><strong>Conditionally chain scopes and relations</strong><br>Since it's an Eloquent builder, you can still use scopes and <code>with()</code>:</p><pre><code class="language-php">$query = Post::query()-&gt;with('author');
+```
 
-if ($request-&gt;input('published')) {
-    $query-&gt;published();
+Try doing that cleanly with `Model::where(...)` — you’ll start to feel the pain quickly.
+
+* * *
+
+## **Hidden Gems You Might Be Missing**
+
+-   **Pass the query to services or repositories**  
+    Start with `Model::query()` and then inject more logic elsewhere. It improves **testability** and **separation of concerns**.
+
+**Conditionally chain scopes and relations**  
+Since it's an Eloquent builder, you can still use scopes and `with()`:
+
+```php
+$query = Post::query()->with('author');
+
+if ($request->input('published')) {
+    $query->published();
 }
-</code></pre><p><strong>Use <code>tap()</code> to keep things tidy</strong><br>Want to modify the query in a closure without breaking the chain?</p><pre><code class="language-php">$users = tap(User::query(), function ($query) {
-    if (auth()-&gt;check()) {
-        $query-&gt;where('is_active', true);
+```
+
+**Use `tap()` to keep things tidy**  
+Want to modify the query in a closure without breaking the chain?
+
+```php
+$users = tap(User::query(), function ($query) {
+    if (auth()->check()) {
+        $query->where('is_active', true);
     }
-})-&gt;paginate(15);
-</code></pre><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><ul><li><strong>It's lazy by design</strong><br>Just like most of Eloquent, <code>Model::query()</code> doesn’t run anything until you call <code>get()</code>, <code>first()</code>, <code>paginate()</code>, etc. This gives you more control and better performance when you don’t want unnecessary DB hits.</li><li><strong>Easier debugging</strong><br>Since the builder is returned, you can always <code>dd($query-&gt;toSql())</code> or <code>-&gt;dump()</code> it to inspect what SQL is about to run.</li><li><strong>Scalable for future changes</strong><br>If your query needs grow more complex over time — adding joins, nested conditions, or scopes — starting with <code>query()</code> makes refactoring less painful.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p><code>Model::query()</code> isn’t just another Laravel helper — it’s a mindset. It's about preparing your logic in a <strong>declarative</strong>, <strong>composable</strong>, and <strong>future-proof</strong> way. Whether you're building APIs, dashboards, or internal tools, it's a tool you should have at the front of your toolbox.</p><p>So yes — <strong>I will always love <code>Model::query()</code> in Laravel. Forever.</strong> ❤️</p><p>Have you made it part of your workflow yet?</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+})->paginate(15);
+```
 
+* * *
+
+## **Other Considerations**
+
+-   **It's lazy by design**  
+    Just like most of Eloquent, `Model::query()` doesn’t run anything until you call `get()`, `first()`, `paginate()`, etc. This gives you more control and better performance when you don’t want unnecessary DB hits.
+-   **Easier debugging**  
+    Since the builder is returned, you can always `dd($query->toSql())` or `->dump()` it to inspect what SQL is about to run.
+-   **Scalable for future changes**  
+    If your query needs grow more complex over time — adding joins, nested conditions, or scopes — starting with `query()` makes refactoring less painful.
+
+* * *
+
+## **Finally**
+
+`Model::query()` isn’t just another Laravel helper — it’s a mindset. It's about preparing your logic in a **declarative**, **composable**, and **future-proof** way. Whether you're building APIs, dashboards, or internal tools, it's a tool you should have at the front of your toolbox.
+
+So yes — **I will always love `Model::query()` in Laravel. Forever.** ❤️
+
+Have you made it part of your workflow yet?

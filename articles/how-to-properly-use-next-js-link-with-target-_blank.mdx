@@ -5,25 +5,77 @@ description: "Next.js provides the &lt;Link&gt; component for client-side naviga
 tags: ["javascript","nextjs","html","security","performance"]
 ---
 
-<p>Next.js provides the <code>&lt;Link&gt;</code> component for <strong>client-side navigation</strong>, improving performance by enabling <strong>prefetching</strong> and reducing full-page reloads. However, when linking to an <strong>external website</strong> and wanting to open it in a <strong>new tab</strong>, there are a few important considerations to keep in mind.</p><h2 id="basic-usage-of-link-with-targetblank"><strong>Basic Usage of <code>&lt;Link&gt;</code> with <code>target="_blank"</code></strong></h2><p>By default, <code>&lt;Link&gt;</code> in Next.js does not include <code>target="_blank"</code>, so if you want your link to open in a new tab, you need to add it manually:</p><pre><code class="language-tsx">import Link from "next/link";
+Next.js provides the `<Link>` component for **client-side navigation**, improving performance by enabling **prefetching** and reducing full-page reloads. However, when linking to an **external website** and wanting to open it in a **new tab**, there are a few important considerations to keep in mind.
 
-&lt;Link href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer"&gt;
+## **Basic Usage of `<Link>` with `target="_blank"`**
+
+By default, `<Link>` in Next.js does not include `target="_blank"`, so if you want your link to open in a new tab, you need to add it manually:
+
+```tsx
+import Link from "next/link";
+
+<Link href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer">
   Go to Corner
-&lt;/Link&gt;
-</code></pre><h3 id="why-relnoopener-noreferrer-is-important"><strong>Why <code>rel="noopener noreferrer"</code> is Important?</strong></h3><p>When using <code>target="_blank"</code>, you should always include <code>rel="noopener noreferrer"</code> for security reasons:</p><ul><li><code><strong>noopener</strong></code>: Prevents the new tab from gaining access to the <code>window.opener</code> property. This protects your site from potential malicious scripts that could manipulate your page.</li><li><code><strong>noreferrer</strong></code>: Ensures that the <code>Referer</code> header is not sent to the new page, preventing it from knowing where the user came from.</li></ul><h2 id="disabling-nextjs-prefetching-for-external-links"><strong>Disabling Next.js Prefetching for External Links</strong></h2><p>By default, Next.js prefetches pages linked with <code>&lt;Link&gt;</code> <strong>only if they point to an internal Next.js route</strong>. However, in some cases, you may find that Next.js tries to preload an <strong>external link</strong>, causing unnecessary network requests or even <strong>CORS errors</strong> in your console.</p><p>To disable prefetching explicitly, you can use <code>prefetch={false}</code>:</p><pre><code class="language-tsx">&lt;Link href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer" prefetch={false}&gt;
+</Link>
+```
+
+### **Why `rel="noopener noreferrer"` is Important?**
+
+When using `target="_blank"`, you should always include `rel="noopener noreferrer"` for security reasons:
+
+-   `**noopener**`: Prevents the new tab from gaining access to the `window.opener` property. This protects your site from potential malicious scripts that could manipulate your page.
+-   `**noreferrer**`: Ensures that the `Referer` header is not sent to the new page, preventing it from knowing where the user came from.
+
+## **Disabling Next.js Prefetching for External Links**
+
+By default, Next.js prefetches pages linked with `<Link>` **only if they point to an internal Next.js route**. However, in some cases, you may find that Next.js tries to preload an **external link**, causing unnecessary network requests or even **CORS errors** in your console.
+
+To disable prefetching explicitly, you can use `prefetch={false}`:
+
+```tsx
+<Link href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer" prefetch={false}>
   Go to Corner
-&lt;/Link&gt;
-</code></pre><h2 id="alternative-using-a-instead-of-link"><strong>Alternative: Using <code>&lt;a&gt;</code> Instead of <code>&lt;Link&gt;</code></strong></h2><p>If you are linking to an <strong>external website</strong>, you don't actually need to use <code>&lt;Link&gt;</code>. Instead, using a normal <code>&lt;a&gt;</code> tag is often the better choice:</p><pre><code class="language-tsx">&lt;a href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer"&gt;
+</Link>
+```
+
+## **Alternative: Using `<a>` Instead of `<Link>`**
+
+If you are linking to an **external website**, you don't actually need to use `<Link>`. Instead, using a normal `<a>` tag is often the better choice:
+
+```tsx
+<a href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer">
   Go to Corner
-&lt;/a&gt;
-</code></pre><p>This ensures that Next.js does not attempt to <strong>prefetch</strong> or <strong>optimize</strong> the link in any way, making it behave like a standard HTML anchor.</p><h2 id="other-considerations"><strong>Other Considerations</strong></h2><h3 id="1-opening-in-a-new-tab-from-a-button-click"><strong>1. Opening in a New Tab from a Button Click</strong></h3><p>If you don’t want to use a traditional anchor tag but still need to open a new tab, you can use JavaScript instead:</p><pre><code class="language-tsx">&lt;button onClick={() =&gt; window.open("https://corner.buka.sh", "_blank", "noopener,noreferrer")}&gt;
+</a>
+```
+
+This ensures that Next.js does not attempt to **prefetch** or **optimize** the link in any way, making it behave like a standard HTML anchor.
+
+## **Other Considerations**
+
+### **1\. Opening in a New Tab from a Button Click**
+
+If you don’t want to use a traditional anchor tag but still need to open a new tab, you can use JavaScript instead:
+
+```tsx
+<button onClick={() => window.open("https://corner.buka.sh", "_blank", "noopener,noreferrer")}>
   Open in New Tab
-&lt;/button&gt;
-</code></pre><h3 id="2-ensuring-accessibility-aria-label"><strong>2. Ensuring Accessibility (<code>aria-label</code>)</strong></h3><p>For better accessibility, it’s a good idea to add an <code>aria-label</code> to describe the action:</p><pre><code class="language-tsx">&lt;Link href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer" aria-label="Open Corner in a new tab"&gt;
-  Go to Corner
-&lt;/Link&gt;
-</code></pre><h2 id="finally"><strong>Finally</strong></h2><p>Using <code>&lt;Link&gt;</code> with <code>target="_blank"</code> in Next.js requires some <strong>security and performance considerations</strong>. The key takeaways are:</p><p>✅ Always add <code>rel="noopener noreferrer"</code> to prevent security risks. ✅ Disable <code>prefetch={false}</code> if Next.js aggressively tries to preload an external link. ✅ Consider using a normal <code>&lt;a&gt;</code> tag for external links to avoid unnecessary Next.js optimizations. ✅ Use JavaScript (<code>window.open</code>) if you need more flexibility in handling new tabs. ✅ Improve accessibility with <code>aria-label</code>.</p><p>By following these best practices, you can ensure that your external links open safely and efficiently without unwanted behavior. 🚀</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+</button>
+```
 
+### **2\. Ensuring Accessibility (`aria-label`)**
+
+For better accessibility, it’s a good idea to add an `aria-label` to describe the action:
+
+```tsx
+<Link href="https://corner.buka.sh" target="_blank" rel="noopener noreferrer" aria-label="Open Corner in a new tab">
+  Go to Corner
+</Link>
+```
+
+## **Finally**
+
+Using `<Link>` with `target="_blank"` in Next.js requires some **security and performance considerations**. The key takeaways are:
+
+✅ Always add `rel="noopener noreferrer"` to prevent security risks. ✅ Disable `prefetch={false}` if Next.js aggressively tries to preload an external link. ✅ Consider using a normal `<a>` tag for external links to avoid unnecessary Next.js optimizations. ✅ Use JavaScript (`window.open`) if you need more flexibility in handling new tabs. ✅ Improve accessibility with `aria-label`.
+
+By following these best practices, you can ensure that your external links open safely and efficiently without unwanted behavior. 🚀

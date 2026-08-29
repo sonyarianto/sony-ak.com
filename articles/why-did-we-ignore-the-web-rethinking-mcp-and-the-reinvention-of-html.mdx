@@ -5,8 +5,90 @@ description: "As large language models (LLMs) grow more powerful and start to in
 tags: ["javascript","css","html","api","performance"]
 ---
 
-<p>As large language models (LLMs) grow more powerful and start to interact with tools, services, and user interfaces, a new wave of protocols like <strong>MCP (Machine Callable Protocol)</strong> has emerged. MCP aims to describe APIs and functions that an LLM can discover, reason over, and call — much like how a browser interprets and interacts with web pages. But here's a question that more people should be asking:</p><p><strong>Why exactly did we need a new protocol at all?</strong></p><h2 id="the-web-was-already-made-for-machines"><strong>The Web Was Already Made for Machines</strong></h2><p>Before the AI boom, the web wasn't just designed for humans. It was, from the start, also a <strong>machine-readable platform</strong>:</p><ul><li><strong>HTTP</strong> is stateless, cacheable, and uniform — perfect for machine-to-machine communication.</li><li><strong>HTML</strong> isn't just a display language. It's a <strong>semantic structure</strong> with headings, sections, forms, inputs, and links — all designed to convey meaning, not just appearance.</li><li><strong>Forms and links</strong> are universal interaction mechanisms, able to describe everything from search queries to file uploads to data submission.</li><li>Standards like <strong>microdata</strong>, <strong>RDFa</strong>, and <strong>ARIA</strong> provide structured metadata.</li><li>Protocols like <strong>JSON-LD</strong>, <strong>HAL</strong>, and <strong>Hydra</strong> attempted to push hypermedia APIs even further, making interactions <strong>self-discoverable</strong> and <strong>semantically rich</strong>.</li></ul><p>If you're thinking, "<em>Wait — all of this sounds like what MCP is trying to do,</em>" you're not wrong.</p><h2 id="so-why-reinvent-the-wheel"><strong>So Why Reinvent the Wheel?</strong></h2><p>There are a few reasons, and while some make sense, others are more about expediency than necessity.</p><h3 id="1-llms-aren%E2%80%99t-browsers"><strong>1. LLMs Aren’t Browsers</strong></h3><p>While LLMs <em>can</em> parse HTML and follow links, they <strong>don’t render</strong> HTML the way browsers do. They don’t run JavaScript (at least not natively), and their interaction model is different:</p><ul><li>LLMs prefer <strong>structured JSON input/output</strong>.</li><li>They benefit from <strong>explicit parameter definitions</strong>, types, and constraints.</li><li>Simplicity improves <strong>accuracy, predictability</strong>, and <strong>safety</strong>.</li></ul><p>HTML is expressive, but it can also be noisy and inconsistent. Many real-world websites break accessibility rules, misuse tags, and offer poor semantic hints. <strong>LLMs need clean, parseable, and consistent structures</strong> — something JSON-based schemas (like those used in MCP) provide more easily.</p><h3 id="2-developer-convenience-and-adoption"><strong>2. Developer Convenience and Adoption</strong></h3><p>One reason HTML-based APIs never took off is developer culture. Despite decades of pushing REST and hypermedia:</p><ul><li>Most APIs today are still <strong>RPC-style JSON endpoints</strong>.</li><li>Developers often ignore HATEOAS principles in favor of simpler, faster solutions.</li><li>Few people ever embedded proper microdata or ARIA tags, let alone full RDFa.</li></ul><p>MCP is built in that spirit: it’s <strong>simple</strong>, <strong>opinionated</strong>, and <strong>LLM-native</strong>. That makes it easier to adopt for the current generation of developers, even if it ignores lessons from the past.</p><h3 id="3-business-strategy-and-ecosystem-control"><strong>3. Business Strategy and Ecosystem Control</strong></h3><p>Let’s be honest: <strong>new protocols are branding opportunities</strong>.</p><ul><li>MCP gives companies a way to create <strong>walled gardens</strong>, <strong>ecosystems</strong>, and <strong>tooling lock-in</strong>.</li><li>JSON schemas can be optimized for <strong>LLM performance</strong>, logged, metered, and monetized.</li><li>A new protocol makes it easier to create hype: "<em>Look, a whole new way to build AI-native apps!</em>"</li></ul><p>This isn't necessarily malicious — but it's a far cry from the open web ideal where <strong>any machine can interact with any other</strong> using <strong>open standards</strong> and <strong>shared protocols</strong>.</p><h2 id="but-here%E2%80%99s-the-risk-reinventing-html-poorly"><strong>But Here’s the Risk: Reinventing HTML, Poorly</strong></h2><p>We're already seeing this happen.</p><ul><li>Developers want ways to describe how tools should be presented — layout, grouping, ordering.</li><li>Soon they’ll want conditional inputs, nested forms, validation hints, help tooltips, etc.</li><li>We may end up creating a <strong>JSON-based rendering language</strong>, then bolt on templating, then accessibility, then styling…</li></ul><p>Sound familiar?</p><p>It’s the path to <strong>rebuilding HTML, CSS, and maybe even a subset of JavaScript</strong> — but without the decades of hard-earned lessons that the web has already internalized.</p><h2 id="is-there-a-smarter-path-forward"><strong>Is There a Smarter Path Forward?</strong></h2><p>There might be.</p><h3 id="1-marrying-mcp-with-html-semantics"><strong>1. Marrying MCP with HTML Semantics</strong></h3><p>Why not <strong>embed HTML in MCP responses</strong> for display? Or <strong>use HTML microdata inside LLM-parsable documents</strong>? Let HTML handle layout, and MCP handle execution.</p><h3 id="2-encourage-ai-readable-html-standards"><strong>2. Encourage AI-Readable HTML Standards</strong></h3><p>Imagine a curated HTML subset — like <strong>LLM-safe HTML</strong> — that’s clean, semantic, and designed for machine interpretation. Combine that with JSON overlays and you might get the best of both worlds.</p><h3 id="3-revisit-hypermedia-principles"><strong>3. Revisit Hypermedia Principles</strong></h3><p>HATEOAS (Hypermedia As The Engine Of Application State) was hard for humans to adopt. But <strong>AI assistants thrive on discoverability</strong>. Perhaps <strong>LLMs are the agents</strong> we were always waiting for — ones that can truly leverage hypermedia links, semantic input types, and linked data.</p><h2 id="finally"><strong>Finally</strong></h2><p><strong>We didn’t need to throw the web away.</strong></p><p>Yes, HTML isn’t perfect. But it’s <strong>battle-tested</strong>, <strong>extensible</strong>, and <strong>built for interoperability</strong>. Ignoring it entirely in the rush to build MCP and similar formats may be short-sighted.</p><p>Rather than building another fragile stack that slowly regains HTML’s strengths through trial and error, we should be asking:</p><p><strong>What does the web already give us, and how can we extend it for AI — not replace it?</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+As large language models (LLMs) grow more powerful and start to interact with tools, services, and user interfaces, a new wave of protocols like **MCP (Machine Callable Protocol)** has emerged. MCP aims to describe APIs and functions that an LLM can discover, reason over, and call — much like how a browser interprets and interacts with web pages. But here's a question that more people should be asking:
 
+**Why exactly did we need a new protocol at all?**
+
+## **The Web Was Already Made for Machines**
+
+Before the AI boom, the web wasn't just designed for humans. It was, from the start, also a **machine-readable platform**:
+
+-   **HTTP** is stateless, cacheable, and uniform — perfect for machine-to-machine communication.
+-   **HTML** isn't just a display language. It's a **semantic structure** with headings, sections, forms, inputs, and links — all designed to convey meaning, not just appearance.
+-   **Forms and links** are universal interaction mechanisms, able to describe everything from search queries to file uploads to data submission.
+-   Standards like **microdata**, **RDFa**, and **ARIA** provide structured metadata.
+-   Protocols like **JSON-LD**, **HAL**, and **Hydra** attempted to push hypermedia APIs even further, making interactions **self-discoverable** and **semantically rich**.
+
+If you're thinking, "_Wait — all of this sounds like what MCP is trying to do,_" you're not wrong.
+
+## **So Why Reinvent the Wheel?**
+
+There are a few reasons, and while some make sense, others are more about expediency than necessity.
+
+### **1\. LLMs Aren’t Browsers**
+
+While LLMs _can_ parse HTML and follow links, they **don’t render** HTML the way browsers do. They don’t run JavaScript (at least not natively), and their interaction model is different:
+
+-   LLMs prefer **structured JSON input/output**.
+-   They benefit from **explicit parameter definitions**, types, and constraints.
+-   Simplicity improves **accuracy, predictability**, and **safety**.
+
+HTML is expressive, but it can also be noisy and inconsistent. Many real-world websites break accessibility rules, misuse tags, and offer poor semantic hints. **LLMs need clean, parseable, and consistent structures** — something JSON-based schemas (like those used in MCP) provide more easily.
+
+### **2\. Developer Convenience and Adoption**
+
+One reason HTML-based APIs never took off is developer culture. Despite decades of pushing REST and hypermedia:
+
+-   Most APIs today are still **RPC-style JSON endpoints**.
+-   Developers often ignore HATEOAS principles in favor of simpler, faster solutions.
+-   Few people ever embedded proper microdata or ARIA tags, let alone full RDFa.
+
+MCP is built in that spirit: it’s **simple**, **opinionated**, and **LLM-native**. That makes it easier to adopt for the current generation of developers, even if it ignores lessons from the past.
+
+### **3\. Business Strategy and Ecosystem Control**
+
+Let’s be honest: **new protocols are branding opportunities**.
+
+-   MCP gives companies a way to create **walled gardens**, **ecosystems**, and **tooling lock-in**.
+-   JSON schemas can be optimized for **LLM performance**, logged, metered, and monetized.
+-   A new protocol makes it easier to create hype: "_Look, a whole new way to build AI-native apps!_"
+
+This isn't necessarily malicious — but it's a far cry from the open web ideal where **any machine can interact with any other** using **open standards** and **shared protocols**.
+
+## **But Here’s the Risk: Reinventing HTML, Poorly**
+
+We're already seeing this happen.
+
+-   Developers want ways to describe how tools should be presented — layout, grouping, ordering.
+-   Soon they’ll want conditional inputs, nested forms, validation hints, help tooltips, etc.
+-   We may end up creating a **JSON-based rendering language**, then bolt on templating, then accessibility, then styling…
+
+Sound familiar?
+
+It’s the path to **rebuilding HTML, CSS, and maybe even a subset of JavaScript** — but without the decades of hard-earned lessons that the web has already internalized.
+
+## **Is There a Smarter Path Forward?**
+
+There might be.
+
+### **1\. Marrying MCP with HTML Semantics**
+
+Why not **embed HTML in MCP responses** for display? Or **use HTML microdata inside LLM-parsable documents**? Let HTML handle layout, and MCP handle execution.
+
+### **2\. Encourage AI-Readable HTML Standards**
+
+Imagine a curated HTML subset — like **LLM-safe HTML** — that’s clean, semantic, and designed for machine interpretation. Combine that with JSON overlays and you might get the best of both worlds.
+
+### **3\. Revisit Hypermedia Principles**
+
+HATEOAS (Hypermedia As The Engine Of Application State) was hard for humans to adopt. But **AI assistants thrive on discoverability**. Perhaps **LLMs are the agents** we were always waiting for — ones that can truly leverage hypermedia links, semantic input types, and linked data.
+
+## **Finally**
+
+**We didn’t need to throw the web away.**
+
+Yes, HTML isn’t perfect. But it’s **battle-tested**, **extensible**, and **built for interoperability**. Ignoring it entirely in the rush to build MCP and similar formats may be short-sighted.
+
+Rather than building another fragile stack that slowly regains HTML’s strengths through trial and error, we should be asking:
+
+**What does the web already give us, and how can we extend it for AI — not replace it?**

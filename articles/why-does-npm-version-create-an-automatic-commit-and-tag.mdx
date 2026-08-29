@@ -2,22 +2,127 @@
 title: "Why Does npm version Create an Automatic Commit and Tag?"
 date: "2025-10-03T07:52:19.000Z"
 description: "If you have ever run the npm version command and suddenly noticed Git creating a commit and a tag without your explicit instruction, you are not alone. Many dev..."
-tags: ["ci-cd","testing","git","deployment","open-source"]
+tags: ["bash","ci-cd","testing","git","deployment"]
 ---
 
-<p>If you have ever run the <strong><code>npm version</code></strong> command and suddenly noticed Git creating a <strong>commit</strong> and a <strong>tag</strong> without your explicit instruction, you are not alone. Many developers are surprised the first time they encounter this behavior. Let’s dive into what’s happening, why npm does this by default, and what options you have to control it.</p><hr><h2 id="what-npm-version-actually-does">What <code>npm version</code> Actually Does</h2><p>When you run a command such as:</p><pre><code class="language-bash">npm version patch
-</code></pre><p>npm performs a series of actions behind the scenes:</p><ol><li><strong>Bumps the version number</strong> in your <code>package.json</code>.<ul><li>A <code>patch</code> bump increases <code>1.2.3</code> → <code>1.2.4</code>.</li><li>A <code>minor</code> bump increases <code>1.2.3</code> → <code>1.3.0</code>.</li><li>A <code>major</code> bump increases <code>1.2.3</code> → <code>2.0.0</code>.</li></ul></li><li><strong>Updates related files</strong> such as <code>package-lock.json</code> or <code>npm-shrinkwrap.json</code>.</li><li><strong>Creates a Git commit</strong> with the message <code>vX.Y.Z</code> (matching your new version).</li><li><strong>Creates a Git tag</strong> pointing to that commit.</li></ol><p>This behavior is intentional: npm assumes you want your versioning to be tracked in Git history, which is extremely common in <strong>open source projects</strong> and for packages published to the <strong>npm registry</strong>.</p><hr><h2 id="why-automatic-commits-and-tags-can-be-useful">Why Automatic Commits and Tags Can Be Useful</h2><ul><li><strong>Version traceability:</strong> Every release is tied to a specific commit. If a bug appears in version <code>1.2.4</code>, you can easily see the exact code that was published.</li><li><strong>Publishing consistency:</strong> The tag ensures that the source code matches the version on npm.</li><li><strong>Automation hooks:</strong> You can attach scripts to lifecycle hooks like <code>preversion</code>, <code>version</code>, and <code>postversion</code> in <code>package.json</code> for tasks such as building, testing, or publishing.</li></ul><p>For teams practicing <strong>semantic versioning</strong>, this workflow aligns well with continuous release pipelines.</p><hr><h2 id="when-automatic-commits-and-tags-are-a-problem">When Automatic Commits and Tags Are a Problem</h2><p>However, not every project needs this behavior. Examples:</p><ul><li><strong>Private repos or internal tooling</strong> where version bumps are just for internal bookkeeping.</li><li><strong>Monorepos</strong> where you handle versioning through another tool (e.g., Lerna, Changesets, or Nx).</li><li><strong>Custom release processes</strong> where you want commits and tags created only after certain CI/CD checks.</li></ul><p>In such cases, the default behavior feels intrusive.</p><hr><h2 id="how-to-disable-the-automatic-commit">How to Disable the Automatic Commit</h2><p>To prevent Git commits and tags, you can use:</p><pre><code class="language-bash">npm version patch --no-git-tag-version
-</code></pre><p>This updates only your <code>package.json</code> (and lock file) without touching Git.</p><p>If you want this to be the <strong>default behavior</strong> for your project, set it in your <code>.npmrc</code>:</p><pre><code class="language-ini">git-tag-version=false
-</code></pre><p>From then on, <code>npm version</code> will only bump the numbers unless you explicitly override it.</p><hr><h2 id="other-considerations">Other Considerations</h2><ol><ul><li><code>preversion</code> runs before the version is bumped.</li><li><code>version</code> runs after files are updated but before commit/tag.</li><li><code>postversion</code> runs after commit and tagging.</li></ul><li><strong>CI/CD and Versioning Strategy</strong><br>If your team uses a <strong>release pipeline</strong> (e.g., GitHub Actions, GitLab CI, Jenkins), you might want to centralize version bumps in CI, not on local developer machines. In that case, using <code>--no-git-tag-version</code> locally and letting CI handle tagging is a safer approach.</li><li><strong>Monorepo Tools Conflict</strong><br>If you’re using tools like <strong>Lerna</strong> or <strong>Changesets</strong>, those tools manage version bumps, changelogs, and tags in bulk. Mixing <code>npm version</code> with them can cause inconsistencies.</li><li><strong>Version Control Discipline</strong><br>Remember that automatic commits may clutter your Git history if you bump versions often. Some teams prefer <strong>manual control</strong> to keep history clean and meaningful.</li></ol><p><strong>Pre- and Post- Scripts</strong><br>You can define lifecycle scripts in <code>package.json</code>:</p><pre><code class="language-json">{
+If you have ever run the **`npm version`** command and suddenly noticed Git creating a **commit** and a **tag** without your explicit instruction, you are not alone. Many developers are surprised the first time they encounter this behavior. Let’s dive into what’s happening, why npm does this by default, and what options you have to control it.
+
+* * *
+
+## What `npm version` Actually Does
+
+When you run a command such as:
+
+```bash
+npm version patch
+```
+
+npm performs a series of actions behind the scenes:
+
+1.  **Bumps the version number** in your `package.json`.
+    -   A `patch` bump increases `1.2.3` → `1.2.4`.
+    -   A `minor` bump increases `1.2.3` → `1.3.0`.
+    -   A `major` bump increases `1.2.3` → `2.0.0`.
+2.  **Updates related files** such as `package-lock.json` or `npm-shrinkwrap.json`.
+3.  **Creates a Git commit** with the message `vX.Y.Z` (matching your new version).
+4.  **Creates a Git tag** pointing to that commit.
+
+This behavior is intentional: npm assumes you want your versioning to be tracked in Git history, which is extremely common in **open source projects** and for packages published to the **npm registry**.
+
+* * *
+
+## Why Automatic Commits and Tags Can Be Useful
+
+-   **Version traceability:** Every release is tied to a specific commit. If a bug appears in version `1.2.4`, you can easily see the exact code that was published.
+-   **Publishing consistency:** The tag ensures that the source code matches the version on npm.
+-   **Automation hooks:** You can attach scripts to lifecycle hooks like `preversion`, `version`, and `postversion` in `package.json` for tasks such as building, testing, or publishing.
+
+For teams practicing **semantic versioning**, this workflow aligns well with continuous release pipelines.
+
+* * *
+
+## When Automatic Commits and Tags Are a Problem
+
+However, not every project needs this behavior. Examples:
+
+-   **Private repos or internal tooling** where version bumps are just for internal bookkeeping.
+-   **Monorepos** where you handle versioning through another tool (e.g., Lerna, Changesets, or Nx).
+-   **Custom release processes** where you want commits and tags created only after certain CI/CD checks.
+
+In such cases, the default behavior feels intrusive.
+
+* * *
+
+## How to Disable the Automatic Commit
+
+To prevent Git commits and tags, you can use:
+
+```bash
+npm version patch --no-git-tag-version
+```
+
+This updates only your `package.json` (and lock file) without touching Git.
+
+If you want this to be the **default behavior** for your project, set it in your `.npmrc`:
+
+```ini
+git-tag-version=false
+```
+
+From then on, `npm version` will only bump the numbers unless you explicitly override it.
+
+* * *
+
+## Other Considerations
+
+-   `preversion` runs before the version is bumped.
+-   `version` runs after files are updated but before commit/tag.
+-   `postversion` runs after commit and tagging.
+
+2.  **CI/CD and Versioning Strategy**  
+    If your team uses a **release pipeline** (e.g., GitHub Actions, GitLab CI, Jenkins), you might want to centralize version bumps in CI, not on local developer machines. In that case, using `--no-git-tag-version` locally and letting CI handle tagging is a safer approach.
+3.  **Monorepo Tools Conflict**  
+    If you’re using tools like **Lerna** or **Changesets**, those tools manage version bumps, changelogs, and tags in bulk. Mixing `npm version` with them can cause inconsistencies.
+4.  **Version Control Discipline**  
+    Remember that automatic commits may clutter your Git history if you bump versions often. Some teams prefer **manual control** to keep history clean and meaningful.
+
+**Pre- and Post- Scripts**  
+You can define lifecycle scripts in `package.json`:
+
+```json
+{
   "scripts": {
     "preversion": "npm test",
     "version": "npm run build",
-    "postversion": "git push &amp;&amp; git push --tags"
+    "postversion": "git push && git push --tags"
   }
 }
-</code></pre><p>This is powerful for enforcing checks or automating deployment steps.</p><p><strong>Custom commit messages</strong><br>You can change the default commit message with:</p><pre><code class="language-bash">npm version patch -m "Release version %s"
-</code></pre><p><code>%s</code> will be replaced with the new version number.</p><hr><h2 id="best-practices">Best Practices</h2><ul><li><strong>For open source libraries</strong>: Keep the default behavior. Commits and tags help external users trace issues.</li><li><strong>For internal apps/tools</strong>: Disable Git tagging unless you publish artifacts externally.</li><li><strong>For CI/CD-driven releases</strong>: Use <code>--no-git-tag-version</code> locally and let CI pipelines handle version commits and tags.</li><li><strong>Always push tags</strong> if you rely on them for releases. Tags left only in your local repo are invisible to collaborators.</li></ul><hr><h2 id="finally">Finally</h2><p>The <strong>automatic commit and tag in <code>npm version</code></strong> is not a bug — it’s a deliberate feature designed for a particular workflow: <strong>reproducible, traceable releases</strong>. That said, npm gives you the flexibility to <strong>opt out</strong> if it does not suit your project.</p><p>Whether you embrace or disable this feature depends on your project’s <strong>release strategy</strong>, <strong>team workflow</strong>, and <strong>tooling ecosystem</strong>. Understanding these behaviors up front ensures you avoid unexpected commits in your history while still leveraging npm’s powerful versioning tools effectively.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This is powerful for enforcing checks or automating deployment steps.
+
+**Custom commit messages**  
+You can change the default commit message with:
+
+```bash
+npm version patch -m "Release version %s"
+```
+
+`%s` will be replaced with the new version number.
+
+* * *
+
+## Best Practices
+
+-   **For open source libraries**: Keep the default behavior. Commits and tags help external users trace issues.
+-   **For internal apps/tools**: Disable Git tagging unless you publish artifacts externally.
+-   **For CI/CD-driven releases**: Use `--no-git-tag-version` locally and let CI pipelines handle version commits and tags.
+-   **Always push tags** if you rely on them for releases. Tags left only in your local repo are invisible to collaborators.
+
+* * *
+
+## Finally
+
+The **automatic commit and tag in `npm version`** is not a bug — it’s a deliberate feature designed for a particular workflow: **reproducible, traceable releases**. That said, npm gives you the flexibility to **opt out** if it does not suit your project.
+
+Whether you embrace or disable this feature depends on your project’s **release strategy**, **team workflow**, and **tooling ecosystem**. Understanding these behaviors up front ensures you avoid unexpected commits in your history while still leveraging npm’s powerful versioning tools effectively.

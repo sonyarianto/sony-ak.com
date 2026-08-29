@@ -5,33 +5,113 @@ description: "As our TypeScript codebases grow, clarity and consistency become m
 tags: ["typescript","react","logging","clean-code"]
 ---
 
-<p>As our TypeScript codebases grow, <strong>clarity and consistency</strong> become more important than clever tricks. One underrated but impactful practice is how we <strong>define return types</strong>—or more accurately, when we should and when we shouldn't.</p><p>This article walks through my current recommendation (yes, it's changed a few times), and highlights some useful considerations that you might have overlooked.</p><hr><h2 id="%F0%9F%8E%AF-always-explicit-for-top-level-functions">🎯 Always Explicit for Top-Level Functions</h2><p>When you're writing a <strong>top-level function</strong>—especially one that’s exported or reused across multiple files—<strong>always declare the return type</strong>. This isn’t just for TypeScript. It’s for:</p><ul><li><strong>Human readers</strong> who want to understand what your function is supposed to do,</li><li><strong>Static analysis tools</strong> and <strong>AI assistants</strong> that can offer better support,</li><li><strong>Future-you</strong>, when you're trying to figure out why something is returning a weird value.</li></ul><pre><code class="language-ts">// ✅ Good
-const getGreeting = (): string =&gt; {
+As our TypeScript codebases grow, **clarity and consistency** become more important than clever tricks. One underrated but impactful practice is how we **define return types**—or more accurately, when we should and when we shouldn't.
+
+This article walks through my current recommendation (yes, it's changed a few times), and highlights some useful considerations that you might have overlooked.
+
+* * *
+
+## 🎯 Always Explicit for Top-Level Functions
+
+When you're writing a **top-level function**—especially one that’s exported or reused across multiple files—**always declare the return type**. This isn’t just for TypeScript. It’s for:
+
+-   **Human readers** who want to understand what your function is supposed to do,
+-   **Static analysis tools** and **AI assistants** that can offer better support,
+-   **Future-you**, when you're trying to figure out why something is returning a weird value.
+
+```ts
+// ✅ Good
+const getGreeting = (): string => {
   return "Hello";
 };
-</code></pre><p>Even though TypeScript can infer this, <strong>inference isn't documentation</strong>. Explicit return types act as contracts.</p><hr><h2 id="%F0%9F%8E%A8-skip-it-for-jsx-components">🎨 Skip It for JSX Components</h2><p>There’s one clear exception: <strong>React components</strong>. If your function is a component returning JSX, <strong>don't bother specifying the return type</strong>.</p><pre><code class="language-tsx">// ✅ Also Good
-const HelloWorld = () =&gt; {
-  return &lt;div&gt;Hello World&lt;/div&gt;;
+```
+
+Even though TypeScript can infer this, **inference isn't documentation**. Explicit return types act as contracts.
+
+* * *
+
+## 🎨 Skip It for JSX Components
+
+There’s one clear exception: **React components**. If your function is a component returning JSX, **don't bother specifying the return type**.
+
+```tsx
+// ✅ Also Good
+const HelloWorld = () => {
+  return <div>Hello World</div>;
 };
-</code></pre><p>In this case, the return type is always something React can render—JSX or <code>ReactNode</code>. Adding an explicit return type like <code>JSX.Element</code> or <code>React.ReactElement</code> often adds noise without much benefit.</p><p>Let the code speak for itself.</p><hr><h2 id="%F0%9F%A4%9D-helper-functions-inside-components-declare-it">🤝 Helper Functions Inside Components? Declare It.</h2><p>While we can skip return types for components, <strong>any helper function inside a component</strong> that performs logic (e.g., formatting data, calculations) <strong>should still declare its return type</strong>.</p><pre><code class="language-tsx">const UserCard = ({ name }: { name: string }) =&gt; {
-  const formatName = (name: string): string =&gt; {
+```
+
+In this case, the return type is always something React can render—JSX or `ReactNode`. Adding an explicit return type like `JSX.Element` or `React.ReactElement` often adds noise without much benefit.
+
+Let the code speak for itself.
+
+* * *
+
+## 🤝 Helper Functions Inside Components? Declare It.
+
+While we can skip return types for components, **any helper function inside a component** that performs logic (e.g., formatting data, calculations) **should still declare its return type**.
+
+```tsx
+const UserCard = ({ name }: { name: string }) => {
+  const formatName = (name: string): string => {
     return name.trim().toUpperCase();
   };
 
-  return &lt;div&gt;{formatName(name)}&lt;/div&gt;;
+  return <div>{formatName(name)}</div>;
 };
-</code></pre><p>This keeps the function <strong>self-describing</strong> and avoids hidden surprises, especially when logic becomes more complex over time.</p><hr><h2 id="%F0%9F%A7%AA-don%E2%80%99t-trust-typescript%E2%80%99s-inference-blindly">🧪 Don’t Trust TypeScript’s Inference Blindly</h2><p>Yes, TypeScript is smart. But relying too much on inference:</p><ul><li>Makes it harder to detect accidental return changes</li><li>Reduces IDE readability (you need to hover or peek definitions)</li><li>Can lead to <strong>wider-than-necessary return types</strong> (e.g., <code>string | undefined</code> when you expected <code>string</code>)</li></ul><pre><code class="language-ts">// ❌ Might return undefined, but you won't know unless you dig
-const getName = (user: User) =&gt; user.name;
-</code></pre><p>Be intentional. If you expect a string, say it:</p><pre><code class="language-ts">const getName = (user: User): string =&gt; user.name ?? "Anonymous";
-</code></pre><hr><h2 id="%F0%9F%93%A6-use-void-or-promisevoid-for-side-effect-functions">📦 Use <code>void</code> or <code>Promise&lt;void&gt;</code> for Side-Effect Functions</h2><p>If your function performs a side effect and doesn't return anything meaningful, use <code>void</code> (or <code>Promise&lt;void&gt;</code> for async).</p><pre><code class="language-ts">const logMessage = (msg: string): void =&gt; {
+```
+
+This keeps the function **self-describing** and avoids hidden surprises, especially when logic becomes more complex over time.
+
+* * *
+
+## 🧪 Don’t Trust TypeScript’s Inference Blindly
+
+Yes, TypeScript is smart. But relying too much on inference:
+
+-   Makes it harder to detect accidental return changes
+-   Reduces IDE readability (you need to hover or peek definitions)
+-   Can lead to **wider-than-necessary return types** (e.g., `string | undefined` when you expected `string`)
+
+```ts
+// ❌ Might return undefined, but you won't know unless you dig
+const getName = (user: User) => user.name;
+```
+
+Be intentional. If you expect a string, say it:
+
+```ts
+const getName = (user: User): string => user.name ?? "Anonymous";
+```
+
+* * *
+
+## 📦 Use `void` or `Promise<void>` for Side-Effect Functions
+
+If your function performs a side effect and doesn't return anything meaningful, use `void` (or `Promise<void>` for async).
+
+```ts
+const logMessage = (msg: string): void => {
   console.log(msg);
 };
 
-const syncData = async (): Promise&lt;void&gt; =&gt; {
+const syncData = async (): Promise<void> => {
   await someApiCall();
 };
-</code></pre><p>This avoids false assumptions that the function returns something usable.</p><hr><h2 id="%F0%9F%A7%BC-clean-code-is-clear-code">🧼 Clean Code Is Clear Code</h2><p>Here’s the bottom line:</p><ul><li>Use <strong>explicit return types</strong> for top-level and utility functions.</li><li>Skip them for <strong>JSX-returning components</strong> unless there's an edge case.</li><li>Be mindful of <strong>inferred types</strong>, and tighten them when necessary.</li><li>Use <code>void</code> to clearly signal non-returning behavior.</li><li>Consider your audience—<strong>teammates, future maintainers, and tools</strong>—when writing functions.</li></ul><p>By being intentional about return types, you improve not just correctness, but the <strong>readability, reliability, and maintainability</strong> of your code.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This avoids false assumptions that the function returns something usable.
+
+* * *
+
+## 🧼 Clean Code Is Clear Code
+
+Here’s the bottom line:
+
+-   Use **explicit return types** for top-level and utility functions.
+-   Skip them for **JSX-returning components** unless there's an edge case.
+-   Be mindful of **inferred types**, and tighten them when necessary.
+-   Use `void` to clearly signal non-returning behavior.
+-   Consider your audience—**teammates, future maintainers, and tools**—when writing functions.
+
+By being intentional about return types, you improve not just correctness, but the **readability, reliability, and maintainability** of your code.

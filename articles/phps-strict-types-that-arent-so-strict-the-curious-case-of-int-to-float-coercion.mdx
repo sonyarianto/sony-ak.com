@@ -5,13 +5,87 @@ description: "When PHP 7 introduced strict types , many developers breathed a si
 tags: ["typescript","php","rust","performance","deployment"]
 ---
 
-<p>When PHP 7 introduced <strong>strict types</strong>, many developers breathed a sigh of relief. Finally, a way to enforce strict type checking in function arguments and return types! But if you’ve ever played around with <code>strict_types=1</code>, you may have noticed something <strong>peculiar</strong>: passing an <strong>integer</strong> to a function expecting a <strong>float</strong> doesn’t throw an error. Instead, it just works.</p><p>Let’s unpack this.</p><hr><h3 id="what-is-stricttypes1"><strong>What is <code>strict_types=1</code>?</strong></h3><p>When you write:</p><pre><code class="language-php">declare(strict_types=1);
-</code></pre><p>PHP enables <strong>strict type checking</strong> for scalar types (<strong>int</strong>, <strong>float</strong>, <strong>string</strong>, <strong>bool</strong>) in function arguments and return values. Without <code>strict_types</code>, PHP tries to be “helpful” and performs <strong>loose type coercion</strong>:</p><ul><li>Passing a string <code>'123'</code> to a function expecting an <code>int</code> will just work.</li><li>Passing <code>'3.14'</code> to a <code>float</code>-typed function? Sure, PHP will quietly convert it.</li></ul><p>With <code>strict_types=1</code>, PHP stops this silent coercion. If you pass a string where an int is expected, it throws a <strong>TypeError</strong>.</p><hr><h3 id="but-then-why-does-int-to-float-still-work"><strong>But Then, Why Does <code>int</code> to <code>float</code> Still Work?</strong></h3><p>Here’s the kicker: <strong><code>strict_types=1</code> doesn’t prevent int-to-float coercion</strong>. Even in strict mode, passing <code>1</code> (an int) to a function expecting a <code>float</code> <strong>does not throw an error</strong>. PHP accepts it and converts the int to float under the hood.</p><p>Why?</p><ul><li>PHP’s type system sees <strong>int and float</strong> as <strong>numeric types</strong> that are compatible.</li><li>Converting an integer like <code>1</code> to <code>1.0</code> (float) is <strong>safe</strong> and <strong>lossless</strong>.</li><li>The PHP designers made a deliberate decision: <strong>int and float are close enough</strong> for strict types to allow automatic conversion.</li></ul><hr><h3 id="the-philosophy-behind-it"><strong>The Philosophy Behind It</strong></h3><p>PHP’s <strong>type system isn’t designed to be ultra-strict</strong> like some other languages (e.g., Rust or TypeScript with <code>strict</code> mode). Instead, it prioritizes <strong>pragmatism</strong> and <strong>developer convenience</strong>.</p><ul><li><strong>Numeric types (int and float) are often interchangeable</strong> in mathematical contexts.</li><li>Forcing developers to manually convert <code>1</code> to <code>1.0</code> would add unnecessary friction, with little benefit.</li></ul><hr><h3 id="where-stricttypes-does-make-a-difference"><strong>Where <code>strict_types</code> Does Make a Difference</strong></h3><p>Let’s look at what <code>strict_types</code> <strong>does</strong> enforce strictly:</p><ul><li><strong>Passing a string to a float-typed function?</strong> Throws a <code>TypeError</code>.</li><li><strong>Passing an array to an int-typed function?</strong> Also a <code>TypeError</code>.</li><li><strong>Return values of functions are strictly checked</strong>. If your function says it returns a <code>float</code>, returning an <code>int</code> is allowed, but returning a <code>string</code> will trigger a <code>TypeError</code>.</li></ul><hr><h3 id="what-about-the-return-types"><strong>What About the Return Types?</strong></h3><p>You might think, “if a function declares <code>: float</code>, shouldn’t it require an actual <code>float</code> return?” PHP <strong>allows returning an <code>int</code></strong> when the function signature specifies <code>float</code>.<br>For example:</p><pre><code class="language-php">declare(strict_types=1);
+When PHP 7 introduced **strict types**, many developers breathed a sigh of relief. Finally, a way to enforce strict type checking in function arguments and return types! But if you’ve ever played around with `strict_types=1`, you may have noticed something **peculiar**: passing an **integer** to a function expecting a **float** doesn’t throw an error. Instead, it just works.
+
+Let’s unpack this.
+
+* * *
+
+### **What is `strict_types=1`?**
+
+When you write:
+
+```php
+declare(strict_types=1);
+```
+
+PHP enables **strict type checking** for scalar types (**int**, **float**, **string**, **bool**) in function arguments and return values. Without `strict_types`, PHP tries to be “helpful” and performs **loose type coercion**:
+
+-   Passing a string `'123'` to a function expecting an `int` will just work.
+-   Passing `'3.14'` to a `float`\-typed function? Sure, PHP will quietly convert it.
+
+With `strict_types=1`, PHP stops this silent coercion. If you pass a string where an int is expected, it throws a **TypeError**.
+
+* * *
+
+### **But Then, Why Does `int` to `float` Still Work?**
+
+Here’s the kicker: **`strict_types=1` doesn’t prevent int-to-float coercion**. Even in strict mode, passing `1` (an int) to a function expecting a `float` **does not throw an error**. PHP accepts it and converts the int to float under the hood.
+
+Why?
+
+-   PHP’s type system sees **int and float** as **numeric types** that are compatible.
+-   Converting an integer like `1` to `1.0` (float) is **safe** and **lossless**.
+-   The PHP designers made a deliberate decision: **int and float are close enough** for strict types to allow automatic conversion.
+
+* * *
+
+### **The Philosophy Behind It**
+
+PHP’s **type system isn’t designed to be ultra-strict** like some other languages (e.g., Rust or TypeScript with `strict` mode). Instead, it prioritizes **pragmatism** and **developer convenience**.
+
+-   **Numeric types (int and float) are often interchangeable** in mathematical contexts.
+-   Forcing developers to manually convert `1` to `1.0` would add unnecessary friction, with little benefit.
+
+* * *
+
+### **Where `strict_types` Does Make a Difference**
+
+Let’s look at what `strict_types` **does** enforce strictly:
+
+-   **Passing a string to a float-typed function?** Throws a `TypeError`.
+-   **Passing an array to an int-typed function?** Also a `TypeError`.
+-   **Return values of functions are strictly checked**. If your function says it returns a `float`, returning an `int` is allowed, but returning a `string` will trigger a `TypeError`.
+
+* * *
+
+### **What About the Return Types?**
+
+You might think, “if a function declares `: float`, shouldn’t it require an actual `float` return?” PHP **allows returning an `int`** when the function signature specifies `float`.  
+For example:
+
+```php
+declare(strict_types=1);
 
 function getFloat(): float {
     return 1; // No error
 }
-</code></pre><p>This works because of the same <strong>int-to-float compatibility</strong>. The integer <code>1</code> is <strong>silently converted to <code>1.0</code></strong>.</p><hr><h3 id="how-to-enforce-true-strictness-even-int-vs-float"><strong>How to Enforce True Strictness (Even Int vs Float)?</strong></h3><p>If you want to <strong>reject <code>int</code> values where <code>float</code> is expected</strong>, PHP won’t do it for you automatically. You’ll need to:</p><ol><li>Use <strong>static analysis tools</strong> (like PHPStan or Psalm) with strict configuration rules to catch these cases during development.</li></ol><p><strong>Manually check types at runtime</strong>:</p><pre><code class="language-php">function f($f) {
+```
+
+This works because of the same **int-to-float compatibility**. The integer `1` is **silently converted to `1.0`**.
+
+* * *
+
+### **How to Enforce True Strictness (Even Int vs Float)?**
+
+If you want to **reject `int` values where `float` is expected**, PHP won’t do it for you automatically. You’ll need to:
+
+1.  Use **static analysis tools** (like PHPStan or Psalm) with strict configuration rules to catch these cases during development.
+
+**Manually check types at runtime**:
+
+```php
+function f($f) {
     if (!is_float($f)) {
         throw new TypeError("Expected float, got " . gettype($f));
     }
@@ -19,8 +93,32 @@ function getFloat(): float {
 }
 
 f(1); // Will throw TypeError
-</code></pre><hr><h3 id="what-other-languages-do"><strong>What Other Languages Do</strong></h3><p>In stricter languages like:</p><ul><li><strong>Rust</strong>: <code>i32</code> and <code>f32</code> are <strong>completely separate</strong>; explicit casting is mandatory.</li><li><strong>Go</strong>: You can’t pass an <code>int</code> to a <code>float64</code> parameter; you must explicitly convert it.</li><li><strong>TypeScript</strong>: Numeric literals are all <code>number</code>, but if you want stricter checks, you must use custom types.</li></ul><p>PHP’s design leans towards <strong>developer flexibility over strict enforcement</strong>, which can be both a blessing and a curse.</p><hr><h3 id="considerations-you-might-be-missing"><strong>Considerations You Might Be Missing</strong></h3><ul><li><strong>Silent Errors in Production</strong>: If you rely on <code>strict_types</code> to prevent unintended type coercion, remember that <code>int</code> to <code>float</code> (and vice versa) will still happen silently. This can lead to subtle bugs, especially in financial or precision-sensitive calculations.</li><li><strong>Performance</strong>: Manually adding runtime checks for stricter typing could impact performance if overused. It’s a trade-off between <strong>safety</strong> and <strong>speed</strong>.</li><li><strong>Legacy Code Compatibility</strong>: Many PHP projects have legacy code where type declarations were not enforced. Be cautious when introducing <code>strict_types=1</code> to an older codebase, as it may not catch <strong>all</strong> issues.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p>PHP’s <code>strict_types=1</code> is a <strong>powerful tool</strong> for improving code quality, but it’s not as <strong>rigid</strong> as you might expect. The <strong>int-to-float loophole</strong> isn’t a bug – it’s a deliberate design choice to prioritize flexibility.</p><p>If you need <strong>true, unforgiving strictness</strong>, PHP isn’t the language for it. But for many use cases, this compromise strikes a balance between <strong>developer convenience</strong> and <strong>type safety</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+* * *
+
+### **What Other Languages Do**
+
+In stricter languages like:
+
+-   **Rust**: `i32` and `f32` are **completely separate**; explicit casting is mandatory.
+-   **Go**: You can’t pass an `int` to a `float64` parameter; you must explicitly convert it.
+-   **TypeScript**: Numeric literals are all `number`, but if you want stricter checks, you must use custom types.
+
+PHP’s design leans towards **developer flexibility over strict enforcement**, which can be both a blessing and a curse.
+
+* * *
+
+### **Considerations You Might Be Missing**
+
+-   **Silent Errors in Production**: If you rely on `strict_types` to prevent unintended type coercion, remember that `int` to `float` (and vice versa) will still happen silently. This can lead to subtle bugs, especially in financial or precision-sensitive calculations.
+-   **Performance**: Manually adding runtime checks for stricter typing could impact performance if overused. It’s a trade-off between **safety** and **speed**.
+-   **Legacy Code Compatibility**: Many PHP projects have legacy code where type declarations were not enforced. Be cautious when introducing `strict_types=1` to an older codebase, as it may not catch **all** issues.
+
+* * *
+
+### **Finally**
+
+PHP’s `strict_types=1` is a **powerful tool** for improving code quality, but it’s not as **rigid** as you might expect. The **int-to-float loophole** isn’t a bug – it’s a deliberate design choice to prioritize flexibility.
+
+If you need **true, unforgiving strictness**, PHP isn’t the language for it. But for many use cases, this compromise strikes a balance between **developer convenience** and **type safety**.

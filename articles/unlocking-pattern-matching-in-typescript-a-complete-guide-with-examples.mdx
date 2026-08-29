@@ -5,7 +5,16 @@ description: "When working with TypeScript , especially when dealing with comple
 tags: ["typescript","rust","api","testing","performance"]
 ---
 
-<p>When working with <strong>TypeScript</strong>, especially when dealing with <strong>complex data structures</strong> or <strong>conditional logic</strong>, a common request is for a feature called <strong>pattern matching</strong>. Pattern matching allows us to write <strong>concise</strong>, <strong>expressive</strong>, and <strong>type-safe code</strong> to handle different types and values within a single expression. While TypeScript doesn’t have built-in pattern matching like <strong>Rust</strong> or <strong>Haskell</strong>, it’s possible to emulate similar functionality using <strong>tagged unions</strong>, <strong>type guards</strong>, and <strong>functional patterns</strong>. Here, we’ll dive into practical ways to achieve pattern matching in TypeScript and explore important considerations.</p><h3 id="1-pattern-matching-with-tagged-unions">1. Pattern Matching with <strong>Tagged Unions</strong></h3><p>Tagged unions, also known as <strong>discriminated unions</strong>, are one of the most effective ways to replicate pattern matching in TypeScript. A tagged union in TypeScript is a <strong>union of object types</strong> with a <strong>common discriminant property</strong>—typically a <code>type</code> or <code>kind</code> field—that helps TypeScript determine the specific shape of the union in different contexts. Tagged unions make <strong>switch-case statements</strong> more expressive and type-safe.</p><p>For example, consider a scenario where you want to calculate the area of different shapes:</p><pre><code class="language-typescript">type Shape =
+When working with **TypeScript**, especially when dealing with **complex data structures** or **conditional logic**, a common request is for a feature called **pattern matching**. Pattern matching allows us to write **concise**, **expressive**, and **type-safe code** to handle different types and values within a single expression. While TypeScript doesn’t have built-in pattern matching like **Rust** or **Haskell**, it’s possible to emulate similar functionality using **tagged unions**, **type guards**, and **functional patterns**. Here, we’ll dive into practical ways to achieve pattern matching in TypeScript and explore important considerations.
+
+### 1\. Pattern Matching with **Tagged Unions**
+
+Tagged unions, also known as **discriminated unions**, are one of the most effective ways to replicate pattern matching in TypeScript. A tagged union in TypeScript is a **union of object types** with a **common discriminant property**—typically a `type` or `kind` field—that helps TypeScript determine the specific shape of the union in different contexts. Tagged unions make **switch-case statements** more expressive and type-safe.
+
+For example, consider a scenario where you want to calculate the area of different shapes:
+
+```typescript
+type Shape =
   | { kind: "circle"; radius: number }
   | { kind: "square"; side: number }
   | { kind: "rectangle"; width: number; height: number };
@@ -23,10 +32,21 @@ function getArea(shape: Shape): number {
       throw new Error(`Unhandled case: ${_exhaustiveCheck}`);
   }
 }
-</code></pre><p>In the <code>getArea</code> function, the <strong>discriminant property</strong> <code>kind</code> helps TypeScript narrow down the possible shapes, making it easier to handle each shape <strong>specifically</strong> and <strong>safely</strong>. Note the <code>_exhaustiveCheck</code> variable in the <code>default</code> case: this is a <strong>type-safe trick</strong> that lets TypeScript verify that all cases have been handled. If a new shape is added without a corresponding case, TypeScript will throw a <strong>compile-time error</strong>.</p><h3 id="2-using-type-guards-for-pattern-matching">2. Using <strong>Type Guards</strong> for Pattern Matching</h3><p>When working with <strong>more complex logic</strong> that doesn’t fit well into a switch-case structure, <strong>type guards</strong> allow for custom pattern matching while keeping code <strong>clean</strong> and <strong>readable</strong>. Type guards can also be beneficial when there are <strong>nested properties</strong> that need to be checked in order to determine the exact type of an object.</p><p>Here’s how to use type guards with a similar shape example:</p><pre><code class="language-typescript">type Animal = 
-  | { type: "dog"; bark: () =&gt; string }
-  | { type: "cat"; meow: () =&gt; string }
-  | { type: "bird"; chirp: () =&gt; string };
+```
+
+In the `getArea` function, the **discriminant property** `kind` helps TypeScript narrow down the possible shapes, making it easier to handle each shape **specifically** and **safely**. Note the `_exhaustiveCheck` variable in the `default` case: this is a **type-safe trick** that lets TypeScript verify that all cases have been handled. If a new shape is added without a corresponding case, TypeScript will throw a **compile-time error**.
+
+### 2\. Using **Type Guards** for Pattern Matching
+
+When working with **more complex logic** that doesn’t fit well into a switch-case structure, **type guards** allow for custom pattern matching while keeping code **clean** and **readable**. Type guards can also be beneficial when there are **nested properties** that need to be checked in order to determine the exact type of an object.
+
+Here’s how to use type guards with a similar shape example:
+
+```typescript
+type Animal = 
+  | { type: "dog"; bark: () => string }
+  | { type: "cat"; meow: () => string }
+  | { type: "bird"; chirp: () => string };
 
 function makeSound(animal: Animal): string {
   if (animal.type === "dog") {
@@ -40,13 +60,24 @@ function makeSound(animal: Animal): string {
     throw new Error(`Unhandled animal type: ${_exhaustiveCheck}`);
   }
 }
-</code></pre><p>In this case, the <code>type</code> property is used to check each case within the <code>makeSound</code> function. Each branch narrows down the type, and TypeScript’s <strong>type inference</strong> fills in the rest. Again, <code>_exhaustiveCheck</code> ensures that all cases are accounted for, creating a <strong>fail-safe</strong> against forgotten types.</p><h3 id="3-functional-pattern-matching-with-a-helper-function">3. <strong>Functional Pattern Matching</strong> with a Helper Function</h3><p>Sometimes, using <strong>functions as pattern handlers</strong> can simplify logic by allowing <strong>specific functions to handle each case</strong>. This is particularly helpful if the function associated with each pattern has <strong>complex logic</strong>. We can create a <strong>pattern-matching function</strong> that takes handlers for each case, letting the user specify what to do based on the type of object they have.</p><p>Here’s an example with shapes:</p><pre><code class="language-typescript">type ShapePattern&lt;T&gt; = {
-  circle: (radius: number) =&gt; T;
-  square: (side: number) =&gt; T;
-  rectangle: (width: number, height: number) =&gt; T;
+```
+
+In this case, the `type` property is used to check each case within the `makeSound` function. Each branch narrows down the type, and TypeScript’s **type inference** fills in the rest. Again, `_exhaustiveCheck` ensures that all cases are accounted for, creating a **fail-safe** against forgotten types.
+
+### 3\. **Functional Pattern Matching** with a Helper Function
+
+Sometimes, using **functions as pattern handlers** can simplify logic by allowing **specific functions to handle each case**. This is particularly helpful if the function associated with each pattern has **complex logic**. We can create a **pattern-matching function** that takes handlers for each case, letting the user specify what to do based on the type of object they have.
+
+Here’s an example with shapes:
+
+```typescript
+type ShapePattern<T> = {
+  circle: (radius: number) => T;
+  square: (side: number) => T;
+  rectangle: (width: number, height: number) => T;
 };
 
-function matchShape&lt;T&gt;(shape: Shape, pattern: ShapePattern&lt;T&gt;): T {
+function matchShape<T>(shape: Shape, pattern: ShapePattern<T>): T {
   switch (shape.kind) {
     case "circle":
       return pattern.circle(shape.radius);
@@ -60,12 +91,24 @@ function matchShape&lt;T&gt;(shape: Shape, pattern: ShapePattern&lt;T&gt;): T {
 // Usage
 const shape: Shape = { kind: "circle", radius: 5 };
 const area = matchShape(shape, {
-  circle: (radius) =&gt; Math.PI * radius ** 2,
-  square: (side) =&gt; side ** 2,
-  rectangle: (width, height) =&gt; width * height,
+  circle: (radius) => Math.PI * radius ** 2,
+  square: (side) => side ** 2,
+  rectangle: (width, height) => width * height,
 });
-</code></pre><p>This approach provides more flexibility and avoids <strong>deeply nested if-else statements</strong>. It also opens up the possibility of adding <strong>default behavior</strong> for cases that don’t need handling or using <strong>optional chaining</strong> for certain pattern cases, which can improve <strong>readability</strong> and <strong>maintainability</strong>.</p><h3 id="additional-considerations-for-pattern-matching-in-typescript">Additional Considerations for Pattern Matching in TypeScript</h3><p>While these techniques allow for effective pattern matching, here are a few considerations and potential improvements:</p><ul><li><strong>Exhaustiveness Checking</strong>: Always check for exhaustiveness in your pattern-matching implementations. Using <code>_exhaustiveCheck: never</code> is an effective way to ensure all cases are handled.</li><li><strong>Error Handling</strong>: Consider implementing custom error handling within each pattern. If certain patterns are more likely to produce errors, handle these within the pattern-matching logic rather than relying on outside error handling.</li><li><strong>Complex Nesting</strong>: For more complex data types or deeply nested structures, consider using <strong>recursive functions</strong> or <strong>tree traversal</strong> techniques to match patterns. This approach is especially useful for dealing with <strong>nested JSON structures</strong> or data from <strong>APIs</strong>.</li><li><strong>Functional Composition</strong>: If your patterns follow a <strong>specific functional structure</strong>, it may be worth defining <strong>higher-order functions</strong> or using a <strong>functional programming library</strong> like <strong>fp-ts</strong> to extend the pattern-matching capability even further.</li><li><strong>Type Performance</strong>: Excessive use of unions and type guards in highly dynamic applications may impact compile times. Testing complex implementations for performance impacts on both the TypeScript compiler and runtime behavior can be beneficial, especially in <strong>large codebases</strong>.</li></ul><h3 id="finally">Finally</h3><p>While TypeScript doesn’t support <strong>native pattern matching</strong>, we can achieve similar functionality using <strong>tagged unions</strong>, <strong>type guards</strong>, and <strong>functional pattern handlers</strong>. Each of these methods comes with its own advantages, and understanding when to use each is key. Tagged unions are ideal for simpler cases, type guards provide flexibility for complex logic, and functional handlers open up even more possibilities by allowing for <strong>extensible</strong>, <strong>declarative</strong> pattern matching.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This approach provides more flexibility and avoids **deeply nested if-else statements**. It also opens up the possibility of adding **default behavior** for cases that don’t need handling or using **optional chaining** for certain pattern cases, which can improve **readability** and **maintainability**.
+
+### Additional Considerations for Pattern Matching in TypeScript
+
+While these techniques allow for effective pattern matching, here are a few considerations and potential improvements:
+
+-   **Exhaustiveness Checking**: Always check for exhaustiveness in your pattern-matching implementations. Using `_exhaustiveCheck: never` is an effective way to ensure all cases are handled.
+-   **Error Handling**: Consider implementing custom error handling within each pattern. If certain patterns are more likely to produce errors, handle these within the pattern-matching logic rather than relying on outside error handling.
+-   **Complex Nesting**: For more complex data types or deeply nested structures, consider using **recursive functions** or **tree traversal** techniques to match patterns. This approach is especially useful for dealing with **nested JSON structures** or data from **APIs**.
+-   **Functional Composition**: If your patterns follow a **specific functional structure**, it may be worth defining **higher-order functions** or using a **functional programming library** like **fp-ts** to extend the pattern-matching capability even further.
+-   **Type Performance**: Excessive use of unions and type guards in highly dynamic applications may impact compile times. Testing complex implementations for performance impacts on both the TypeScript compiler and runtime behavior can be beneficial, especially in **large codebases**.
+
+### Finally
+
+While TypeScript doesn’t support **native pattern matching**, we can achieve similar functionality using **tagged unions**, **type guards**, and **functional pattern handlers**. Each of these methods comes with its own advantages, and understanding when to use each is key. Tagged unions are ideal for simpler cases, type guards provide flexibility for complex logic, and functional handlers open up even more possibilities by allowing for **extensible**, **declarative** pattern matching.

@@ -5,16 +5,49 @@ description: "Type coercion is a fundamental concept in JavaScript, allowing val
 tags: ["javascript","regex","logging"]
 ---
 
-<p>Type coercion is a fundamental concept in JavaScript, allowing values to be converted between different data types automatically or explicitly. As a beginner, learning how to check and handle types can help you avoid bugs and improve the reliability of your code. In this article, we’ll explore three common ways to inspect data types in JavaScript: <code>typeof</code>, <code>instanceof</code>, and <code>Object.prototype.toString</code>.</p><h3 id="1-type-checking-with-typeof">1. <strong>Type Checking with <code>typeof</code></strong></h3><p>The <code>typeof</code> operator is one of the easiest ways to check the type of a variable. It returns a string representing the data type of the operand.</p><h4 id="syntax">Syntax:</h4><pre><code class="language-javascript">typeof operand;
-</code></pre><h3 id="example">Example:</h3><pre><code class="language-javascript">console.log(typeof "Hello"); // "string"
+Type coercion is a fundamental concept in JavaScript, allowing values to be converted between different data types automatically or explicitly. As a beginner, learning how to check and handle types can help you avoid bugs and improve the reliability of your code. In this article, we’ll explore three common ways to inspect data types in JavaScript: `typeof`, `instanceof`, and `Object.prototype.toString`.
+
+### 1\. **Type Checking with `typeof`**
+
+The `typeof` operator is one of the easiest ways to check the type of a variable. It returns a string representing the data type of the operand.
+
+#### Syntax:
+
+```javascript
+typeof operand;
+```
+
+### Example:
+
+```javascript
+console.log(typeof "Hello"); // "string"
 console.log(typeof 42);      // "number"
 console.log(typeof true);    // "boolean"
 console.log(typeof {});      // "object"
 console.log(typeof null);    // "object" (this is a quirk of JavaScript)
 console.log(typeof undefined); // "undefined"
 console.log(typeof function() {}); // "function"
-</code></pre><p>While <code>typeof</code> is useful, it has some limitations:</p><ul><li><strong>Arrays and Objects</strong>: Both arrays and objects return <code>"object"</code>, which can make it difficult to distinguish between them.</li><li><strong>Null</strong>: It returns <code>"object"</code> for <code>null</code>, which is technically incorrect but due to a historical bug.</li></ul><h3 id="2-instance-checking-with-instanceof">2. <strong>Instance Checking with <code>instanceof</code></strong></h3><p><code>instanceof</code> checks if an object is an instance of a specific constructor. It’s particularly useful for checking object types created with constructor functions or classes.</p><h4 id="syntax-1">Syntax:</h4><pre><code class="language-javascript">object instanceof Constructor;
-</code></pre><h3 id="example-1">Example:</h3><pre><code class="language-javascript">const arr = [1, 2, 3];
+```
+
+While `typeof` is useful, it has some limitations:
+
+-   **Arrays and Objects**: Both arrays and objects return `"object"`, which can make it difficult to distinguish between them.
+-   **Null**: It returns `"object"` for `null`, which is technically incorrect but due to a historical bug.
+
+### 2\. **Instance Checking with `instanceof`**
+
+`instanceof` checks if an object is an instance of a specific constructor. It’s particularly useful for checking object types created with constructor functions or classes.
+
+#### Syntax:
+
+```javascript
+object instanceof Constructor;
+```
+
+### Example:
+
+```javascript
+const arr = [1, 2, 3];
 console.log(arr instanceof Array);  // true
 console.log(arr instanceof Object); // true, because arrays are also objects
 
@@ -22,15 +55,45 @@ function Person() {}
 const john = new Person();
 console.log(john instanceof Person); // true
 console.log(john instanceof Object); // true, all objects in JavaScript inherit from Object
-</code></pre><p>While <code>instanceof</code> is powerful for checking custom objects, it has a drawback when working across different JavaScript environments (e.g., iframes or different windows), as objects might not share the same global constructor references.</p><h3 id="3-detailed-type-checking-with-objectprototypetostring">3. <strong>Detailed Type Checking with <code>Object.prototype.toString</code></strong></h3><p>The <code>Object.prototype.toString</code> method provides a more reliable way to check an object's type. This method returns the internal class of an object in the format <code>"[object Type]"</code>.</p><h4 id="syntax-2">Syntax:</h4><pre><code class="language-javascript">Object.prototype.toString.call(value);
-</code></pre><h3 id="example-2">Example:</h3><pre><code class="language-javascript">console.log(Object.prototype.toString.call([])); // "[object Array]"
+```
+
+While `instanceof` is powerful for checking custom objects, it has a drawback when working across different JavaScript environments (e.g., iframes or different windows), as objects might not share the same global constructor references.
+
+### 3\. **Detailed Type Checking with `Object.prototype.toString`**
+
+The `Object.prototype.toString` method provides a more reliable way to check an object's type. This method returns the internal class of an object in the format `"[object Type]"`.
+
+#### Syntax:
+
+```javascript
+Object.prototype.toString.call(value);
+```
+
+### Example:
+
+```javascript
+console.log(Object.prototype.toString.call([])); // "[object Array]"
 console.log(Object.prototype.toString.call({})); // "[object Object]"
 console.log(Object.prototype.toString.call(new Date())); // "[object Date]"
 console.log(Object.prototype.toString.call(null)); // "[object Null]"
 console.log(Object.prototype.toString.call(undefined)); // "[object Undefined]"
 console.log(Object.prototype.toString.call(/regex/)); // "[object RegExp]"
-</code></pre><p><code>Object.prototype.toString</code> is widely used in libraries for type-checking because it provides a consistent and precise result for all values, including primitives, objects, arrays, and special objects like <code>null</code> and <code>undefined</code>.</p><h3 id="key-differences">Key Differences</h3><ol><li><code><strong>typeof</strong></code> is simple and fast, but not always precise (e.g., arrays and <code>null</code>).</li><li><strong><code>instanceof</code></strong> checks if an object belongs to a specific constructor or class, useful for working with custom object instances.</li><li><strong><code>Object.prototype.toString</code></strong> provides a detailed and reliable type description but requires more syntax and is less frequently used for primitive types.</li></ol><h3 id="when-to-use-each">When to Use Each</h3><ul><li><strong>Use <code>typeof</code></strong> when you need a quick, general check of common types (like numbers, strings, or functions).</li><li><strong>Use <code>instanceof</code></strong> when working with custom objects or class instances, or when you need to verify whether an object is an instance of a specific constructor.</li><li><strong>Use <code>Object.prototype.toString</code></strong> when you need a detailed and reliable type check, especially for distinguishing between arrays, objects, <code>null</code>, and <code>undefined</code>.</li></ul><h3 id="finally">Finally</h3><p>Understanding type coercion and how to check data types is a vital skill for JavaScript developers. While <code>typeof</code>, <code>instanceof</code>, and <code>Object.prototype.toString</code> all have their place, knowing when to use each will help you write more robust code.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+`Object.prototype.toString` is widely used in libraries for type-checking because it provides a consistent and precise result for all values, including primitives, objects, arrays, and special objects like `null` and `undefined`.
+
+### Key Differences
+
+1.  `**typeof**` is simple and fast, but not always precise (e.g., arrays and `null`).
+2.  **`instanceof`** checks if an object belongs to a specific constructor or class, useful for working with custom object instances.
+3.  **`Object.prototype.toString`** provides a detailed and reliable type description but requires more syntax and is less frequently used for primitive types.
+
+### When to Use Each
+
+-   **Use `typeof`** when you need a quick, general check of common types (like numbers, strings, or functions).
+-   **Use `instanceof`** when working with custom objects or class instances, or when you need to verify whether an object is an instance of a specific constructor.
+-   **Use `Object.prototype.toString`** when you need a detailed and reliable type check, especially for distinguishing between arrays, objects, `null`, and `undefined`.
+
+### Finally
+
+Understanding type coercion and how to check data types is a vital skill for JavaScript developers. While `typeof`, `instanceof`, and `Object.prototype.toString` all have their place, knowing when to use each will help you write more robust code.

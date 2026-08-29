@@ -5,13 +5,79 @@ description: "If you're a JavaScript developer working with Bun , a fast JavaScr
 tags: ["javascript","bash","docker","linux","package-manager"]
 ---
 
-<p>If you're a <strong>JavaScript</strong> developer working with <strong>Bun</strong>, a fast JavaScript runtime, you might have encountered an error when trying to upgrade to the latest version. Recently, users running the command <code>bun upgrade</code> have faced issues such as:</p><pre><code>Bun v1.1.42 is out! You're on v1.1.38
-error: Failed to move new version of Bun to C:\Users\&lt;YourUsername&gt;\.bun\bin\bun.exe to EBUSY
-</code></pre><p>This error typically happens when <strong>Bun</strong> can't update itself because the <code>bun.exe</code> file is <strong>locked</strong> or in use by another process. Here's a step-by-step guide to solve this issue and reinstall <strong>Bun</strong> properly on <strong>Windows</strong>.</p><h3 id="step-1-close-running-processes-and-services">Step 1: Close Running Processes and Services</h3><p>Before diving into the reinstallation process, it's essential to ensure that <strong>Bun</strong> is not running in the background. Sometimes, <strong>Bun</strong> might still be active, even if you closed your terminal.</p><ol><li><strong>Close any active terminals</strong> where Bun might be running.</li><li>Open <strong>Task Manager</strong> (press <code>Ctrl + Shift + Esc</code>) and look for any active instances of <strong><code>bun.exe</code></strong>. If you find one, <strong>end the task</strong>.</li><li>If you have any other <strong>command-line processes</strong> or <strong>integrated development environments (IDEs)</strong> open, such as <strong>VS Code</strong>, that could be holding onto the <code>bun.exe</code> file, make sure to close them too.</li></ol><h3 id="step-2-reinstall-bun">Step 2: Reinstall Bun</h3><p>After ensuring that Bun isn’t being used by any processes, it’s time to reinstall it.</p><ol><li><strong>Open PowerShell</strong> with <strong>Administrator privileges</strong>:</li></ol><ul><ul><li>Right-click on the <strong>Start</strong> button and choose <strong>Windows PowerShell (Admin)</strong>.</li></ul></ul><ol start="2"><li><strong>Run the Reinstall Command</strong>:</li></ol><ul><ul><li>In the PowerShell window, run the following command:</li></ul></ul><pre><code>irm bun.sh/install.ps1 | iex
-</code></pre><ul><ul><li>This command downloads and installs the latest version of <strong>Bun</strong> from the official Bun repository. The installation script will automatically replace your existing <code>bun.exe</code> with the latest version.</li></ul></ul><ol start="3"><li><strong>Wait for the Installation to Complete</strong>:</li></ol><ul><ul><li>The script will handle the download and setup process. Once it finishes, you’ll see a success message.</li></ul></ul><h3 id="step-3-verify-the-installation">Step 3: Verify the Installation</h3><p>Once Bun is reinstalled, it's always good to verify that everything worked correctly.</p><ol><li>Open a new terminal window (you can use <strong>PowerShell</strong> or <strong>Command Prompt</strong>).</li><li>Run the following command to check the version of Bun installed:</li></ol><pre><code>bun --version
-</code></pre><h3 id="step-4-clean-up-any-leftover-files-optional">Step 4: Clean Up Any Leftover Files (Optional)</h3><p>If you're still facing issues or if the installation did not fix the problem, there might be some <strong>leftover files</strong> causing conflicts. Here’s how you can clean things up:</p><ol><li>Go to your <strong>Bun installation directory</strong>:</li></ol><pre><code>C:\Users\&lt;YourUsername&gt;\.bun
-</code></pre><ul><ul><li>Delete the entire <code>.bun</code> folder (make sure to back up anything important first, though this is generally not needed).</li></ul></ul><ol start="2"><li>Re-run the <strong>PowerShell installation script</strong> from <strong>Step 2</strong>.</li></ol><h3 id="additional-considerations">Additional Considerations</h3><ul><li><strong>Permissions Issue</strong>: Sometimes, Windows might block modifications to certain files if <strong>administrator permissions</strong> aren’t granted. Always ensure you’re running PowerShell or the Command Prompt as an <strong>administrator</strong>.</li><li><strong>Antivirus Software</strong>: Occasionally, <strong>antivirus software</strong> might interfere with the installation or update of executables like <code>bun.exe</code>. If you're facing persistent issues, temporarily <strong>disable your antivirus software</strong> and try again.</li><li><strong>Windows Subsystem for Linux (WSL)</strong>: If you’re using <strong>WSL</strong> for your development environment, make sure that your paths and environments aren’t being confused between native Windows and WSL. Bun can sometimes run better in WSL if you face compatibility issues on Windows.</li><li><strong>Dependencies</strong>: If you use <strong>Bun</strong> in conjunction with other tools like <strong>npm</strong>, <strong>yarn</strong>, or <strong>Docker</strong>, always check compatibility with the latest <strong>Bun</strong> version. Sometimes a new version might cause issues with existing configurations, especially if you're using <strong>legacy tools</strong>.</li></ul><h3 id="finally">Finally</h3><p>Upgrading <strong>Bun</strong> on Windows can be a bit tricky, especially when you encounter errors like the <strong>EBUSY</strong> issue, which occurs when <strong>Bun</strong> tries to overwrite its own executable. By following the steps above, you should be able to <strong>manually reinstall Bun</strong> and fix the problem, ensuring you're always working with the latest version. Remember to always <strong>close any running processes</strong> before attempting upgrades, and run your commands with <strong>administrator rights</strong> to avoid permission issues.</p><p>If the problem persists or if you encounter any other hurdles, don't hesitate to reach out to the <strong>Bun community</strong> or check their official documentation for more troubleshooting tips.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you're a **JavaScript** developer working with **Bun**, a fast JavaScript runtime, you might have encountered an error when trying to upgrade to the latest version. Recently, users running the command `bun upgrade` have faced issues such as:
 
+```
+Bun v1.1.42 is out! You're on v1.1.38
+error: Failed to move new version of Bun to C:\Users\<YourUsername>\.bun\bin\bun.exe to EBUSY
+```
+
+This error typically happens when **Bun** can't update itself because the `bun.exe` file is **locked** or in use by another process. Here's a step-by-step guide to solve this issue and reinstall **Bun** properly on **Windows**.
+
+### Step 1: Close Running Processes and Services
+
+Before diving into the reinstallation process, it's essential to ensure that **Bun** is not running in the background. Sometimes, **Bun** might still be active, even if you closed your terminal.
+
+1.  **Close any active terminals** where Bun might be running.
+2.  Open **Task Manager** (press `Ctrl + Shift + Esc`) and look for any active instances of **`bun.exe`**. If you find one, **end the task**.
+3.  If you have any other **command-line processes** or **integrated development environments (IDEs)** open, such as **VS Code**, that could be holding onto the `bun.exe` file, make sure to close them too.
+
+### Step 2: Reinstall Bun
+
+After ensuring that Bun isn’t being used by any processes, it’s time to reinstall it.
+
+1.  **Open PowerShell** with **Administrator privileges**:
+
+-   Right-click on the **Start** button and choose **Windows PowerShell (Admin)**.
+
+2.  **Run the Reinstall Command**:
+
+-   In the PowerShell window, run the following command:
+
+```
+irm bun.sh/install.ps1 | iex
+```
+
+-   This command downloads and installs the latest version of **Bun** from the official Bun repository. The installation script will automatically replace your existing `bun.exe` with the latest version.
+
+3.  **Wait for the Installation to Complete**:
+
+-   The script will handle the download and setup process. Once it finishes, you’ll see a success message.
+
+### Step 3: Verify the Installation
+
+Once Bun is reinstalled, it's always good to verify that everything worked correctly.
+
+1.  Open a new terminal window (you can use **PowerShell** or **Command Prompt**).
+2.  Run the following command to check the version of Bun installed:
+
+```
+bun --version
+```
+
+### Step 4: Clean Up Any Leftover Files (Optional)
+
+If you're still facing issues or if the installation did not fix the problem, there might be some **leftover files** causing conflicts. Here’s how you can clean things up:
+
+1.  Go to your **Bun installation directory**:
+
+```
+C:\Users\<YourUsername>\.bun
+```
+
+-   Delete the entire `.bun` folder (make sure to back up anything important first, though this is generally not needed).
+
+2.  Re-run the **PowerShell installation script** from **Step 2**.
+
+### Additional Considerations
+
+-   **Permissions Issue**: Sometimes, Windows might block modifications to certain files if **administrator permissions** aren’t granted. Always ensure you’re running PowerShell or the Command Prompt as an **administrator**.
+-   **Antivirus Software**: Occasionally, **antivirus software** might interfere with the installation or update of executables like `bun.exe`. If you're facing persistent issues, temporarily **disable your antivirus software** and try again.
+-   **Windows Subsystem for Linux (WSL)**: If you’re using **WSL** for your development environment, make sure that your paths and environments aren’t being confused between native Windows and WSL. Bun can sometimes run better in WSL if you face compatibility issues on Windows.
+-   **Dependencies**: If you use **Bun** in conjunction with other tools like **npm**, **yarn**, or **Docker**, always check compatibility with the latest **Bun** version. Sometimes a new version might cause issues with existing configurations, especially if you're using **legacy tools**.
+
+### Finally
+
+Upgrading **Bun** on Windows can be a bit tricky, especially when you encounter errors like the **EBUSY** issue, which occurs when **Bun** tries to overwrite its own executable. By following the steps above, you should be able to **manually reinstall Bun** and fix the problem, ensuring you're always working with the latest version. Remember to always **close any running processes** before attempting upgrades, and run your commands with **administrator rights** to avoid permission issues.
+
+If the problem persists or if you encounter any other hurdles, don't hesitate to reach out to the **Bun community** or check their official documentation for more troubleshooting tips.

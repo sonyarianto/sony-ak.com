@@ -5,12 +5,62 @@ description: "When working with Docker , one of the most common commands you’l
 tags: ["go","docker","ci-cd","linux","performance"]
 ---
 
-<p>When working with <strong>Docker</strong>, one of the most common commands you’ll use is <code>docker build</code>. This command creates a Docker image from a <strong>Dockerfile</strong>, and while it seems straightforward, there are several optimizations and configurations that can improve both efficiency and debugging. One such option is <code>--progress=plain</code>, which affects how build logs are displayed.</p><h3 id="what-doesprogressplain-do"><strong>What Does <code>--progress=plain</code> Do?</strong></h3><p>By default, Docker uses a <strong>fancy, interactive progress bar</strong> when building images. While this looks nice, it can be difficult to debug, especially in CI/CD environments or when you need detailed logs.</p><p>Using <code>--progress=plain</code> ensures that the <strong>build output is shown in a raw, readable format</strong>, which is particularly useful when:</p><ul><li>Debugging complex builds where step-by-step details matter.</li><li>Running builds in <strong>headless environments</strong> (like CI/CD pipelines) where interactive UI features are not helpful.</li><li>Capturing and analyzing logs easily since there is no dynamic UI interference.</li></ul><h3 id="full-command-usage"><strong>Full Command Usage</strong></h3><p>To build an image with detailed logs, run:</p><pre><code class="language-sh">docker build --progress=plain -t my-image .
-</code></pre><p>Here’s what each part does:</p><ul><li><code>docker build</code> – Initiates the build process.</li><li><code>--progress=plain</code> – Displays detailed logs without the progress UI.</li><li><code>-t my-image</code> – Tags the built image as <code>my-image</code>.</li><li><code>.</code> – Specifies the current directory as the build context.</li></ul><h3 id="additional-considerations-when-building-docker-images"><strong>Additional Considerations When Building Docker Images</strong></h3><p>To further optimize your Docker builds, consider these best practices:</p><h4 id="1-use-a-dockerignore-file"><strong>1. Use a <code>.dockerignore</code> File</strong></h4><p>A <code>.dockerignore</code> file functions similarly to <code>.gitignore</code>, preventing unnecessary files from being included in the build context. This can significantly speed up builds and reduce image size. Example <code>.dockerignore</code> file:</p><pre><code>node_modules/
+When working with **Docker**, one of the most common commands you’ll use is `docker build`. This command creates a Docker image from a **Dockerfile**, and while it seems straightforward, there are several optimizations and configurations that can improve both efficiency and debugging. One such option is `--progress=plain`, which affects how build logs are displayed.
+
+### **What Does `--progress=plain` Do?**
+
+By default, Docker uses a **fancy, interactive progress bar** when building images. While this looks nice, it can be difficult to debug, especially in CI/CD environments or when you need detailed logs.
+
+Using `--progress=plain` ensures that the **build output is shown in a raw, readable format**, which is particularly useful when:
+
+-   Debugging complex builds where step-by-step details matter.
+-   Running builds in **headless environments** (like CI/CD pipelines) where interactive UI features are not helpful.
+-   Capturing and analyzing logs easily since there is no dynamic UI interference.
+
+### **Full Command Usage**
+
+To build an image with detailed logs, run:
+
+```sh
+docker build --progress=plain -t my-image .
+```
+
+Here’s what each part does:
+
+-   `docker build` – Initiates the build process.
+-   `--progress=plain` – Displays detailed logs without the progress UI.
+-   `-t my-image` – Tags the built image as `my-image`.
+-   `.` – Specifies the current directory as the build context.
+
+### **Additional Considerations When Building Docker Images**
+
+To further optimize your Docker builds, consider these best practices:
+
+#### **1\. Use a `.dockerignore` File**
+
+A `.dockerignore` file functions similarly to `.gitignore`, preventing unnecessary files from being included in the build context. This can significantly speed up builds and reduce image size. Example `.dockerignore` file:
+
+```
+node_modules/
 .git/
 temp/
 .env
-</code></pre><h4 id="2-optimize-layer-caching"><strong>2. Optimize Layer Caching</strong></h4><p>Docker builds images in <strong>layers</strong>, and reusing cached layers can drastically speed up the build process. To take advantage of caching:</p><ul><li>Place the most frequently changing instructions <strong>at the bottom</strong> of the Dockerfile.</li><li>Install dependencies early if they don’t change often.</li><li>Avoid running commands that change timestamps unnecessarily, as they invalidate cache layers.</li></ul><h4 id="3-use-multi-stage-builds"><strong>3. Use Multi-Stage Builds</strong></h4><p>Multi-stage builds help keep final images small by discarding unnecessary build dependencies. Example:</p><pre><code class="language-dockerfile"># First stage
+```
+
+#### **2\. Optimize Layer Caching**
+
+Docker builds images in **layers**, and reusing cached layers can drastically speed up the build process. To take advantage of caching:
+
+-   Place the most frequently changing instructions **at the bottom** of the Dockerfile.
+-   Install dependencies early if they don’t change often.
+-   Avoid running commands that change timestamps unnecessarily, as they invalidate cache layers.
+
+#### **3\. Use Multi-Stage Builds**
+
+Multi-stage builds help keep final images small by discarding unnecessary build dependencies. Example:
+
+```dockerfile
+# First stage
 FROM golang:1.21 AS builder
 WORKDIR /app
 COPY . .
@@ -21,12 +71,30 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/myapp .
 CMD ["./myapp"]
-</code></pre><p>This method ensures that only the final binary is included in the final image, reducing size significantly.</p><h4 id="4-minimize-the-number-of-layers"><strong>4. Minimize the Number of Layers</strong></h4><p>Each command in a Dockerfile creates a new layer. Merging commands with <code>&amp;&amp;</code> can reduce the number of layers. Example:</p><pre><code class="language-dockerfile">RUN apt-get update &amp;&amp; \
-    apt-get install -y curl &amp;&amp; \
-    rm -rf /var/lib/apt/lists/*
-</code></pre><h4 id="5-use-lighter-base-images"><strong>5. Use Lighter Base Images</strong></h4><p>Instead of using large images like <code>ubuntu:latest</code>, consider using <strong>lightweight alternatives</strong> like <code>alpine</code>:</p><pre><code class="language-dockerfile">FROM alpine:latest
-</code></pre><p>This can reduce image size significantly, improving build and deployment speed.</p><h3 id="finally"><strong>Finally</strong></h3><p>Using <code>--progress=plain</code> when building Docker images is a simple but powerful way to <strong>gain full visibility into your build process</strong>. Alongside this, adopting best practices like <strong>ignoring unnecessary files, leveraging caching, using multi-stage builds, reducing layers, and choosing the right base images</strong> will make your builds more efficient and production-ready.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This method ensures that only the final binary is included in the final image, reducing size significantly.
+
+#### **4\. Minimize the Number of Layers**
+
+Each command in a Dockerfile creates a new layer. Merging commands with `&&` can reduce the number of layers. Example:
+
+```dockerfile
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
+```
+
+#### **5\. Use Lighter Base Images**
+
+Instead of using large images like `ubuntu:latest`, consider using **lightweight alternatives** like `alpine`:
+
+```dockerfile
+FROM alpine:latest
+```
+
+This can reduce image size significantly, improving build and deployment speed.
+
+### **Finally**
+
+Using `--progress=plain` when building Docker images is a simple but powerful way to **gain full visibility into your build process**. Alongside this, adopting best practices like **ignoring unnecessary files, leveraging caching, using multi-stage builds, reducing layers, and choosing the right base images** will make your builds more efficient and production-ready.

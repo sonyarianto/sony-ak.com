@@ -2,13 +2,95 @@
 title: "Was Embedding SQL in Programs a Mistake? Rethinking an Industry Norm"
 date: "2025-04-30T23:01:56.000Z"
 description: "In the early days of software engineering, SQL wasn't born to be embedded in code . It was designed as a console-based, declarative language , meant for busines..."
-tags: ["javascript","typescript","laravel","database","api"]
+tags: ["javascript","typescript","php","laravel","database"]
 ---
 
-<p>In the early days of software engineering, <strong>SQL wasn't born to be embedded in code</strong>. It was designed as a <strong>console-based, declarative language</strong>, meant for <strong>business analysts and data operators</strong> to pull reports from a relational database. Simple, focused, and readable—it was never meant to live inside the guts of C or Java.</p><p>Yet here we are, decades later, with millions of lines of application code tightly interwoven with raw SQL queries. So, the question arises: <strong>Was embedding SQL into programs one of the gravest mistakes of our industry?</strong></p><hr><h2 id="the-original-intent-of-sql"><strong>The Original Intent of SQL</strong></h2><p><strong>SQL (Structured Query Language)</strong> originated at IBM in the 1970s as part of the System R project. Its creators designed it to <strong>express what data is needed</strong>, not how to retrieve it. This <strong>declarative approach</strong> made it ideal for <strong>interactive querying</strong>, where business users could type:</p><pre><code class="language-sql">SELECT name FROM employees WHERE department = 'Engineering';
-</code></pre><p>…and get results—no loops, no variables, no procedural code. The magic was in its simplicity.</p><p>At its core, <strong>SQL was never meant to be embedded</strong> inside general-purpose programming languages. It was a <strong>report language</strong>, not a control flow tool.</p><hr><h2 id="so-why-did-we-embed-it"><strong>So Why Did We Embed It?</strong></h2><p>As software systems evolved and grew in complexity, developers needed ways to <strong>connect application logic to persistent storage</strong>. And SQL was the default language for that storage. Instead of inventing a new safe bridge, developers started doing this:</p><pre><code class="language-php">$db-&gt;query("SELECT * FROM users WHERE id = $id");
-</code></pre><p>What followed was a string-based, dynamic, fragile, and often unsafe way of interacting with databases. <strong>SQL became string soup</strong>, injected and manipulated at runtime, lacking compile-time checks, and vulnerable to attacks.</p><hr><h2 id="what-went-wrong"><strong>What Went Wrong?</strong></h2><ol><li><strong>Paradigm Mismatch</strong><br>SQL is <strong>declarative</strong>. Your application is <strong>imperative</strong>. Mixing the two leads to <strong>conceptual friction</strong>, making the code harder to reason about.</li><li><strong>String-Based Hell</strong><br>Most SQL-in-code is built via string concatenation or interpolation. This leads to <strong>SQL injection vulnerabilities</strong>, <strong>poor readability</strong>, and <strong>runtime errors</strong> that compilers can’t catch.</li><li><strong>Tight Coupling</strong><br>When SQL is directly embedded, it binds your application logic tightly to the schema. <strong>Schema changes ripple through your codebase</strong>, and there's no abstraction layer to soften the blow.</li><li><strong>Difficult Testing and Refactoring</strong><br>Embedded SQL makes it harder to write <strong>unit tests</strong>, mock databases, or refactor data access without side effects.</li></ol><hr><h2 id="but-did-we-have-a-choice"><strong>But Did We Have a Choice?</strong></h2><p>To be fair, the ecosystem evolved. Libraries and frameworks tried to fix the pain:</p><ul><li><strong>ORMs (Object-Relational Mappers)</strong> like Hibernate, Sequelize, and Laravel Eloquent let developers express data interactions in code without raw SQL.</li><li><strong>Query builders</strong> (like Knex.js, DrizzleORM, or Doctrine QueryBuilder) provided safer, composable alternatives.</li><li><strong>LINQ</strong> in .NET introduced <strong>compile-time safe queries</strong> that feel natural inside C#.</li><li><strong>Functional languages</strong> like Haskell and Scala introduced <strong>type-safe database access layers</strong> with strong guarantees.</li></ul><p>These efforts <strong>validated the pain</strong> of embedded SQL. If SQL-in-code was perfect, none of these tools would exist.</p><hr><h2 id="so-was-it-really-a-mistake"><strong>So Was It Really a Mistake?</strong></h2><p>It depends on how you define "mistake":</p><ul><li>If you believe in <strong>separation of concerns, safe abstractions, and composability</strong>, then yes—<strong>embedding SQL directly was a short-term hack that created long-term maintenance burdens</strong>.</li><li>But if you're driven by <strong>pragmatism</strong>, the reality is: <strong>SQL worked</strong>, and still works. It's fast, expressive, and battle-tested.</li></ul><p>Sometimes we make trade-offs. And SQL-in-code was a <strong>trade-off born of necessity</strong>, not ignorance.</p><hr><h2 id="modern-alternatives-to-embedded-sql"><strong>Modern Alternatives to Embedded SQL</strong></h2><p>If you're building new systems today, you don’t have to repeat the sins of the past. Some alternatives include:</p><ul><li><strong>DrizzleORM</strong> (TypeScript): type-safe, structured, SQL-like.</li><li><strong>JOOQ</strong> (Java): fluent, type-safe SQL DSL.</li><li><strong>EdgeDB</strong>: a post-relational database designed with modern APIs in mind.</li><li><strong>GraphQL + Prisma</strong>: decouples your app from the storage layer with powerful querying.</li></ul><p>Or you can go all in with <strong>event sourcing, document stores, or Datalog-style databases</strong> where SQL doesn’t exist at all.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>The truth is: <strong>SQL is not the villain</strong>. The problem lies in <strong>how we abused its simplicity</strong>, embedding it recklessly into imperative code. Like duct-taping a steering wheel to a horse—it works, but that wasn’t the design.</p><p>As our industry matures, we must revisit old assumptions. Embedding SQL may have been necessary once, but <strong>we now have the tools and patterns to do better</strong>.</p><p>Let’s use them.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In the early days of software engineering, **SQL wasn't born to be embedded in code**. It was designed as a **console-based, declarative language**, meant for **business analysts and data operators** to pull reports from a relational database. Simple, focused, and readable—it was never meant to live inside the guts of C or Java.
 
+Yet here we are, decades later, with millions of lines of application code tightly interwoven with raw SQL queries. So, the question arises: **Was embedding SQL into programs one of the gravest mistakes of our industry?**
+
+* * *
+
+## **The Original Intent of SQL**
+
+**SQL (Structured Query Language)** originated at IBM in the 1970s as part of the System R project. Its creators designed it to **express what data is needed**, not how to retrieve it. This **declarative approach** made it ideal for **interactive querying**, where business users could type:
+
+```sql
+SELECT name FROM employees WHERE department = 'Engineering';
+```
+
+…and get results—no loops, no variables, no procedural code. The magic was in its simplicity.
+
+At its core, **SQL was never meant to be embedded** inside general-purpose programming languages. It was a **report language**, not a control flow tool.
+
+* * *
+
+## **So Why Did We Embed It?**
+
+As software systems evolved and grew in complexity, developers needed ways to **connect application logic to persistent storage**. And SQL was the default language for that storage. Instead of inventing a new safe bridge, developers started doing this:
+
+```php
+$db->query("SELECT * FROM users WHERE id = $id");
+```
+
+What followed was a string-based, dynamic, fragile, and often unsafe way of interacting with databases. **SQL became string soup**, injected and manipulated at runtime, lacking compile-time checks, and vulnerable to attacks.
+
+* * *
+
+## **What Went Wrong?**
+
+1.  **Paradigm Mismatch**  
+    SQL is **declarative**. Your application is **imperative**. Mixing the two leads to **conceptual friction**, making the code harder to reason about.
+2.  **String-Based Hell**  
+    Most SQL-in-code is built via string concatenation or interpolation. This leads to **SQL injection vulnerabilities**, **poor readability**, and **runtime errors** that compilers can’t catch.
+3.  **Tight Coupling**  
+    When SQL is directly embedded, it binds your application logic tightly to the schema. **Schema changes ripple through your codebase**, and there's no abstraction layer to soften the blow.
+4.  **Difficult Testing and Refactoring**  
+    Embedded SQL makes it harder to write **unit tests**, mock databases, or refactor data access without side effects.
+
+* * *
+
+## **But Did We Have a Choice?**
+
+To be fair, the ecosystem evolved. Libraries and frameworks tried to fix the pain:
+
+-   **ORMs (Object-Relational Mappers)** like Hibernate, Sequelize, and Laravel Eloquent let developers express data interactions in code without raw SQL.
+-   **Query builders** (like Knex.js, DrizzleORM, or Doctrine QueryBuilder) provided safer, composable alternatives.
+-   **LINQ** in .NET introduced **compile-time safe queries** that feel natural inside C#.
+-   **Functional languages** like Haskell and Scala introduced **type-safe database access layers** with strong guarantees.
+
+These efforts **validated the pain** of embedded SQL. If SQL-in-code was perfect, none of these tools would exist.
+
+* * *
+
+## **So Was It Really a Mistake?**
+
+It depends on how you define "mistake":
+
+-   If you believe in **separation of concerns, safe abstractions, and composability**, then yes—**embedding SQL directly was a short-term hack that created long-term maintenance burdens**.
+-   But if you're driven by **pragmatism**, the reality is: **SQL worked**, and still works. It's fast, expressive, and battle-tested.
+
+Sometimes we make trade-offs. And SQL-in-code was a **trade-off born of necessity**, not ignorance.
+
+* * *
+
+## **Modern Alternatives to Embedded SQL**
+
+If you're building new systems today, you don’t have to repeat the sins of the past. Some alternatives include:
+
+-   **DrizzleORM** (TypeScript): type-safe, structured, SQL-like.
+-   **JOOQ** (Java): fluent, type-safe SQL DSL.
+-   **EdgeDB**: a post-relational database designed with modern APIs in mind.
+-   **GraphQL + Prisma**: decouples your app from the storage layer with powerful querying.
+
+Or you can go all in with **event sourcing, document stores, or Datalog-style databases** where SQL doesn’t exist at all.
+
+* * *
+
+## **Finally**
+
+The truth is: **SQL is not the villain**. The problem lies in **how we abused its simplicity**, embedding it recklessly into imperative code. Like duct-taping a steering wheel to a horse—it works, but that wasn’t the design.
+
+As our industry matures, we must revisit old assumptions. Embedding SQL may have been necessary once, but **we now have the tools and patterns to do better**.
+
+Let’s use them.

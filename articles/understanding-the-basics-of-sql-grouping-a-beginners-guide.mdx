@@ -5,29 +5,97 @@ description: "When working with databases, one of the most common tasks is to su
 tags: ["database","performance","productivity"]
 ---
 
-<p>When working with databases, one of the most common tasks is to summarize or organize data. SQL’s <strong>GROUP BY</strong> clause is an essential tool for this. In this article, we’ll break down a simple query:</p><pre><code class="language-sql">SELECT department FROM companies GROUP BY department;
-</code></pre><p>This query might look straightforward, but understanding its concept can lay the foundation for mastering more complex SQL queries. Additionally, we'll compare <strong>GROUP BY</strong> with <strong>DISTINCT</strong>, another commonly used SQL keyword that beginners often confuse with GROUP BY.</p><h3 id="breaking-down-the-query"><strong>Breaking Down the Query</strong></h3><h4 id="1-the-select-clause"><strong>1. The SELECT Clause</strong></h4><p>The <code>SELECT department</code> part of the query instructs SQL to retrieve the <code>department</code> column from the <code>companies</code> table. However, since <strong>GROUP BY</strong> is involved, the query won’t just return every row. Instead, it will group the data by unique <code>department</code> values.</p><h4 id="2-the-group-by-clause"><strong>2. The GROUP BY Clause</strong></h4><p>The <strong>GROUP BY</strong> clause groups rows with the same value in the specified column(s). In this case, it groups all rows in the <code>companies</code> table that belong to the same <code>department</code>.</p><p>For example:<br>If the <code>companies</code> table looks like this:</p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>id</th><th>name</th><th>department</th></tr></thead><tbody><tr><td>1</td><td>Alpha Inc</td><td>Sales</td></tr><tr><td>2</td><td>Beta LLC</td><td>HR</td></tr><tr><td>3</td><td>Gamma Corp</td><td>Sales</td></tr><tr><td>4</td><td>Delta Ltd</td><td>IT</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<p>The query will group the rows by <code>department</code>:</p><ul><li>Group 1: Sales (rows 1 and 3)</li><li>Group 2: HR (row 2)</li><li>Group 3: IT (row 4)</li></ul><p>The result will be:</p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>department</th></tr></thead><tbody><tr><td>Sales</td></tr><tr><td>HR</td></tr><tr><td>IT</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<h3 id="comparing-group-by-and-distinct"><strong>Comparing GROUP BY and DISTINCT</strong></h3><p>At first glance, the <code>GROUP BY</code> query may seem identical to using <strong>DISTINCT</strong>. Let’s look at the comparison:</p><h4 id="distinct-example"><strong>DISTINCT Example</strong></h4><pre><code class="language-sql">SELECT DISTINCT department FROM companies;
-</code></pre><p>This query also returns unique values in the <code>department</code> column, producing:</p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>department</th></tr></thead><tbody><tr><td>Sales</td></tr><tr><td>HR</td></tr><tr><td>IT</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<p>The result is the same as <code>GROUP BY department</code> in this case, but the key difference lies in how the two operate under the hood and what they can do:</p><h4 id="key-differences"><strong>Key Differences</strong></h4>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>Feature</th><th>DISTINCT</th><th>GROUP BY</th></tr></thead><tbody><tr><td><strong>Purpose</strong></td><td>Filters unique rows from the result set.</td><td>Groups rows based on a column's value.</td></tr><tr><td><strong>Aggregate Functions</strong></td><td>Not supported.</td><td>Often used with aggregates (e.g., COUNT, SUM).</td></tr><tr><td><strong>Use Case</strong></td><td>When you only need unique values.</td><td>When summarizing data or performing calculations on groups.</td></tr><tr><td><strong>Query Behavior</strong></td><td>Operates on the final result set.</td><td>Operates during data grouping before the final result.</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<h4 id="when-to-use-each"><strong>When to Use Each</strong></h4><ol><li>Use <strong>DISTINCT</strong> for simpler queries where you only need unique values:</li></ol><pre><code class="language-sql">SELECT DISTINCT department FROM companies;
-</code></pre><ol start="2"><li>Use <strong>GROUP BY</strong> when you need to perform operations on grouped data:</li></ol><pre><code class="language-sql">SELECT department, COUNT(*) FROM companies GROUP BY department;
-</code></pre><h3 id="key-points-for-beginners"><strong>Key Points for Beginners</strong></h3><ul><li><strong>GROUP BY Requires All Non-Aggregated Columns in SELECT</strong><br>If you include additional columns in the <code>SELECT</code> clause (e.g., <code>SELECT department, name</code>), you must also include those columns in the <code>GROUP BY</code> clause or use an aggregate function. Otherwise, SQL will throw an error in most databases.</li><li><strong>DISTINCT Only Filters</strong><br>While DISTINCT is simpler to use, it lacks the flexibility of GROUP BY for calculations or summarizations.</li><li><strong>GROUP BY Works Best with Aggregates</strong><br>While valid to use without aggregates (as in our original query), GROUP BY shines when combined with functions like <code>COUNT</code>, <code>SUM</code>, or <code>MAX</code>.</li></ul><h3 id="other-considerations"><strong>Other Considerations</strong></h3><ol><li><strong>Using HAVING for Filtering Groups</strong><br>To filter grouped results, use the <strong>HAVING</strong> clause instead of <strong>WHERE</strong>:</li></ol><pre><code class="language-sql">SELECT department FROM companies GROUP BY department HAVING COUNT(*) &gt; 1;
-</code></pre><p>This filters out departments that appear only once.</p><ol start="2"><li><strong>NULL Values in GROUP BY</strong><br>If <code>department</code> contains <code>NULL</code> values, they will be treated as a separate group. Ensure you handle <code>NULL</code> appropriately if it’s not meaningful in your context.</li><li><strong>Performance with Large Datasets</strong><br>Both GROUP BY and DISTINCT can be resource-intensive with large datasets. Use indexing on the column(s) to optimize performance.</li></ol><h3 id="finally"><strong>Finally</strong></h3><p>The query <code>SELECT department FROM companies GROUP BY department;</code> is a simple yet powerful way to group and retrieve unique values. While it may produce similar results to using <code>DISTINCT</code>, <strong>GROUP BY</strong> is far more versatile for summarizing and analyzing data.</p><p>Remember to choose the right tool for your specific needs:</p><ul><li>Use <strong>DISTINCT</strong> when you need unique values without further operations.</li><li>Use <strong>GROUP BY</strong> when you need to calculate, aggregate, or summarize data.</li></ul><p>By mastering these two concepts, you’ll have a solid foundation for handling more advanced SQL queries.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When working with databases, one of the most common tasks is to summarize or organize data. SQL’s **GROUP BY** clause is an essential tool for this. In this article, we’ll break down a simple query:
 
+```sql
+SELECT department FROM companies GROUP BY department;
+```
+
+This query might look straightforward, but understanding its concept can lay the foundation for mastering more complex SQL queries. Additionally, we'll compare **GROUP BY** with **DISTINCT**, another commonly used SQL keyword that beginners often confuse with GROUP BY.
+
+### **Breaking Down the Query**
+
+#### **1\. The SELECT Clause**
+
+The `SELECT department` part of the query instructs SQL to retrieve the `department` column from the `companies` table. However, since **GROUP BY** is involved, the query won’t just return every row. Instead, it will group the data by unique `department` values.
+
+#### **2\. The GROUP BY Clause**
+
+The **GROUP BY** clause groups rows with the same value in the specified column(s). In this case, it groups all rows in the `companies` table that belong to the same `department`.
+
+For example:  
+If the `companies` table looks like this:
+
+The query will group the rows by `department`:
+
+-   Group 1: Sales (rows 1 and 3)
+-   Group 2: HR (row 2)
+-   Group 3: IT (row 4)
+
+The result will be:
+
+### **Comparing GROUP BY and DISTINCT**
+
+At first glance, the `GROUP BY` query may seem identical to using **DISTINCT**. Let’s look at the comparison:
+
+#### **DISTINCT Example**
+
+```sql
+SELECT DISTINCT department FROM companies;
+```
+
+This query also returns unique values in the `department` column, producing:
+
+The result is the same as `GROUP BY department` in this case, but the key difference lies in how the two operate under the hood and what they can do:
+
+#### **Key Differences**
+
+#### **When to Use Each**
+
+1.  Use **DISTINCT** for simpler queries where you only need unique values:
+
+```sql
+SELECT DISTINCT department FROM companies;
+```
+
+2.  Use **GROUP BY** when you need to perform operations on grouped data:
+
+```sql
+SELECT department, COUNT(*) FROM companies GROUP BY department;
+```
+
+### **Key Points for Beginners**
+
+-   **GROUP BY Requires All Non-Aggregated Columns in SELECT**  
+    If you include additional columns in the `SELECT` clause (e.g., `SELECT department, name`), you must also include those columns in the `GROUP BY` clause or use an aggregate function. Otherwise, SQL will throw an error in most databases.
+-   **DISTINCT Only Filters**  
+    While DISTINCT is simpler to use, it lacks the flexibility of GROUP BY for calculations or summarizations.
+-   **GROUP BY Works Best with Aggregates**  
+    While valid to use without aggregates (as in our original query), GROUP BY shines when combined with functions like `COUNT`, `SUM`, or `MAX`.
+
+### **Other Considerations**
+
+1.  **Using HAVING for Filtering Groups**  
+    To filter grouped results, use the **HAVING** clause instead of **WHERE**:
+
+```sql
+SELECT department FROM companies GROUP BY department HAVING COUNT(*) > 1;
+```
+
+This filters out departments that appear only once.
+
+2.  **NULL Values in GROUP BY**  
+    If `department` contains `NULL` values, they will be treated as a separate group. Ensure you handle `NULL` appropriately if it’s not meaningful in your context.
+3.  **Performance with Large Datasets**  
+    Both GROUP BY and DISTINCT can be resource-intensive with large datasets. Use indexing on the column(s) to optimize performance.
+
+### **Finally**
+
+The query `SELECT department FROM companies GROUP BY department;` is a simple yet powerful way to group and retrieve unique values. While it may produce similar results to using `DISTINCT`, **GROUP BY** is far more versatile for summarizing and analyzing data.
+
+Remember to choose the right tool for your specific needs:
+
+-   Use **DISTINCT** when you need unique values without further operations.
+-   Use **GROUP BY** when you need to calculate, aggregate, or summarize data.
+
+By mastering these two concepts, you’ll have a solid foundation for handling more advanced SQL queries.

@@ -2,10 +2,15 @@
 title: "TypeScript, Discriminated Unions, and the “as” Prop Problem"
 date: "2025-08-27T08:38:09.000Z"
 description: "If you’ve been working with TypeScript for a while, you’ve probably run into situations where the compiler feels a little too conservative. One common case is w..."
-tags: ["typescript","react","api","performance","clean-code"]
+tags: ["typescript","react","api","security","performance"]
 ---
 
-<p>If you’ve been working with <strong>TypeScript</strong> for a while, you’ve probably run into situations where the compiler feels a little too conservative. One common case is when working with <strong>discriminated unions</strong> and destructuring.</p><p>It looks neat at first glance:</p><pre><code class="language-ts">type Action =
+If you’ve been working with **TypeScript** for a while, you’ve probably run into situations where the compiler feels a little too conservative. One common case is when working with **discriminated unions** and destructuring.
+
+It looks neat at first glance:
+
+```ts
+type Action =
   | { kind: 'A'; payload: number }
   | { kind: 'B'; payload: string };
 
@@ -17,7 +22,18 @@ function example({ kind, ...rest }: Action) {
     rest.payload.toUpperCase(); // ❌ Error
   }
 }
-</code></pre><p>At runtime this code works perfectly fine. TypeScript, however, throws errors. Why? Because once you destructure <code>kind</code> out, the compiler loses the connection between <code>kind</code> and the rest of the fields. To TypeScript, <code>rest.payload</code> is now <code>number | string</code>, not correlated with <code>kind</code>.</p><hr><h2 id="why-typescript-behaves-this-way">Why TypeScript Behaves This Way</h2><p>TypeScript’s <strong>narrowing</strong> rules are powerful but conservative. They work great if you leave the union intact:</p><pre><code class="language-ts">function example(action: Action) {
+```
+
+At runtime this code works perfectly fine. TypeScript, however, throws errors. Why? Because once you destructure `kind` out, the compiler loses the connection between `kind` and the rest of the fields. To TypeScript, `rest.payload` is now `number | string`, not correlated with `kind`.
+
+* * *
+
+## Why TypeScript Behaves This Way
+
+TypeScript’s **narrowing** rules are powerful but conservative. They work great if you leave the union intact:
+
+```ts
+function example(action: Action) {
   if (action.kind === 'A') {
     action.payload.toFixed();     // ✅ Works
   }
@@ -25,11 +41,35 @@ function example({ kind, ...rest }: Action) {
     action.payload.toUpperCase(); // ✅ Works
   }
 }
-</code></pre><p>Here, the compiler understands the discriminant (<code>kind</code>) and refines <code>payload</code> accordingly.</p><p>The moment you spread into <code>{ ...rest }</code>, though, TypeScript treats it as a fresh object where the link between <code>kind</code> and <code>payload</code> is lost. There’s no correlation tracking between separated destructured parts.</p><hr><h2 id="workarounds-and-patterns">Workarounds and Patterns</h2><p>So what can you do if you like the destructuring style?</p><h3 id="1-don%E2%80%99t-destructure-discriminants">1. Don’t Destructure Discriminants</h3><p>The simplest fix is: <strong>don’t separate them</strong>. Keep the discriminant and the correlated field in the same scope.</p><pre><code class="language-ts">function example({ kind, payload }: Action) {
+```
+
+Here, the compiler understands the discriminant (`kind`) and refines `payload` accordingly.
+
+The moment you spread into `{ ...rest }`, though, TypeScript treats it as a fresh object where the link between `kind` and `payload` is lost. There’s no correlation tracking between separated destructured parts.
+
+* * *
+
+## Workarounds and Patterns
+
+So what can you do if you like the destructuring style?
+
+### 1\. Don’t Destructure Discriminants
+
+The simplest fix is: **don’t separate them**. Keep the discriminant and the correlated field in the same scope.
+
+```ts
+function example({ kind, payload }: Action) {
   if (kind === 'A') payload.toFixed();
   if (kind === 'B') payload.toUpperCase();
 }
-</code></pre><h3 id="2-use-switch-statements">2. Use <code>switch</code> Statements</h3><p>A <code>switch</code> handles discriminated unions beautifully and is often the cleanest style:</p><pre><code class="language-ts">function example(action: Action) {
+```
+
+### 2\. Use `switch` Statements
+
+A `switch` handles discriminated unions beautifully and is often the cleanest style:
+
+```ts
+function example(action: Action) {
   switch (action.kind) {
     case 'A':
       action.payload.toFixed();
@@ -39,7 +79,14 @@ function example({ kind, ...rest }: Action) {
       break;
   }
 }
-</code></pre><h3 id="3-type-guards">3. Type Guards</h3><p>If you’re adamant about separating, you can define custom <strong>type guards</strong>:</p><pre><code class="language-ts">function isActionA(action: Action): action is { kind: 'A'; payload: number } {
+```
+
+### 3\. Type Guards
+
+If you’re adamant about separating, you can define custom **type guards**:
+
+```ts
+function isActionA(action: Action): action is { kind: 'A'; payload: number } {
   return action.kind === 'A';
 }
 
@@ -48,21 +95,57 @@ function example(action: Action) {
     action.payload.toFixed(); // ✅
   }
 }
-</code></pre><p>This introduces some boilerplate, but it makes the intent explicit.</p><hr><h2 id="why-this-feels-familiar-the-%E2%80%9Cas%E2%80%9D-prop-in-react">Why This Feels Familiar: The “as” Prop in React</h2><p>This limitation pops up again in <strong>React</strong> when implementing <strong>polymorphic components</strong> with an <code>as</code> prop. For example:</p><pre><code class="language-tsx">type ButtonProps&lt;T extends React.ElementType&gt; = {
+```
+
+This introduces some boilerplate, but it makes the intent explicit.
+
+* * *
+
+## Why This Feels Familiar: The “as” Prop in React
+
+This limitation pops up again in **React** when implementing **polymorphic components** with an `as` prop. For example:
+
+```tsx
+type ButtonProps<T extends React.ElementType> = {
   as?: T;
   children: React.ReactNode;
-} &amp; React.ComponentPropsWithoutRef&lt;T&gt;;
+} & React.ComponentPropsWithoutRef<T>;
 
-function Button&lt;T extends React.ElementType = 'button'&gt;({
+function Button<T extends React.ElementType = 'button'>({
   as,
   children,
   ...props
-}: ButtonProps&lt;T&gt;) {
+}: ButtonProps<T>) {
   const Component = as || 'button';
-  return &lt;Component {...props}&gt;{children}&lt;/Component&gt;;
+  return <Component {...props}>{children}</Component>;
 }
-</code></pre><p>Here, we want TypeScript to infer different allowed props depending on whether <code>as="a"</code>, <code>as="div"</code>, etc. While possible with advanced generics, the ergonomics often break down when destructuring. The situation is strikingly similar: <strong>correlated props lose their narrowing once split apart</strong>.</p><hr><h2 id="other-considerations">Other Considerations</h2><ol><li><strong>Runtime vs. Type Safety</strong><br>At runtime, your code is correct. TypeScript errs on the side of caution to prevent accidental misuse, even if that blocks safe patterns.</li><li><strong>Maintainability</strong><br>Using <code>switch</code> or direct discriminant checks tends to be more maintainable. It communicates intent and avoids edge cases with spreads.</li><li><strong>Performance</strong><br>While spreading objects is generally fine, avoiding it where unnecessary can reduce shallow copies. <code>switch</code> or direct access avoids allocations.</li><li><strong>Future of TypeScript</strong><br>There’s an <strong>open TypeScript issue</strong> on “correlated rest destructuring” (<a href="https://github.com/microsoft/TypeScript/issues/30581">#30581</a>). If implemented, this exact pattern (<code>{ kind, ...rest }</code>) would narrow properly. For now, you’ll have to live with the trade-offs.</li></ol><hr><h2 id="finally">Finally</h2><p>TypeScript gives us powerful tools for building safe applications, but sometimes the type system isn’t as expressive as the runtime reality. The destructured discriminant case is one of those gaps.</p><p>Until TypeScript supports <strong>correlated rest narrowing</strong>, the best practice is to:</p><ul><li><strong>Avoid splitting discriminants from their payloads</strong>,</li><li>Use <strong><code>switch</code> statements</strong> or <strong>type guards</strong>,</li><li>For React’s <code>as</code> prop, lean on <strong>generic component props</strong> patterns.</li></ul><p>It might feel like the compiler is fighting you, but really it’s nudging you toward patterns that are easier to reason about and safer in the long run.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Here, we want TypeScript to infer different allowed props depending on whether `as="a"`, `as="div"`, etc. While possible with advanced generics, the ergonomics often break down when destructuring. The situation is strikingly similar: **correlated props lose their narrowing once split apart**.
+
+* * *
+
+## Other Considerations
+
+1.  **Runtime vs. Type Safety**  
+    At runtime, your code is correct. TypeScript errs on the side of caution to prevent accidental misuse, even if that blocks safe patterns.
+2.  **Maintainability**  
+    Using `switch` or direct discriminant checks tends to be more maintainable. It communicates intent and avoids edge cases with spreads.
+3.  **Performance**  
+    While spreading objects is generally fine, avoiding it where unnecessary can reduce shallow copies. `switch` or direct access avoids allocations.
+4.  **Future of TypeScript**  
+    There’s an **open TypeScript issue** on “correlated rest destructuring” ([#30581](https://github.com/microsoft/TypeScript/issues/30581)). If implemented, this exact pattern (`{ kind, ...rest }`) would narrow properly. For now, you’ll have to live with the trade-offs.
+
+* * *
+
+## Finally
+
+TypeScript gives us powerful tools for building safe applications, but sometimes the type system isn’t as expressive as the runtime reality. The destructured discriminant case is one of those gaps.
+
+Until TypeScript supports **correlated rest narrowing**, the best practice is to:
+
+-   **Avoid splitting discriminants from their payloads**,
+-   Use **`switch` statements** or **type guards**,
+-   For React’s `as` prop, lean on **generic component props** patterns.
+
+It might feel like the compiler is fighting you, but really it’s nudging you toward patterns that are easier to reason about and safer in the long run.

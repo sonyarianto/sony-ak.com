@@ -2,43 +2,119 @@
 title: "Understanding rel=\"nofollow\" and noindex in HTML Links: What They Really Do and How to Use Them Effectively"
 date: "2025-07-05T22:39:11.000Z"
 description: "When it comes to controlling how search engines interact with your website , two of the most commonly misunderstood attributes are nofollow and noindex . Many d..."
-tags: ["security","seo","career","http"]
+tags: ["html","security","seo","career","http"]
 ---
 
-<p>When it comes to controlling how <strong>search engines interact with your website</strong>, two of the most commonly misunderstood attributes are <code>nofollow</code> and <code>noindex</code>. Many developers and SEO practitioners use them without fully grasping their differences or their proper placement. This article dives deep into how these attributes work, how to use them correctly, and what caveats you should be aware of.</p><hr><h2 id="%F0%9F%94%97-what-is-relnofollow">🔗 What is <code>rel="nofollow"</code>?</h2><p>The <code><strong>rel="nofollow"</strong></code> attribute is used inside an <code>&lt;a&gt;</code> (anchor) tag to tell search engines like Google <strong>not to follow the hyperlink</strong>.</p><p><strong>Example:</strong></p><pre><code class="language-html">&lt;a href="https://example.com" rel="nofollow"&gt;Visit Example&lt;/a&gt;
-</code></pre><p>This means:</p><ul><li>The search engine will <strong>not pass link equity (PageRank)</strong> to the linked page.</li><li>It discourages spammy behavior, especially in user-generated content like blog comments or forums.</li><li>The link may still be <strong>crawled if it's discovered elsewhere</strong>, but not because of this specific link.</li></ul><p><strong>When to use <code>nofollow</code>:</strong></p><ul><li>You don't trust the linked site.</li><li>It's a paid or sponsored link (per Google’s guidelines).</li><li>You want to avoid passing SEO value to certain external resources.</li></ul><hr><h2 id="%E2%9D%8C-what-about-noindex">❌ What about <code>noindex</code>?</h2><p>The <strong><code>noindex</code> directive</strong> is meant to tell search engines <strong>not to index a page</strong>, which means the page won't appear in search results.</p><p>However, here's the critical point:</p><blockquote>❗️<strong>Search engines do not honor <code>rel="noindex"</code> on anchor tags.</strong></blockquote><p>This is a <strong>common misconception</strong>. Unlike <code>nofollow</code>, putting <code>noindex</code> inside an <code>&lt;a&gt;</code> tag like this:</p><pre><code class="language-html">&lt;a href="https://example.com" rel="nofollow noindex"&gt;Example&lt;/a&gt;
-</code></pre><p>...<strong>will not prevent</strong> <code>https://example.com</code> from being indexed. If your goal is to prevent indexing, the target page <strong>itself must contain</strong> the following tag in its <code>&lt;head&gt;</code> section:</p><pre><code class="language-html">&lt;meta name="robots" content="noindex, nofollow"&gt;
-</code></pre><p>Or be blocked via <code>robots.txt</code>.</p><hr><h2 id="%E2%9C%85-correct-usage-summary">✅ Correct Usage Summary</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Goal</th>
-<th>Correct Approach</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Prevent search engines from following a link</td>
-<td><code inline="">rel="nofollow"</code> in the <code inline="">&lt;a&gt;</code> tag</td>
-</tr>
-<tr>
-<td>Prevent a page from appearing in search results</td>
-<td>Add <code inline="">&lt;meta name="robots" content="noindex"&gt;</code> to the <strong>target page</strong></td>
-</tr>
-<tr>
-<td>Block both crawling and indexing</td>
-<td>Combine <code inline="">robots.txt</code> rules and <code inline="">&lt;meta&gt;</code> robots tags</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="%F0%9F%A7%A0-additional-considerations">🧠 Additional Considerations</h2><h3 id="1-google%E2%80%99s-evolving-behavior">1. <strong>Google’s evolving behavior</strong></h3><p>Google introduced the concept of <strong>link attributes as hints</strong>, not directives, meaning they <strong>might</strong> choose to follow a <code>nofollow</code> link if they think it’s important enough. This applies especially after <strong>March 2020</strong>.</p><blockquote>So even if you use <code>nofollow</code>, Google might still crawl the target URL — it just won’t pass ranking signals.</blockquote><h3 id="2-sponsored-and-ugc-attributes">2. <strong><code>sponsored</code> and <code>ugc</code> attributes</strong></h3><p>Google also introduced two more link relationships:</p><ul><li><code>sponsored</code>: For paid/sponsored links.</li><li><code>ugc</code>: For user-generated content.</li></ul><p>You can combine them:</p><pre><code class="language-html">&lt;a href="https://example.com" rel="nofollow ugc"&gt;User submitted link&lt;/a&gt;
-</code></pre><h3 id="3-don%E2%80%99t-rely-on-relnoindex">3. <strong>Don’t rely on <code>rel="noindex"</code></strong></h3><p>If you’ve been using <code>rel="noindex"</code> inside links, it's important to know that <strong>this does nothing</strong> in most search engines. Focus on proper <strong>meta tags</strong> or <code>X-Robots-Tag</code> headers instead.</p><hr><h2 id="%F0%9F%9B%A0-seo-best-practices">🛠 SEO Best Practices</h2><ul><li>Use <code>rel="nofollow"</code> when linking to <strong>untrusted or promotional content</strong>.</li><li>Never assume <code>rel="noindex"</code> on links does anything.</li><li>If you control the target page and want to keep it out of Google, use:</li></ul><pre><code class="language-html">&lt;meta name="robots" content="noindex, nofollow"&gt;
-</code></pre><ul><li>Want to completely block crawling? Use:</li></ul><pre><code class="language-txt">User-agent: *
-Disallow: /secret-page/
-</code></pre><p>in your <code>robots.txt</code>.</p><hr><h2 id="%F0%9F%94%9A-finally">🔚 Finally</h2><p>Understanding the distinction between <strong><code>nofollow</code> and <code>noindex</code></strong> is crucial for anyone involved in SEO, content creation, or web development. While <code>nofollow</code> can control <strong>link behavior</strong>, only proper use of <strong>meta tags</strong> or <code>robots.txt</code> can control <strong>indexing</strong>.</p><p>So next time you're placing a link and thinking about SEO, remember:</p><blockquote><strong>Use <code>nofollow</code> when you don’t want to endorse a link. Use <code>noindex</code> when you want to hide a page from search results. But don’t mix them up.</strong></blockquote><p>Let search engines do their job—but on your terms.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When it comes to controlling how **search engines interact with your website**, two of the most commonly misunderstood attributes are `nofollow` and `noindex`. Many developers and SEO practitioners use them without fully grasping their differences or their proper placement. This article dives deep into how these attributes work, how to use them correctly, and what caveats you should be aware of.
 
+* * *
+
+## 🔗 What is `rel="nofollow"`?
+
+The `**rel="nofollow"**` attribute is used inside an `<a>` (anchor) tag to tell search engines like Google **not to follow the hyperlink**.
+
+**Example:**
+
+```html
+<a href="https://example.com" rel="nofollow">Visit Example</a>
+```
+
+This means:
+
+-   The search engine will **not pass link equity (PageRank)** to the linked page.
+-   It discourages spammy behavior, especially in user-generated content like blog comments or forums.
+-   The link may still be **crawled if it's discovered elsewhere**, but not because of this specific link.
+
+**When to use `nofollow`:**
+
+-   You don't trust the linked site.
+-   It's a paid or sponsored link (per Google’s guidelines).
+-   You want to avoid passing SEO value to certain external resources.
+
+* * *
+
+## ❌ What about `noindex`?
+
+The **`noindex` directive** is meant to tell search engines **not to index a page**, which means the page won't appear in search results.
+
+However, here's the critical point:
+
+> ❗️**Search engines do not honor `rel="noindex"` on anchor tags.**
+
+This is a **common misconception**. Unlike `nofollow`, putting `noindex` inside an `<a>` tag like this:
+
+```html
+<a href="https://example.com" rel="nofollow noindex">Example</a>
+```
+
+...**will not prevent** `https://example.com` from being indexed. If your goal is to prevent indexing, the target page **itself must contain** the following tag in its `<head>` section:
+
+```html
+<meta name="robots" content="noindex, nofollow">
+```
+
+Or be blocked via `robots.txt`.
+
+* * *
+
+## ✅ Correct Usage Summary
+
+* * *
+
+## 🧠 Additional Considerations
+
+### 1\. **Google’s evolving behavior**
+
+Google introduced the concept of **link attributes as hints**, not directives, meaning they **might** choose to follow a `nofollow` link if they think it’s important enough. This applies especially after **March 2020**.
+
+> So even if you use `nofollow`, Google might still crawl the target URL — it just won’t pass ranking signals.
+
+### 2\. **`sponsored` and `ugc` attributes**
+
+Google also introduced two more link relationships:
+
+-   `sponsored`: For paid/sponsored links.
+-   `ugc`: For user-generated content.
+
+You can combine them:
+
+```html
+<a href="https://example.com" rel="nofollow ugc">User submitted link</a>
+```
+
+### 3\. **Don’t rely on `rel="noindex"`**
+
+If you’ve been using `rel="noindex"` inside links, it's important to know that **this does nothing** in most search engines. Focus on proper **meta tags** or `X-Robots-Tag` headers instead.
+
+* * *
+
+## 🛠 SEO Best Practices
+
+-   Use `rel="nofollow"` when linking to **untrusted or promotional content**.
+-   Never assume `rel="noindex"` on links does anything.
+-   If you control the target page and want to keep it out of Google, use:
+
+```html
+<meta name="robots" content="noindex, nofollow">
+```
+
+-   Want to completely block crawling? Use:
+
+```txt
+User-agent: *
+Disallow: /secret-page/
+```
+
+in your `robots.txt`.
+
+* * *
+
+## 🔚 Finally
+
+Understanding the distinction between **`nofollow` and `noindex`** is crucial for anyone involved in SEO, content creation, or web development. While `nofollow` can control **link behavior**, only proper use of **meta tags** or `robots.txt` can control **indexing**.
+
+So next time you're placing a link and thinking about SEO, remember:
+
+> **Use `nofollow` when you don’t want to endorse a link. Use `noindex` when you want to hide a page from search results. But don’t mix them up.**
+
+Let search engines do their job—but on your terms.

@@ -5,7 +5,28 @@ description: "JavaScript can seem a bit daunting at first, especially with conce
 tags: ["javascript","logging"]
 ---
 
-<p>JavaScript can seem a bit daunting at first, especially with concepts like execution context, lexical scope, and closures. But fear not! This guide will break down these topics in a friendly way, making them easy to understand.</p><h2 id="what-is-execution-context">What is Execution Context?</h2><p>Think of execution context as a "workspace" for your JavaScript code. Every time you run a piece of JavaScript, it’s executed within an execution context. Here’s what happens:</p><ol><li><strong>Creation</strong>: When a function is called, a new execution context is created. This context includes:<ul><li>The value of <code>this</code>.</li><li>The local variables defined in the function.</li><li>The variables from outer scopes (more on this soon).</li></ul></li><li><strong>Execution</strong>: After the context is created, JavaScript runs the code line by line within that context.</li></ol><p>There are three main types of execution contexts:</p><ul><li><strong>Global Execution Context</strong>: The default context where your JavaScript code runs when it is not inside any function.</li><li><strong>Function Execution Context</strong>: Created whenever a function is invoked.</li><li><strong>Eval Execution Context</strong>: Created when code is executed inside an <code>eval()</code> function (not commonly used).</li></ul><h3 id="example-of-execution-context">Example of Execution Context</h3><pre><code class="language-javascript">let globalVar = "I'm a global variable";
+JavaScript can seem a bit daunting at first, especially with concepts like execution context, lexical scope, and closures. But fear not! This guide will break down these topics in a friendly way, making them easy to understand.
+
+## What is Execution Context?
+
+Think of execution context as a "workspace" for your JavaScript code. Every time you run a piece of JavaScript, it’s executed within an execution context. Here’s what happens:
+
+1.  **Creation**: When a function is called, a new execution context is created. This context includes:
+    -   The value of `this`.
+    -   The local variables defined in the function.
+    -   The variables from outer scopes (more on this soon).
+2.  **Execution**: After the context is created, JavaScript runs the code line by line within that context.
+
+There are three main types of execution contexts:
+
+-   **Global Execution Context**: The default context where your JavaScript code runs when it is not inside any function.
+-   **Function Execution Context**: Created whenever a function is invoked.
+-   **Eval Execution Context**: Created when code is executed inside an `eval()` function (not commonly used).
+
+### Example of Execution Context
+
+```javascript
+let globalVar = "I'm a global variable";
 
 function myFunction() {
     let localVar = "I'm a local variable";
@@ -14,7 +35,22 @@ function myFunction() {
 }
 
 myFunction();
-// console.log(localVar); // This would cause an error because localVar is not defined in the global context</code></pre><h2 id="what-is-lexical-scope">What is Lexical Scope?</h2><p>Lexical scope is a way of defining how variables can be accessed within different contexts. It means that a function’s scope is determined by where it is declared, not where it is executed.</p><h3 id="key-points-about-lexical-scope">Key Points about Lexical Scope</h3><ul><li>A function can access variables from its own scope and the scope of its parent (the surrounding function).</li><li>Inner functions can access variables from outer functions, but not the other way around.</li></ul><h3 id="example-of-lexical-scope">Example of Lexical Scope</h3><pre><code class="language-javascript">function outerFunction() {
+// console.log(localVar); // This would cause an error because localVar is not defined in the global context
+```
+
+## What is Lexical Scope?
+
+Lexical scope is a way of defining how variables can be accessed within different contexts. It means that a function’s scope is determined by where it is declared, not where it is executed.
+
+### Key Points about Lexical Scope
+
+-   A function can access variables from its own scope and the scope of its parent (the surrounding function).
+-   Inner functions can access variables from outer functions, but not the other way around.
+
+### Example of Lexical Scope
+
+```javascript
+function outerFunction() {
     let outerVar = "I'm from the outer function";
 
     function innerFunction() {
@@ -24,7 +60,24 @@ myFunction();
     innerFunction();
 }
 
-outerFunction();</code></pre><h2 id="what-are-closures">What are Closures?</h2><p>Closures are a powerful feature in JavaScript that comes from the combination of functions and lexical scope. A closure is created when a function retains access to its lexical scope, even when the function is executed outside that scope.</p><h3 id="why-are-closures-useful">Why Are Closures Useful?</h3><p>Closures allow you to:</p><ul><li>Maintain state in an asynchronous environment.</li><li>Create private variables that cannot be accessed directly from outside the function.</li></ul><h3 id="example-of-a-closure">Example of a Closure</h3><pre><code class="language-javascript">function makeCounter() {
+outerFunction();
+```
+
+## What are Closures?
+
+Closures are a powerful feature in JavaScript that comes from the combination of functions and lexical scope. A closure is created when a function retains access to its lexical scope, even when the function is executed outside that scope.
+
+### Why Are Closures Useful?
+
+Closures allow you to:
+
+-   Maintain state in an asynchronous environment.
+-   Create private variables that cannot be accessed directly from outside the function.
+
+### Example of a Closure
+
+```javascript
+function makeCounter() {
     let count = 0; // `count` is a private variable
 
     return function() {
@@ -37,8 +90,13 @@ const counter = makeCounter();
 
 console.log(counter()); // Outputs: 1
 console.log(counter()); // Outputs: 2
-console.log(counter()); // Outputs: 3</code></pre><p>In this example, <code>count</code> is a private variable that can only be modified by the inner function returned by <code>makeCounter</code>. Each time you call <code>counter()</code>, it remembers the value of <code>count</code>.</p><h2 id="finally">Finally</h2><p>Understanding execution context, lexical scope, and closures is crucial for mastering JavaScript. These concepts not only help you write cleaner and more efficient code but also empower you to utilize JavaScript’s powerful features.</p><p>Practice, practice and practice. It's true that practice makes perfect.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+console.log(counter()); // Outputs: 3
+```
 
+In this example, `count` is a private variable that can only be modified by the inner function returned by `makeCounter`. Each time you call `counter()`, it remembers the value of `count`.
+
+## Finally
+
+Understanding execution context, lexical scope, and closures is crucial for mastering JavaScript. These concepts not only help you write cleaner and more efficient code but also empower you to utilize JavaScript’s powerful features.
+
+Practice, practice and practice. It's true that practice makes perfect.

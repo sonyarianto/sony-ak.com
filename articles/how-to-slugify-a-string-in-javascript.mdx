@@ -5,7 +5,24 @@ description: "Imagine you have a string like this \"Mind Body Spirit (2023)\" an
 tags: ["javascript","security","seo","http","logging"]
 ---
 
-<p>Imagine you have a string like this "Mind Body Spirit (2023)" and you want to make it a slug like this "mind-body-spirit-2023".</p><p>Mind Body Spirit is the title of a film released in 2023.</p><p>You might ask what's the point? This is usually used if you want to create a slug that will later become part of the URL.</p><p>For example, there is a film site that will display details of the film. So usually the site will create a URL like https://example.com/detail/1 or https://example.com/detail?id=1</p><p>Slugs can be used for this as a substitute for ID and usually these slugs are also unique. If the site uses a slug it will look like this https://example.com/detail/mind-body-sprit-2023. It's nicer to look at and is usually SEO friendly too.</p><p>Slug can also be used to name a file, so the final result will be easier to read, for example mind-body-spirit-2023.txt.</p><p>OK, enough opening remarks. Now how to create a slug from a string with JavaScript? Usually this is called slugify.</p><p>This is the code.</p><pre><code class="language-javascript">const str = "Mind Body Spirit (2023)"
+Imagine you have a string like this "Mind Body Spirit (2023)" and you want to make it a slug like this "mind-body-spirit-2023".
+
+Mind Body Spirit is the title of a film released in 2023.
+
+You might ask what's the point? This is usually used if you want to create a slug that will later become part of the URL.
+
+For example, there is a film site that will display details of the film. So usually the site will create a URL like https://example.com/detail/1 or https://example.com/detail?id=1
+
+Slugs can be used for this as a substitute for ID and usually these slugs are also unique. If the site uses a slug it will look like this https://example.com/detail/mind-body-sprit-2023. It's nicer to look at and is usually SEO friendly too.
+
+Slug can also be used to name a file, so the final result will be easier to read, for example mind-body-spirit-2023.txt.
+
+OK, enough opening remarks. Now how to create a slug from a string with JavaScript? Usually this is called slugify.
+
+This is the code.
+
+```javascript
+const str = "Mind Body Spirit (2023)"
           .toString()
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
@@ -15,9 +32,18 @@ tags: ["javascript","security","seo","http","logging"]
           .replace(/[^\w-]+/g, "")
 
 console.log(str); // output mind-body-spirit-2023
-</code></pre>
-<p>Or try here <a href="https://onecompiler.com/javascript/42sh8a8sz" rel="noreferrer">online</a>.</p><p>Here is a brief explanation of above code.</p><ul><li><strong><code>toString()</code>:</strong> This method is used to convert the input value to a string if it's not already a string. In this case, it's unnecessary since the input is already a string.</li><li><strong><code>.normalize("NFD")</code>:</strong> This method normalizes the string to its decomposed form, which means combining characters with accents into their base characters and combining marks. This is useful for ensuring consistent handling of characters across different languages and platforms.</li><li><strong><code>.replace(/[\u0300-\u036f]/g, "")</code>:</strong> This regular expression replaces all combining marks (accents, diacritics) within the specified Unicode range with an empty string, effectively removing them. This is done to simplify the string and make it easier to handle.</li><li><strong><code>.toLowerCase()</code>:</strong> This method converts all characters in the string to lowercase. This is often done for consistency and to avoid case-sensitivity issues.</li><li><strong><code>.trim()</code>:</strong> This method removes leading and trailing whitespace characters (spaces, tabs, newlines) from the string. This is useful for cleaning up the string and preventing unnecessary characters.</li><li><strong><code>.replace(/\s+/g, "-")</code>:</strong> This regular expression replaces all consecutive whitespace characters (one or more spaces, tabs, newlines) with a hyphen. This is done to create a more URL-friendly format where spaces are replaced with hyphens.</li><li><strong><code>.replace(/[^\w-]+/g, "")</code>:</strong> This regular expression removes any characters that are not word characters (letters, digits, underscores) or hyphens. This helps to further clean up the string and ensure that it only contains valid characters for URLs or filenames.</li></ul><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Or try here [online](https://onecompiler.com/javascript/42sh8a8sz).
+
+Here is a brief explanation of above code.
+
+-   **`toString()`:** This method is used to convert the input value to a string if it's not already a string. In this case, it's unnecessary since the input is already a string.
+-   **`.normalize("NFD")`:** This method normalizes the string to its decomposed form, which means combining characters with accents into their base characters and combining marks. This is useful for ensuring consistent handling of characters across different languages and platforms.
+-   **`.replace(/[\u0300-\u036f]/g, "")`:** This regular expression replaces all combining marks (accents, diacritics) within the specified Unicode range with an empty string, effectively removing them. This is done to simplify the string and make it easier to handle.
+-   **`.toLowerCase()`:** This method converts all characters in the string to lowercase. This is often done for consistency and to avoid case-sensitivity issues.
+-   **`.trim()`:** This method removes leading and trailing whitespace characters (spaces, tabs, newlines) from the string. This is useful for cleaning up the string and preventing unnecessary characters.
+-   **`.replace(/\s+/g, "-")`:** This regular expression replaces all consecutive whitespace characters (one or more spaces, tabs, newlines) with a hyphen. This is done to create a more URL-friendly format where spaces are replaced with hyphens.
+-   **`.replace(/[^\w-]+/g, "")`:** This regular expression removes any characters that are not word characters (letters, digits, underscores) or hyphens. This helps to further clean up the string and ensure that it only contains valid characters for URLs or filenames.
+
+Hope it helps.

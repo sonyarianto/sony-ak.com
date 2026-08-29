@@ -5,10 +5,86 @@ description: "When building a modern Single Page Application (SPA) , one common 
 tags: ["api","performance","architecture","seo","http"]
 ---
 
-<p>When building a modern <strong>Single Page Application (SPA)</strong>, one common debate is whether to use <strong>path parameters</strong> or <strong>query parameters</strong> in your API endpoints. Some argue that using query parameters for everything is a bad practice. But is that really true?</p><p>Let’s break it down — and clarify why it’s <em>totally valid</em> to use query parameters for API calls, <strong>as long as your frontend routes stay clean and readable.</strong></p><hr><h3 id="1-know-the-purpose-of-each-layer"><strong>1. Know the Purpose of Each Layer</strong></h3><p>There are two main layers you’re dealing with in an SPA architecture:</p><ul><li><strong>The API Layer</strong>: This is <strong>not meant to be SEO-friendly</strong>. It exists for data access, not for indexing or human consumption.</li><li><strong>The Frontend Routing Layer</strong>: This <em>is</em> what users see, share, bookmark, and what search engines crawl (if public).</li></ul><p>As long as you keep your <strong>frontend URLs</strong> well-structured (e.g. <code>/products/abc123</code>), it doesn’t matter if under the hood you're calling:</p><pre><code>GET /api/product?sku=abc123
-</code></pre><p>In fact, this separation of concerns is <strong>cleaner and more maintainable</strong>.</p><hr><h3 id="2-why-query-parameters-make-sense-in-apis"><strong>2. Why Query Parameters Make Sense in APIs</strong></h3><p>There are several advantages of using query params in APIs:</p><ul><li>✅ <strong>Simplifies parsing</strong> on the backend.</li><li>✅ Easier to <strong>handle optional parameters</strong> (e.g. <code>/api/user?email=...&amp;phone=...</code>).</li><li>✅ No need for rigid routing definitions or URL rewriting.</li><li>✅ Works well in <strong>gateway-style APIs</strong> or serverless environments.</li></ul><p>Unless you're exposing the API to third parties or building public RESTful documentation, <strong>API aesthetics don’t need to match human-friendly URLs</strong>.</p><hr><h3 id="3-what-about-seo-and-crawling"><strong>3. What About SEO and Crawling?</strong></h3><p>It’s true that URLs with query params are <strong>less SEO-friendly</strong>, but only <strong>if they’re shown to humans</strong>.</p><p>Since your API is likely called via <code>fetch()</code> or <code>axios()</code> inside your frontend app, <strong>search engines will never see those API endpoints.</strong> They're not meant to be indexed — and that's <strong>completely fine</strong>.</p><p>Instead, your frontend route like:</p><pre><code>/products/macbook-pro-2024
-</code></pre><p>can handle SSR/SSG (if needed) and then hit your internal API using query strings behind the scenes.</p><hr><h3 id="4-keeping-clean-boundaries-is-key"><strong>4. Keeping Clean Boundaries is Key</strong></h3><p>This is the sweet spot:</p><ul><li><strong>Frontend Routing (user-facing):</strong> Use <strong>path params</strong> for clean, semantic URLs.</li><li><strong>API Calls (data-facing):</strong> Use <strong>query params</strong> to simplify logic, especially for internal consumption.</li></ul><p>This pattern also makes migration easier if you later need to:</p><ul><li>Split your API into microservices.</li><li>Add caching layers.</li><li>Instrument logging or analytics by capturing query strings.</li><li>Implement GraphQL or tRPC without changing route conventions.</li></ul><hr><h3 id="5-caveats-to-watch-out-for"><strong>5. Caveats to Watch Out For</strong></h3><p>Even with this flexibility, keep the following in mind:</p><ul><li>❌ Avoid leaking internal API URLs to users (e.g. via redirects or links).</li><li>❌ Don’t mix concerns (e.g. using <code>/api/product/abc123</code> in some places and <code>/api/product?id=abc123</code> in others — pick one and be consistent).</li><li>❌ Avoid deeply nested query strings that become unreadable.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p>If your <strong>API is internal</strong>, used only for your SPA or mobile apps, and <strong>SEO isn’t a concern</strong>, then using <strong>query parameters is perfectly fine</strong> — even for single-resource fetches.</p><p>Just make sure your <strong>user-facing routes remain meaningful and clean</strong>, and your system will be both <strong>developer-friendly</strong> and <strong>scalable</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When building a modern **Single Page Application (SPA)**, one common debate is whether to use **path parameters** or **query parameters** in your API endpoints. Some argue that using query parameters for everything is a bad practice. But is that really true?
 
+Let’s break it down — and clarify why it’s _totally valid_ to use query parameters for API calls, **as long as your frontend routes stay clean and readable.**
+
+* * *
+
+### **1\. Know the Purpose of Each Layer**
+
+There are two main layers you’re dealing with in an SPA architecture:
+
+-   **The API Layer**: This is **not meant to be SEO-friendly**. It exists for data access, not for indexing or human consumption.
+-   **The Frontend Routing Layer**: This _is_ what users see, share, bookmark, and what search engines crawl (if public).
+
+As long as you keep your **frontend URLs** well-structured (e.g. `/products/abc123`), it doesn’t matter if under the hood you're calling:
+
+```
+GET /api/product?sku=abc123
+```
+
+In fact, this separation of concerns is **cleaner and more maintainable**.
+
+* * *
+
+### **2\. Why Query Parameters Make Sense in APIs**
+
+There are several advantages of using query params in APIs:
+
+-   ✅ **Simplifies parsing** on the backend.
+-   ✅ Easier to **handle optional parameters** (e.g. `/api/user?email=...&phone=...`).
+-   ✅ No need for rigid routing definitions or URL rewriting.
+-   ✅ Works well in **gateway-style APIs** or serverless environments.
+
+Unless you're exposing the API to third parties or building public RESTful documentation, **API aesthetics don’t need to match human-friendly URLs**.
+
+* * *
+
+### **3\. What About SEO and Crawling?**
+
+It’s true that URLs with query params are **less SEO-friendly**, but only **if they’re shown to humans**.
+
+Since your API is likely called via `fetch()` or `axios()` inside your frontend app, **search engines will never see those API endpoints.** They're not meant to be indexed — and that's **completely fine**.
+
+Instead, your frontend route like:
+
+```
+/products/macbook-pro-2024
+```
+
+can handle SSR/SSG (if needed) and then hit your internal API using query strings behind the scenes.
+
+* * *
+
+### **4\. Keeping Clean Boundaries is Key**
+
+This is the sweet spot:
+
+-   **Frontend Routing (user-facing):** Use **path params** for clean, semantic URLs.
+-   **API Calls (data-facing):** Use **query params** to simplify logic, especially for internal consumption.
+
+This pattern also makes migration easier if you later need to:
+
+-   Split your API into microservices.
+-   Add caching layers.
+-   Instrument logging or analytics by capturing query strings.
+-   Implement GraphQL or tRPC without changing route conventions.
+
+* * *
+
+### **5\. Caveats to Watch Out For**
+
+Even with this flexibility, keep the following in mind:
+
+-   ❌ Avoid leaking internal API URLs to users (e.g. via redirects or links).
+-   ❌ Don’t mix concerns (e.g. using `/api/product/abc123` in some places and `/api/product?id=abc123` in others — pick one and be consistent).
+-   ❌ Avoid deeply nested query strings that become unreadable.
+
+* * *
+
+### **Finally**
+
+If your **API is internal**, used only for your SPA or mobile apps, and **SEO isn’t a concern**, then using **query parameters is perfectly fine** — even for single-resource fetches.
+
+Just make sure your **user-facing routes remain meaningful and clean**, and your system will be both **developer-friendly** and **scalable**.

@@ -5,41 +5,119 @@ description: "JavaScript is a versatile language that gives you the freedom to b
 tags: ["javascript","testing","performance","debugging","data-structures"]
 ---
 
-<p>JavaScript is a versatile language that gives you the freedom to bend it to your will—but not every freedom should be exercised. One of the most common mistakes developers make is <strong>extending built-in prototypes</strong> like <code>Array.prototype</code> or <code>String.prototype</code>. While it might seem like a good idea at first, it comes with significant risks and pitfalls. In this article, we'll explore <strong>why extending built-ins is a bad practice</strong> and discuss better alternatives to achieve the same functionality without the downsides.</p><h2 id="why-extending-built-ins-is-dangerous"><strong>Why Extending Built-ins is Dangerous</strong></h2><h3 id="1-global-pollution">1. <strong>Global Pollution</strong></h3><p>When you add a method to a built-in prototype, you're modifying a global object. This means <strong>every instance of that type in your entire application (and any third-party libraries) will inherit your new method.</strong> This can lead to unpredictable behavior, especially if different parts of your code or external libraries rely on the original prototype behavior.</p><p><strong>Example of Conflict:</strong></p><pre><code class="language-javascript">Array.prototype.average = function () {
-    return this.reduce((acc, elem) =&gt; acc + elem, 0) / this.length;
+JavaScript is a versatile language that gives you the freedom to bend it to your will—but not every freedom should be exercised. One of the most common mistakes developers make is **extending built-in prototypes** like `Array.prototype` or `String.prototype`. While it might seem like a good idea at first, it comes with significant risks and pitfalls. In this article, we'll explore **why extending built-ins is a bad practice** and discuss better alternatives to achieve the same functionality without the downsides.
+
+## **Why Extending Built-ins is Dangerous**
+
+### 1\. **Global Pollution**
+
+When you add a method to a built-in prototype, you're modifying a global object. This means **every instance of that type in your entire application (and any third-party libraries) will inherit your new method.** This can lead to unpredictable behavior, especially if different parts of your code or external libraries rely on the original prototype behavior.
+
+**Example of Conflict:**
+
+```javascript
+Array.prototype.average = function () {
+    return this.reduce((acc, elem) => acc + elem, 0) / this.length;
 };
 
 // Some third-party library might expect this:
 const result = ["a", "b", "c"].average(); // BOOM! Unexpected behavior.
-</code></pre><h3 id="2-future-compatibility-issues">2. <strong>Future Compatibility Issues</strong></h3><p>JavaScript evolves over time, with new methods being added to built-ins regularly. By extending prototypes, you risk <strong>overwriting future native methods</strong> that browsers may implement, causing major headaches when upgrading.</p><p>For example, if a future JavaScript version introduces an <code>Array.prototype.average</code> method with different behavior than yours, it could break your application.</p><h3 id="3-debugging-complexity">3. <strong>Debugging Complexity</strong></h3><p>Extending built-ins makes debugging much harder. If you run into unexpected behavior, you might not immediately realize that the issue stems from the modified prototype. This can lead to hours of unnecessary troubleshooting.</p><h2 id="better-alternatives-to-extending-built-ins"><strong>Better Alternatives to Extending Built-ins</strong></h2><h3 id="1-utility-functions">1. <strong>Utility Functions</strong></h3><p>The most straightforward alternative is to create standalone utility functions. These functions can be part of a utility module and do not modify global objects.</p><p><strong>Example:</strong></p><pre><code class="language-javascript">function averageArray(list) {
-    return list.reduce((acc, elem) =&gt; acc + elem, 0) / list.length;
+```
+
+### 2\. **Future Compatibility Issues**
+
+JavaScript evolves over time, with new methods being added to built-ins regularly. By extending prototypes, you risk **overwriting future native methods** that browsers may implement, causing major headaches when upgrading.
+
+For example, if a future JavaScript version introduces an `Array.prototype.average` method with different behavior than yours, it could break your application.
+
+### 3\. **Debugging Complexity**
+
+Extending built-ins makes debugging much harder. If you run into unexpected behavior, you might not immediately realize that the issue stems from the modified prototype. This can lead to hours of unnecessary troubleshooting.
+
+## **Better Alternatives to Extending Built-ins**
+
+### 1\. **Utility Functions**
+
+The most straightforward alternative is to create standalone utility functions. These functions can be part of a utility module and do not modify global objects.
+
+**Example:**
+
+```javascript
+function averageArray(list) {
+    return list.reduce((acc, elem) => acc + elem, 0) / list.length;
 }
 
 const avg = averageArray([1, 2, 3]);
-</code></pre><h3 id="2-utility-classes">2. <strong>Utility Classes</strong></h3><p>For more structure and organization, you can use a utility class. This is especially useful for grouping related methods together.</p><p><strong>Example:</strong></p><pre><code class="language-javascript">class ArrayUtils {
+```
+
+### 2\. **Utility Classes**
+
+For more structure and organization, you can use a utility class. This is especially useful for grouping related methods together.
+
+**Example:**
+
+```javascript
+class ArrayUtils {
     static average(list) {
-        return list.reduce((acc, elem) =&gt; acc + elem, 0) / list.length;
+        return list.reduce((acc, elem) => acc + elem, 0) / list.length;
     }
 }
 
 const avg = ArrayUtils.average([1, 2, 3]);
-</code></pre><h3 id="3-composition-over-extension">3. <strong>Composition over Extension</strong></h3><p>If you're working with custom data structures or types, consider using <strong>composition</strong> instead of extending built-ins. Create your own class that wraps the built-in functionality and adds your custom methods.</p><p><strong>Example:</strong></p><pre><code class="language-javascript">class CustomArray {
+```
+
+### 3\. **Composition over Extension**
+
+If you're working with custom data structures or types, consider using **composition** instead of extending built-ins. Create your own class that wraps the built-in functionality and adds your custom methods.
+
+**Example:**
+
+```javascript
+class CustomArray {
     constructor(items) {
         this.items = items;
     }
 
     average() {
-        return this.items.reduce((acc, elem) =&gt; acc + elem, 0) / this.items.length;
+        return this.items.reduce((acc, elem) => acc + elem, 0) / this.items.length;
     }
 }
 
 const myArray = new CustomArray([1, 2, 3]);
 const avg = myArray.average();
-</code></pre><h2 id="other-important-considerations"><strong>Other Important Considerations</strong></h2><h3 id="1-code-readability-and-maintainability">1. <strong>Code Readability and Maintainability</strong></h3><p>Adding methods to built-in prototypes might make your code look clean initially, but it <strong>hides functionality in unexpected places.</strong> A developer new to your project might not realize that you've modified a built-in and could spend extra time searching for the source of a mysterious method.</p><h3 id="2-testing-implications">2. <strong>Testing Implications</strong></h3><p>Prototypes are shared globally, so modifying them can <strong>affect unrelated tests</strong>. If one test modifies a prototype, it might break other tests in the suite that rely on the unmodified prototype behavior. Keeping your utilities separate ensures isolated testing.</p><h3 id="3-avoid-reinventing-the-wheel">3. <strong>Avoid Reinventing the Wheel</strong></h3><p>Before adding custom methods to manipulate arrays, strings, or other data types, check libraries like <strong>Lodash</strong> or <strong>Ramda</strong>. These libraries are battle-tested, efficient, and widely adopted in the JavaScript ecosystem.</p><p><strong>Example with Lodash:</strong></p><pre><code class="language-javascript">import _ from 'lodash';
+```
+
+## **Other Important Considerations**
+
+### 1\. **Code Readability and Maintainability**
+
+Adding methods to built-in prototypes might make your code look clean initially, but it **hides functionality in unexpected places.** A developer new to your project might not realize that you've modified a built-in and could spend extra time searching for the source of a mysterious method.
+
+### 2\. **Testing Implications**
+
+Prototypes are shared globally, so modifying them can **affect unrelated tests**. If one test modifies a prototype, it might break other tests in the suite that rely on the unmodified prototype behavior. Keeping your utilities separate ensures isolated testing.
+
+### 3\. **Avoid Reinventing the Wheel**
+
+Before adding custom methods to manipulate arrays, strings, or other data types, check libraries like **Lodash** or **Ramda**. These libraries are battle-tested, efficient, and widely adopted in the JavaScript ecosystem.
+
+**Example with Lodash:**
+
+```javascript
+import _ from 'lodash';
 
 const avg = _.mean([1, 2, 3]);
-</code></pre><h3 id="4-performance-considerations">4. <strong>Performance Considerations</strong></h3><p>Overwriting built-ins or wrapping them in unexpected ways can have performance impacts, particularly when working with large datasets or in performance-critical environments. Stick to methods that are simple, predictable, and optimized.</p><h2 id="finally"><strong>Finally</strong></h2><ol><li><strong>Never modify built-in prototypes.</strong> The risks outweigh the benefits in almost every scenario.</li><li>Use <strong>utility functions or classes</strong> to achieve the same functionality without polluting the global namespace.</li><li>Consider established libraries like <strong>Lodash</strong> if you're performing complex operations frequently.</li><li>Prioritize <strong>readability, maintainability, and compatibility</strong> in your code.</li></ol><p>By following these guidelines, you’ll write cleaner, more predictable, and future-proof JavaScript code. Remember: just because you can doesn’t mean you should!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### 4\. **Performance Considerations**
+
+Overwriting built-ins or wrapping them in unexpected ways can have performance impacts, particularly when working with large datasets or in performance-critical environments. Stick to methods that are simple, predictable, and optimized.
+
+## **Finally**
+
+1.  **Never modify built-in prototypes.** The risks outweigh the benefits in almost every scenario.
+2.  Use **utility functions or classes** to achieve the same functionality without polluting the global namespace.
+3.  Consider established libraries like **Lodash** if you're performing complex operations frequently.
+4.  Prioritize **readability, maintainability, and compatibility** in your code.
+
+By following these guidelines, you’ll write cleaner, more predictable, and future-proof JavaScript code. Remember: just because you can doesn’t mean you should!

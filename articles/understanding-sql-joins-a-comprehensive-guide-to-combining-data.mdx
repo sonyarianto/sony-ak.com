@@ -5,29 +5,121 @@ description: "When working with relational databases, SQL joins are essential to
 tags: ["database","performance"]
 ---
 
-<p>When working with relational databases, <strong>SQL joins</strong> are essential tools for combining data from multiple tables based on a related column. Joins allow you to create more meaningful queries by linking tables that store data in a structured way. While SQL provides different types of joins, each serves a specific purpose. In this article, we'll break down the most commonly used joins and explore other considerations to help you understand how to leverage them effectively.</p><h3 id="1-inner-join-the-foundation-of-joins">1. <strong>INNER JOIN: The Foundation of Joins</strong></h3><p>The <strong>INNER JOIN</strong> is one of the most commonly used joins. It retrieves records that have matching values in both tables. If there is no match between the two tables, those rows will be excluded from the result set. This makes it ideal for situations where you need to combine only the data that exists in both tables.</p><h4 id="sql-query">SQL Query:</h4><pre><code class="language-sql">SELECT *  
+When working with relational databases, **SQL joins** are essential tools for combining data from multiple tables based on a related column. Joins allow you to create more meaningful queries by linking tables that store data in a structured way. While SQL provides different types of joins, each serves a specific purpose. In this article, we'll break down the most commonly used joins and explore other considerations to help you understand how to leverage them effectively.
+
+### 1\. **INNER JOIN: The Foundation of Joins**
+
+The **INNER JOIN** is one of the most commonly used joins. It retrieves records that have matching values in both tables. If there is no match between the two tables, those rows will be excluded from the result set. This makes it ideal for situations where you need to combine only the data that exists in both tables.
+
+#### SQL Query:
+
+```sql
+SELECT *  
 FROM A  
 INNER JOIN B ON A.key = B.key;
-</code></pre><ul><li><strong>Explanation</strong>: This query returns all rows from <strong>A</strong> and <strong>B</strong> where the values of <code>A.key</code> and <code>B.key</code> are equal. If no match is found, the row is excluded.</li><li><strong>Use Case</strong>: You might use an inner join when working with two tables like <strong>customers</strong> and <strong>orders</strong>, where you want to find only those customers who have placed orders.</li></ul><h3 id="2-full-outer-join-all-rows-matched-or-not">2. <strong>FULL OUTER JOIN: All Rows, Matched or Not</strong></h3><p>The <strong>FULL OUTER JOIN</strong> returns all rows from both tables, with matching rows from both sides where available. If there's no match, the result will contain <strong>NULL</strong> values for the columns of the table that doesn't have a matching row.</p><h4 id="sql-query-1">SQL Query:</h4><pre><code class="language-sql">SELECT *  
+```
+
+-   **Explanation**: This query returns all rows from **A** and **B** where the values of `A.key` and `B.key` are equal. If no match is found, the row is excluded.
+-   **Use Case**: You might use an inner join when working with two tables like **customers** and **orders**, where you want to find only those customers who have placed orders.
+
+### 2\. **FULL OUTER JOIN: All Rows, Matched or Not**
+
+The **FULL OUTER JOIN** returns all rows from both tables, with matching rows from both sides where available. If there's no match, the result will contain **NULL** values for the columns of the table that doesn't have a matching row.
+
+#### SQL Query:
+
+```sql
+SELECT *  
 FROM A  
 FULL JOIN B ON A.key = B.key  
 WHERE A.key IS NULL OR B.key IS NULL;
-</code></pre><ul><li><strong>Explanation</strong>: This query retrieves all rows where there is either a match in both tables or no match at all. The <code>WHERE</code> clause is added to filter out the matched rows, leaving only the non-matching ones from each table.</li><li><strong>Use Case</strong>: Full outer joins are useful when you want to capture all possible data, regardless of whether a match exists. For example, if you are merging <strong>product catalogs</strong> from two different suppliers and want to see all the products from both suppliers, even if some items are not common to both.</li></ul><h3 id="3-left-join-everything-from-the-left-table">3. <strong>LEFT JOIN: Everything from the Left Table</strong></h3><p>A <strong>LEFT JOIN</strong> (or <strong>LEFT OUTER JOIN</strong>) returns all rows from the left table (in our case, <strong>A</strong>), and the matched rows from the right table (B). If no match is found, the result will contain <strong>NULL</strong> values for columns from the right table.</p><h4 id="sql-query-2">SQL Query:</h4><pre><code class="language-sql">SELECT *  
+```
+
+-   **Explanation**: This query retrieves all rows where there is either a match in both tables or no match at all. The `WHERE` clause is added to filter out the matched rows, leaving only the non-matching ones from each table.
+-   **Use Case**: Full outer joins are useful when you want to capture all possible data, regardless of whether a match exists. For example, if you are merging **product catalogs** from two different suppliers and want to see all the products from both suppliers, even if some items are not common to both.
+
+### 3\. **LEFT JOIN: Everything from the Left Table**
+
+A **LEFT JOIN** (or **LEFT OUTER JOIN**) returns all rows from the left table (in our case, **A**), and the matched rows from the right table (B). If no match is found, the result will contain **NULL** values for columns from the right table.
+
+#### SQL Query:
+
+```sql
+SELECT *  
 FROM A  
 LEFT JOIN B ON A.key = B.key  
 WHERE B.key IS NULL;
-</code></pre><ul><li><strong>Explanation</strong>: This query retrieves all rows from <strong>A</strong> and the matching rows from <strong>B</strong>. If there’s no match in <strong>B</strong>, the query still returns the row from <strong>A</strong> with <code>NULL</code> for <strong>B</strong>’s columns. The <code>WHERE</code> clause filters out rows where <strong>B</strong> has a match and only keeps the rows where <strong>B</strong>’s key is <code>NULL</code>.</li><li><strong>Use Case</strong>: Left joins are typically used when you want to retain all records from the left table. For instance, when working with an <strong>employees</strong> table and a <strong>departments</strong> table, and you need to see all employees, even if they aren't assigned to a department.</li></ul><h3 id="4-right-join-everything-from-the-right-table">4. <strong>RIGHT JOIN: Everything from the Right Table</strong></h3><p>The <strong>RIGHT JOIN</strong> (or <strong>RIGHT OUTER JOIN</strong>) works similarly to the left join but retrieves all rows from the right table (<strong>B</strong>) and the matching rows from the left table (<strong>A</strong>). If there’s no match in <strong>A</strong>, the result contains <code>NULL</code> values for columns from <strong>A</strong>.</p><h4 id="sql-query-3">SQL Query:</h4><pre><code class="language-sql">SELECT *  
+```
+
+-   **Explanation**: This query retrieves all rows from **A** and the matching rows from **B**. If there’s no match in **B**, the query still returns the row from **A** with `NULL` for **B**’s columns. The `WHERE` clause filters out rows where **B** has a match and only keeps the rows where **B**’s key is `NULL`.
+-   **Use Case**: Left joins are typically used when you want to retain all records from the left table. For instance, when working with an **employees** table and a **departments** table, and you need to see all employees, even if they aren't assigned to a department.
+
+### 4\. **RIGHT JOIN: Everything from the Right Table**
+
+The **RIGHT JOIN** (or **RIGHT OUTER JOIN**) works similarly to the left join but retrieves all rows from the right table (**B**) and the matching rows from the left table (**A**). If there’s no match in **A**, the result contains `NULL` values for columns from **A**.
+
+#### SQL Query:
+
+```sql
+SELECT *  
 FROM A  
 RIGHT JOIN B ON A.key = B.key  
 WHERE A.key IS NULL;
-</code></pre><ul><li><strong>Explanation</strong>: This query returns all rows from <strong>B</strong>, and if there’s no corresponding match in <strong>A</strong>, it returns <code>NULL</code> for the columns from <strong>A</strong>. The <code>WHERE</code> clause filters out the matched rows, showing only those where there is no match in <strong>A</strong>.</li><li><strong>Use Case</strong>: Right joins are useful when you want to capture all records from the right table, such as when dealing with <strong>orders</strong> and <strong>products</strong>, and you want to see all products, even those that haven’t been ordered.</li></ul><h3 id="other-types-of-joins-you-might-need">Other Types of Joins You Might Need</h3><p>While <strong>INNER JOIN</strong>, <strong>LEFT JOIN</strong>, <strong>RIGHT JOIN</strong>, and <strong>FULL OUTER JOIN</strong> are the most common, there are a few more joins you should be aware of:</p><h4 id="5-cross-join-cartesian-product">5. <strong>CROSS JOIN: Cartesian Product</strong></h4><p>A <strong>CROSS JOIN</strong> returns the <strong>Cartesian product</strong> of two tables, meaning it returns every combination of rows from both tables. This join doesn't require any condition.</p><h4 id="sql-query-4">SQL Query:</h4><pre><code class="language-sql">SELECT *  
+```
+
+-   **Explanation**: This query returns all rows from **B**, and if there’s no corresponding match in **A**, it returns `NULL` for the columns from **A**. The `WHERE` clause filters out the matched rows, showing only those where there is no match in **A**.
+-   **Use Case**: Right joins are useful when you want to capture all records from the right table, such as when dealing with **orders** and **products**, and you want to see all products, even those that haven’t been ordered.
+
+### Other Types of Joins You Might Need
+
+While **INNER JOIN**, **LEFT JOIN**, **RIGHT JOIN**, and **FULL OUTER JOIN** are the most common, there are a few more joins you should be aware of:
+
+#### 5\. **CROSS JOIN: Cartesian Product**
+
+A **CROSS JOIN** returns the **Cartesian product** of two tables, meaning it returns every combination of rows from both tables. This join doesn't require any condition.
+
+#### SQL Query:
+
+```sql
+SELECT *  
 FROM A  
 CROSS JOIN B;
-</code></pre><ul><li><strong>Explanation</strong>: Every row from <strong>A</strong> is combined with every row from <strong>B</strong>. If <strong>A</strong> has 3 rows and <strong>B</strong> has 4, the result will contain 12 rows.</li><li><strong>Use Case</strong>: <strong>CROSS JOIN</strong> is rarely used but can be useful for generating combinations of rows, such as creating a list of all possible combinations of products and colors.</li></ul><h4 id="6-self-join-joining-a-table-with-itself">6. <strong>SELF JOIN: Joining a Table with Itself</strong></h4><p>A <strong>SELF JOIN</strong> is a regular join, but the table is joined with itself. This is particularly useful when you need to relate rows within the same table.</p><h4 id="sql-query-5">SQL Query:</h4><pre><code class="language-sql">SELECT A.*, B.*  
+```
+
+-   **Explanation**: Every row from **A** is combined with every row from **B**. If **A** has 3 rows and **B** has 4, the result will contain 12 rows.
+-   **Use Case**: **CROSS JOIN** is rarely used but can be useful for generating combinations of rows, such as creating a list of all possible combinations of products and colors.
+
+#### 6\. **SELF JOIN: Joining a Table with Itself**
+
+A **SELF JOIN** is a regular join, but the table is joined with itself. This is particularly useful when you need to relate rows within the same table.
+
+#### SQL Query:
+
+```sql
+SELECT A.*, B.*  
 FROM Employees A  
 JOIN Employees B ON A.manager_id = B.id;
-</code></pre><ul><li><strong>Explanation</strong>: In this case, an employee (A) is joined with their manager (B), both coming from the same <strong>Employees</strong> table.</li><li><strong>Use Case</strong>: Self joins are useful for hierarchical data, like when dealing with <strong>organizational charts</strong> or <strong>family trees</strong>.</li></ul><h3 id="key-considerations-when-using-joins">Key Considerations When Using Joins</h3><ol><li><strong>Performance</strong>: Joins can be expensive in terms of performance, especially when dealing with large tables. Make sure your join conditions are properly indexed to speed up query execution.</li><li><strong>Null Values</strong>: When using outer joins (left, right, or full), be aware of <code>NULL</code> values, which can sometimes lead to confusion or unexpected results. Proper handling of <code>NULL</code> values in your logic is essential.</li><li><strong>Join Type Selection</strong>: Always choose the right type of join based on the business logic you're implementing. For example, if you need only matching records, use <strong>INNER JOIN</strong>. If you need all data from one table, regardless of matching, consider <strong>LEFT JOIN</strong> or <strong>RIGHT JOIN</strong>.</li><li><strong>Multiple Joins</strong>: You can join multiple tables in a single query. However, this can quickly increase the complexity of your SQL statement, so make sure you're clear on the relationships between tables to avoid errors.</li><li><strong>Aliases for Readability</strong>: When working with multiple joins, using <strong>table aliases</strong> (e.g., <code>A</code>, <code>B</code>) makes the query more readable and helps prevent ambiguity, especially in large datasets.</li></ol><h3 id="need-visual-cheat-sheet">Need Visual Cheat Sheet?</h3><p>This can be very handy.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="__GHOST_URL__/content/images/2024/12/image-3.png" class="kg-image" alt="" loading="lazy" width="648" height="900" srcset="__GHOST_URL__/content/images/size/w600/2024/12/image-3.png 600w, __GHOST_URL__/content/images/2024/12/image-3.png 648w"><figcaption><span style="white-space: pre-wrap;">Taken from </span><a href="https://x.com/supabase/status/1868697109802758376" rel="noreferrer"><span style="white-space: pre-wrap;">Supabase X post</span></a></figcaption></figure><h3 id="finally">Finally</h3><p>SQL joins are powerful tools that enable you to retrieve and combine data from multiple tables. Whether you're working with simple relationships or complex datasets, understanding how to use <strong>INNER JOIN</strong>, <strong>OUTER JOIN</strong>, and other types of joins will help you write more efficient and accurate SQL queries.</p><p>Remember, <strong>performance</strong> and the correct choice of join type are key to writing effective queries. By understanding the different types of joins and when to use them, you'll be able to unlock the full potential of relational databases and get the most out of your data.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+-   **Explanation**: In this case, an employee (A) is joined with their manager (B), both coming from the same **Employees** table.
+-   **Use Case**: Self joins are useful for hierarchical data, like when dealing with **organizational charts** or **family trees**.
+
+### Key Considerations When Using Joins
+
+1.  **Performance**: Joins can be expensive in terms of performance, especially when dealing with large tables. Make sure your join conditions are properly indexed to speed up query execution.
+2.  **Null Values**: When using outer joins (left, right, or full), be aware of `NULL` values, which can sometimes lead to confusion or unexpected results. Proper handling of `NULL` values in your logic is essential.
+3.  **Join Type Selection**: Always choose the right type of join based on the business logic you're implementing. For example, if you need only matching records, use **INNER JOIN**. If you need all data from one table, regardless of matching, consider **LEFT JOIN** or **RIGHT JOIN**.
+4.  **Multiple Joins**: You can join multiple tables in a single query. However, this can quickly increase the complexity of your SQL statement, so make sure you're clear on the relationships between tables to avoid errors.
+5.  **Aliases for Readability**: When working with multiple joins, using **table aliases** (e.g., `A`, `B`) makes the query more readable and helps prevent ambiguity, especially in large datasets.
+
+### Need Visual Cheat Sheet?
+
+This can be very handy.
+
+![](__GHOST_URL__/content/images/2024/12/image-3.png)
+
+### Finally
+
+SQL joins are powerful tools that enable you to retrieve and combine data from multiple tables. Whether you're working with simple relationships or complex datasets, understanding how to use **INNER JOIN**, **OUTER JOIN**, and other types of joins will help you write more efficient and accurate SQL queries.
+
+Remember, **performance** and the correct choice of join type are key to writing effective queries. By understanding the different types of joins and when to use them, you'll be able to unlock the full potential of relational databases and get the most out of your data.

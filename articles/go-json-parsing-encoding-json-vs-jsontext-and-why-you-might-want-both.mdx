@@ -2,10 +2,21 @@
 title: "Go JSON Parsing: encoding/json vs jsontext, and Why You Might Want Both"
 date: "2025-04-13T07:22:37.000Z"
 description: "When working with JSON in Go, most developers naturally reach for the standard library's encoding/json package. It’s convenient, reliable , and has been the def..."
-tags: ["go","api","performance","productivity","json"]
+tags: ["go","bash","performance","productivity","json"]
 ---
 
-<p>When working with JSON in Go, most developers naturally reach for the standard library's <code>encoding/json</code> package. It’s <strong>convenient, reliable</strong>, and has been the default for years. But if you’ve ever found yourself needing <strong>more control, better performance for large payloads, or streaming JSON processing</strong>, you might want to look into <code>jsontext</code>.</p><p>This article will help you understand the <strong>difference between <code>encoding/json</code> and <code>golang.org/x/text/json/jsontext</code></strong>, why you might use both, and how they can <strong>complement</strong> each other.</p><hr><h2 id="%F0%9F%A7%B0-what-is-encodingjson">🧰 What Is <code>encoding/json</code>?</h2><p>The <code>encoding/json</code> package is the <strong>standard Go library</strong> for working with JSON. It provides <strong>high-level APIs</strong> to marshal and unmarshal Go structs.</p><pre><code class="language-go">import "encoding/json"
+When working with JSON in Go, most developers naturally reach for the standard library's `encoding/json` package. It’s **convenient, reliable**, and has been the default for years. But if you’ve ever found yourself needing **more control, better performance for large payloads, or streaming JSON processing**, you might want to look into `jsontext`.
+
+This article will help you understand the **difference between `encoding/json` and `golang.org/x/text/json/jsontext`**, why you might use both, and how they can **complement** each other.
+
+* * *
+
+## 🧰 What Is `encoding/json`?
+
+The `encoding/json` package is the **standard Go library** for working with JSON. It provides **high-level APIs** to marshal and unmarshal Go structs.
+
+```go
+import "encoding/json"
 
 type User struct {
 	Name string `json:"name"`
@@ -14,9 +25,39 @@ type User struct {
 
 jsonStr := `{"name": "Sony", "age": 30}`
 var u User
-_ = json.Unmarshal([]byte(jsonStr), &amp;u)
-</code></pre><h3 id="%E2%9C%85-pros">✅ Pros</h3><ul><li>Easy to use.</li><li>Supports struct tags and reflection.</li><li>Ideal for APIs and typical request/response flows.</li></ul><h3 id="%E2%9D%8C-cons">❌ Cons</h3><ul><li>Doesn’t work well with <strong>huge or streaming JSON</strong>.</li><li>Not suitable for partial or dynamic parsing.</li><li>Less efficient for <strong>token-level manipulation</strong>.</li></ul><hr><h2 id="%F0%9F%94%AC-enter-jsontext-from-golangorgxtextjsonjsontext">🔬 Enter <code>jsontext</code> from <code>golang.org/x/text/json/jsontext</code></h2><p><code>jsontext</code> is a <strong>low-level JSON tokenizer and parser</strong>. It’s not part of the standard library, but maintained by the Go team in the <code>golang.org/x/text</code> modules.</p><p>You can install it using:</p><pre><code class="language-bash">go get golang.org/x/text/json/jsontext
-</code></pre><h3 id="why-use-it">Why Use It?</h3><p>Instead of decoding whole structs, you can <strong>read JSON token-by-token</strong> (objects, arrays, strings, numbers) — which is <strong>ideal for large files, logs, or streams</strong>.</p><pre><code class="language-go">dec := jsontext.NewDecoder(strings.NewReader(`{"name": "Sony", "age": 30}`))
+_ = json.Unmarshal([]byte(jsonStr), &u)
+```
+
+### ✅ Pros
+
+-   Easy to use.
+-   Supports struct tags and reflection.
+-   Ideal for APIs and typical request/response flows.
+
+### ❌ Cons
+
+-   Doesn’t work well with **huge or streaming JSON**.
+-   Not suitable for partial or dynamic parsing.
+-   Less efficient for **token-level manipulation**.
+
+* * *
+
+## 🔬 Enter `jsontext` from `golang.org/x/text/json/jsontext`
+
+`jsontext` is a **low-level JSON tokenizer and parser**. It’s not part of the standard library, but maintained by the Go team in the `golang.org/x/text` modules.
+
+You can install it using:
+
+```bash
+go get golang.org/x/text/json/jsontext
+```
+
+### Why Use It?
+
+Instead of decoding whole structs, you can **read JSON token-by-token** (objects, arrays, strings, numbers) — which is **ideal for large files, logs, or streams**.
+
+```go
+dec := jsontext.NewDecoder(strings.NewReader(`{"name": "Sony", "age": 30}`))
 for {
 	tok, err := dec.ReadToken()
 	if err != nil {
@@ -24,50 +65,45 @@ for {
 	}
 	fmt.Printf("Token: %#v\n", tok)
 }
-</code></pre><h3 id="%E2%9C%85-pros-1">✅ Pros</h3><ul><li>Works well for <strong>huge JSON files</strong> or streamed data.</li><li>Gives <strong>fine-grained control</strong>.</li><li>Allows <strong>partial parsing</strong> — skip what you don’t need.</li></ul><h3 id="%E2%9D%8C-cons-1">❌ Cons</h3><ul><li>Requires more manual work.</li><li>Doesn’t map JSON to structs automatically.</li><li>Not for casual or simple use cases.</li></ul><hr><h2 id="%F0%9F%A7%A0-when-should-you-use-each">🧠 When Should You Use Each?</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Scenario</th>
-<th>Use <code inline="">encoding/json</code></th>
-<th>Use <code inline="">jsontext</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Parsing API responses</td>
-<td>✅ Easy and clean</td>
-<td>❌ Overkill</td>
-</tr>
-<tr>
-<td>Reading large logs</td>
-<td>❌ Memory-heavy</td>
-<td>✅ Efficient</td>
-</tr>
-<tr>
-<td>Selective JSON field parsing</td>
-<td>❌ Not possible</td>
-<td>✅ Perfect</td>
-</tr>
-<tr>
-<td>Streaming JSON from stdin or socket</td>
-<td>❌ Complex</td>
-<td>✅ Designed for it</td>
-</tr>
-<tr>
-<td>Token inspection or filtering</td>
-<td>❌ Limited</td>
-<td>✅ Excellent</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="%F0%9F%A4%9D-combine-the-best-of-both-worlds">🤝 Combine the Best of Both Worlds</h2><p>You don’t have to choose only one. You can <strong>use <code>jsontext</code> to navigate or isolate part of a JSON payload</strong>, and then <strong>use <code>encoding/json</code> to map that part to a struct</strong>.</p><p>Here’s a real-world example: imagine this JSON input:</p><pre><code class="language-json">{
+```
+
+### ✅ Pros
+
+-   Works well for **huge JSON files** or streamed data.
+-   Gives **fine-grained control**.
+-   Allows **partial parsing** — skip what you don’t need.
+
+### ❌ Cons
+
+-   Requires more manual work.
+-   Doesn’t map JSON to structs automatically.
+-   Not for casual or simple use cases.
+
+* * *
+
+## 🧠 When Should You Use Each?
+
+* * *
+
+## 🤝 Combine the Best of Both Worlds
+
+You don’t have to choose only one. You can **use `jsontext` to navigate or isolate part of a JSON payload**, and then **use `encoding/json` to map that part to a struct**.
+
+Here’s a real-world example: imagine this JSON input:
+
+```json
+{
   "meta": { "version": "1.0", "timestamp": "2025-04-13T12:00:00Z" },
   "data": { "name": "Sony", "age": 30 }
 }
-</code></pre><p>We want to <strong>ignore</strong> the <code>"meta"</code> section, and decode only <code>"data"</code>.</p><h3 id="%F0%9F%A7%AA-code-example">🧪 Code Example</h3><pre><code class="language-go">import (
+```
+
+We want to **ignore** the `"meta"` section, and decode only `"data"`.
+
+### 🧪 Code Example
+
+```go
+import (
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -104,20 +140,39 @@ func main() {
 
 		if currentKey == "data" {
 			var buf bytes.Buffer
-			_ = dec.ReadValue(&amp;buf)
+			_ = dec.ReadValue(&buf)
 			foundDataRaw = buf.Bytes()
 			break
 		}
 	}
 
 	var d Data
-	_ = json.Unmarshal(foundDataRaw, &amp;d)
+	_ = json.Unmarshal(foundDataRaw, &d)
 
 	fmt.Printf("Name: %s, Age: %d\n", d.Name, d.Age)
 }
-</code></pre><h3 id="%E2%9C%85-output">✅ Output:</h3><pre><code>Name: Sony, Age: 30
-</code></pre><p>This lets you <strong>skip irrelevant fields</strong> and only decode what matters. Perfect for performance-critical or structured log processing.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-things-to-keep-in-mind">⚠️ Things to Keep in Mind</h2><ul><li><code>jsontext</code> is part of <code>golang.org/x</code>, not the standard library — it may evolve independently.</li><li>It’s <strong>not a replacement</strong> for <code>encoding/json</code>, but a <strong>power tool</strong> when you need more than what <code>encoding/json</code> offers.</li><li>For large files or streamed inputs (e.g., WebSocket JSON messages), <code>jsontext</code> is a solid choice.</li></ul><hr><h2 id="%F0%9F%A7%BE-finally">🧾 Finally</h2><p>Use <strong><code>encoding/json</code> for convenience</strong>, and use <strong><code>jsontext</code> when you need control</strong>. And if you’re building robust services that consume third-party JSON data — or handling massive logs — <strong>you’ll love combining both</strong>.</p><p>If you want to process JSON intelligently, without loading the entire blob into memory, or just need a laser-focused way to extract fields, <code>jsontext</code> will <strong>make your tooling smarter and faster</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### ✅ Output:
+
+```
+Name: Sony, Age: 30
+```
+
+This lets you **skip irrelevant fields** and only decode what matters. Perfect for performance-critical or structured log processing.
+
+* * *
+
+## ⚠️ Things to Keep in Mind
+
+-   `jsontext` is part of `golang.org/x`, not the standard library — it may evolve independently.
+-   It’s **not a replacement** for `encoding/json`, but a **power tool** when you need more than what `encoding/json` offers.
+-   For large files or streamed inputs (e.g., WebSocket JSON messages), `jsontext` is a solid choice.
+
+* * *
+
+## 🧾 Finally
+
+Use **`encoding/json` for convenience**, and use **`jsontext` when you need control**. And if you’re building robust services that consume third-party JSON data — or handling massive logs — **you’ll love combining both**.
+
+If you want to process JSON intelligently, without loading the entire blob into memory, or just need a laser-focused way to extract fields, `jsontext` will **make your tooling smarter and faster**.

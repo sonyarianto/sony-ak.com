@@ -5,8 +5,92 @@ description: "Whenever I browse open-source JavaScript projects on GitHub, there
 tags: ["javascript","typescript","testing","git","open-source"]
 ---
 
-<p>Whenever I browse open-source JavaScript projects on GitHub, there’s one file I <em>always</em> check first: <strong><code>package.json</code></strong>.<br>At first glance, it might seem like a boring metadata file — but over time, I realized <strong><code>package.json</code> is a goldmine of ideas, inspiration, and hidden gems</strong>.</p><p>Let me explain why.</p><hr><h2 id="1-discovering-new-tools-and-libraries"><strong>1. Discovering New Tools and Libraries</strong></h2><p>One of the biggest reasons I dive into <code>package.json</code> is to <strong>find libraries I've never heard of</strong>.<br>Maybe a project uses a <strong>super minimal validation library</strong>, a <strong>faster alternative to Lodash</strong>, or a <strong>clever state management tool</strong> that isn't mainstream yet.<br>By seeing what others are using, I often discover <strong>lightweight</strong>, <strong>modern</strong>, or <strong>specialized packages</strong> that solve problems in ways I hadn't thought of.</p><p>Sometimes I even stumble across <strong>new categories of tools</strong> — like form generators, headless CMS clients, bundlers I never knew existed — just because they were quietly sitting under <code>dependencies</code>.</p><hr><h2 id="2-understanding-the-projects-philosophy"><strong>2. Understanding the Project's Philosophy</strong></h2><p>Looking at the dependencies and devDependencies can tell you <strong>a lot about the mindset of the developers</strong>.</p><ul><li>If I see <strong>ESLint</strong>, <strong>Prettier</strong>, and <strong>TypeScript</strong>, I know they probably care deeply about code quality.</li><li>If I see lots of <strong>micro-packages</strong> instead of big frameworks, I get the sense they value <strong>modularity</strong>.</li><li>If I see <strong>heavy monorepo tools</strong> like Nx or Turborepo, it suggests they are <strong>building at scale</strong>.</li></ul><p>The way a team structures their <code>package.json</code> reflects their <strong>priorities</strong>, <strong>style</strong>, and even <strong>how they think about growth</strong>.</p><hr><h2 id="3-learning-about-new-trends"><strong>3. Learning About New Trends</strong></h2><p>The frontend world moves ridiculously fast.<br><strong>Yesterday’s best practice might be today’s tech debt.</strong><br>By skimming through modern projects' <code>package.json</code>, I quickly catch new trends:</p><ul><li>Is <strong>Vite</strong> replacing Webpack here?</li><li>Are people starting to use <strong>Bun</strong> instead of Node.js for scripts?</li><li>Is <strong>Zod</strong> becoming the new de facto validation library instead of Yup?</li></ul><p>Without reading blogs or watching 40-minute YouTube videos, just looking at a well-maintained <code>package.json</code> <strong>gives me a shortcut to the current trends</strong>.</p><hr><h2 id="4-seeing-how-a-project-is-built-and-maintained"><strong>4. Seeing How a Project is Built and Maintained</strong></h2><p>Another interesting part is looking into <code>devDependencies</code>.</p><p>This is where you often see:</p><ul><li><strong>Testing frameworks</strong> (Vitest, Jest, Cypress, Playwright)</li><li><strong>Build tools</strong> (esbuild, rollup, swc)</li><li><strong>Type checking</strong> or <strong>linting tools</strong></li><li><strong>Release automation</strong> tools (semantic-release, changesets)</li></ul><p>It gives you <strong>real-world examples of how serious projects organize their development process</strong>, something that is <em>rarely</em> taught in tutorials.</p><hr><h2 id="5-getting-small-but-powerful-ideas"><strong>5. Getting Small But Powerful Ideas</strong></h2><p>Sometimes it's not about big libraries — it’s about <strong>tiny tricks</strong> you find:</p><ul><li>A <strong>clever npm script</strong> that auto-cleans dist folders before building.</li><li>Usage of <strong>husky</strong> and <strong>lint-staged</strong> to enforce clean Git commits.</li><li>A script using <strong>concurrently</strong> to run dev server and linter at once.</li></ul><p><strong>These small techniques are often buried inside <code>package.json</code>, yet they are gems that can supercharge your own projects.</strong></p><hr><h2 id="other-things-i-also-check"><strong>Other Things I Also Check</strong></h2><p>Here are a few more details I personally always peek at when opening <code>package.json</code>:</p><ul><li><strong>"scripts" section</strong> — sometimes people have cool custom scripts (<code>npm run storybook</code>, <code>npm run chromatic</code>, <code>npm run generate</code>)</li><li><strong>"engines" field</strong> — tells me what Node.js version they are targeting</li><li><strong>"type" field</strong> — whether they are using ESM (<code>"type": "module"</code>) or CommonJS</li><li><strong>Monorepo hints</strong> — if I see <code>workspaces</code> defined, it tells me the project is structured as a monorepo</li><li><strong>Side notes</strong> — sometimes people leave funny, hidden messages in comments inside the file or project metadata!</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>If you're like me and <strong>love learning naturally by seeing real-world code</strong>, then <strong>opening <code>package.json</code> is a habit you should build</strong>.<br>It’s fast, it’s revealing, and it connects you to the <em>living practices</em> of the open-source community — not just the polished stuff you find in tutorials.</p><p><strong>Next time you visit a GitHub repo, before you even run <code>npm install</code>, open the <code>package.json</code>.<br>It might change how you think, code, and create.</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+Whenever I browse open-source JavaScript projects on GitHub, there’s one file I _always_ check first: **`package.json`**.  
+At first glance, it might seem like a boring metadata file — but over time, I realized **`package.json` is a goldmine of ideas, inspiration, and hidden gems**.
 
+Let me explain why.
+
+* * *
+
+## **1\. Discovering New Tools and Libraries**
+
+One of the biggest reasons I dive into `package.json` is to **find libraries I've never heard of**.  
+Maybe a project uses a **super minimal validation library**, a **faster alternative to Lodash**, or a **clever state management tool** that isn't mainstream yet.  
+By seeing what others are using, I often discover **lightweight**, **modern**, or **specialized packages** that solve problems in ways I hadn't thought of.
+
+Sometimes I even stumble across **new categories of tools** — like form generators, headless CMS clients, bundlers I never knew existed — just because they were quietly sitting under `dependencies`.
+
+* * *
+
+## **2\. Understanding the Project's Philosophy**
+
+Looking at the dependencies and devDependencies can tell you **a lot about the mindset of the developers**.
+
+-   If I see **ESLint**, **Prettier**, and **TypeScript**, I know they probably care deeply about code quality.
+-   If I see lots of **micro-packages** instead of big frameworks, I get the sense they value **modularity**.
+-   If I see **heavy monorepo tools** like Nx or Turborepo, it suggests they are **building at scale**.
+
+The way a team structures their `package.json` reflects their **priorities**, **style**, and even **how they think about growth**.
+
+* * *
+
+## **3\. Learning About New Trends**
+
+The frontend world moves ridiculously fast.  
+**Yesterday’s best practice might be today’s tech debt.**  
+By skimming through modern projects' `package.json`, I quickly catch new trends:
+
+-   Is **Vite** replacing Webpack here?
+-   Are people starting to use **Bun** instead of Node.js for scripts?
+-   Is **Zod** becoming the new de facto validation library instead of Yup?
+
+Without reading blogs or watching 40-minute YouTube videos, just looking at a well-maintained `package.json` **gives me a shortcut to the current trends**.
+
+* * *
+
+## **4\. Seeing How a Project is Built and Maintained**
+
+Another interesting part is looking into `devDependencies`.
+
+This is where you often see:
+
+-   **Testing frameworks** (Vitest, Jest, Cypress, Playwright)
+-   **Build tools** (esbuild, rollup, swc)
+-   **Type checking** or **linting tools**
+-   **Release automation** tools (semantic-release, changesets)
+
+It gives you **real-world examples of how serious projects organize their development process**, something that is _rarely_ taught in tutorials.
+
+* * *
+
+## **5\. Getting Small But Powerful Ideas**
+
+Sometimes it's not about big libraries — it’s about **tiny tricks** you find:
+
+-   A **clever npm script** that auto-cleans dist folders before building.
+-   Usage of **husky** and **lint-staged** to enforce clean Git commits.
+-   A script using **concurrently** to run dev server and linter at once.
+
+**These small techniques are often buried inside `package.json`, yet they are gems that can supercharge your own projects.**
+
+* * *
+
+## **Other Things I Also Check**
+
+Here are a few more details I personally always peek at when opening `package.json`:
+
+-   **"scripts" section** — sometimes people have cool custom scripts (`npm run storybook`, `npm run chromatic`, `npm run generate`)
+-   **"engines" field** — tells me what Node.js version they are targeting
+-   **"type" field** — whether they are using ESM (`"type": "module"`) or CommonJS
+-   **Monorepo hints** — if I see `workspaces` defined, it tells me the project is structured as a monorepo
+-   **Side notes** — sometimes people leave funny, hidden messages in comments inside the file or project metadata!
+
+* * *
+
+## **Finally**
+
+If you're like me and **love learning naturally by seeing real-world code**, then **opening `package.json` is a habit you should build**.  
+It’s fast, it’s revealing, and it connects you to the _living practices_ of the open-source community — not just the polished stuff you find in tutorials.
+
+**Next time you visit a GitHub repo, before you even run `npm install`, open the `package.json`.  
+It might change how you think, code, and create.**

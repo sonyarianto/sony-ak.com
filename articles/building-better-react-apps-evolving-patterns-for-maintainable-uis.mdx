@@ -2,33 +2,186 @@
 title: "Building Better React Apps: Evolving Patterns for Maintainable UIs"
 date: "2025-05-21T19:24:04.000Z"
 description: "As React continues to evolve, the way we write components—and structure logic within them—needs to mature as well. While it's tempting to just \"make it work,\" t..."
-tags: ["react","testing","debugging","design","email"]
+tags: ["javascript","react","testing","security","debugging"]
 ---
 
-<p>As React continues to evolve, the way we write components—and structure logic within them—needs to mature as well. While it's tempting to just "make it work," that mindset often leads to tech debt and painful refactors later on.</p><p>Here are <strong>modern React patterns</strong> and <strong>best practices</strong> that will help you build apps that are not just functional, but also clean, predictable, and scalable.</p><hr><h2 id="1-uis-are-a-thin-wrapper-over-data"><strong>1. UIs Are a Thin Wrapper Over Data</strong></h2><p>At the heart of good React design is this mindset: <strong>your UI should reflect state</strong>, not manage it unnecessarily.</p><p>Avoid using <code>useState</code> for things that can be <strong>derived</strong> from props or external state. This principle keeps your components lean and makes testing, debugging, and reasoning about them much easier.</p><blockquote><strong>Example</strong>: Instead of storing a boolean <code>isFormValid</code>, derive it from the actual form data using a validation function.</blockquote><hr><h2 id="2-prefer-calculated-state-over-local-state"><strong>2. Prefer Calculated State Over Local State</strong></h2><p>Before reaching for <code>useState</code>, ask yourself:<br><strong>Can this value be computed on render instead of stored?</strong></p><p>If so, compute it. Derived state avoids issues with stale values and side effects that don’t sync properly.</p><blockquote><strong>Bad</strong>:</blockquote><pre><code class="language-js">const [isDisabled, setDisabled] = useState(false);
-</code></pre><blockquote><strong>Better</strong>:</blockquote><pre><code class="language-js">const isDisabled = !form.email || !form.password;
-</code></pre><p>This keeps logic declarative and easier to follow.</p><hr><h2 id="3-use-state-machines-for-complex-ui-logic"><strong>3. Use State Machines for Complex UI Logic</strong></h2><p>React’s <code>useState</code> works well for simple toggles and form fields. But once you find yourself juggling multiple booleans or dependent state values, <strong>state machines</strong> (like <a href="https://xstate.js.org/">XState</a>) can make your logic far more predictable.</p><blockquote><strong>Why?</strong> State machines force you to define every possible state explicitly. No more “what happens if both <code>isLoading</code> and <code>isError</code> are true?”</blockquote><p>When logic becomes non-linear, managing transitions clearly matters.</p><hr><h2 id="4-avoid-deep-nesting-and-logic-in-jsx"><strong>4. Avoid Deep Nesting and Logic in JSX</strong></h2><p>It’s tempting to write nested ternaries or inline <code>if</code> conditions inside JSX. But <strong>nesting hurts readability</strong>.</p><p>Instead of this:</p><pre><code class="language-js">{isLoggedIn ? (
-  hasPermission ? &lt;Dashboard /&gt; : &lt;Unauthorized /&gt;
+As React continues to evolve, the way we write components—and structure logic within them—needs to mature as well. While it's tempting to just "make it work," that mindset often leads to tech debt and painful refactors later on.
+
+Here are **modern React patterns** and **best practices** that will help you build apps that are not just functional, but also clean, predictable, and scalable.
+
+* * *
+
+## **1\. UIs Are a Thin Wrapper Over Data**
+
+At the heart of good React design is this mindset: **your UI should reflect state**, not manage it unnecessarily.
+
+Avoid using `useState` for things that can be **derived** from props or external state. This principle keeps your components lean and makes testing, debugging, and reasoning about them much easier.
+
+> **Example**: Instead of storing a boolean `isFormValid`, derive it from the actual form data using a validation function.
+
+* * *
+
+## **2\. Prefer Calculated State Over Local State**
+
+Before reaching for `useState`, ask yourself:  
+**Can this value be computed on render instead of stored?**
+
+If so, compute it. Derived state avoids issues with stale values and side effects that don’t sync properly.
+
+> **Bad**:
+
+```js
+const [isDisabled, setDisabled] = useState(false);
+```
+
+> **Better**:
+
+```js
+const isDisabled = !form.email || !form.password;
+```
+
+This keeps logic declarative and easier to follow.
+
+* * *
+
+## **3\. Use State Machines for Complex UI Logic**
+
+React’s `useState` works well for simple toggles and form fields. But once you find yourself juggling multiple booleans or dependent state values, **state machines** (like [XState](https://xstate.js.org/)) can make your logic far more predictable.
+
+> **Why?** State machines force you to define every possible state explicitly. No more “what happens if both `isLoading` and `isError` are true?”
+
+When logic becomes non-linear, managing transitions clearly matters.
+
+* * *
+
+## **4\. Avoid Deep Nesting and Logic in JSX**
+
+It’s tempting to write nested ternaries or inline `if` conditions inside JSX. But **nesting hurts readability**.
+
+Instead of this:
+
+```js
+{isLoggedIn ? (
+  hasPermission ? <Dashboard /> : <Unauthorized />
 ) : (
-  &lt;LoginForm /&gt;
+  <LoginForm />
 )}
-</code></pre><p>Try abstracting into a function:</p><pre><code class="language-js">function renderContent() {
-  if (!isLoggedIn) return &lt;LoginForm /&gt;;
-  if (!hasPermission) return &lt;Unauthorized /&gt;;
-  return &lt;Dashboard /&gt;;
+```
+
+Try abstracting into a function:
+
+```js
+function renderContent() {
+  if (!isLoggedIn) return <LoginForm />;
+  if (!hasPermission) return <Unauthorized />;
+  return <Dashboard />;
 }
-</code></pre><p><strong>Readable logic is maintainable logic.</strong></p><hr><h2 id="5-be-careful-with-useeffect-logic"><strong>5. Be Careful with <code>useEffect</code> Logic</strong></h2><p><code>useEffect</code> is often misused as a dumping ground for business logic. That leads to <strong>confusing side effects</strong>, unexpected re-renders, and difficult-to-debug bugs.</p><p>Use it only for what it’s intended: <strong>side effects</strong>, like:</p><ul><li>Fetching data</li><li>Setting up subscriptions</li><li>Interacting with the DOM</li></ul><p>Avoid putting decision-making logic in it. If your effect depends on certain values, make that <strong>explicit and minimal</strong>.</p><hr><h2 id="6-prefer-explicit-over-implicit-reactivity"><strong>6. Prefer Explicit Over Implicit Reactivity</strong></h2><p>React’s reactive model is powerful—but <strong>implicit dependencies</strong> (like depending on a changing state without tracking it properly) create confusion.</p><p>Instead of relying on <code>useEffect</code> to do things “when something changes,” use <strong>clear event handlers</strong> and state transitions where possible.</p><blockquote><strong>Avoid this</strong>:</blockquote><pre><code class="language-js">useEffect(() =&gt; {
-  if (count &gt; 10) {
+```
+
+**Readable logic is maintainable logic.**
+
+* * *
+
+## **5\. Be Careful with `useEffect` Logic**
+
+`useEffect` is often misused as a dumping ground for business logic. That leads to **confusing side effects**, unexpected re-renders, and difficult-to-debug bugs.
+
+Use it only for what it’s intended: **side effects**, like:
+
+-   Fetching data
+-   Setting up subscriptions
+-   Interacting with the DOM
+
+Avoid putting decision-making logic in it. If your effect depends on certain values, make that **explicit and minimal**.
+
+* * *
+
+## **6\. Prefer Explicit Over Implicit Reactivity**
+
+React’s reactive model is powerful—but **implicit dependencies** (like depending on a changing state without tracking it properly) create confusion.
+
+Instead of relying on `useEffect` to do things “when something changes,” use **clear event handlers** and state transitions where possible.
+
+> **Avoid this**:
+
+```js
+useEffect(() => {
+  if (count > 10) {
     setWarning(true);
   }
 }, [count]);
-</code></pre><blockquote><strong>Prefer</strong>:</blockquote><pre><code class="language-js">const handleClick = () =&gt; {
-  if (count &gt; 10) {
+```
+
+> **Prefer**:
+
+```js
+const handleClick = () => {
+  if (count > 10) {
     setWarning(true);
   }
 }
-</code></pre><hr><h2 id="7-avoid-settimeout-unless-absolutely-necessary"><strong>7. Avoid <code>setTimeout</code> Unless Absolutely Necessary</strong></h2><p>Using <code>setTimeout</code> in React is often a sign of <strong>hacks or timing workarounds</strong>. It may work, but it's not reliable and makes behavior unpredictable—especially with re-renders.</p><p>If you <strong>must</strong> use it (e.g., for debouncing or delaying animations), always <strong>comment why</strong> it exists. Also consider alternatives like:</p><ul><li><code>useDebounce</code> hooks</li><li>Controlled animation libraries (e.g., Framer Motion)</li></ul><hr><h2 id="8-keep-business-logic-out-of-the-ui-layer"><strong>8. Keep Business Logic Out of the UI Layer</strong></h2><p>Don’t let your React components become the dumping ground for business rules. If you’re:</p><ul><li>Validating form data</li><li>Applying discounts</li><li>Deciding permissions</li></ul><p>…then put that in <strong>dedicated utility functions or services</strong>, not inline inside components.</p><p>This decouples your logic from your UI, makes it easier to test, and allows you to re-use it across different UIs (e.g., web and mobile).</p><hr><h2 id="9-think-in-events-and-transitions"><strong>9. Think in Events and Transitions</strong></h2><p>Rather than constantly syncing state based on values, think in terms of <strong>events</strong>.<br>“What just happened?” → “What should happen next?”</p><p>This shift in mindset leads to more reliable app behavior, especially when paired with <strong>reducers</strong> or <strong>state machines</strong>.</p><hr><h2 id="10-test-the-logic-not-the-dom"><strong>10. Test the Logic, Not the DOM</strong></h2><p>Don’t write too many fragile UI tests. Instead, test:</p><ul><li>Reducers</li><li>Validators</li><li>Business rules</li></ul><p>Unit testing the underlying logic is faster, more stable, and provides better coverage than DOM-heavy tests.</p><p>Use libraries like <code>@testing-library/react</code> for basic interaction testing, but <strong>avoid snapshot testing for logic-heavy components</strong>.</p><hr><h2 id="%E2%9C%A8-finally">✨ Finally</h2><blockquote>Just because the code runs, doesn't mean it's right.</blockquote><p>React won’t throw errors when patterns are misused. But the <strong>bugs pile up quietly</strong>, and the next developer (maybe you) has to untangle it.</p><p>By following these evolving patterns:</p><ul><li>Your code will be <strong>easier to reason about</strong></li><li>Refactoring will be <strong>less painful</strong></li><li>Your future self (and teammates) will thank you</li></ul><p>Let’s stop thinking “just make it work” and start thinking <strong>“make it last.”</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+* * *
+
+## **7\. Avoid `setTimeout` Unless Absolutely Necessary**
+
+Using `setTimeout` in React is often a sign of **hacks or timing workarounds**. It may work, but it's not reliable and makes behavior unpredictable—especially with re-renders.
+
+If you **must** use it (e.g., for debouncing or delaying animations), always **comment why** it exists. Also consider alternatives like:
+
+-   `useDebounce` hooks
+-   Controlled animation libraries (e.g., Framer Motion)
+
+* * *
+
+## **8\. Keep Business Logic Out of the UI Layer**
+
+Don’t let your React components become the dumping ground for business rules. If you’re:
+
+-   Validating form data
+-   Applying discounts
+-   Deciding permissions
+
+…then put that in **dedicated utility functions or services**, not inline inside components.
+
+This decouples your logic from your UI, makes it easier to test, and allows you to re-use it across different UIs (e.g., web and mobile).
+
+* * *
+
+## **9\. Think in Events and Transitions**
+
+Rather than constantly syncing state based on values, think in terms of **events**.  
+“What just happened?” → “What should happen next?”
+
+This shift in mindset leads to more reliable app behavior, especially when paired with **reducers** or **state machines**.
+
+* * *
+
+## **10\. Test the Logic, Not the DOM**
+
+Don’t write too many fragile UI tests. Instead, test:
+
+-   Reducers
+-   Validators
+-   Business rules
+
+Unit testing the underlying logic is faster, more stable, and provides better coverage than DOM-heavy tests.
+
+Use libraries like `@testing-library/react` for basic interaction testing, but **avoid snapshot testing for logic-heavy components**.
+
+* * *
+
+## ✨ Finally
+
+> Just because the code runs, doesn't mean it's right.
+
+React won’t throw errors when patterns are misused. But the **bugs pile up quietly**, and the next developer (maybe you) has to untangle it.
+
+By following these evolving patterns:
+
+-   Your code will be **easier to reason about**
+-   Refactoring will be **less painful**
+-   Your future self (and teammates) will thank you
+
+Let’s stop thinking “just make it work” and start thinking **“make it last.”**

@@ -2,60 +2,136 @@
 title: "Speed Up Your Laravel Queries with whereIntegerInRaw()"
 date: "2025-06-27T07:18:41.000Z"
 description: "If you've been using Laravel for a while, you're likely familiar with the whereIn() method for filtering records by a list of values. It's clean, expressive, an..."
-tags: ["laravel","database","api","testing","security"]
+tags: ["php","laravel","database","api","testing"]
 ---
 
-<p>If you've been using Laravel for a while, you're likely familiar with the <code>whereIn()</code> method for filtering records by a list of values. It's clean, expressive, and gets the job done. But did you know that when working with <strong>large arrays of integers</strong>, there's a significantly faster alternative?</p><p>In this article, we’ll uncover the <strong>performance benefits</strong> of using <code>whereIntegerInRaw()</code> over <code>whereIn()</code>, why it works, and when it's appropriate to make the switch. We’ll also explore other related tips and caveats you should be aware of.</p><hr><h2 id="%F0%9F%A7%A0-the-common-pattern-wherein">🧠 The Common Pattern: <code>whereIn()</code></h2><p>Here’s what most of us typically write:</p><pre><code class="language-php">Product::whereIn('id', range(1, 500))-&gt;get();
-</code></pre><p>This will generate a parameterized SQL query that looks something like this:</p><pre><code class="language-sql">select * from products where id in (?, ?, ?, ..., ?)
-</code></pre><p>Laravel binds each value as a separate parameter — <strong>safe and clear</strong>, but as the list grows, this can <strong>impact performance</strong> due to the overhead of binding hundreds (or thousands) of values.</p><hr><h2 id="%E2%9A%A1-the-faster-alternative-whereintegerinraw">⚡ The Faster Alternative: <code>whereIntegerInRaw()</code></h2><pre><code class="language-php">Product::whereIntegerInRaw('id', range(1, 500))-&gt;get();
-</code></pre><p>This method generates a raw SQL query like:</p><pre><code class="language-sql">select * from products where id in (1, 2, 3, ..., 500)
-</code></pre><p>By skipping the parameter binding, Laravel allows the <strong>database engine to optimize the query more efficiently</strong>, resulting in a faster execution, especially on large datasets.</p><hr><h2 id="%E2%9C%85-when-to-use-whereintegerinraw">✅ When to Use <code>whereIntegerInRaw()</code></h2><p>Use it <strong>only</strong> when:</p><ul><li>You're filtering using <strong>pure integer values</strong> (e.g., <code>id</code>, <code>user_id</code>, etc.).</li><li>The list size is <strong>relatively large</strong> (100+ values).</li><li>The values come from a <strong>trusted source</strong> (like <code>range()</code>, pre-validated input, or internal logic).</li></ul><hr><h2 id="%E2%9A%A0%EF%B8%8F-important-considerations">⚠️ Important Considerations</h2><p>Before you start replacing every <code>whereIn()</code> with <code>whereIntegerInRaw()</code>, consider the following:</p><h3 id="1-security">1. <strong>Security</strong></h3><p>Raw SQL always comes with <strong>injection risk</strong>. Even though <code>whereIntegerInRaw()</code> does internally cast the values to integers, <strong>you should never use it with untrusted input</strong> (e.g., raw user-submitted arrays).</p><p>Bad:</p><pre><code class="language-php">Product::whereIntegerInRaw('id', request()-&gt;input('ids'))-&gt;get(); // dangerous
-</code></pre><p>Good (after sanitization):</p><pre><code class="language-php">$ids = collect(request()-&gt;input('ids'))-&gt;map(fn($id) =&gt; (int) $id)-&gt;all();
-Product::whereIntegerInRaw('id', $ids)-&gt;get();
-</code></pre><hr><h3 id="2-small-lists-are-fine-with-wherein">2. <strong>Small Lists Are Fine with <code>whereIn()</code></strong></h3><p>If you're only checking against a few values (e.g., less than 50), the performance difference is negligible. Stick with <code>whereIn()</code> unless profiling shows otherwise.</p><hr><h3 id="3-compatibility">3. <strong>Compatibility</strong></h3><p>This method is available starting from <strong>Laravel 8.25.0</strong>. Make sure your Laravel version supports it before using it in production.</p><hr><h3 id="4-readability">4. <strong>Readability</strong></h3><p>Some developers might find <code>whereIntegerInRaw()</code> less readable, especially when quickly scanning code. You may want to <strong>add a comment</strong> indicating the reason you're using it for clarity.</p><pre><code class="language-php">// using whereIntegerInRaw for better performance on large ID list
-Product::whereIntegerInRaw('id', $productIds)-&gt;get();
-</code></pre><hr><h2 id="%F0%9F%A7%AA-benchmark-example">🧪 Benchmark Example</h2><p>Let’s say you're retrieving 1,000 products by ID:</p><pre><code class="language-php">$ids = range(1, 1000);
-</code></pre><ul><li><code>whereIn()</code> may take 120ms to complete the query.</li><li><code>whereIntegerInRaw()</code> might reduce that to 50ms or even less, depending on the database and query plan.</li></ul><p>This difference scales dramatically in <strong>high-concurrency environments</strong> or <strong>API endpoints</strong> that handle batch requests.</p><hr><h2 id="%F0%9F%9B%A0%EF%B8%8F-bonus-tips-for-optimizing-queries-with-large-in-clauses">🛠️ Bonus Tips for Optimizing Queries with Large IN Clauses</h2><ul><li><strong>Use pagination or chunking</strong> if the list is extremely large (e.g., 10,000+ items).</li><li><strong>Consider denormalized flags</strong> or <strong>intermediate tables</strong> for repeated lookups.</li><li><strong>Add proper indexes</strong> (especially on <code>id</code>, <code>user_id</code>, etc.) — IN queries benefit from indexes significantly.</li></ul><hr><h2 id="%F0%9F%A7%BE-summary">🧾 Summary</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Aspect</th>
-<th><code inline="">whereIn()</code></th>
-<th><code inline="">whereIntegerInRaw()</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Speed</td>
-<td>Slower for large arrays</td>
-<td>Faster for large integer sets</td>
-</tr>
-<tr>
-<td>Security</td>
-<td>Safe by default</td>
-<td>Risky if input is untrusted</td>
-</tr>
-<tr>
-<td>Readability</td>
-<td>More common and readable</td>
-<td>Slightly more obscure</td>
-</tr>
-<tr>
-<td>Laravel Version</td>
-<td>All versions</td>
-<td>≥ 8.25.0</td>
-</tr>
-<tr>
-<td>Use Case</td>
-<td>General purpose</td>
-<td>Optimized integer queries</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="%E2%9C%A8-finally">✨ Finally</h2><p>Laravel continues to evolve, and <code>whereIntegerInRaw()</code> is a great example of how you can <strong>write expressive code</strong> without sacrificing <strong>performance</strong>.</p><p>If you're filtering by large sets of integer IDs — say, fetching related records, logs, or bulk resources — using <code>whereIntegerInRaw()</code> can offer <strong>noticeable speed boosts</strong> with very little change to your codebase.</p><p>Just remember: <strong>with great power comes great responsibility</strong>. Use it wisely, validate your input, and test your queries with real-world data.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you've been using Laravel for a while, you're likely familiar with the `whereIn()` method for filtering records by a list of values. It's clean, expressive, and gets the job done. But did you know that when working with **large arrays of integers**, there's a significantly faster alternative?
 
+In this article, we’ll uncover the **performance benefits** of using `whereIntegerInRaw()` over `whereIn()`, why it works, and when it's appropriate to make the switch. We’ll also explore other related tips and caveats you should be aware of.
+
+* * *
+
+## 🧠 The Common Pattern: `whereIn()`
+
+Here’s what most of us typically write:
+
+```php
+Product::whereIn('id', range(1, 500))->get();
+```
+
+This will generate a parameterized SQL query that looks something like this:
+
+```sql
+select * from products where id in (?, ?, ?, ..., ?)
+```
+
+Laravel binds each value as a separate parameter — **safe and clear**, but as the list grows, this can **impact performance** due to the overhead of binding hundreds (or thousands) of values.
+
+* * *
+
+## ⚡ The Faster Alternative: `whereIntegerInRaw()`
+
+```php
+Product::whereIntegerInRaw('id', range(1, 500))->get();
+```
+
+This method generates a raw SQL query like:
+
+```sql
+select * from products where id in (1, 2, 3, ..., 500)
+```
+
+By skipping the parameter binding, Laravel allows the **database engine to optimize the query more efficiently**, resulting in a faster execution, especially on large datasets.
+
+* * *
+
+## ✅ When to Use `whereIntegerInRaw()`
+
+Use it **only** when:
+
+-   You're filtering using **pure integer values** (e.g., `id`, `user_id`, etc.).
+-   The list size is **relatively large** (100+ values).
+-   The values come from a **trusted source** (like `range()`, pre-validated input, or internal logic).
+
+* * *
+
+## ⚠️ Important Considerations
+
+Before you start replacing every `whereIn()` with `whereIntegerInRaw()`, consider the following:
+
+### 1\. **Security**
+
+Raw SQL always comes with **injection risk**. Even though `whereIntegerInRaw()` does internally cast the values to integers, **you should never use it with untrusted input** (e.g., raw user-submitted arrays).
+
+Bad:
+
+```php
+Product::whereIntegerInRaw('id', request()->input('ids'))->get(); // dangerous
+```
+
+Good (after sanitization):
+
+```php
+$ids = collect(request()->input('ids'))->map(fn($id) => (int) $id)->all();
+Product::whereIntegerInRaw('id', $ids)->get();
+```
+
+* * *
+
+### 2\. **Small Lists Are Fine with `whereIn()`**
+
+If you're only checking against a few values (e.g., less than 50), the performance difference is negligible. Stick with `whereIn()` unless profiling shows otherwise.
+
+* * *
+
+### 3\. **Compatibility**
+
+This method is available starting from **Laravel 8.25.0**. Make sure your Laravel version supports it before using it in production.
+
+* * *
+
+### 4\. **Readability**
+
+Some developers might find `whereIntegerInRaw()` less readable, especially when quickly scanning code. You may want to **add a comment** indicating the reason you're using it for clarity.
+
+```php
+// using whereIntegerInRaw for better performance on large ID list
+Product::whereIntegerInRaw('id', $productIds)->get();
+```
+
+* * *
+
+## 🧪 Benchmark Example
+
+Let’s say you're retrieving 1,000 products by ID:
+
+```php
+$ids = range(1, 1000);
+```
+
+-   `whereIn()` may take 120ms to complete the query.
+-   `whereIntegerInRaw()` might reduce that to 50ms or even less, depending on the database and query plan.
+
+This difference scales dramatically in **high-concurrency environments** or **API endpoints** that handle batch requests.
+
+* * *
+
+## 🛠️ Bonus Tips for Optimizing Queries with Large IN Clauses
+
+-   **Use pagination or chunking** if the list is extremely large (e.g., 10,000+ items).
+-   **Consider denormalized flags** or **intermediate tables** for repeated lookups.
+-   **Add proper indexes** (especially on `id`, `user_id`, etc.) — IN queries benefit from indexes significantly.
+
+* * *
+
+## 🧾 Summary
+
+* * *
+
+## ✨ Finally
+
+Laravel continues to evolve, and `whereIntegerInRaw()` is a great example of how you can **write expressive code** without sacrificing **performance**.
+
+If you're filtering by large sets of integer IDs — say, fetching related records, logs, or bulk resources — using `whereIntegerInRaw()` can offer **noticeable speed boosts** with very little change to your codebase.
+
+Just remember: **with great power comes great responsibility**. Use it wisely, validate your input, and test your queries with real-world data.

@@ -5,8 +5,95 @@ description: "In modern JavaScript development, we’ve grown comfortable with b
 tags: ["javascript","typescript","api","testing","security"]
 ---
 
-<p>In modern JavaScript development, we’ve grown comfortable with bundlers, compilers, and type generators. <strong>Tools like Webpack, Vite, Rollup, Babel, and TypeScript have become so deeply ingrained in our workflow</strong> that we often assume they’ll always be there to help us optimize and fix problems before our code hits the runtime.</p><p>But this reliance comes at a cost. <strong>Designing APIs and libraries that depend on static analysis or build-time transformations</strong> can lead to hidden coupling, brittle systems, and polluted design choices that ripple across entire codebases. <strong>The philosophy of “Religiously Runtime” is a response to this creeping complexity.</strong></p><p>Let’s unpack this philosophy, its benefits, trade-offs, and how to apply it effectively.</p><hr><h3 id="the-core-idea-let-runtime-reign"><strong>The Core Idea: Let Runtime Reign</strong></h3><p>At its heart, <strong>“Runtime First” means every line of code, every API, and every test should work as-is, without relying on build tools</strong>. That means:</p><ul><li><strong>No assumptions about tree-shaking</strong>—if you don’t use something, it’ll still be there at runtime unless explicitly removed.</li><li><strong>No reliance on TypeScript for correctness</strong>—your code must handle errors and types robustly at runtime.</li><li><strong>No special treatment by bundlers or compilers</strong>—your code must work when directly run by Node.js, Deno, or a browser environment.</li></ul><p>It’s a simple but radical idea: <strong>design your software as if there were no pre-runtime safety nets</strong>.</p><hr><h3 id="why-static-analysis-can-pollute-apis"><strong>Why Static Analysis Can Pollute APIs</strong></h3><p>When we rely on static analysis (like TypeScript, tree-shaking, or compile-time plugins), we tend to:</p><ul><li><strong>Introduce subtle coupling</strong>: Certain exports or features only work because the bundler removes the rest.</li><li><strong>Split APIs</strong> into “development” and “production” versions, where things that are stripped away or optimized might not even exist in runtime.</li><li><strong>Assume correctness</strong> because “the type checker passed” or “the bundler optimized it out.”</li></ul><p>This <strong>pollutes the design</strong>. A runtime-first approach avoids this by <strong>forcing APIs to be explicit and complete</strong>, regardless of the environment.</p><hr><h3 id="how-to-embrace-runtime-first-design"><strong>How to Embrace Runtime-First Design</strong></h3><p>Here are the <strong>principles and practices</strong> for designing without static crutches:</p><p>✅ <strong>Design Explicit APIs</strong>: Avoid re-exports, conditional exports, or deep, intertwined module structures. Each module should be clear and self-contained.</p><p>✅ <strong>No Assumptions About Bundlers</strong>: Your library should work even if consumed in a runtime like Node.js, Deno, or a browser module loader, <strong>without requiring bundling or tree-shaking</strong>.</p><p>✅ <strong>Use TypeScript and JSX Only as Loaders</strong>: It’s fine to use TypeScript or JSX for <strong>simple syntax transformation</strong> (e.g., stripping types, transpiling JSX), but not for correctness or analysis.</p><p>✅ <strong>Write Tests Without Bundling</strong>: Run your tests <strong>directly in a runtime environment</strong>, like Node.js or a browser using native ESM, to ensure they reflect real-world behavior.</p><p>✅ <strong>Runtime Validation Over Type Checking</strong>: If you need to enforce types or contracts, <strong>validate them at runtime</strong> using tools like <code>zod</code>, <code>io-ts</code>, or custom validation logic.</p><p>✅ <strong>Don’t Depend on Side Effects</strong>: Avoid global state, import-time side effects, or patterns that assume a specific bundler behavior.</p><hr><h3 id="the-benefits"><strong>The Benefits</strong></h3><p>By adopting a runtime-first approach, you gain:</p><p>🔒 <strong>Stronger Correctness</strong>: Your code behaves exactly as it will in production—there’s no hidden reliance on build tools.</p><p>🔄 <strong>True Portability</strong>: Your libraries can run in <strong>any JavaScript environment</strong> (Node.js, Deno, browsers) without special build steps.</p><p>🔎 <strong>Improved Clarity</strong>: APIs are <strong>explicit and self-contained</strong>, easier to reason about and maintain.</p><p>🚀 <strong>Simpler Dev Environments</strong>: You can run code and tests with a simple <code>node</code> command or directly in a browser, no build steps needed.</p><hr><h3 id="potential-trade-offs"><strong>Potential Trade-offs</strong></h3><p>Of course, this approach comes with challenges:</p><p>⚖️ <strong>Bundle Size Concerns</strong>: Without tree-shaking or dead code elimination, your libraries may be larger. Mitigate this by <strong>careful modular design</strong>, making sure consumers can import just what they need.</p><p>🧩 <strong>Manual Runtime Validation</strong>: Without TypeScript checking at compile-time, you’ll need to <strong>write comprehensive runtime checks</strong>—but these can be encapsulated in utility functions or validators.</p><p>📚 <strong>Ecosystem Resistance</strong>: Many libraries and frameworks are deeply tied to static tooling. You might need to avoid or carefully integrate them.</p><hr><h3 id="additional-considerations"><strong>Additional Considerations</strong></h3><p>Here are points you might not have considered:</p><ul><li><strong>Debuggability</strong>: Debugging runtime-first code is often easier because <strong>there’s no transformed stack trace or generated code</strong>—just the original source.</li><li><strong>Security</strong>: By relying on runtime validation and explicit logic, you reduce the attack surface introduced by implicit build-time assumptions.</li><li><strong>Longevity</strong>: As JavaScript ecosystems evolve, build tools come and go. <strong>Runtime correctness stays</strong>.</li><li><strong>Developer Training</strong>: Your team may need to <strong>unlearn old habits</strong>—like “oh, the bundler will handle that”—and think in terms of runtime behavior.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p><strong>“Religiously Runtime” is not about rejecting tools like TypeScript or bundlers—it’s about rejecting dependency on them.</strong> It’s a call for <strong>clarity, correctness, and resilience in system design</strong>, where APIs stand on their own feet and behavior is consistent in any environment.</p><p>If we embrace this philosophy, we’ll build <strong>cleaner, stronger, and more reliable software</strong>, ready to handle the challenges of evolving runtimes and deployment scenarios.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In modern JavaScript development, we’ve grown comfortable with bundlers, compilers, and type generators. **Tools like Webpack, Vite, Rollup, Babel, and TypeScript have become so deeply ingrained in our workflow** that we often assume they’ll always be there to help us optimize and fix problems before our code hits the runtime.
 
+But this reliance comes at a cost. **Designing APIs and libraries that depend on static analysis or build-time transformations** can lead to hidden coupling, brittle systems, and polluted design choices that ripple across entire codebases. **The philosophy of “Religiously Runtime” is a response to this creeping complexity.**
+
+Let’s unpack this philosophy, its benefits, trade-offs, and how to apply it effectively.
+
+* * *
+
+### **The Core Idea: Let Runtime Reign**
+
+At its heart, **“Runtime First” means every line of code, every API, and every test should work as-is, without relying on build tools**. That means:
+
+-   **No assumptions about tree-shaking**—if you don’t use something, it’ll still be there at runtime unless explicitly removed.
+-   **No reliance on TypeScript for correctness**—your code must handle errors and types robustly at runtime.
+-   **No special treatment by bundlers or compilers**—your code must work when directly run by Node.js, Deno, or a browser environment.
+
+It’s a simple but radical idea: **design your software as if there were no pre-runtime safety nets**.
+
+* * *
+
+### **Why Static Analysis Can Pollute APIs**
+
+When we rely on static analysis (like TypeScript, tree-shaking, or compile-time plugins), we tend to:
+
+-   **Introduce subtle coupling**: Certain exports or features only work because the bundler removes the rest.
+-   **Split APIs** into “development” and “production” versions, where things that are stripped away or optimized might not even exist in runtime.
+-   **Assume correctness** because “the type checker passed” or “the bundler optimized it out.”
+
+This **pollutes the design**. A runtime-first approach avoids this by **forcing APIs to be explicit and complete**, regardless of the environment.
+
+* * *
+
+### **How to Embrace Runtime-First Design**
+
+Here are the **principles and practices** for designing without static crutches:
+
+✅ **Design Explicit APIs**: Avoid re-exports, conditional exports, or deep, intertwined module structures. Each module should be clear and self-contained.
+
+✅ **No Assumptions About Bundlers**: Your library should work even if consumed in a runtime like Node.js, Deno, or a browser module loader, **without requiring bundling or tree-shaking**.
+
+✅ **Use TypeScript and JSX Only as Loaders**: It’s fine to use TypeScript or JSX for **simple syntax transformation** (e.g., stripping types, transpiling JSX), but not for correctness or analysis.
+
+✅ **Write Tests Without Bundling**: Run your tests **directly in a runtime environment**, like Node.js or a browser using native ESM, to ensure they reflect real-world behavior.
+
+✅ **Runtime Validation Over Type Checking**: If you need to enforce types or contracts, **validate them at runtime** using tools like `zod`, `io-ts`, or custom validation logic.
+
+✅ **Don’t Depend on Side Effects**: Avoid global state, import-time side effects, or patterns that assume a specific bundler behavior.
+
+* * *
+
+### **The Benefits**
+
+By adopting a runtime-first approach, you gain:
+
+🔒 **Stronger Correctness**: Your code behaves exactly as it will in production—there’s no hidden reliance on build tools.
+
+🔄 **True Portability**: Your libraries can run in **any JavaScript environment** (Node.js, Deno, browsers) without special build steps.
+
+🔎 **Improved Clarity**: APIs are **explicit and self-contained**, easier to reason about and maintain.
+
+🚀 **Simpler Dev Environments**: You can run code and tests with a simple `node` command or directly in a browser, no build steps needed.
+
+* * *
+
+### **Potential Trade-offs**
+
+Of course, this approach comes with challenges:
+
+⚖️ **Bundle Size Concerns**: Without tree-shaking or dead code elimination, your libraries may be larger. Mitigate this by **careful modular design**, making sure consumers can import just what they need.
+
+🧩 **Manual Runtime Validation**: Without TypeScript checking at compile-time, you’ll need to **write comprehensive runtime checks**—but these can be encapsulated in utility functions or validators.
+
+📚 **Ecosystem Resistance**: Many libraries and frameworks are deeply tied to static tooling. You might need to avoid or carefully integrate them.
+
+* * *
+
+### **Additional Considerations**
+
+Here are points you might not have considered:
+
+-   **Debuggability**: Debugging runtime-first code is often easier because **there’s no transformed stack trace or generated code**—just the original source.
+-   **Security**: By relying on runtime validation and explicit logic, you reduce the attack surface introduced by implicit build-time assumptions.
+-   **Longevity**: As JavaScript ecosystems evolve, build tools come and go. **Runtime correctness stays**.
+-   **Developer Training**: Your team may need to **unlearn old habits**—like “oh, the bundler will handle that”—and think in terms of runtime behavior.
+
+* * *
+
+### **Finally**
+
+**“Religiously Runtime” is not about rejecting tools like TypeScript or bundlers—it’s about rejecting dependency on them.** It’s a call for **clarity, correctness, and resilience in system design**, where APIs stand on their own feet and behavior is consistent in any environment.
+
+If we embrace this philosophy, we’ll build **cleaner, stronger, and more reliable software**, ready to handle the challenges of evolving runtimes and deployment scenarios.

@@ -5,28 +5,155 @@ description: "One of the most debated—and arguably most misunderstood—aspect
 tags: ["go","python","debugging","open-source","logging"]
 ---
 
-<p>One of the most debated—and arguably most misunderstood—aspects of <strong>Go (Golang)</strong> is its approach to <strong>error handling</strong>. Unlike many modern programming languages that lean on exceptions or implicit global error states, <strong>Go makes a deliberate choice</strong>: every error must be handled <strong>explicitly</strong>. This decision is not accidental; it’s a core part of Go's identity. But why was this choice made, and how does it compare to traditional error handling mechanisms in other languages like C, Java, or Python?</p><p>Let’s unpack it.</p><hr><h2 id="go%E2%80%99s-philosophy-make-errors-first-class-citizens"><strong>Go’s Philosophy: Make Errors First-Class Citizens</strong></h2><p>In Go, <strong>errors are just values</strong>—typically returned as the last result of a function. Developers are encouraged, even required, to check for errors explicitly right after calling a function.</p><pre><code class="language-go">data, err := os.ReadFile("file.txt")
+One of the most debated—and arguably most misunderstood—aspects of **Go (Golang)** is its approach to **error handling**. Unlike many modern programming languages that lean on exceptions or implicit global error states, **Go makes a deliberate choice**: every error must be handled **explicitly**. This decision is not accidental; it’s a core part of Go's identity. But why was this choice made, and how does it compare to traditional error handling mechanisms in other languages like C, Java, or Python?
+
+Let’s unpack it.
+
+* * *
+
+## **Go’s Philosophy: Make Errors First-Class Citizens**
+
+In Go, **errors are just values**—typically returned as the last result of a function. Developers are encouraged, even required, to check for errors explicitly right after calling a function.
+
+```go
+data, err := os.ReadFile("file.txt")
 if err != nil {
     log.Fatal(err)
 }
-</code></pre><p>This approach ensures that:</p><ul><li><strong>Nothing is hidden</strong>.</li><li><strong>Control flow is predictable</strong>.</li><li><strong>Responsibility is explicit</strong>, not deferred.</li></ul><p>It might feel verbose at first, especially if you come from exception-heavy languages, but this verbosity serves a purpose: <strong>readability, clarity, and robustness</strong>.</p><hr><h2 id="the-c-approach-global-implicit-errors-errno"><strong>The C Approach: Global Implicit Errors (<code>errno</code>)</strong></h2><p>In <strong>C</strong>, many standard library functions indicate failure by returning a sentinel value (e.g., <code>-1</code>, <code>NULL</code>) and setting a global variable <code>errno</code> to specify what went wrong.</p><pre><code class="language-c">FILE *f = fopen("file.txt", "r");
+```
+
+This approach ensures that:
+
+-   **Nothing is hidden**.
+-   **Control flow is predictable**.
+-   **Responsibility is explicit**, not deferred.
+
+It might feel verbose at first, especially if you come from exception-heavy languages, but this verbosity serves a purpose: **readability, clarity, and robustness**.
+
+* * *
+
+## **The C Approach: Global Implicit Errors (`errno`)**
+
+In **C**, many standard library functions indicate failure by returning a sentinel value (e.g., `-1`, `NULL`) and setting a global variable `errno` to specify what went wrong.
+
+```c
+FILE *f = fopen("file.txt", "r");
 if (f == NULL) {
     perror("fopen");
 }
-</code></pre><p>This is <strong>explicit checking</strong> of an <strong>implicit result</strong>. The developer must know the function might fail, must check the return value, and must then consult <code>errno</code> to understand the error.</p><p>While common in C, this approach has major drawbacks:</p><ul><li>The global <code>errno</code> is <strong>not thread-safe</strong> by default.</li><li>It’s easy to <strong>forget to check</strong> the error.</li><li>You have to remember which functions set <code>errno</code> and under what conditions.</li></ul><hr><h2 id="the-exception-model-implicit-all-the-way"><strong>The Exception Model: Implicit All the Way</strong></h2><p>Languages like <strong>Java, C++, C#, Python, and Ruby</strong> popularized <strong>exceptions</strong> as the primary way to handle errors.</p><pre><code class="language-java">try {
+```
+
+This is **explicit checking** of an **implicit result**. The developer must know the function might fail, must check the return value, and must then consult `errno` to understand the error.
+
+While common in C, this approach has major drawbacks:
+
+-   The global `errno` is **not thread-safe** by default.
+-   It’s easy to **forget to check** the error.
+-   You have to remember which functions set `errno` and under what conditions.
+
+* * *
+
+## **The Exception Model: Implicit All the Way**
+
+Languages like **Java, C++, C#, Python, and Ruby** popularized **exceptions** as the primary way to handle errors.
+
+```java
+try {
     readFile("file.txt");
 } catch (IOException e) {
     System.out.println(e.getMessage());
 }
-</code></pre><p>This model has a very different feel:</p><ul><li><strong>Error reporting is implicit</strong>: no error is part of the return signature.</li><li><strong>Error checking is also implicit</strong>: if you don’t use <code>try/catch</code>, the program may crash or bubble the error up the call stack.</li></ul><p>While convenient for many use cases, exceptions introduce <strong>hidden control flows</strong>, and:</p><ul><li>Can be <strong>overused or misused</strong>, leading to catch-all blocks that silence important errors.</li><li><strong>Obscure what functions can fail</strong>, making code harder to reason about.</li><li>Make code paths <strong>non-linear</strong>, which is a debugging nightmare in systems-level code.</li></ul><hr><h2 id="why-go-took-the-%E2%80%9Charder%E2%80%9D-road"><strong>Why Go Took the “Harder” Road</strong></h2><p>The creators of Go, having come from decades of experience building large-scale systems (notably at Google), <strong>intentionally avoided exceptions</strong>. Their goal was <strong>simplicity</strong>, and more importantly, <strong>predictability</strong>.</p><p>Some key motivations:</p><ul><li><strong>Errors should not surprise you.</strong></li><li><strong>Developers must take responsibility.</strong></li><li><strong>Readability is more valuable than convenience.</strong></li></ul><p>By forcing developers to deal with errors up front, Go code becomes:</p><ul><li><strong>More honest</strong> (no hidden surprises).</li><li><strong>Easier to debug</strong> (you always know where errors are checked).</li><li><strong>Easier to audit</strong> (errors are visible in every function that can fail).</li></ul><p>This makes Go particularly strong for building <strong>robust infrastructure</strong>, where silent failures are unacceptable.</p><hr><h2 id="criticism-and-rebuttals"><strong>Criticism and Rebuttals</strong></h2><p>Yes, Go's error handling is <strong>verbose</strong>. And yes, the community has expressed some fatigue from writing repetitive error checks. But Go has responded thoughtfully:</p><ul><li>Go 1.13 introduced <code>errors.Is()</code> and <code>errors.As()</code> for structured error matching.</li><li>Community packages like <code>github.com/pkg/errors</code> added stack traces and wrapping.</li><li>Proposals for <code>try</code>-like syntax were <strong>rejected</strong> to avoid reintroducing implicit flows.</li><li>Tools like <code>errgroup</code>, <code>defer</code>, and <code>recover</code> allow for sophisticated but still explicit error handling in concurrent and panic-prone code.</li></ul><p>The takeaway? Go <strong>could</strong> adopt exceptions. It <strong>chose not to</strong>—on purpose.</p><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><h3 id="error-composition"><strong>Error Composition</strong></h3><p>In Go, you can <strong>wrap errors</strong> using <code>fmt.Errorf</code> or the standard <code>errors</code> package, giving you rich context:</p><pre><code class="language-go">return fmt.Errorf("could not open config: %w", err)
-</code></pre><h3 id="panic-and-recover"><strong>Panic and Recover</strong></h3><p>Go <strong>does</strong> have exceptions—but only for <strong>truly exceptional</strong> states (bugs, not expected errors):</p><pre><code class="language-go">defer func() {
+```
+
+This model has a very different feel:
+
+-   **Error reporting is implicit**: no error is part of the return signature.
+-   **Error checking is also implicit**: if you don’t use `try/catch`, the program may crash or bubble the error up the call stack.
+
+While convenient for many use cases, exceptions introduce **hidden control flows**, and:
+
+-   Can be **overused or misused**, leading to catch-all blocks that silence important errors.
+-   **Obscure what functions can fail**, making code harder to reason about.
+-   Make code paths **non-linear**, which is a debugging nightmare in systems-level code.
+
+* * *
+
+## **Why Go Took the “Harder” Road**
+
+The creators of Go, having come from decades of experience building large-scale systems (notably at Google), **intentionally avoided exceptions**. Their goal was **simplicity**, and more importantly, **predictability**.
+
+Some key motivations:
+
+-   **Errors should not surprise you.**
+-   **Developers must take responsibility.**
+-   **Readability is more valuable than convenience.**
+
+By forcing developers to deal with errors up front, Go code becomes:
+
+-   **More honest** (no hidden surprises).
+-   **Easier to debug** (you always know where errors are checked).
+-   **Easier to audit** (errors are visible in every function that can fail).
+
+This makes Go particularly strong for building **robust infrastructure**, where silent failures are unacceptable.
+
+* * *
+
+## **Criticism and Rebuttals**
+
+Yes, Go's error handling is **verbose**. And yes, the community has expressed some fatigue from writing repetitive error checks. But Go has responded thoughtfully:
+
+-   Go 1.13 introduced `errors.Is()` and `errors.As()` for structured error matching.
+-   Community packages like `github.com/pkg/errors` added stack traces and wrapping.
+-   Proposals for `try`\-like syntax were **rejected** to avoid reintroducing implicit flows.
+-   Tools like `errgroup`, `defer`, and `recover` allow for sophisticated but still explicit error handling in concurrent and panic-prone code.
+
+The takeaway? Go **could** adopt exceptions. It **chose not to**—on purpose.
+
+* * *
+
+## **Other Considerations**
+
+### **Error Composition**
+
+In Go, you can **wrap errors** using `fmt.Errorf` or the standard `errors` package, giving you rich context:
+
+```go
+return fmt.Errorf("could not open config: %w", err)
+```
+
+### **Panic and Recover**
+
+Go **does** have exceptions—but only for **truly exceptional** states (bugs, not expected errors):
+
+```go
+defer func() {
     if r := recover(); r != nil {
         fmt.Println("Recovered from panic:", r)
     }
 }()
 panic("something went really wrong")
-</code></pre><p>This is equivalent to saying: <strong>you can crash—but only on purpose, and only when appropriate</strong>.</p><h3 id="team-communication"><strong>Team Communication</strong></h3><p>When reading Go code:</p><ul><li>You can <strong>immediately see</strong> which functions might fail.</li><li>You know the <strong>caller is handling it</strong>, or at least made a conscious decision to ignore it (<code>_</code>).</li><li><strong>Linters</strong> and static analyzers can enforce best practices.</li></ul><p>This makes Go great for <strong>team collaboration</strong>, where consistency and clarity matter more than syntactic sugar.</p><hr><h2 id="finally-clarity-over-cleverness"><strong>Finally: Clarity Over Cleverness</strong></h2><p>Go’s decision to use <strong>explicit error values and explicit checks</strong> may seem old-fashioned, especially in an era of "modern" exception-driven languages. But that’s exactly the point. Go favors <strong>clarity over cleverness</strong>, <strong>explicit over implicit</strong>, and <strong>predictability over magic</strong>.</p><p>It may take a little more typing, but it saves hours of debugging and head-scratching later on.</p><p>In the words of Rob Pike, one of Go’s creators:</p><blockquote>“Errors are just values. They have type, and they are part of the normal flow of the program.”</blockquote><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This is equivalent to saying: **you can crash—but only on purpose, and only when appropriate**.
+
+### **Team Communication**
+
+When reading Go code:
+
+-   You can **immediately see** which functions might fail.
+-   You know the **caller is handling it**, or at least made a conscious decision to ignore it (`_`).
+-   **Linters** and static analyzers can enforce best practices.
+
+This makes Go great for **team collaboration**, where consistency and clarity matter more than syntactic sugar.
+
+* * *
+
+## **Finally: Clarity Over Cleverness**
+
+Go’s decision to use **explicit error values and explicit checks** may seem old-fashioned, especially in an era of "modern" exception-driven languages. But that’s exactly the point. Go favors **clarity over cleverness**, **explicit over implicit**, and **predictability over magic**.
+
+It may take a little more typing, but it saves hours of debugging and head-scratching later on.
+
+In the words of Rob Pike, one of Go’s creators:
+
+> “Errors are just values. They have type, and they are part of the normal flow of the program.”

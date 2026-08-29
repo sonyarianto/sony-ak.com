@@ -5,52 +5,153 @@ description: "In the world of software development and cybersecurity, a lot of c
 tags: ["css","html","security","design","json"]
 ---
 
-<p>In the world of software development and cybersecurity, a lot of confusion arises between <strong>encoding</strong>, <strong>hashing</strong>, and <strong>encryption</strong>. They all transform data in some way — yet each has a completely different purpose. Understanding these distinctions is crucial for anyone dealing with data transmission, storage, or security.</p><p>Let’s clarify what each term truly means, why it exists, and where people often get it wrong.</p><hr><h2 id="%F0%9F%94%A1-base64-is-encoding-not-encryption">🔡 Base64 Is <strong>Encoding</strong>, Not Encryption</h2><p><strong>Base64</strong> is an <strong>encoding scheme</strong>, not a security measure. Its purpose is simple: <strong>represent binary data using printable characters</strong>. This is especially useful when you need to send binary content (like images or files) through systems that only support text, such as JSON, email, or URLs.</p><p>Here’s what happens:</p><ul><li>Binary data is split into <strong>6-bit groups</strong>.</li><li>Each group is mapped to one of <strong>64 characters</strong> (<code>A–Z</code>, <code>a–z</code>, <code>0–9</code>, <code>+</code>, <code>/</code>).</li><li>The result is a clean, readable string — but still <strong>easily reversible</strong>.</li></ul><p><strong>Example:</strong></p><pre><code>"Hello" → SGVsbG8=
-</code></pre><p>Anyone who knows Base64 can decode this back to the original message. <strong>No key, no secrecy, no protection.</strong></p><blockquote>✅ <strong>Purpose:</strong> Data transport and safe text representation<br>❌ <strong>Not for:</strong> Protecting sensitive information</blockquote><p>You’ll often find Base64 used in:</p><ul><li><strong>JWT (JSON Web Tokens)</strong> payloads</li><li><strong>Email attachments</strong> (MIME encoding)</li><li><strong>Basic Authentication</strong> headers (<code>Authorization: Basic ...</code>)</li><li><strong>Embedded images</strong> in HTML/CSS (<code>data:image/png;base64,...</code>)</li></ul><p>If you’re thinking of “encoding passwords in Base64,” stop — that’s <strong>as insecure as writing them in plain text</strong>.</p><hr><h2 id="%F0%9F%94%92-sha-and-others-are-hashing-algorithms-not-encryption">🔒 SHA and Others Are <strong>Hashing Algorithms</strong>, Not Encryption</h2><p>While Base64 can be reversed, <strong>hashing</strong> is designed to go <strong>only one way</strong>.</p><p>A <strong>hash function</strong> takes any input (of any size) and produces a <strong>fixed-length fingerprint</strong>. For example:</p><pre><code>SHA-256("hello")
-= 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
-</code></pre><p>No matter how long your input is, the hash length is always the same.<br>But here’s the key property: <strong>it’s irreversible</strong>. You cannot turn that hash back into “hello.”</p><h3 id="why-hashing-exists">Why Hashing Exists</h3><p>Hashing serves several critical purposes:</p><ul><li><strong>Integrity verification:</strong> Detect changes in files or messages (e.g., comparing checksums).</li><li><strong>Password storage:</strong> Store hashes instead of raw passwords (preferably with <strong>salt</strong> and <strong>pepper</strong>).</li><li><strong>Digital signatures:</strong> Used to verify the integrity of signed data.</li><li><strong>Data indexing:</strong> For fast lookups in hash tables.</li></ul><h3 id="common-algorithms">Common Algorithms</h3><ul><li><strong>MD5</strong> — fast, but broken and insecure.</li><li><strong>SHA-1</strong> — obsolete; known collision attacks.</li><li><strong>SHA-256 / SHA-3</strong> — modern, strong, and still widely trusted.</li><li><strong>bcrypt / scrypt / Argon2</strong> — specifically designed for <strong>password hashing</strong>, with adjustable computational cost.</li></ul><blockquote>✅ <strong>Purpose:</strong> Integrity and identity<br>❌ <strong>Not for:</strong> Confidentiality or reversible protection</blockquote><p>If someone says they “encrypted a password with SHA,” that’s incorrect.<br>They <strong>hashed</strong> it — and once hashed, <strong>you can’t decrypt it back</strong>.</p><hr><h2 id="%F0%9F%94%90-encryption-the-real-security-mechanism">🔐 Encryption: The Real Security Mechanism</h2><p>Unlike encoding or hashing, <strong>encryption is reversible</strong> — <strong>but only with the correct key</strong>.</p><p>The goal of encryption is <strong>confidentiality</strong>: making sure that only authorized parties can read the information.</p><h3 id="two-main-types-of-encryption">Two Main Types of Encryption</h3><ol><li><strong>Symmetric Encryption (e.g., AES)</strong><ul><li>Same key for encryption and decryption.</li><li>Fast, suitable for bulk data (e.g., AES-256).</li><li>Needs secure key exchange.</li></ul></li><li><strong>Asymmetric Encryption (e.g., RSA, ECC)</strong><ul><li>Two keys: <strong>public key</strong> (encrypt) and <strong>private key</strong> (decrypt).</li><li>Commonly used in HTTPS, SSH, and digital certificates.</li></ul></li></ol><blockquote>✅ <strong>Purpose:</strong> Confidentiality and secure communication<br>✅ <strong>Reversible with key</strong><br>⚠️ <strong>Security depends on algorithm strength and key secrecy</strong></blockquote><p>When you encrypt data, you’re not changing its format (like Base64) or generating a fingerprint (like SHA).<br>You’re <strong>scrambling</strong> it mathematically — and without the right key, it’s <strong>computationally infeasible</strong> to recover.</p><hr><h2 id="%F0%9F%A7%A0-being-%E2%80%9Cbinary%E2%80%9D-doesn%E2%80%99t-make-something-secure">🧠 Being “Binary” Doesn’t Make Something Secure</h2><p>It’s a common misconception that “because it’s in binary, it’s secure.”<br>Every file on your computer is binary — your <code>.docx</code>, <code>.jpg</code>, or <code>.exe</code> files — but that doesn’t make them encrypted.</p><p>Binary is just a <strong>format</strong>. Security doesn’t come from the form; it comes from <strong>cryptography</strong> and <strong>access control</strong>.</p><hr><h2 id="%F0%9F%93%9C-%E2%80%9Cplain-text%E2%80%9D-is-a-human-agreement">📜 “Plain Text” Is a Human Agreement</h2><p>In computing, <strong>everything is numbers</strong>. “Plain text” is not a special kind of data — it’s simply <strong>data we can read and interpret</strong>.</p><p>The reason <code>'A'</code> equals <strong>65</strong> in binary (<code>01000001</code>) is because of an agreed standard called <strong>ASCII</strong>. Later, <strong>Unicode (UTF-8)</strong> expanded that to cover nearly every human language and symbol.</p><p>So, when we say “plain text,” we mean:</p><blockquote>“Data that hasn’t been encrypted and can be interpreted through a known encoding standard.”</blockquote><p>That’s all. The notion of <em>plaintext vs ciphertext</em> is entirely about <strong>interpretability</strong>, not the raw bits themselves.</p><hr><h2 id="%F0%9F%A7%AE-quick-comparison">🧮 Quick Comparison</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Example</th>
-<th>Reversible</th>
-<th>Requires Key</th>
-<th>Purpose</th>
-<th>Security</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Encoding</strong></td>
-<td>Base64, URL encoding</td>
-<td>✅ Yes</td>
-<td>❌ No</td>
-<td>Data representation</td>
-<td>❌ None</td>
-</tr>
-<tr>
-<td><strong>Hashing</strong></td>
-<td>SHA-256, bcrypt</td>
-<td>❌ No</td>
-<td>❌ No</td>
-<td>Data integrity</td>
-<td>✅ One-way</td>
-</tr>
-<tr>
-<td><strong>Encryption</strong></td>
-<td>AES, RSA</td>
-<td>✅ Yes</td>
-<td>✅ Yes</td>
-<td>Confidentiality</td>
-<td>✅ Strong</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="%F0%9F%A7%A9-additional-considerations">🧩 Additional Considerations</h2><ul><li><strong>Salting hashes</strong> prevents attackers from using precomputed “rainbow tables.”</li><li><strong>Peppering</strong> adds a secret value known only to the server for extra security.</li><li><strong>Key management</strong> is as important as the encryption algorithm — lose your key, lose your data.</li><li><strong>Encoding</strong> may precede encryption — for example, an encrypted byte stream can be Base64-encoded for transport.</li><li><strong>Hashing is not compression.</strong> It doesn’t make data smaller — it only produces a fixed-length digest.</li><li><strong>Encrypted ≠ signed.</strong> Encryption hides content; digital signatures prove authorship.</li></ul><hr><h2 id="%F0%9F%A7%AD-finally">🧭 Finally</h2><p>In essence:</p><ul><li><strong>Encoding</strong> changes <em>how</em> data looks.</li><li><strong>Hashing</strong> changes <em>how</em> data is identified.</li><li><strong>Encryption</strong> changes <em>who</em> can read it.</li></ul><p>Each has a role, each is vital, and confusing them can lead to serious design flaws — especially in authentication systems and secure communications.</p><blockquote>Understanding these distinctions is the foundation of writing secure, maintainable, and correct software.</blockquote><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In the world of software development and cybersecurity, a lot of confusion arises between **encoding**, **hashing**, and **encryption**. They all transform data in some way — yet each has a completely different purpose. Understanding these distinctions is crucial for anyone dealing with data transmission, storage, or security.
 
+Let’s clarify what each term truly means, why it exists, and where people often get it wrong.
+
+* * *
+
+## 🔡 Base64 Is **Encoding**, Not Encryption
+
+**Base64** is an **encoding scheme**, not a security measure. Its purpose is simple: **represent binary data using printable characters**. This is especially useful when you need to send binary content (like images or files) through systems that only support text, such as JSON, email, or URLs.
+
+Here’s what happens:
+
+-   Binary data is split into **6-bit groups**.
+-   Each group is mapped to one of **64 characters** (`A–Z`, `a–z`, `0–9`, `+`, `/`).
+-   The result is a clean, readable string — but still **easily reversible**.
+
+**Example:**
+
+```
+"Hello" → SGVsbG8=
+```
+
+Anyone who knows Base64 can decode this back to the original message. **No key, no secrecy, no protection.**
+
+> ✅ **Purpose:** Data transport and safe text representation  
+> ❌ **Not for:** Protecting sensitive information
+
+You’ll often find Base64 used in:
+
+-   **JWT (JSON Web Tokens)** payloads
+-   **Email attachments** (MIME encoding)
+-   **Basic Authentication** headers (`Authorization: Basic ...`)
+-   **Embedded images** in HTML/CSS (`data:image/png;base64,...`)
+
+If you’re thinking of “encoding passwords in Base64,” stop — that’s **as insecure as writing them in plain text**.
+
+* * *
+
+## 🔒 SHA and Others Are **Hashing Algorithms**, Not Encryption
+
+While Base64 can be reversed, **hashing** is designed to go **only one way**.
+
+A **hash function** takes any input (of any size) and produces a **fixed-length fingerprint**. For example:
+
+```
+SHA-256("hello")
+= 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+```
+
+No matter how long your input is, the hash length is always the same.  
+But here’s the key property: **it’s irreversible**. You cannot turn that hash back into “hello.”
+
+### Why Hashing Exists
+
+Hashing serves several critical purposes:
+
+-   **Integrity verification:** Detect changes in files or messages (e.g., comparing checksums).
+-   **Password storage:** Store hashes instead of raw passwords (preferably with **salt** and **pepper**).
+-   **Digital signatures:** Used to verify the integrity of signed data.
+-   **Data indexing:** For fast lookups in hash tables.
+
+### Common Algorithms
+
+-   **MD5** — fast, but broken and insecure.
+-   **SHA-1** — obsolete; known collision attacks.
+-   **SHA-256 / SHA-3** — modern, strong, and still widely trusted.
+-   **bcrypt / scrypt / Argon2** — specifically designed for **password hashing**, with adjustable computational cost.
+
+> ✅ **Purpose:** Integrity and identity  
+> ❌ **Not for:** Confidentiality or reversible protection
+
+If someone says they “encrypted a password with SHA,” that’s incorrect.  
+They **hashed** it — and once hashed, **you can’t decrypt it back**.
+
+* * *
+
+## 🔐 Encryption: The Real Security Mechanism
+
+Unlike encoding or hashing, **encryption is reversible** — **but only with the correct key**.
+
+The goal of encryption is **confidentiality**: making sure that only authorized parties can read the information.
+
+### Two Main Types of Encryption
+
+1.  **Symmetric Encryption (e.g., AES)**
+    -   Same key for encryption and decryption.
+    -   Fast, suitable for bulk data (e.g., AES-256).
+    -   Needs secure key exchange.
+2.  **Asymmetric Encryption (e.g., RSA, ECC)**
+    -   Two keys: **public key** (encrypt) and **private key** (decrypt).
+    -   Commonly used in HTTPS, SSH, and digital certificates.
+
+> ✅ **Purpose:** Confidentiality and secure communication  
+> ✅ **Reversible with key**  
+> ⚠️ **Security depends on algorithm strength and key secrecy**
+
+When you encrypt data, you’re not changing its format (like Base64) or generating a fingerprint (like SHA).  
+You’re **scrambling** it mathematically — and without the right key, it’s **computationally infeasible** to recover.
+
+* * *
+
+## 🧠 Being “Binary” Doesn’t Make Something Secure
+
+It’s a common misconception that “because it’s in binary, it’s secure.”  
+Every file on your computer is binary — your `.docx`, `.jpg`, or `.exe` files — but that doesn’t make them encrypted.
+
+Binary is just a **format**. Security doesn’t come from the form; it comes from **cryptography** and **access control**.
+
+* * *
+
+## 📜 “Plain Text” Is a Human Agreement
+
+In computing, **everything is numbers**. “Plain text” is not a special kind of data — it’s simply **data we can read and interpret**.
+
+The reason `'A'` equals **65** in binary (`01000001`) is because of an agreed standard called **ASCII**. Later, **Unicode (UTF-8)** expanded that to cover nearly every human language and symbol.
+
+So, when we say “plain text,” we mean:
+
+> “Data that hasn’t been encrypted and can be interpreted through a known encoding standard.”
+
+That’s all. The notion of _plaintext vs ciphertext_ is entirely about **interpretability**, not the raw bits themselves.
+
+* * *
+
+## 🧮 Quick Comparison
+
+* * *
+
+## 🧩 Additional Considerations
+
+-   **Salting hashes** prevents attackers from using precomputed “rainbow tables.”
+-   **Peppering** adds a secret value known only to the server for extra security.
+-   **Key management** is as important as the encryption algorithm — lose your key, lose your data.
+-   **Encoding** may precede encryption — for example, an encrypted byte stream can be Base64-encoded for transport.
+-   **Hashing is not compression.** It doesn’t make data smaller — it only produces a fixed-length digest.
+-   **Encrypted ≠ signed.** Encryption hides content; digital signatures prove authorship.
+
+* * *
+
+## 🧭 Finally
+
+In essence:
+
+-   **Encoding** changes _how_ data looks.
+-   **Hashing** changes _how_ data is identified.
+-   **Encryption** changes _who_ can read it.
+
+Each has a role, each is vital, and confusing them can lead to serious design flaws — especially in authentication systems and secure communications.
+
+> Understanding these distinctions is the foundation of writing secure, maintainable, and correct software.

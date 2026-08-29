@@ -5,38 +5,148 @@ description: "In TypeScript, immutability is a great feature that protects your 
 tags: ["typescript","testing","performance","design","career"]
 ---
 
-<p>In TypeScript, <strong>immutability</strong> is a great feature that protects your data structures from unwanted changes. By using <code>readonly</code> properties, you can ensure that once an object is created, its shape or values can’t be modified accidentally. But sometimes, you do need to mutate the data — especially in scenarios like form editing, cloning objects, or local modifications before pushing changes to a database.</p><p>Let’s talk about how to convert <strong>readonly</strong> properties into <strong>mutable</strong> ones using a clean, reusable pattern in TypeScript.</p><hr><h2 id="%F0%9F%A7%B1-the-problem-readonly-types">🧱 The Problem: Readonly Types</h2><p>Say you have this type:</p><pre><code class="language-ts">type Example = {
+In TypeScript, **immutability** is a great feature that protects your data structures from unwanted changes. By using `readonly` properties, you can ensure that once an object is created, its shape or values can’t be modified accidentally. But sometimes, you do need to mutate the data — especially in scenarios like form editing, cloning objects, or local modifications before pushing changes to a database.
+
+Let’s talk about how to convert **readonly** properties into **mutable** ones using a clean, reusable pattern in TypeScript.
+
+* * *
+
+## 🧱 The Problem: Readonly Types
+
+Say you have this type:
+
+```ts
+type Example = {
   readonly a: string;
   readonly b: number;
 };
-</code></pre><p>If you try to mutate any of its properties:</p><pre><code class="language-ts">const obj: Example = { a: "hello", b: 42 };
+```
+
+If you try to mutate any of its properties:
+
+```ts
+const obj: Example = { a: "hello", b: 42 };
 obj.a = "new value"; // ❌ Error!
-</code></pre><p>You’ll get an error like:</p><blockquote><em>Cannot assign to 'a' because it is a read-only property.</em></blockquote><p>This is expected behavior — <code>readonly</code> is doing its job. But what if you need to <em>re-use</em> this type in a <strong>mutable context</strong>?</p><hr><h2 id="%E2%9C%85-the-solution-mutablet">✅ The Solution: <code>Mutable&lt;T&gt;</code></h2><p>You can create a utility type that <strong>removes the <code>readonly</code> modifier</strong> from each property:</p><pre><code class="language-ts">type Mutable&lt;T&gt; = {
+```
+
+You’ll get an error like:
+
+> _Cannot assign to 'a' because it is a read-only property._
+
+This is expected behavior — `readonly` is doing its job. But what if you need to _re-use_ this type in a **mutable context**?
+
+* * *
+
+## ✅ The Solution: `Mutable<T>`
+
+You can create a utility type that **removes the `readonly` modifier** from each property:
+
+```ts
+type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
 };
-</code></pre><p>Let’s break that down:</p><ul><li><code>-readonly</code>: removes the <code>readonly</code> modifier</li><li><code>[P in keyof T]</code>: iterates over all properties in type <code>T</code></li><li><code>T[P]</code>: preserves the original type of each property</li></ul><p>Now, using it like this:</p><pre><code class="language-ts">type Result = Mutable&lt;Example&gt;;
-</code></pre><p>Results in:</p><pre><code class="language-ts">type Result = {
+```
+
+Let’s break that down:
+
+-   `-readonly`: removes the `readonly` modifier
+-   `[P in keyof T]`: iterates over all properties in type `T`
+-   `T[P]`: preserves the original type of each property
+
+Now, using it like this:
+
+```ts
+type Result = Mutable<Example>;
+```
+
+Results in:
+
+```ts
+type Result = {
   a: string;
   b: number;
 };
-</code></pre><p>Now <code>a</code> and <code>b</code> are both <strong>mutable</strong>! 🎉</p><hr><h2 id="%F0%9F%A7%A0-additional-considerations">🧠 Additional Considerations</h2><p>Here are a few other things you might want to know:</p><h3 id="%F0%9F%94%81-deep-vs-shallow-mutability">🔁 Deep vs Shallow Mutability</h3><p>The <code>Mutable&lt;T&gt;</code> utility above is <strong>shallow</strong> — it only affects the top-level properties. If your type contains nested <code>readonly</code> objects, those will remain readonly.</p><p>For example:</p><pre><code class="language-ts">type Nested = {
+```
+
+Now `a` and `b` are both **mutable**! 🎉
+
+* * *
+
+## 🧠 Additional Considerations
+
+Here are a few other things you might want to know:
+
+### 🔁 Deep vs Shallow Mutability
+
+The `Mutable<T>` utility above is **shallow** — it only affects the top-level properties. If your type contains nested `readonly` objects, those will remain readonly.
+
+For example:
+
+```ts
+type Nested = {
   readonly config: {
     readonly version: string;
   };
 };
-</code></pre><p>Using <code>Mutable&lt;Nested&gt;</code> will give you:</p><pre><code class="language-ts">{
+```
+
+Using `Mutable<Nested>` will give you:
+
+```ts
+{
   config: {
     readonly version: string; // still readonly
   };
 }
-</code></pre><p>If you want <strong>deep mutability</strong>, you can use a recursive version:</p><pre><code class="language-ts">type DeepMutable&lt;T&gt; = {
+```
+
+If you want **deep mutability**, you can use a recursive version:
+
+```ts
+type DeepMutable<T> = {
   -readonly [P in keyof T]: T[P] extends object
-    ? DeepMutable&lt;T[P]&gt;
+    ? DeepMutable<T[P]>
     : T[P];
 };
-</code></pre><p>Use with caution though — recursive types can get expensive and may lead to performance issues or type complexity in large codebases.</p><hr><h3 id="%E2%9A%A0%EF%B8%8F-when-you-should-not-use-it">⚠️ When You Should NOT Use It</h3><ul><li>When working with data models meant to be immutable (e.g., Redux state, data fetched from APIs).</li><li>When mutability violates domain rules or business logic.</li><li>When you're passing objects between components that expect immutability for safety.</li></ul><p>Mutability is powerful — but like any power, <strong>use it wisely</strong>.</p><hr><h2 id="%F0%9F%92%A1-use-cases-where-this-is-handy">💡 Use Cases Where This is Handy</h2><ul><li>Modifying deeply nested config objects before sending to backend.</li><li>Building forms or UI states based on a <code>readonly</code> schema.</li><li>Testing and mocking with controlled changes.</li><li>Converting third-party types (e.g., from <code>@types</code> packages) into editable forms.</li></ul><hr><h2 id="%F0%9F%A7%AA-bonus-using-as-mutabletype">🧪 Bonus: Using <code>as Mutable&lt;Type&gt;</code></h2><p>Sometimes, you just want a quick escape hatch. You can use TypeScript's type assertion if you're sure of what you're doing:</p><pre><code class="language-ts">(obj as Mutable&lt;Example&gt;).a = "updated";
-</code></pre><p>This is <strong>unsafe</strong>, so avoid it unless necessary, and always validate that mutation won't break something downstream.</p><hr><h2 id="%F0%9F%94%9A-finally">🔚 Finally</h2><p>Using <code>Mutable&lt;T&gt;</code> is a <strong>clean</strong>, <strong>reusable</strong>, and <strong>type-safe</strong> way to convert readonly types into mutable ones in TypeScript. It’s a powerful tool in the right contexts — especially when you're dealing with complex data transformations or need flexibility while still keeping type safety.</p><p>Always weigh the <strong>benefits of mutability</strong> against the <strong>risks of unintended side effects</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Use with caution though — recursive types can get expensive and may lead to performance issues or type complexity in large codebases.
+
+* * *
+
+### ⚠️ When You Should NOT Use It
+
+-   When working with data models meant to be immutable (e.g., Redux state, data fetched from APIs).
+-   When mutability violates domain rules or business logic.
+-   When you're passing objects between components that expect immutability for safety.
+
+Mutability is powerful — but like any power, **use it wisely**.
+
+* * *
+
+## 💡 Use Cases Where This is Handy
+
+-   Modifying deeply nested config objects before sending to backend.
+-   Building forms or UI states based on a `readonly` schema.
+-   Testing and mocking with controlled changes.
+-   Converting third-party types (e.g., from `@types` packages) into editable forms.
+
+* * *
+
+## 🧪 Bonus: Using `as Mutable<Type>`
+
+Sometimes, you just want a quick escape hatch. You can use TypeScript's type assertion if you're sure of what you're doing:
+
+```ts
+(obj as Mutable<Example>).a = "updated";
+```
+
+This is **unsafe**, so avoid it unless necessary, and always validate that mutation won't break something downstream.
+
+* * *
+
+## 🔚 Finally
+
+Using `Mutable<T>` is a **clean**, **reusable**, and **type-safe** way to convert readonly types into mutable ones in TypeScript. It’s a powerful tool in the right contexts — especially when you're dealing with complex data transformations or need flexibility while still keeping type safety.
+
+Always weigh the **benefits of mutability** against the **risks of unintended side effects**.

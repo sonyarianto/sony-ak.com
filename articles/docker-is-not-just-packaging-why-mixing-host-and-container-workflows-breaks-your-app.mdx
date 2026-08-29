@@ -2,12 +2,99 @@
 title: "Docker Is Not Just Packaging: Why Mixing Host and Container Workflows Breaks Your App"
 date: "2026-04-27T20:33:00.000Z"
 description: "There is a subtle but very common misunderstanding when people start using Docker. They think Docker is just a way to “wrap” an already working application. So ..."
-tags: ["php","html","docker","linux","git"]
+tags: ["php","html","bash","docker","linux"]
 ---
 
-<p>There is a subtle but <strong>very common misunderstanding</strong> when people start using Docker. They think Docker is just a way to “wrap” an already working application. So they keep doing their usual workflow on the host machine, then simply copy the result into a container. It feels convenient. It works… until it doesn’t.</p><p>The real purpose of Docker is not packaging. It is <strong>reproducibility</strong>.</p><hr><h2 id="the-invisible-problem-host-vs-container-reality"><strong>The Invisible Problem: Host vs Container Reality</strong></h2><p>Let’s start with a scenario that looks harmless:</p><pre><code class="language-bash">composer install   # run on host
+There is a subtle but **very common misunderstanding** when people start using Docker. They think Docker is just a way to “wrap” an already working application. So they keep doing their usual workflow on the host machine, then simply copy the result into a container. It feels convenient. It works… until it doesn’t.
+
+The real purpose of Docker is not packaging. It is **reproducibility**.
+
+* * *
+
+## **The Invisible Problem: Host vs Container Reality**
+
+Let’s start with a scenario that looks harmless:
+
+```bash
+composer install   # run on host
 docker build .
-</code></pre><p>At first glance, nothing seems wrong. But under the surface, you are already creating a <strong>split-brain environment</strong>.</p><p>Your host might be running:</p><ul><li>PHP 8.3</li><li>macOS or Windows</li><li>A specific set of extensions</li></ul><p>Your container might be:</p><ul><li>PHP 8.2</li><li>Debian or Alpine Linux</li><li>Missing or different extensions</li></ul><p>Now imagine your <code>vendor/</code> folder is generated based on the host environment and then copied into a container that has a <strong>different runtime contract</strong>. This is where things become unreliable in a way that is hard to debug.</p><p>The failure won’t always be obvious. Sometimes it works in development and breaks only in production. Sometimes only specific features fail. Sometimes Composer silently installs different dependency versions due to platform differences.</p><p>That’s what makes this issue dangerous. It is not loud. It is <strong>quietly inconsistent</strong>.</p><hr><h2 id="why-this-breaks-composer-is-not-just-downloading-packages"><strong>Why This Breaks: Composer Is Not Just Downloading Packages</strong></h2><p>Many developers underestimate what Composer actually does.</p><p>Composer resolves dependencies based on:</p><ul><li>PHP version (<code>platform.php</code>)</li><li>Installed extensions (<code>ext-*</code>)</li><li>OS-level compatibility</li><li>Constraints in <code>composer.json</code> and <code>composer.lock</code></li></ul><p>So when you run <code>composer install</code> on the host, you are telling Composer:</p><blockquote>“Resolve dependencies for THIS machine.”</blockquote><p>But then you run the app in a container that says:</p><blockquote>“Actually, I’m a different machine.”</blockquote><p>That mismatch is the root cause.</p><hr><h2 id="the-correct-mental-model"><strong>The Correct Mental Model</strong></h2><p>Instead of thinking:</p><blockquote>“Docker runs my app”</blockquote><p>You should think:</p><blockquote>“Docker defines the only environment where my app is valid”</blockquote><p>That means the container must be able to:</p><ul><li>Install dependencies</li><li>Build the application</li><li>Run the application</li></ul><p>All <strong>without relying on the host</strong></p><p>This is the key idea: <strong>self-contained reproducibility</strong>.</p><hr><h2 id="a-clean-approach-build-from-container-perspective"><strong>A Clean Approach: Build From Container Perspective</strong></h2><p>A proper setup moves dependency installation into the container build process.</p><p>Here is a simple but correct example:</p><pre><code class="language-dockerfile">FROM composer:2 AS builder
+```
+
+At first glance, nothing seems wrong. But under the surface, you are already creating a **split-brain environment**.
+
+Your host might be running:
+
+-   PHP 8.3
+-   macOS or Windows
+-   A specific set of extensions
+
+Your container might be:
+
+-   PHP 8.2
+-   Debian or Alpine Linux
+-   Missing or different extensions
+
+Now imagine your `vendor/` folder is generated based on the host environment and then copied into a container that has a **different runtime contract**. This is where things become unreliable in a way that is hard to debug.
+
+The failure won’t always be obvious. Sometimes it works in development and breaks only in production. Sometimes only specific features fail. Sometimes Composer silently installs different dependency versions due to platform differences.
+
+That’s what makes this issue dangerous. It is not loud. It is **quietly inconsistent**.
+
+* * *
+
+## **Why This Breaks: Composer Is Not Just Downloading Packages**
+
+Many developers underestimate what Composer actually does.
+
+Composer resolves dependencies based on:
+
+-   PHP version (`platform.php`)
+-   Installed extensions (`ext-*`)
+-   OS-level compatibility
+-   Constraints in `composer.json` and `composer.lock`
+
+So when you run `composer install` on the host, you are telling Composer:
+
+> “Resolve dependencies for THIS machine.”
+
+But then you run the app in a container that says:
+
+> “Actually, I’m a different machine.”
+
+That mismatch is the root cause.
+
+* * *
+
+## **The Correct Mental Model**
+
+Instead of thinking:
+
+> “Docker runs my app”
+
+You should think:
+
+> “Docker defines the only environment where my app is valid”
+
+That means the container must be able to:
+
+-   Install dependencies
+-   Build the application
+-   Run the application
+
+All **without relying on the host**
+
+This is the key idea: **self-contained reproducibility**.
+
+* * *
+
+## **A Clean Approach: Build From Container Perspective**
+
+A proper setup moves dependency installation into the container build process.
+
+Here is a simple but correct example:
+
+```dockerfile
+FROM composer:2 AS builder
 
 WORKDIR /app
 COPY composer.json composer.lock ./
@@ -24,16 +111,141 @@ FROM php:8.3-fpm
 
 WORKDIR /var/www/html
 COPY --from=builder /app /var/www/html
-</code></pre><p>In this approach:</p><ul><li>Composer runs inside a controlled environment</li><li>Dependencies match the runtime PHP version</li><li>The final image is clean and predictable</li></ul><p>Also, your <code>.dockerignore</code> should prevent accidental leakage from host:</p><pre><code>vendor
+```
+
+In this approach:
+
+-   Composer runs inside a controlled environment
+-   Dependencies match the runtime PHP version
+-   The final image is clean and predictable
+
+Also, your `.dockerignore` should prevent accidental leakage from host:
+
+```
+vendor
 node_modules
 .git
 .env
-</code></pre><p>This ensures you are not <strong>silently importing host artifacts</strong>.</p><hr><h2 id="the-subtle-trap-%E2%80%9Cit-works-on-my-machine%E2%80%9D"><strong>The Subtle Trap: “It Works on My Machine”</strong></h2><p>This phrase exists because of exactly this problem.</p><p>When your build depends on the host:</p><ul><li>Your laptop becomes part of the system</li><li>Your OS becomes part of the dependency tree</li><li>Your installed tools affect the result</li></ul><p>That means your app is no longer portable. It is <strong>environment-coupled</strong>.</p><p>Docker is supposed to eliminate that. But if you mix host and container workflows, you reintroduce the same problem in a more confusing way.</p><hr><h2 id="when-it%E2%80%99s-actually-okay-to-use-the-host"><strong>When It’s Actually Okay to Use the Host</strong></h2><p>Now, this is where nuance matters.</p><p>Running things on the host is not always wrong. In fact, in local development, it is often practical.</p><p>For example:</p><ul><li>Running <code>composer install</code> locally for faster iteration</li><li>Mounting source code as a volume</li><li>Using IDE-integrated tools</li></ul><p>These are valid trade-offs. But they should be treated as <strong>development shortcuts</strong>, not production truth.</p><p>The key rule is:</p><blockquote>Production images must not depend on host-generated artifacts.</blockquote><p>You can be flexible in development, but <strong>strict in build and deployment</strong>.</p><hr><h2 id="a-realistic-development-vs-production-split"><strong>A Realistic Development vs Production Split</strong></h2><p>A mature workflow often looks like this:</p><p>In development:</p><pre><code class="language-bash">composer install
-docker-compose up
-</code></pre><p>In production:</p><pre><code class="language-bash">docker build .
-docker run ...
-</code></pre><p>The difference is intentional.</p><p>Development prioritizes <strong>speed and convenience</strong>.</p><p>Production prioritizes <strong>consistency and reliability</strong>.</p><p>Confusing the two is where most teams get into trouble.</p><hr><h2 id="another-thing-people-miss-native-dependencies"><strong>Another Thing People Miss: Native Dependencies</strong></h2><p>This problem becomes even worse when native extensions or binaries are involved.</p><p>Examples:</p><ul><li>PHP extensions like <code>ext-intl</code>, <code>ext-gd</code></li><li>Node modules with native bindings</li><li>OS-specific binaries</li></ul><p>If these are built on the host and copied into a container, they may:</p><ul><li>Fail at runtime</li><li>Crash silently</li><li>Produce inconsistent behavior</li></ul><p>This is especially common when building on macOS and running on Linux containers.</p><hr><h2 id="the-deeper-insight-docker-as-a-contract"><strong>The Deeper Insight: Docker as a Contract</strong></h2><p>The most important shift is this:</p><p>Docker is not just a tool. It is a <strong>contract</strong>.</p><p>It defines:</p><ul><li>Which PHP version is used</li><li>Which extensions exist</li><li>Which dependencies are valid</li></ul><p>When you run commands outside that contract, you are essentially saying:</p><blockquote>“I trust another environment more than my container.”</blockquote><p>That defeats the purpose.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>Your original intuition is correct, but the refined version is more powerful:</p><blockquote>The problem is not running things on the host. The problem is <strong>mixing host and container outputs in an uncontrolled way</strong>.</blockquote><p>Once you understand that, everything becomes clearer.</p><p>You can still be pragmatic. You can still optimize your workflow. But you will know exactly where the boundaries are.</p><p>And that’s the difference between using Docker… and actually <strong>understanding Docker</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This ensures you are not **silently importing host artifacts**.
+
+* * *
+
+## **The Subtle Trap: “It Works on My Machine”**
+
+This phrase exists because of exactly this problem.
+
+When your build depends on the host:
+
+-   Your laptop becomes part of the system
+-   Your OS becomes part of the dependency tree
+-   Your installed tools affect the result
+
+That means your app is no longer portable. It is **environment-coupled**.
+
+Docker is supposed to eliminate that. But if you mix host and container workflows, you reintroduce the same problem in a more confusing way.
+
+* * *
+
+## **When It’s Actually Okay to Use the Host**
+
+Now, this is where nuance matters.
+
+Running things on the host is not always wrong. In fact, in local development, it is often practical.
+
+For example:
+
+-   Running `composer install` locally for faster iteration
+-   Mounting source code as a volume
+-   Using IDE-integrated tools
+
+These are valid trade-offs. But they should be treated as **development shortcuts**, not production truth.
+
+The key rule is:
+
+> Production images must not depend on host-generated artifacts.
+
+You can be flexible in development, but **strict in build and deployment**.
+
+* * *
+
+## **A Realistic Development vs Production Split**
+
+A mature workflow often looks like this:
+
+In development:
+
+```bash
+composer install
+docker-compose up
+```
+
+In production:
+
+```bash
+docker build .
+docker run ...
+```
+
+The difference is intentional.
+
+Development prioritizes **speed and convenience**.
+
+Production prioritizes **consistency and reliability**.
+
+Confusing the two is where most teams get into trouble.
+
+* * *
+
+## **Another Thing People Miss: Native Dependencies**
+
+This problem becomes even worse when native extensions or binaries are involved.
+
+Examples:
+
+-   PHP extensions like `ext-intl`, `ext-gd`
+-   Node modules with native bindings
+-   OS-specific binaries
+
+If these are built on the host and copied into a container, they may:
+
+-   Fail at runtime
+-   Crash silently
+-   Produce inconsistent behavior
+
+This is especially common when building on macOS and running on Linux containers.
+
+* * *
+
+## **The Deeper Insight: Docker as a Contract**
+
+The most important shift is this:
+
+Docker is not just a tool. It is a **contract**.
+
+It defines:
+
+-   Which PHP version is used
+-   Which extensions exist
+-   Which dependencies are valid
+
+When you run commands outside that contract, you are essentially saying:
+
+> “I trust another environment more than my container.”
+
+That defeats the purpose.
+
+* * *
+
+## **Finally**
+
+Your original intuition is correct, but the refined version is more powerful:
+
+> The problem is not running things on the host. The problem is **mixing host and container outputs in an uncontrolled way**.
+
+Once you understand that, everything becomes clearer.
+
+You can still be pragmatic. You can still optimize your workflow. But you will know exactly where the boundaries are.
+
+And that’s the difference between using Docker… and actually **understanding Docker**.

@@ -5,7 +5,10 @@ description: "If you’ve ever written JavaScript with console.log() sprinkled a
 tags: ["javascript","performance","debugging","design","logging"]
 ---
 
-<p>If you’ve ever written JavaScript with <code>console.log()</code> sprinkled around timers, promises, and synchronous code, you’ve probably been surprised at the order of execution. Take this short snippet as an example:</p><pre><code class="language-js">console.log("A");
+If you’ve ever written JavaScript with `console.log()` sprinkled around timers, promises, and synchronous code, you’ve probably been surprised at the order of execution. Take this short snippet as an example:
+
+```js
+console.log("A");
 
 setTimeout(function () {
   console.log("B");
@@ -20,29 +23,129 @@ Promise.resolve()
   });
 
 console.log("E");
-</code></pre><p>At first glance, many developers expect the output to be:</p><pre><code>A
-B
-C
-D
-E
-</code></pre><p>But when you actually run it, the console gives you:</p><pre><code>A
-E
-C
-D
-B
-</code></pre><p>Why does this happen? Let’s break it down.</p><hr><h2 id="step-1-synchronous-execution-comes-first"><strong>Step 1: Synchronous Execution Comes First</strong></h2><p>JavaScript is <strong>single-threaded</strong>. That means it executes one thing at a time in a stack called the <strong>call stack</strong>. The engine always runs <strong>synchronous code first</strong>, line by line.</p><ol><li><code>console.log("A")</code> runs immediately → <strong>A</strong></li><li><code>setTimeout(...)</code> schedules a task but does not execute it yet.</li><li><code>Promise.resolve()</code> creates a resolved promise and schedules its <code>.then()</code> callbacks.</li><li><code>console.log("E")</code> runs immediately → <strong>E</strong></li></ol><p>So after the synchronous phase, we already have:</p><pre><code>A
-E
-</code></pre><hr><h2 id="step-2-microtasks-promises-run-before-macrotasks"><strong>Step 2: Microtasks (Promises) Run Before Macrotasks</strong></h2><p>The event loop manages two key types of queues:</p><ul><li><strong>Microtask Queue</strong> → includes things like <strong>Promises (<code>.then</code>, <code>.catch</code>, <code>.finally</code>)</strong> and <strong>MutationObserver</strong> callbacks.</li><li><strong>Macrotask Queue</strong> → includes things like <strong>setTimeout</strong>, <strong>setInterval</strong>, <strong>setImmediate</strong> (Node.js), and I/O events.</li></ul><p>Here’s the important rule:</p><blockquote><strong>After each synchronous run of code, the event loop empties the microtask queue before moving on to macrotasks.</strong></blockquote><p>So when the synchronous stack finishes (<code>A</code> and <code>E</code>), the engine checks the microtask queue:</p><ul><li>First <code>.then()</code> logs → <strong>C</strong></li><li>Second <code>.then()</code> (chained) logs → <strong>D</strong></li></ul><p>Now the output becomes:</p><pre><code>A
-E
-C
-D
-</code></pre><hr><h2 id="step-3-macrotasks-come-last"><strong>Step 3: Macrotasks Come Last</strong></h2><p>Only after the microtasks are done, the event loop goes to the macrotask queue. Our <code>setTimeout(..., 0)</code> callback is sitting there waiting.</p><p>That finally logs:</p><ul><li><strong>B</strong></li></ul><p>Final order:</p><pre><code>A
-E
-C
-D
-B
-</code></pre><hr><h2 id="key-takeaways"><strong>Key Takeaways</strong></h2><ul><li><strong>Synchronous code runs first.</strong></li><li><strong>Promises (microtasks) are always prioritized over setTimeout (macrotasks).</strong></li><li><strong>setTimeout with <code>0ms</code> is not immediate.</strong> It only means “execute as soon as possible after the current stack and all microtasks finish.”</li><li><strong>Chained promises</strong> (<code>.then(...).then(...)</code>) execute in sequence within the microtask queue before any macrotask can run.</li></ul><hr><h2 id="other-considerations-you-should-know"><strong>Other Considerations You Should Know</strong></h2><ol><li><strong><code>process.nextTick</code> (Node.js only):</strong><br>In Node.js, <code>process.nextTick</code> is even higher priority than microtasks. It always runs right after the current operation, before promises. This can sometimes starve the event loop if abused.</li><li><strong>Different environments, same principle:</strong><br>Whether you’re running this code in Chrome, Firefox, or Node.js, the behavior is consistent because it’s part of the ECMAScript specification.</li><li><strong>Practical advice:</strong><ul><li>Use <strong>Promises</strong> for fine-grained scheduling.</li><li>Use <strong>setTimeout</strong> for deferring tasks when you want to allow the browser/UI thread to “breathe” (e.g., letting rendering catch up).</li><li>Avoid mixing too many microtasks in hot loops — it can cause performance bottlenecks.</li></ul></li><li><strong>Debugging tip:</strong><br>Adding timestamps to logs (<code>console.time</code>) can help you visualize when callbacks actually fire, especially in real applications where you mix network requests, rendering, and user interactions.</li></ol><hr><h2 id="finally"><strong>Finally</strong></h2><p>What looks like a few simple logs is actually a window into the <strong>heart of JavaScript’s concurrency model</strong>. Understanding the <strong>event loop</strong>, <strong>call stack</strong>, <strong>microtasks</strong>, and <strong>macrotasks</strong> will save you countless headaches.</p><p>So the next time you see logs appear in a “weird” order, remember:</p><ul><li><strong>A and E run first (synchronous).</strong></li><li><strong>C and D follow (microtasks).</strong></li><li><strong>B lags behind (macrotask).</strong></li></ul><p>And that’s not a bug — that’s just JavaScript doing exactly what it was designed to do.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+At first glance, many developers expect the output to be:
+
+```
+A
+B
+C
+D
+E
+```
+
+But when you actually run it, the console gives you:
+
+```
+A
+E
+C
+D
+B
+```
+
+Why does this happen? Let’s break it down.
+
+* * *
+
+## **Step 1: Synchronous Execution Comes First**
+
+JavaScript is **single-threaded**. That means it executes one thing at a time in a stack called the **call stack**. The engine always runs **synchronous code first**, line by line.
+
+1.  `console.log("A")` runs immediately → **A**
+2.  `setTimeout(...)` schedules a task but does not execute it yet.
+3.  `Promise.resolve()` creates a resolved promise and schedules its `.then()` callbacks.
+4.  `console.log("E")` runs immediately → **E**
+
+So after the synchronous phase, we already have:
+
+```
+A
+E
+```
+
+* * *
+
+## **Step 2: Microtasks (Promises) Run Before Macrotasks**
+
+The event loop manages two key types of queues:
+
+-   **Microtask Queue** → includes things like **Promises (`.then`, `.catch`, `.finally`)** and **MutationObserver** callbacks.
+-   **Macrotask Queue** → includes things like **setTimeout**, **setInterval**, **setImmediate** (Node.js), and I/O events.
+
+Here’s the important rule:
+
+> **After each synchronous run of code, the event loop empties the microtask queue before moving on to macrotasks.**
+
+So when the synchronous stack finishes (`A` and `E`), the engine checks the microtask queue:
+
+-   First `.then()` logs → **C**
+-   Second `.then()` (chained) logs → **D**
+
+Now the output becomes:
+
+```
+A
+E
+C
+D
+```
+
+* * *
+
+## **Step 3: Macrotasks Come Last**
+
+Only after the microtasks are done, the event loop goes to the macrotask queue. Our `setTimeout(..., 0)` callback is sitting there waiting.
+
+That finally logs:
+
+-   **B**
+
+Final order:
+
+```
+A
+E
+C
+D
+B
+```
+
+* * *
+
+## **Key Takeaways**
+
+-   **Synchronous code runs first.**
+-   **Promises (microtasks) are always prioritized over setTimeout (macrotasks).**
+-   **setTimeout with `0ms` is not immediate.** It only means “execute as soon as possible after the current stack and all microtasks finish.”
+-   **Chained promises** (`.then(...).then(...)`) execute in sequence within the microtask queue before any macrotask can run.
+
+* * *
+
+## **Other Considerations You Should Know**
+
+1.  **`process.nextTick` (Node.js only):**  
+    In Node.js, `process.nextTick` is even higher priority than microtasks. It always runs right after the current operation, before promises. This can sometimes starve the event loop if abused.
+2.  **Different environments, same principle:**  
+    Whether you’re running this code in Chrome, Firefox, or Node.js, the behavior is consistent because it’s part of the ECMAScript specification.
+3.  **Practical advice:**
+    -   Use **Promises** for fine-grained scheduling.
+    -   Use **setTimeout** for deferring tasks when you want to allow the browser/UI thread to “breathe” (e.g., letting rendering catch up).
+    -   Avoid mixing too many microtasks in hot loops — it can cause performance bottlenecks.
+4.  **Debugging tip:**  
+    Adding timestamps to logs (`console.time`) can help you visualize when callbacks actually fire, especially in real applications where you mix network requests, rendering, and user interactions.
+
+* * *
+
+## **Finally**
+
+What looks like a few simple logs is actually a window into the **heart of JavaScript’s concurrency model**. Understanding the **event loop**, **call stack**, **microtasks**, and **macrotasks** will save you countless headaches.
+
+So the next time you see logs appear in a “weird” order, remember:
+
+-   **A and E run first (synchronous).**
+-   **C and D follow (microtasks).**
+-   **B lags behind (macrotask).**
+
+And that’s not a bug — that’s just JavaScript doing exactly what it was designed to do.

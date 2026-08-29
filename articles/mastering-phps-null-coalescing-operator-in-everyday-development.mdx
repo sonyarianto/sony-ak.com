@@ -5,19 +5,122 @@ description: "One of the most underrated yet highly practical features in modern
 tags: ["php","laravel","api","design","productivity"]
 ---
 
-<p>One of the most underrated yet highly practical features in modern PHP is the <strong>null coalescing operator (<code>??</code>)</strong>. At first glance it looks like a shorthand for a conditional, but in real-world development it becomes a key tool for <strong>defensive coding</strong> and <strong>cleaner syntax</strong>.</p><hr><h2 id="the-basics">The Basics</h2><p>The operator works like this:</p><pre><code class="language-php">$value = $possibleNull ?? 'default';
-</code></pre><p>This means:</p><ul><li>If <code>$possibleNull</code> is <strong>not null</strong>, assign it to <code>$value</code>.</li><li>If it <strong>is null</strong>, assign <code>'default'</code>.</li></ul><p>It’s a concise replacement for the older (and clumsier):</p><pre><code class="language-php">$value = isset($possibleNull) ? $possibleNull : 'default';
-</code></pre><hr><h2 id="a-practical-example">A Practical Example</h2><p>Imagine you’re fetching a list of blog posts from a data source:</p><pre><code class="language-php">$posts = $blogRepository-&gt;fetchAll() ?? [];
-</code></pre><p>Here’s what happens:</p><ul><li>If <code>fetchAll()</code> returns an array of posts, <code>$posts</code> will hold that array.</li><li>If <code>fetchAll()</code> unexpectedly returns <code>null</code>, <code>$posts</code> will gracefully fall back to an <strong>empty array</strong> <code>[]</code>.</li></ul><p>That ensures later code like:</p><pre><code class="language-php">foreach ($posts as $post) {
-    echo $post-&gt;title . PHP_EOL;
-}
-</code></pre><p>never breaks with an “Invalid argument supplied for foreach()” error.</p><hr><h2 id="why-it-matters">Why It Matters</h2><p>In practice, <strong>null handling is everywhere</strong>. Databases, APIs, and user input don’t always guarantee valid data. Without safeguards, your code risks throwing warnings or exceptions. The null coalescing operator provides a <strong>simple safety net</strong> that avoids unnecessary <code>if</code> checks.</p><hr><h2 id="common-use-cases">Common Use Cases</h2><p><strong>API Responses</strong></p><pre><code class="language-php">$comments = $apiResponse['comments'] ?? [];
-</code></pre><p>Ensures your code works even if the API omits the field.</p><p><strong>Configuration Values</strong></p><pre><code class="language-php">$timezone = $config['timezone'] ?? 'UTC';
-</code></pre><p>Missing config keys no longer cause undefined index notices.</p><p><strong>Database Queries</strong></p><pre><code class="language-php">$user = $db-&gt;findUser($id) ?? new GuestUser();
-</code></pre><p>If no user is found, you still return a sensible fallback.</p><hr><h2 id="extra-considerations">Extra Considerations</h2><ul><li><strong>Consistency in Return Types</strong><br>If you mix custom repositories and framework classes, be clear about your return types. Some methods might return arrays, some collections, and others <code>null</code>. That’s where <code>?? []</code> shines.</li></ul><p><strong>Fallback Design</strong><br>Instead of always falling back to empty arrays, think about whether a <strong>default object</strong>, <strong>empty collection</strong>, or <strong>default scalar value</strong> makes more sense. For example:</p><pre><code class="language-php">$settings = $repository-&gt;getSettings() ?? collect();
-</code></pre><p><strong>Collections vs Arrays</strong><br>In frameworks like Laravel, database queries typically return a <strong>Collection</strong>, not <code>null</code>. In such cases, using <code>?? []</code> may be redundant, since you’ll always get something iterable.<br>Example:</p><pre><code class="language-php">$users = User::all(); // always a collection, even if empty
-</code></pre><hr><h2 id="best-practices">Best Practices</h2><ul><li><strong>Know Your Methods</strong>: If a method is guaranteed to return something non-null, don’t clutter your code with <code>?? []</code>.</li><li><strong>Use Domain-Specific Defaults</strong>: Sometimes an empty array is fine, but sometimes a default object communicates intent better.</li><li><strong>Stay Consistent</strong>: Decide on a standard fallback style (empty array, empty collection, or default object) across your project to reduce confusion.</li></ul><hr><h2 id="finally">Finally</h2><p>The <strong>null coalescing operator</strong> is a small feature that makes PHP code more <strong>robust, elegant, and predictable</strong>. It eliminates repetitive null checks, reduces runtime errors, and ensures your application behaves consistently even when data sources fail you.</p><p>In short: <strong>use it wherever uncertainty exists</strong> — but don’t overuse it when the return type is already guaranteed. Like most tools, it’s best applied with a clear understanding of context.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+One of the most underrated yet highly practical features in modern PHP is the **null coalescing operator (`??`)**. At first glance it looks like a shorthand for a conditional, but in real-world development it becomes a key tool for **defensive coding** and **cleaner syntax**.
 
+* * *
+
+## The Basics
+
+The operator works like this:
+
+```php
+$value = $possibleNull ?? 'default';
+```
+
+This means:
+
+-   If `$possibleNull` is **not null**, assign it to `$value`.
+-   If it **is null**, assign `'default'`.
+
+It’s a concise replacement for the older (and clumsier):
+
+```php
+$value = isset($possibleNull) ? $possibleNull : 'default';
+```
+
+* * *
+
+## A Practical Example
+
+Imagine you’re fetching a list of blog posts from a data source:
+
+```php
+$posts = $blogRepository->fetchAll() ?? [];
+```
+
+Here’s what happens:
+
+-   If `fetchAll()` returns an array of posts, `$posts` will hold that array.
+-   If `fetchAll()` unexpectedly returns `null`, `$posts` will gracefully fall back to an **empty array** `[]`.
+
+That ensures later code like:
+
+```php
+foreach ($posts as $post) {
+    echo $post->title . PHP_EOL;
+}
+```
+
+never breaks with an “Invalid argument supplied for foreach()” error.
+
+* * *
+
+## Why It Matters
+
+In practice, **null handling is everywhere**. Databases, APIs, and user input don’t always guarantee valid data. Without safeguards, your code risks throwing warnings or exceptions. The null coalescing operator provides a **simple safety net** that avoids unnecessary `if` checks.
+
+* * *
+
+## Common Use Cases
+
+**API Responses**
+
+```php
+$comments = $apiResponse['comments'] ?? [];
+```
+
+Ensures your code works even if the API omits the field.
+
+**Configuration Values**
+
+```php
+$timezone = $config['timezone'] ?? 'UTC';
+```
+
+Missing config keys no longer cause undefined index notices.
+
+**Database Queries**
+
+```php
+$user = $db->findUser($id) ?? new GuestUser();
+```
+
+If no user is found, you still return a sensible fallback.
+
+* * *
+
+## Extra Considerations
+
+-   **Consistency in Return Types**  
+    If you mix custom repositories and framework classes, be clear about your return types. Some methods might return arrays, some collections, and others `null`. That’s where `?? []` shines.
+
+**Fallback Design**  
+Instead of always falling back to empty arrays, think about whether a **default object**, **empty collection**, or **default scalar value** makes more sense. For example:
+
+```php
+$settings = $repository->getSettings() ?? collect();
+```
+
+**Collections vs Arrays**  
+In frameworks like Laravel, database queries typically return a **Collection**, not `null`. In such cases, using `?? []` may be redundant, since you’ll always get something iterable.  
+Example:
+
+```php
+$users = User::all(); // always a collection, even if empty
+```
+
+* * *
+
+## Best Practices
+
+-   **Know Your Methods**: If a method is guaranteed to return something non-null, don’t clutter your code with `?? []`.
+-   **Use Domain-Specific Defaults**: Sometimes an empty array is fine, but sometimes a default object communicates intent better.
+-   **Stay Consistent**: Decide on a standard fallback style (empty array, empty collection, or default object) across your project to reduce confusion.
+
+* * *
+
+## Finally
+
+The **null coalescing operator** is a small feature that makes PHP code more **robust, elegant, and predictable**. It eliminates repetitive null checks, reduces runtime errors, and ensures your application behaves consistently even when data sources fail you.
+
+In short: **use it wherever uncertainty exists** — but don’t overuse it when the return type is already guaranteed. Like most tools, it’s best applied with a clear understanding of context.

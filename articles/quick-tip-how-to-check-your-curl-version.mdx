@@ -5,12 +5,46 @@ description: "curl is a powerful command-line tool used to transfer data over va
 tags: ["bash","linux","api","security","productivity"]
 ---
 
-<p><code>curl</code> is a powerful command-line tool used to transfer data over various network protocols, such as HTTP, HTTPS, FTP, and more. Knowing your <code>curl</code> version can be helpful for troubleshooting, ensuring compatibility, or simply verifying that you're using the latest features.</p><h3 id="checking-your-curl-version">Checking Your <code>curl</code> Version</h3><p>To quickly find out which version of <code>curl</code> is installed on your system, use the following command in your terminal:</p><pre><code class="language-bash">curl --version
-</code></pre><h3 id="what-you%E2%80%99ll-see">What You’ll See</h3><p>The output will provide several key details about your <code>curl</code> installation:</p><ul><li><strong>Version number</strong>: The exact version of <code>curl</code> installed on your system.</li><li><strong>Supported protocols</strong>: A list of network protocols that your <code>curl</code> supports, such as HTTP, HTTPS, FTP, etc.</li><li><strong>SSL version</strong>: Information about the SSL/TLS version, which shows whether secure protocols (like HTTPS) are supported.</li><li><strong>Features</strong>: Lists optional features that are compiled into your <code>curl</code> build, such as IPv6, HTTP/2, or libz compression.</li></ul><h3 id="example-output">Example Output</h3><pre><code>curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.7
+`curl` is a powerful command-line tool used to transfer data over various network protocols, such as HTTP, HTTPS, FTP, and more. Knowing your `curl` version can be helpful for troubleshooting, ensuring compatibility, or simply verifying that you're using the latest features.
+
+### Checking Your `curl` Version
+
+To quickly find out which version of `curl` is installed on your system, use the following command in your terminal:
+
+```bash
+curl --version
+```
+
+### What You’ll See
+
+The output will provide several key details about your `curl` installation:
+
+-   **Version number**: The exact version of `curl` installed on your system.
+-   **Supported protocols**: A list of network protocols that your `curl` supports, such as HTTP, HTTPS, FTP, etc.
+-   **SSL version**: Information about the SSL/TLS version, which shows whether secure protocols (like HTTPS) are supported.
+-   **Features**: Lists optional features that are compiled into your `curl` build, such as IPv6, HTTP/2, or libz compression.
+
+### Example Output
+
+```
+curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.7
 Release-Date: 2023-12-06, security patched: 8.5.0-2ubuntu10.4
 Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtmp rtsp scp sftp smb smbs smtp smtps telnet tftp
-Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd</code></pre><p>In this example:</p><ul><li>The installed <code>curl</code> version is <code>8.5.0</code>.</li><li>It supports various protocols like HTTP, HTTPS, FTP, and others.</li><li>The build includes the OpenSSL library for secure connections.</li></ul><h3 id="why-this-is-useful">Why This Is Useful</h3><p>Knowing the <code>curl</code> version helps:</p><ul><li><strong>Troubleshoot issues</strong> with specific features or protocols.</li><li><strong>Verify security protocols</strong> for secure data transfers.</li><li><strong>Check compatibility</strong> with APIs or services that may require a certain <code>curl</code> version.</li></ul><p>Keep this command handy for when you need to check or upgrade your <code>curl</code> installation!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd
+```
 
+In this example:
+
+-   The installed `curl` version is `8.5.0`.
+-   It supports various protocols like HTTP, HTTPS, FTP, and others.
+-   The build includes the OpenSSL library for secure connections.
+
+### Why This Is Useful
+
+Knowing the `curl` version helps:
+
+-   **Troubleshoot issues** with specific features or protocols.
+-   **Verify security protocols** for secure data transfers.
+-   **Check compatibility** with APIs or services that may require a certain `curl` version.
+
+Keep this command handy for when you need to check or upgrade your `curl` installation!

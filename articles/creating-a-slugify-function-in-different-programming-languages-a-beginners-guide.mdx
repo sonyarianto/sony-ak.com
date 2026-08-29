@@ -5,9 +5,30 @@ description: "In web development, it's common to convert a string into a URL-fri
 tags: ["javascript","typescript","php","rust","python"]
 ---
 
-<p>In web development, it's common to convert a string into a URL-friendly format, which is called "slugification." For example, transforming the title of a blog post like "Hello World!" into "hello-world" helps make the URL both readable and SEO-friendly. This process is known as "slugifying" a string.</p><p>In this article, we'll explore how to create a simple <code>slugify</code> function in some of the most popular programming languages, such as PHP, Go, Rust, Python, C, C++, and others. Whether you're a beginner in coding or an experienced developer curious about different languages, you'll find this guide helpful as we break down the slugification process step by step.</p><h3 id="what-is-slugification">What Is Slugification?</h3><p>Slugification involves taking a string of text, typically a title or name, and converting it into a string suitable for use in a URL. This usually includes converting to lowercase, replacing spaces with hyphens, and removing any special characters.</p><p>For example, the string:</p><pre><code>Hello World!
-</code></pre><p>Would become:</p><pre><code>hello-world
-</code></pre><h3 id="slugifying-in-javascript-nodejs">Slugifying in JavaScript (Node.js)</h3><pre><code class="language-javascript">function slugify(str) {
+In web development, it's common to convert a string into a URL-friendly format, which is called "slugification." For example, transforming the title of a blog post like "Hello World!" into "hello-world" helps make the URL both readable and SEO-friendly. This process is known as "slugifying" a string.
+
+In this article, we'll explore how to create a simple `slugify` function in some of the most popular programming languages, such as PHP, Go, Rust, Python, C, C++, and others. Whether you're a beginner in coding or an experienced developer curious about different languages, you'll find this guide helpful as we break down the slugification process step by step.
+
+### What Is Slugification?
+
+Slugification involves taking a string of text, typically a title or name, and converting it into a string suitable for use in a URL. This usually includes converting to lowercase, replacing spaces with hyphens, and removing any special characters.
+
+For example, the string:
+
+```
+Hello World!
+```
+
+Would become:
+
+```
+hello-world
+```
+
+### Slugifying in JavaScript (Node.js)
+
+```javascript
+function slugify(str) {
     return str
         .toLowerCase()              // Convert the string to lowercase
         .trim()                     // Remove whitespace from both ends
@@ -17,7 +38,12 @@ tags: ["javascript","typescript","php","rust","python"]
 }
 
 console.log(slugify('Hello World!')); // Output: hello-world
-</code></pre><h3 id="slugifying-in-php">Slugifying in PHP</h3><pre><code class="language-php">function slugify($string) {
+```
+
+### Slugifying in PHP
+
+```php
+function slugify($string) {
     // Convert string to lowercase
     $string = strtolower($string);
 
@@ -33,7 +59,12 @@ console.log(slugify('Hello World!')); // Output: hello-world
 }
 
 echo slugify('Hello World!'); // Output: hello-world
-</code></pre><h3 id="slugifying-in-go">Slugifying in Go</h3><pre><code class="language-go">package main
+```
+
+### Slugifying in Go
+
+```go
+package main
 
 import (
 	"fmt"
@@ -63,10 +94,15 @@ func slugify(s string) string {
 func main() {
 	fmt.Println(slugify("Hello World!")) // Output: hello-world
 }
-</code></pre><h3 id="slugifying-in-rust">Slugifying in Rust</h3><pre><code class="language-rust">fn slugify(input: &amp;str) -&gt; String {
+```
+
+### Slugifying in Rust
+
+```rust
+fn slugify(input: &str) -> String {
     let slug = input
         .to_lowercase()          // Convert to lowercase
-        .replace(|c: char| !c.is_alphanumeric() &amp;&amp; c != ' ', "") // Remove non-alphanumeric characters
+        .replace(|c: char| !c.is_alphanumeric() && c != ' ', "") // Remove non-alphanumeric characters
         .replace(' ', "-")       // Replace spaces with hyphens
         .replace("--", "-")      // Replace consecutive hyphens
         .trim_matches('-')       // Trim leading and trailing hyphens
@@ -79,7 +115,12 @@ fn main() {
     let slug = slugify("Hello World!");
     println!("{}", slug);  // Output: hello-world
 }
-</code></pre><h3 id="slugifying-in-typescript">Slugifying in TypeScript</h3><pre><code class="language-typescript">function slugify(str: string): string {
+```
+
+### Slugifying in TypeScript
+
+```typescript
+function slugify(str: string): string {
     return str
         .toLowerCase()                  // Convert to lowercase
         .trim()                          // Trim spaces from both ends
@@ -89,7 +130,12 @@ fn main() {
 }
 
 console.log(slugify('Hello World!')); // Output: hello-world
-</code></pre><h3 id="slugifying-in-python">Slugifying in Python</h3><pre><code class="language-python">import re
+```
+
+### Slugifying in Python
+
+```python
+import re
 
 def slugify(string):
     # Convert to lowercase
@@ -104,9 +150,16 @@ def slugify(string):
     return string.strip('-')
 
 print(slugify("Hello World!"))  # Output: hello-world
-</code></pre><h3 id="slugifying-in-c">Slugifying in C</h3><p>C doesn't have built-in string manipulation libraries as rich as higher-level languages, so you'll need to handle the string processing manually:</p><pre><code class="language-c">#include &lt;stdio.h&gt;
-#include &lt;ctype.h&gt;
-#include &lt;string.h&gt;
+```
+
+### Slugifying in C
+
+C doesn't have built-in string manipulation libraries as rich as higher-level languages, so you'll need to handle the string processing manually:
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 void slugify(char *str) {
     int i = 0, j = 0;
@@ -117,7 +170,7 @@ void slugify(char *str) {
         if (isalnum(str[i])) {
             str[j++] = tolower(str[i]);
             hyphen = 0;
-        } else if (isspace(str[i]) &amp;&amp; !hyphen) {
+        } else if (isspace(str[i]) && !hyphen) {
             str[j++] = '-';
             hyphen = 1;
         }
@@ -125,7 +178,7 @@ void slugify(char *str) {
     }
 
     // Remove trailing hyphen, if any
-    if (j &gt; 0 &amp;&amp; str[j - 1] == '-') {
+    if (j > 0 && str[j - 1] == '-') {
         j--;
     }
 
@@ -138,11 +191,18 @@ int main() {
     printf("%s\n", input);  // Output: hello-world
     return 0;
 }
-</code></pre><h3 id="slugifying-in-c-1">Slugifying in C++</h3><p>C++ has the Standard Library that makes string manipulation easier than in C:</p><pre><code class="language-c++">#include &lt;iostream&gt;
-#include &lt;algorithm&gt;
-#include &lt;cctype&gt;
+```
 
-std::string slugify(const std::string&amp; input) {
+### Slugifying in C++
+
+C++ has the Standard Library that makes string manipulation easier than in C:
+
+```c++
+#include <iostream>
+#include <algorithm>
+#include <cctype>
+
+std::string slugify(const std::string& input) {
     std::string result;
     bool lastHyphen = false;
 
@@ -150,14 +210,14 @@ std::string slugify(const std::string&amp; input) {
         if (std::isalnum(ch)) {
             result += std::tolower(ch);
             lastHyphen = false;
-        } else if (std::isspace(ch) &amp;&amp; !lastHyphen) {
+        } else if (std::isspace(ch) && !lastHyphen) {
             result += '-';
             lastHyphen = true;
         }
     }
 
     // Remove trailing hyphen, if any
-    if (!result.empty() &amp;&amp; result.back() == '-') {
+    if (!result.empty() && result.back() == '-') {
         result.pop_back();
     }
 
@@ -167,10 +227,17 @@ std::string slugify(const std::string&amp; input) {
 int main() {
     std::string input = "Hello World!";
     std::string slug = slugify(input);
-    std::cout &lt;&lt; slug &lt;&lt; std::endl;  // Output: hello-world
+    std::cout << slug << std::endl;  // Output: hello-world
     return 0;
 }
-</code></pre><h3 id="slugifying-in-ruby">Slugifying in Ruby</h3><p>In Ruby, string manipulation tasks like slugifying are quite simple, thanks to its powerful built-in methods and the use of regular expressions.</p><pre><code class="language-ruby">def slugify(string)
+```
+
+### Slugifying in Ruby
+
+In Ruby, string manipulation tasks like slugifying are quite simple, thanks to its powerful built-in methods and the use of regular expressions.
+
+```ruby
+def slugify(string)
   # Convert to lowercase
   string = string.downcase
   # Remove non-word characters (except spaces and hyphens)
@@ -182,8 +249,16 @@ int main() {
 end
 
 puts slugify("Hello World!")  # Output: hello-world
-</code></pre><h3 id="understanding-the-common-pattern">Understanding the Common Pattern</h3><p>While the syntax may differ between programming languages, the general process for slugifying a string remains the same:</p><ol><li>Convert the string to lowercase.</li><li>Remove any characters that aren’t letters, numbers, spaces, or hyphens.</li><li>Replace spaces with hyphens.</li><li>Remove any consecutive hyphens.</li><li>Trim any leading or trailing hyphens.</li></ol><p>Each language handles these steps in its own way, but the logic remains consistent. Python, with its rich libraries, handles slugification concisely, while C requires a more hands-on approach. C++ strikes a balance, offering more convenience while still maintaining control over the string manipulation process.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### Understanding the Common Pattern
+
+While the syntax may differ between programming languages, the general process for slugifying a string remains the same:
+
+1.  Convert the string to lowercase.
+2.  Remove any characters that aren’t letters, numbers, spaces, or hyphens.
+3.  Replace spaces with hyphens.
+4.  Remove any consecutive hyphens.
+5.  Trim any leading or trailing hyphens.
+
+Each language handles these steps in its own way, but the logic remains consistent. Python, with its rich libraries, handles slugification concisely, while C requires a more hands-on approach. C++ strikes a balance, offering more convenience while still maintaining control over the string manipulation process.

@@ -5,18 +5,123 @@ description: "Exploring WSL’s Behavior and How to Keep It Running If you’re 
 tags: ["bash","linux","deployment","startup","design"]
 ---
 
-<p><strong>Exploring WSL’s Behavior and How to Keep It Running</strong></p><p>If you’re a <strong>Windows 11</strong> user and working with <strong>WSL (Windows Subsystem for Linux)</strong>—specifically with the <strong>Ubuntu</strong> distribution—you’ve probably wondered:<br><em>"When I close my terminal window, does my Ubuntu environment keep running?"</em></p><p>The short answer is: <strong>No, it does not keep running by default</strong>. But there’s a lot more you should know. Let’s dive into it.</p><hr><h2 id="how-wsl-works"><strong>How WSL Works</strong></h2><p>When you open <strong>WSL</strong> by typing <code>wsl</code> or launching it through Windows Terminal, it starts an instance of your chosen Linux distribution (in your case, <strong>Ubuntu</strong>). This instance is similar to a <strong>lightweight virtual machine</strong>, and it initializes only when you start it.</p><p>While your terminal window is open:</p><ul><li>Your <strong>WSL instance is active</strong>.</li><li>All <strong>Linux processes</strong> you run (for example, web servers, background scripts) are alive and running.</li></ul><p>However, when you <strong>close the terminal window</strong> (or the console session where WSL is running):</p><ul><li><strong>WSL stops the active instance</strong>.</li><li>All <strong>running processes are terminated</strong>—unless you specifically configured them to run detached.</li></ul><hr><h2 id="but-why-doesn%E2%80%99t-it-keep-running"><strong>But Why Doesn’t It Keep Running?</strong></h2><p>This behavior is intentional.</p><ul><li><strong>WSL is designed to be lightweight</strong> and start on-demand.</li><li><strong>Closing the terminal</strong> effectively ends the user session, signaling WSL to shut down the instance.</li><li>Unlike a traditional Linux server, <strong>WSL doesn’t keep background daemons running indefinitely</strong>.</li></ul><p>However, with the latest <strong>WSL2</strong>, the subsystem <strong>enters a "light hibernation" state</strong>, allowing for <strong>faster startup</strong> next time. But this hibernation <strong>does not keep your processes running</strong>—they’ll need to be restarted when you open WSL again.</p><hr><h2 id="how-can-you-keep-wsl-running"><strong>How Can You Keep WSL Running?</strong></h2><p>If you want your processes to <strong>continue running even after you close the terminal</strong>, you have a few options:</p><h3 id="1%EF%B8%8F%E2%83%A3-use-tmux-or-screen">1️⃣ <strong>Use <code>tmux</code> or <code>screen</code></strong></h3><p>These are terminal multiplexers that:</p><ul><li>Let you <strong>start processes inside a detachable session</strong>.</li><li>Even if you close the terminal, you can <strong>reattach</strong> later and resume where you left off.<br>Example steps:</li></ul><pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt install tmux
+**Exploring WSL’s Behavior and How to Keep It Running**
+
+If you’re a **Windows 11** user and working with **WSL (Windows Subsystem for Linux)**—specifically with the **Ubuntu** distribution—you’ve probably wondered:  
+_"When I close my terminal window, does my Ubuntu environment keep running?"_
+
+The short answer is: **No, it does not keep running by default**. But there’s a lot more you should know. Let’s dive into it.
+
+* * *
+
+## **How WSL Works**
+
+When you open **WSL** by typing `wsl` or launching it through Windows Terminal, it starts an instance of your chosen Linux distribution (in your case, **Ubuntu**). This instance is similar to a **lightweight virtual machine**, and it initializes only when you start it.
+
+While your terminal window is open:
+
+-   Your **WSL instance is active**.
+-   All **Linux processes** you run (for example, web servers, background scripts) are alive and running.
+
+However, when you **close the terminal window** (or the console session where WSL is running):
+
+-   **WSL stops the active instance**.
+-   All **running processes are terminated**—unless you specifically configured them to run detached.
+
+* * *
+
+## **But Why Doesn’t It Keep Running?**
+
+This behavior is intentional.
+
+-   **WSL is designed to be lightweight** and start on-demand.
+-   **Closing the terminal** effectively ends the user session, signaling WSL to shut down the instance.
+-   Unlike a traditional Linux server, **WSL doesn’t keep background daemons running indefinitely**.
+
+However, with the latest **WSL2**, the subsystem **enters a "light hibernation" state**, allowing for **faster startup** next time. But this hibernation **does not keep your processes running**—they’ll need to be restarted when you open WSL again.
+
+* * *
+
+## **How Can You Keep WSL Running?**
+
+If you want your processes to **continue running even after you close the terminal**, you have a few options:
+
+### 1️⃣ **Use `tmux` or `screen`**
+
+These are terminal multiplexers that:
+
+-   Let you **start processes inside a detachable session**.
+-   Even if you close the terminal, you can **reattach** later and resume where you left off.  
+    Example steps:
+
+```bash
+sudo apt update && sudo apt install tmux
 tmux new -s mysession
 # Run your commands here
 # Detach: Ctrl+b then d
 # Reattach later: tmux attach -t mysession
-</code></pre><h3 id="2%EF%B8%8F%E2%83%A3-run-processes-in-the-background">2️⃣ <strong>Run Processes in the Background</strong></h3><p>You can run a command with <code>&amp;</code> to send it to the background:</p><pre><code class="language-bash">my-long-running-script.sh &amp;
-</code></pre><p>However, if you <strong>close the terminal</strong>, the background process is still tied to the session and will stop.<br>For true independence, use <code>nohup</code>:</p><pre><code class="language-bash">nohup my-long-running-script.sh &gt; output.log 2&gt;&amp;1 &amp;
-</code></pre><p>This allows it to <strong>persist</strong> beyond the terminal session.</p><h3 id="3%EF%B8%8F%E2%83%A3-leverage-wsl%E2%80%99s-systemd-support">3️⃣ <strong>Leverage WSL’s <code>systemd</code> Support</strong></h3><p>In recent versions of <strong>WSL2</strong>, <strong>systemd support</strong> is available:</p><ul><li>You can enable <code>systemd</code> in <code>/etc/wsl.conf</code> to manage background services.</li><li>This lets you configure services that <strong>start automatically</strong> with WSL and continue running in the background, similar to a full Linux system.<br>Here’s a simplified <code>/etc/wsl.conf</code>:</li></ul><pre><code class="language-ini">[boot]
-systemd=true
-</code></pre><p>Restart WSL using:</p><pre><code class="language-powershell">wsl --shutdown
-</code></pre><p>Now, you can use <code>systemctl</code> to manage services.</p><h3 id="4%EF%B8%8F%E2%83%A3-windows-task-scheduler-or-background-scripts">4️⃣ <strong>Windows Task Scheduler or Background Scripts</strong></h3><p>You can set up a <strong>Windows Scheduled Task</strong> that:</p><ul><li>Starts WSL and runs a specific command/script at boot or on a schedule.<br>This way, you can <strong>trigger background tasks automatically</strong>, even without a terminal window.</li></ul><hr><h2 id="important-considerations"><strong>Important Considerations</strong></h2><p>✅ <strong>WSL is not a persistent environment</strong> like a dedicated Linux server. It’s designed for development and light server tasks, not continuous uptime.<br>✅ <strong>Using WSL for production services is generally discouraged</strong>—for long-running server tasks, a VM or a dedicated server is preferable.<br>✅ <strong>Hibernation or fast start</strong> in WSL2 only affects startup speed, not process persistence.<br>✅ <strong>Networking issues</strong> may arise if your process depends on ports. When WSL stops, those ports become unavailable.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>To summarize:</p><ul><li><strong>No</strong>, your Ubuntu environment in WSL does <strong>not keep running</strong> when you simply close the terminal.</li><li>But with tools like <strong>tmux</strong>, <strong>nohup</strong>, <strong>systemd</strong>, or a <strong>Windows Scheduled Task</strong>, you can <strong>keep processes running independently</strong>.</li><li>It’s worth understanding how WSL behaves so you can design your workflows accordingly.</li></ul><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### 2️⃣ **Run Processes in the Background**
+
+You can run a command with `&` to send it to the background:
+
+```bash
+my-long-running-script.sh &
+```
+
+However, if you **close the terminal**, the background process is still tied to the session and will stop.  
+For true independence, use `nohup`:
+
+```bash
+nohup my-long-running-script.sh > output.log 2>&1 &
+```
+
+This allows it to **persist** beyond the terminal session.
+
+### 3️⃣ **Leverage WSL’s `systemd` Support**
+
+In recent versions of **WSL2**, **systemd support** is available:
+
+-   You can enable `systemd` in `/etc/wsl.conf` to manage background services.
+-   This lets you configure services that **start automatically** with WSL and continue running in the background, similar to a full Linux system.  
+    Here’s a simplified `/etc/wsl.conf`:
+
+```ini
+[boot]
+systemd=true
+```
+
+Restart WSL using:
+
+```powershell
+wsl --shutdown
+```
+
+Now, you can use `systemctl` to manage services.
+
+### 4️⃣ **Windows Task Scheduler or Background Scripts**
+
+You can set up a **Windows Scheduled Task** that:
+
+-   Starts WSL and runs a specific command/script at boot or on a schedule.  
+    This way, you can **trigger background tasks automatically**, even without a terminal window.
+
+* * *
+
+## **Important Considerations**
+
+✅ **WSL is not a persistent environment** like a dedicated Linux server. It’s designed for development and light server tasks, not continuous uptime.  
+✅ **Using WSL for production services is generally discouraged**—for long-running server tasks, a VM or a dedicated server is preferable.  
+✅ **Hibernation or fast start** in WSL2 only affects startup speed, not process persistence.  
+✅ **Networking issues** may arise if your process depends on ports. When WSL stops, those ports become unavailable.
+
+* * *
+
+## **Finally**
+
+To summarize:
+
+-   **No**, your Ubuntu environment in WSL does **not keep running** when you simply close the terminal.
+-   But with tools like **tmux**, **nohup**, **systemd**, or a **Windows Scheduled Task**, you can **keep processes running independently**.
+-   It’s worth understanding how WSL behaves so you can design your workflows accordingly.

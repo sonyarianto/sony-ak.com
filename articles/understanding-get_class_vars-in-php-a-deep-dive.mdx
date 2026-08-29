@@ -5,8 +5,35 @@ description: "When working with classes in PHP, you may often need to retrieve t
 tags: ["php","testing","debugging","productivity"]
 ---
 
-<p>When working with <strong>classes</strong> in PHP, you may often need to retrieve the <strong>default values</strong> of a class's properties. PHP provides the <code>get_class_vars()</code> function to make this task easier. However, this function comes with some specific behaviors and limitations that you should be aware of.</p><h3 id="what-is-getclassvars"><strong>What is get_class_vars()?</strong></h3><p>The <code>get_class_vars()</code> function is used to <strong>retrieve an associative array of class properties along with their default values</strong>. This function does not require an instance of the class—it works directly on the class definition.</p><h3 id="syntax"><strong>Syntax</strong></h3><pre><code class="language-php">array get_class_vars(string $class_name)
-</code></pre><ul><li><strong><code>$class_name</code></strong>: The name of the class whose properties you want to fetch.</li><li><strong>Returns</strong>: An associative array where <strong>keys are property names</strong> and <strong>values are their default values</strong>.</li></ul><h3 id="key-characteristics-and-limitations"><strong>Key Characteristics and Limitations</strong></h3><ul><li><strong>Only public and protected properties</strong> are returned.</li><li><strong>Private properties are NOT included</strong>, even if they have default values.</li><li><strong>Static properties are included.</strong></li><li><strong>Only properties with explicitly defined default values are returned.</strong> Properties that do not have a default value will appear with an empty value.</li><li><strong>Dynamically assigned properties at runtime are NOT included.</strong></li></ul><h3 id="example-usage"><strong>Example Usage</strong></h3><h4 id="basic-example"><strong>Basic Example</strong></h4><pre><code class="language-php">class Demo {
+When working with **classes** in PHP, you may often need to retrieve the **default values** of a class's properties. PHP provides the `get_class_vars()` function to make this task easier. However, this function comes with some specific behaviors and limitations that you should be aware of.
+
+### **What is get\_class\_vars()?**
+
+The `get_class_vars()` function is used to **retrieve an associative array of class properties along with their default values**. This function does not require an instance of the class—it works directly on the class definition.
+
+### **Syntax**
+
+```php
+array get_class_vars(string $class_name)
+```
+
+-   **`$class_name`**: The name of the class whose properties you want to fetch.
+-   **Returns**: An associative array where **keys are property names** and **values are their default values**.
+
+### **Key Characteristics and Limitations**
+
+-   **Only public and protected properties** are returned.
+-   **Private properties are NOT included**, even if they have default values.
+-   **Static properties are included.**
+-   **Only properties with explicitly defined default values are returned.** Properties that do not have a default value will appear with an empty value.
+-   **Dynamically assigned properties at runtime are NOT included.**
+
+### **Example Usage**
+
+#### **Basic Example**
+
+```php
+class Demo {
     public string $name = "John";
     protected int $age = 25;
     private string $secret = "hidden";
@@ -15,39 +42,98 @@ tags: ["php","testing","debugging","productivity"]
 
 $vars = get_class_vars(Demo::class);
 print_r($vars);
-</code></pre><h4 id="expected-output"><strong>Expected Output</strong></h4><pre><code class="language-php">Array
+```
+
+#### **Expected Output**
+
+```php
+Array
 (
-    [name] =&gt; John
-    [age] =&gt; 25
-    [status] =&gt; active
+    [name] => John
+    [age] => 25
+    [status] => active
 )
-</code></pre><h5 id="explanation"><strong>Explanation:</strong></h5><ul><li><code>name</code> (public) is <strong>included</strong>.</li><li><code>age</code> (protected) is <strong>included</strong>.</li><li><code>status</code> (static public) is <strong>included</strong>.</li><li><code>secret</code> (private) is <strong>NOT included</strong>.</li></ul><h3 id="handling-properties-without-default-values"><strong>Handling Properties Without Default Values</strong></h3><p>If a class property is declared but does <strong>not</strong> have an assigned default value, <code>get_class_vars()</code> will return it with an empty value.</p><pre><code class="language-php">class Test {
+```
+
+##### **Explanation:**
+
+-   `name` (public) is **included**.
+-   `age` (protected) is **included**.
+-   `status` (static public) is **included**.
+-   `secret` (private) is **NOT included**.
+
+### **Handling Properties Without Default Values**
+
+If a class property is declared but does **not** have an assigned default value, `get_class_vars()` will return it with an empty value.
+
+```php
+class Test {
     public string $name;
     protected int $age;
     public static string $status;
 }
 
 print_r(get_class_vars(Test::class));
-</code></pre><h4 id="output"><strong>Output:</strong></h4><pre><code class="language-php">Array
+```
+
+#### **Output:**
+
+```php
+Array
 (
-    [name] =&gt;
-    [age] =&gt;
-    [status] =&gt;
+    [name] =>
+    [age] =>
+    [status] =>
 )
-</code></pre><p>Even though the properties are defined, they appear as empty because no <strong>default values</strong> were explicitly set.</p><h3 id="what-about-dynamically-assigned-properties"><strong>What About Dynamically Assigned Properties?</strong></h3><p>Properties that are dynamically assigned <strong>after object creation</strong> are not included in <code>get_class_vars()</code> because the function only retrieves the values <strong>defined in the class itself</strong>.</p><pre><code class="language-php">class Example {
+```
+
+Even though the properties are defined, they appear as empty because no **default values** were explicitly set.
+
+### **What About Dynamically Assigned Properties?**
+
+Properties that are dynamically assigned **after object creation** are not included in `get_class_vars()` because the function only retrieves the values **defined in the class itself**.
+
+```php
+class Example {
     public string $name = "Alice";
 }
 
 $obj = new Example();
-$obj-&gt;name = "Bob";
-$obj-&gt;newProperty = "Dynamically added";
+$obj->name = "Bob";
+$obj->newProperty = "Dynamically added";
 
 print_r(get_class_vars(Example::class));
-</code></pre><h4 id="output-1"><strong>Output:</strong></h4><pre><code class="language-php">Array
+```
+
+#### **Output:**
+
+```php
+Array
 (
-    [name] =&gt; Alice
+    [name] => Alice
 )
-</code></pre><h5 id="explanation-1"><strong>Explanation:</strong></h5><ul><li>The function retrieves only <strong>the default class properties</strong>.</li><li>The dynamically assigned <code>newProperty</code> is <strong>not included</strong>.</li><li>Even though <code>$obj-&gt;name</code> was changed to "Bob", <code>get_class_vars()</code> still returns the original <strong>default value</strong> "Alice".</li></ul><h3 id="other-considerations"><strong>Other Considerations</strong></h3><h4 id="1-does-not-work-on-object-instances">1. <strong>Does Not Work on Object Instances</strong></h4><p>Unlike <code>get_object_vars()</code>, which works on <strong>instances</strong>, <code>get_class_vars()</code> works only on <strong>class definitions</strong>.</p><h4 id="2-works-with-inheritance">2. <strong>Works with Inheritance</strong></h4><p>If a class extends another class, <code>get_class_vars()</code> will <strong>not include private properties from the parent class</strong>, but it <strong>will include protected and public properties</strong>.</p><h4 id="example-with-inheritance"><strong>Example with Inheritance</strong></h4><pre><code class="language-php">class ParentClass {
+```
+
+##### **Explanation:**
+
+-   The function retrieves only **the default class properties**.
+-   The dynamically assigned `newProperty` is **not included**.
+-   Even though `$obj->name` was changed to "Bob", `get_class_vars()` still returns the original **default value** "Alice".
+
+### **Other Considerations**
+
+#### 1\. **Does Not Work on Object Instances**
+
+Unlike `get_object_vars()`, which works on **instances**, `get_class_vars()` works only on **class definitions**.
+
+#### 2\. **Works with Inheritance**
+
+If a class extends another class, `get_class_vars()` will **not include private properties from the parent class**, but it **will include protected and public properties**.
+
+#### **Example with Inheritance**
+
+```php
+class ParentClass {
     public string $parentProp = "Hello";
     protected int $protectedProp = 123;
     private string $privateProp = "Secret";
@@ -58,14 +144,34 @@ class ChildClass extends ParentClass {
 }
 
 print_r(get_class_vars(ChildClass::class));
-</code></pre><h4 id="output-2"><strong>Output:</strong></h4><pre><code class="language-php">Array
-(
-    [parentProp] =&gt; Hello
-    [protectedProp] =&gt; 123
-    [childProp] =&gt; World
-)
-</code></pre><h5 id="explanation-2"><strong>Explanation:</strong></h5><ul><li><code>parentProp</code> (public) <strong>is included</strong>.</li><li><code>protectedProp</code> (protected) <strong>is included</strong>.</li><li><code>privateProp</code> (private) <strong>is NOT included</strong>.</li><li><code>childProp</code> (public) <strong>is included</strong>.</li></ul><h3 id="use-cases-for-getclassvars"><strong>Use Cases for get_class_vars()</strong></h3><ol><li><strong>Reflection and Debugging</strong> – Helps in inspecting class structures without creating an instance.</li><li><strong>Building Frameworks or Libraries</strong> – Useful for meta-programming where you need to analyze classes dynamically.</li><li><strong>Generating Default Configuration Files</strong> – If you store configuration settings as class properties, <code>get_class_vars()</code> can extract them easily.</li></ol><h3 id="finally"><strong>Finally</strong></h3><p>The <code>get_class_vars()</code> function is a <strong>powerful tool for retrieving default class properties</strong>, but it comes with <strong>important limitations</strong> such as <strong>excluding private properties and ignoring runtime assignments</strong>. When used correctly, it can be highly effective in <strong>debugging, meta-programming, and class analysis</strong>.</p><p>If you need to get <strong>instance properties</strong>, consider using <code>get_object_vars()</code> instead. Understanding the differences will help you decide when and where to use <code>get_class_vars()</code> effectively in your PHP projects!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+#### **Output:**
+
+```php
+Array
+(
+    [parentProp] => Hello
+    [protectedProp] => 123
+    [childProp] => World
+)
+```
+
+##### **Explanation:**
+
+-   `parentProp` (public) **is included**.
+-   `protectedProp` (protected) **is included**.
+-   `privateProp` (private) **is NOT included**.
+-   `childProp` (public) **is included**.
+
+### **Use Cases for get\_class\_vars()**
+
+1.  **Reflection and Debugging** – Helps in inspecting class structures without creating an instance.
+2.  **Building Frameworks or Libraries** – Useful for meta-programming where you need to analyze classes dynamically.
+3.  **Generating Default Configuration Files** – If you store configuration settings as class properties, `get_class_vars()` can extract them easily.
+
+### **Finally**
+
+The `get_class_vars()` function is a **powerful tool for retrieving default class properties**, but it comes with **important limitations** such as **excluding private properties and ignoring runtime assignments**. When used correctly, it can be highly effective in **debugging, meta-programming, and class analysis**.
+
+If you need to get **instance properties**, consider using `get_object_vars()` instead. Understanding the differences will help you decide when and where to use `get_class_vars()` effectively in your PHP projects!

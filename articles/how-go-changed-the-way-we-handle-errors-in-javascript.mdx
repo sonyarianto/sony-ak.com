@@ -5,13 +5,45 @@ description: "If you’ve been dabbling with both Go (Golang) and JavaScript , y
 tags: ["javascript","typescript","go","api","debugging"]
 ---
 
-<p>If you’ve been dabbling with both <strong>Go (Golang)</strong> and <strong>JavaScript</strong>, you’ve probably come across a quirky-looking line like this:</p><pre><code class="language-js">const [data, err] = myFn();
-</code></pre><p>At first glance, this might feel strange to JavaScript developers. But if you’ve spent some time with Go, this starts to make perfect sense. In fact, this pattern is <strong>inspired directly by Go’s way of handling errors</strong> — and it’s surprisingly useful in JavaScript, especially with async code.</p><hr><h2 id="go%E2%80%99s-error-handling-philosophy"><strong>Go’s Error Handling Philosophy</strong></h2><p>In Go, the idiomatic way to handle errors is:</p><pre><code class="language-go">data, err := myFunction()
+If you’ve been dabbling with both **Go (Golang)** and **JavaScript**, you’ve probably come across a quirky-looking line like this:
+
+```js
+const [data, err] = myFn();
+```
+
+At first glance, this might feel strange to JavaScript developers. But if you’ve spent some time with Go, this starts to make perfect sense. In fact, this pattern is **inspired directly by Go’s way of handling errors** — and it’s surprisingly useful in JavaScript, especially with async code.
+
+* * *
+
+## **Go’s Error Handling Philosophy**
+
+In Go, the idiomatic way to handle errors is:
+
+```go
+data, err := myFunction()
 if err != nil {
     // handle the error
 }
-</code></pre><p>Go <strong>doesn't throw exceptions</strong>. Instead, most functions return <strong>two values</strong>: the result and an error. You then explicitly check whether the error is <code>nil</code> or not. This approach encourages <strong>clear, predictable, and non-magical error handling</strong>.</p><hr><h2 id="the-javascript-version-of-that-pattern"><strong>The JavaScript Version of That Pattern</strong></h2><p>Since JavaScript supports array destructuring, we can mimic that Go-style error handling like this:</p><pre><code class="language-js">const [data, err] = myFn();
-</code></pre><p>But here’s the trick — <code>myFn()</code> needs to return an array with two values: <code>[result, error]</code>.</p><p>Here’s an example implementation:</p><pre><code class="language-js">function myFn() {
+```
+
+Go **doesn't throw exceptions**. Instead, most functions return **two values**: the result and an error. You then explicitly check whether the error is `nil` or not. This approach encourages **clear, predictable, and non-magical error handling**.
+
+* * *
+
+## **The JavaScript Version of That Pattern**
+
+Since JavaScript supports array destructuring, we can mimic that Go-style error handling like this:
+
+```js
+const [data, err] = myFn();
+```
+
+But here’s the trick — `myFn()` needs to return an array with two values: `[result, error]`.
+
+Here’s an example implementation:
+
+```js
+function myFn() {
     try {
         const result = doSomething(); // could throw
         return [result, null];
@@ -19,31 +51,91 @@ if err != nil {
         return [null, e];
     }
 }
-</code></pre><p>By returning a tuple <code>[data, err]</code>, you gain full control over the flow. No unexpected exceptions, no mysterious stack traces — just <strong>plain, readable logic</strong>.</p><hr><h2 id="taking-it-further-asyncawait-version"><strong>Taking It Further: Async/Await Version</strong></h2><p>This pattern becomes even more powerful with asynchronous code:</p><pre><code class="language-js">const [data, err] = await to(fetch('/api/user'));
-</code></pre><p>To make that work, you’ll need a helper called <code>to()</code>:</p><pre><code class="language-js">function to(promise) {
+```
+
+By returning a tuple `[data, err]`, you gain full control over the flow. No unexpected exceptions, no mysterious stack traces — just **plain, readable logic**.
+
+* * *
+
+## **Taking It Further: Async/Await Version**
+
+This pattern becomes even more powerful with asynchronous code:
+
+```js
+const [data, err] = await to(fetch('/api/user'));
+```
+
+To make that work, you’ll need a helper called `to()`:
+
+```js
+function to(promise) {
     return promise
-        .then(data =&gt; [data, null])
-        .catch(err =&gt; [null, err]);
+        .then(data => [data, null])
+        .catch(err => [null, err]);
 }
-</code></pre><p>Now, instead of writing this:</p><pre><code class="language-js">try {
+```
+
+Now, instead of writing this:
+
+```js
+try {
     const res = await fetch('/api/user');
     const data = await res.json();
 } catch (e) {
     console.error(e);
 }
-</code></pre><p>You can write this:</p><pre><code class="language-js">const [res, err] = await to(fetch('/api/user'));
+```
+
+You can write this:
+
+```js
+const [res, err] = await to(fetch('/api/user'));
 if (err) {
     console.error('Fetch failed:', err);
     return;
 }
 const data = await res.json();
-</code></pre><p>Much cleaner and <strong>easier to follow</strong>, especially when you’re dealing with multiple awaits in a row.</p><hr><h2 id="why-developers-love-this-pattern"><strong>Why Developers Love This Pattern</strong></h2><ul><li>✅ <strong>Explicit</strong>: No hidden errors — if <code>err</code> exists, you deal with it.</li><li>✅ <strong>Readable</strong>: Keeps error logic close to the success logic.</li><li>✅ <strong>Avoids Try/Catch Hell</strong>: No nesting, no mental gymnastics.</li><li>✅ <strong>Testable</strong>: Much easier to mock or simulate errors.</li></ul><hr><h2 id="a-typescript-bonus-if-you-care-about-types"><strong>A TypeScript Bonus (If You Care About Types)</strong></h2><p>Here’s a TypeScript-safe version of <code>to()</code>:</p><pre><code class="language-ts">function to&lt;T&gt;(promise: Promise&lt;T&gt;): Promise&lt;[T, null] | [null, any]&gt; {
-    return promise
-        .then(data =&gt; [data, null])
-        .catch(err =&gt; [null, err]);
-}
-</code></pre><p>It gives you proper type safety when destructuring <code>[data, err]</code>.</p><hr><h2 id="things-to-consider"><strong>Things to Consider</strong></h2><ul><li>⚠️ <strong>Discipline required</strong>: You must always check for <code>err</code>. If you ignore it, bugs may creep in.</li><li>⚠️ <strong>Not idiomatic JS</strong>: Not all developers are familiar with this pattern, so code reviews may need some context.</li><li>⚠️ <strong>Async-only context</strong>: <code>to()</code> works best when using <code>async/await</code>. For regular functions, you’d still need try/catch or a wrapper.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>This pattern may not be officially part of JavaScript, but it brings in the <strong>elegant discipline of Go</strong> into a language that often suffers from inconsistent error handling. If you’re building robust APIs, dealing with async flows, or simply want better readability, this Go-style approach can be a game changer.</p><p><strong>It’s not just about style — it’s about writing more intentional, reliable JavaScript.</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Much cleaner and **easier to follow**, especially when you’re dealing with multiple awaits in a row.
+
+* * *
+
+## **Why Developers Love This Pattern**
+
+-   ✅ **Explicit**: No hidden errors — if `err` exists, you deal with it.
+-   ✅ **Readable**: Keeps error logic close to the success logic.
+-   ✅ **Avoids Try/Catch Hell**: No nesting, no mental gymnastics.
+-   ✅ **Testable**: Much easier to mock or simulate errors.
+
+* * *
+
+## **A TypeScript Bonus (If You Care About Types)**
+
+Here’s a TypeScript-safe version of `to()`:
+
+```ts
+function to<T>(promise: Promise<T>): Promise<[T, null] | [null, any]> {
+    return promise
+        .then(data => [data, null])
+        .catch(err => [null, err]);
+}
+```
+
+It gives you proper type safety when destructuring `[data, err]`.
+
+* * *
+
+## **Things to Consider**
+
+-   ⚠️ **Discipline required**: You must always check for `err`. If you ignore it, bugs may creep in.
+-   ⚠️ **Not idiomatic JS**: Not all developers are familiar with this pattern, so code reviews may need some context.
+-   ⚠️ **Async-only context**: `to()` works best when using `async/await`. For regular functions, you’d still need try/catch or a wrapper.
+
+* * *
+
+## **Finally**
+
+This pattern may not be officially part of JavaScript, but it brings in the **elegant discipline of Go** into a language that often suffers from inconsistent error handling. If you’re building robust APIs, dealing with async flows, or simply want better readability, this Go-style approach can be a game changer.
+
+**It’s not just about style — it’s about writing more intentional, reliable JavaScript.**

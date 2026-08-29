@@ -5,48 +5,135 @@ description: "When working with Laravel's Eloquent ORM , it's common to write qu
 tags: ["php","laravel","database","performance","dns"]
 ---
 
-<p>When working with <strong>Laravel's Eloquent ORM</strong>, it's common to write queries that filter records based on relationships. Unfortunately, many developers — especially those coming from raw SQL or procedural PHP backgrounds — still rely on <strong>manual foreign key checks</strong> instead of taking full advantage of Eloquent's <strong>relationship-based querying</strong>.</p><p>In this article, we'll explore <strong>why you should prefer <code>whereBelongsTo()</code> over raw column filtering</strong>, how it works, and some important considerations to keep your code clean, expressive, and future-proof.</p><hr><h2 id="the-traditional-approach-and-why-it%E2%80%99s-not-ideal"><strong>The Traditional Approach (and Why It’s Not Ideal)</strong></h2><p>A typical query might look like this:</p><pre><code class="language-php">Post::where('category_id', $category-&gt;id)
-    -&gt;where('author_id', $user-&gt;id)
-    -&gt;first();
+When working with **Laravel's Eloquent ORM**, it's common to write queries that filter records based on relationships. Unfortunately, many developers — especially those coming from raw SQL or procedural PHP backgrounds — still rely on **manual foreign key checks** instead of taking full advantage of Eloquent's **relationship-based querying**.
 
-$post-&gt;author_id == $user-&gt;id;
-</code></pre><p>This works perfectly fine — the database will return the correct record. But there are a few problems:</p><ol><li><strong>Hardcoded foreign key column names</strong> — If you rename <code>author_id</code> or <code>category_id</code> in your database or models, you’ll have to update every query in your codebase.</li><li><strong>Less expressive intent</strong> — You're thinking in terms of <strong>database structure</strong> rather than <strong>domain logic</strong>.</li><li><strong>Weaker relationship validation</strong> — This approach assumes relationships exist but doesn’t leverage the actual relationship methods defined in your models.</li></ol><hr><h2 id="the-better-approach-wherebelongsto"><strong>The Better Approach: <code>whereBelongsTo()</code></strong></h2><p>Starting with Laravel 8.42, we can write:</p><pre><code class="language-php">Post::whereBelongsTo($category)
-    -&gt;whereBelongsTo($user, 'author')
-    -&gt;first();
+In this article, we'll explore **why you should prefer `whereBelongsTo()` over raw column filtering**, how it works, and some important considerations to keep your code clean, expressive, and future-proof.
 
-$post-&gt;author()-&gt;is($user);
-</code></pre><p>This is <strong>cleaner, shorter, and safer</strong>. Here’s why:</p><ul><li><strong>Relationship-driven</strong> — Instead of filtering on column names, it uses the relationship methods defined in your models (<code>author</code>, <code>category</code>).</li><li><strong>Automatic key resolution</strong> — Laravel determines the foreign key column from the relationship, so you don’t have to hardcode it.</li><li><strong>Expressive checks</strong> — <code>$post-&gt;author()-&gt;is($user)</code> reads like plain English and avoids manual <code>==</code> comparisons.</li></ul><hr><h2 id="why-this-matters-in-real-projects"><strong>Why This Matters in Real Projects</strong></h2><p>When your application grows and you have <strong>dozens of relationships</strong>, this style of querying will save you a lot of pain. Imagine changing your database schema — with <code>whereBelongsTo()</code>, you won’t need to hunt through hundreds of lines of code for foreign key references.</p><p>Also, by sticking to Eloquent relationships, <strong>your code becomes self-documenting</strong>. A new developer can instantly understand what the query is doing without needing to mentally translate <code>category_id</code> and <code>author_id</code> back to relationships.</p><hr><h2 id="real-world-example"><strong>Real-World Example</strong></h2><p>Assume we have the following model relationships:</p><pre><code class="language-php">class Post extends Model {
+* * *
+
+## **The Traditional Approach (and Why It’s Not Ideal)**
+
+A typical query might look like this:
+
+```php
+Post::where('category_id', $category->id)
+    ->where('author_id', $user->id)
+    ->first();
+
+$post->author_id == $user->id;
+```
+
+This works perfectly fine — the database will return the correct record. But there are a few problems:
+
+1.  **Hardcoded foreign key column names** — If you rename `author_id` or `category_id` in your database or models, you’ll have to update every query in your codebase.
+2.  **Less expressive intent** — You're thinking in terms of **database structure** rather than **domain logic**.
+3.  **Weaker relationship validation** — This approach assumes relationships exist but doesn’t leverage the actual relationship methods defined in your models.
+
+* * *
+
+## **The Better Approach: `whereBelongsTo()`**
+
+Starting with Laravel 8.42, we can write:
+
+```php
+Post::whereBelongsTo($category)
+    ->whereBelongsTo($user, 'author')
+    ->first();
+
+$post->author()->is($user);
+```
+
+This is **cleaner, shorter, and safer**. Here’s why:
+
+-   **Relationship-driven** — Instead of filtering on column names, it uses the relationship methods defined in your models (`author`, `category`).
+-   **Automatic key resolution** — Laravel determines the foreign key column from the relationship, so you don’t have to hardcode it.
+-   **Expressive checks** — `$post->author()->is($user)` reads like plain English and avoids manual `==` comparisons.
+
+* * *
+
+## **Why This Matters in Real Projects**
+
+When your application grows and you have **dozens of relationships**, this style of querying will save you a lot of pain. Imagine changing your database schema — with `whereBelongsTo()`, you won’t need to hunt through hundreds of lines of code for foreign key references.
+
+Also, by sticking to Eloquent relationships, **your code becomes self-documenting**. A new developer can instantly understand what the query is doing without needing to mentally translate `category_id` and `author_id` back to relationships.
+
+* * *
+
+## **Real-World Example**
+
+Assume we have the following model relationships:
+
+```php
+class Post extends Model {
     public function category() {
-        return $this-&gt;belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function author() {
-        return $this-&gt;belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class, 'author_id');
     }
 }
 
 class Category extends Model {
     public function posts() {
-        return $this-&gt;hasMany(Post::class);
+        return $this->hasMany(Post::class);
     }
 }
 
 class User extends Model {
     public function posts() {
-        return $this-&gt;hasMany(Post::class, 'author_id');
+        return $this->hasMany(Post::class, 'author_id');
     }
 }
-</code></pre><p>Instead of:</p><pre><code class="language-php">Post::where('category_id', $category-&gt;id)
-    -&gt;where('author_id', $user-&gt;id)
-    -&gt;first();
-</code></pre><p>We can simply write:</p><pre><code class="language-php">Post::whereBelongsTo($category)
-    -&gt;whereBelongsTo($user, 'author')
-    -&gt;first();
-</code></pre><p>And if we need to check ownership:</p><pre><code class="language-php">if ($post-&gt;author()-&gt;is($user)) {
+```
+
+Instead of:
+
+```php
+Post::where('category_id', $category->id)
+    ->where('author_id', $user->id)
+    ->first();
+```
+
+We can simply write:
+
+```php
+Post::whereBelongsTo($category)
+    ->whereBelongsTo($user, 'author')
+    ->first();
+```
+
+And if we need to check ownership:
+
+```php
+if ($post->author()->is($user)) {
     // User owns this post
 }
-</code></pre><hr><h2 id="extra-considerations-and-tips"><strong>Extra Considerations and Tips</strong></h2><ol><li><strong>Performance</strong><br><code>whereBelongsTo()</code> doesn’t add any extra overhead compared to raw <code>where()</code> clauses. It’s just syntactic sugar that translates into the same SQL query under the hood.</li><li><strong>Multiple Relationships</strong><br>You can chain multiple <code>whereBelongsTo()</code> calls in a single query to filter by different relationships.</li><li><strong>Avoid Magic Strings</strong><br>By referencing relationship names directly, you avoid typos in foreign key column names.</li><li><strong>Consistency Across the Codebase</strong><br>If your team adopts <code>whereBelongsTo()</code> consistently, reading and maintaining code becomes far easier.</li><li><strong>Leverage Model Relationships Everywhere</strong><br>Not just for querying — you can also eager load related models (<code>with()</code>) to avoid N+1 problems and keep your queries efficient.</li></ol><hr><h2 id="finally"><strong>Finally</strong></h2><p>While manually filtering on foreign key IDs works, it’s not the <strong>Laravel way</strong>. By using <code>whereBelongsTo()</code> and <code>$relation-&gt;is($model)</code>, your queries become:</p><ul><li><strong>More expressive</strong></li><li><strong>Easier to maintain</strong></li><li><strong>Less prone to bugs from schema changes</strong></li></ul><p>The goal of Laravel’s Eloquent ORM is to help you <strong>think in terms of objects and relationships</strong>, not raw database columns. Adopting <code>whereBelongsTo()</code> is a small but powerful step toward cleaner, more maintainable code.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+* * *
+
+## **Extra Considerations and Tips**
+
+1.  **Performance**  
+    `whereBelongsTo()` doesn’t add any extra overhead compared to raw `where()` clauses. It’s just syntactic sugar that translates into the same SQL query under the hood.
+2.  **Multiple Relationships**  
+    You can chain multiple `whereBelongsTo()` calls in a single query to filter by different relationships.
+3.  **Avoid Magic Strings**  
+    By referencing relationship names directly, you avoid typos in foreign key column names.
+4.  **Consistency Across the Codebase**  
+    If your team adopts `whereBelongsTo()` consistently, reading and maintaining code becomes far easier.
+5.  **Leverage Model Relationships Everywhere**  
+    Not just for querying — you can also eager load related models (`with()`) to avoid N+1 problems and keep your queries efficient.
+
+* * *
+
+## **Finally**
+
+While manually filtering on foreign key IDs works, it’s not the **Laravel way**. By using `whereBelongsTo()` and `$relation->is($model)`, your queries become:
+
+-   **More expressive**
+-   **Easier to maintain**
+-   **Less prone to bugs from schema changes**
+
+The goal of Laravel’s Eloquent ORM is to help you **think in terms of objects and relationships**, not raw database columns. Adopting `whereBelongsTo()` is a small but powerful step toward cleaner, more maintainable code.

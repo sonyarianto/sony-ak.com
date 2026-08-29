@@ -5,98 +5,113 @@ description: "XLOOKUP function in #Excel https://t.co/ygWJa9gIyX — Excel Easy 
 tags: ["security","performance","debugging","design","http"]
 ---
 
-<figure class="kg-card kg-embed-card"><blockquote class="twitter-tweet"><p lang="en" dir="ltr">XLOOKUP function in <a href="https://twitter.com/hashtag/Excel?src=hash&amp;ref_src=twsrc%5Etfw">#Excel</a> <a href="https://t.co/ygWJa9gIyX">https://t.co/ygWJa9gIyX</a></p>— Excel Easy (@ExcelEasy) <a href="https://twitter.com/ExcelEasy/status/1887155219898728467?ref_src=twsrc%5Etfw">February 5, 2025</a></blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></figure><p>If you've been working with Excel for a while, chances are you’ve struggled with <strong>VLOOKUP</strong>, <strong>HLOOKUP</strong>, or the often clumsy combination of <strong>INDEX</strong> and <strong>MATCH</strong>.<br>While they served us well, <strong>Excel’s XLOOKUP function</strong> arrived like a breath of fresh air — solving so many old pains elegantly.</p><p>In this article, we’ll dive into <strong>what XLOOKUP is</strong>, <strong>why it’s better</strong>, <strong>how to use it</strong>, and <strong>some real-world tricks</strong> you should know to level up your spreadsheets.</p><hr><h2 id="what-is-xlookup">What is XLOOKUP?</h2><p>In simple terms, <strong>XLOOKUP is the modern way to search for something in Excel</strong>.<br>Instead of looking only from <strong>left to right</strong> (like <code>VLOOKUP</code>) or getting tangled with column numbers, <strong>XLOOKUP</strong> lets you <strong>find a value anywhere</strong> and <strong>return a matching value cleanly</strong>.</p><p>The basic structure is extremely readable:</p><pre><code class="language-excel">XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])
-</code></pre><p><strong>That's it.</strong> No messy column numbers. No hidden approximate matches. No fear of breaking your formulas when inserting new columns.</p><hr><h2 id="why-xlookup-is-better-than-vlookup">Why XLOOKUP is Better Than VLOOKUP</h2><p>Here’s a quick side-by-side you need to remember:</p>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th align="left">Feature</th>
-<th align="left">VLOOKUP / HLOOKUP</th>
-<th align="left">XLOOKUP</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">Search Direction</td>
-<td align="left">Only left-to-right (VLOOKUP), top-to-bottom (HLOOKUP)</td>
-<td align="left">Any direction</td>
-</tr>
-<tr>
-<td align="left">Need Column Index Number?</td>
-<td align="left">Yes, prone to break</td>
-<td align="left">No, just reference the return array</td>
-</tr>
-<tr>
-<td align="left">Safe From Inserted Columns?</td>
-<td align="left">No, breaks easily</td>
-<td align="left">Yes, survives insertions</td>
-</tr>
-<tr>
-<td align="left">Default Match Type</td>
-<td align="left">Approximate (dangerous)</td>
-<td align="left">Exact (safer)</td>
-</tr>
-<tr>
-<td align="left">Handle Not Found?</td>
-<td align="left">Needs IFERROR wrapping</td>
-<td align="left">Built-in with <code inline="">[if_not_found]</code></td>
-</tr>
-<tr>
-<td align="left">Search Backward?</td>
-<td align="left">Impossible</td>
-<td align="left">Native support</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<p>In short: <strong>XLOOKUP is what VLOOKUP always wanted to be but never was.</strong></p><hr><h2 id="a-simple-example">A Simple Example</h2><p>Imagine you have the following table:</p>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th align="left">ID</th>
-<th align="left">Name</th>
-<th align="left">Salary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">72</td>
-<td align="left">Emily</td>
-<td align="left">64,901</td>
-</tr>
-<tr>
-<td align="left">66</td>
-<td align="left">James</td>
-<td align="left">70,855</td>
-</tr>
-<tr>
-<td align="left">14</td>
-<td align="left">Mia</td>
-<td align="left">188,657</td>
-</tr>
-<tr>
-<td align="left">30</td>
-<td align="left">John</td>
-<td align="left">97,566</td>
-</tr>
-<tr>
-<td align="left">53</td>
-<td align="left">Jessica</td>
-<td align="left">58,339</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<p>You want to find Jessica’s salary by entering her ID.</p><p>With XLOOKUP, the formula is incredibly intuitive:</p><pre><code class="language-excel">=XLOOKUP(53, B2:B6, D2:D6)
-</code></pre><p>No more worrying whether you should put “column 3” or “column 4” — <strong>you directly tell Excel where to search and where to fetch</strong>.</p><hr><h2 id="handling-errors-gracefully">Handling Errors Gracefully</h2><p>One brilliant feature: <strong>built-in error handling</strong>.<br>If a value is missing, you can instruct XLOOKUP to return a custom message:</p><pre><code class="language-excel">=XLOOKUP(999, B2:B6, D2:D6, "Not Found")
-</code></pre><p>Instead of throwing ugly <code>#N/A</code> errors at your user, you can now <strong>design a much more user-friendly spreadsheet</strong>.</p><hr><h2 id="beyond-basics-powerful-options">Beyond Basics: Powerful Options</h2><p>XLOOKUP also allows <strong>wildcard matching</strong> — handy for fuzzy searches:</p><pre><code class="language-excel">=XLOOKUP("*mia*", C2:C6, D2:D6, "Not Found", 2)
-</code></pre><p>And if you want <strong>to search from the bottom up</strong> (not just top to bottom), you can set <code>search_mode</code> to <code>-1</code>.<br>This is <strong>extremely useful</strong> if your data contains multiple entries and you want the latest one.</p><p>Example:</p><pre><code class="language-excel">=XLOOKUP(30, B2:B6, D2:D6, "Not Found", 0, -1)
-</code></pre><hr><h2 id="important-considerations-before-you-switch">Important Considerations Before You Switch</h2><ul><li><strong>Version Compatibility:</strong><br>XLOOKUP is <strong>only available in Excel 365, Excel 2019, and later versions</strong>.<br>If you’re sharing files with people using Excel 2016 or older, they won’t see XLOOKUP — they'll see broken formulas.</li><li><strong>Performance on Massive Datasets:</strong><br>XLOOKUP is efficient, but if you are handling <strong>hundreds of thousands of rows</strong>, it still pays to be careful with how you structure lookups (e.g., avoid recalculating unnecessarily).</li><li><strong>Array Returns:</strong><br>One little-known but powerful feature: <strong>XLOOKUP can return multiple columns at once</strong>.<br>You are not limited to returning just one field!</li></ul><p>Example:</p><pre><code class="language-excel">=XLOOKUP(53, B2:B6, C2:D6)
-</code></pre><p>returns <strong>both Name and Salary</strong> at once!</p><hr><h2 id="finally">Finally</h2><p>If you are still building everything with <strong>VLOOKUP</strong>, it is time to <strong>modernize your Excel skills</strong>.<br><strong>XLOOKUP is simpler, stronger, and smarter</strong> — it embodies what good software evolution looks like: fewer rules, fewer mistakes, better results.</p><p>It is not an exaggeration to say:<br><strong>Once you start using XLOOKUP, you will never want to go back.</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+> XLOOKUP function in [#Excel](https://twitter.com/hashtag/Excel?src=hash&ref_src=twsrc%5Etfw) [https://t.co/ygWJa9gIyX](https://t.co/ygWJa9gIyX)
+> 
+> — Excel Easy (@ExcelEasy) [February 5, 2025](https://twitter.com/ExcelEasy/status/1887155219898728467?ref_src=twsrc%5Etfw)
 
+If you've been working with Excel for a while, chances are you’ve struggled with **VLOOKUP**, **HLOOKUP**, or the often clumsy combination of **INDEX** and **MATCH**.  
+While they served us well, **Excel’s XLOOKUP function** arrived like a breath of fresh air — solving so many old pains elegantly.
+
+In this article, we’ll dive into **what XLOOKUP is**, **why it’s better**, **how to use it**, and **some real-world tricks** you should know to level up your spreadsheets.
+
+* * *
+
+## What is XLOOKUP?
+
+In simple terms, **XLOOKUP is the modern way to search for something in Excel**.  
+Instead of looking only from **left to right** (like `VLOOKUP`) or getting tangled with column numbers, **XLOOKUP** lets you **find a value anywhere** and **return a matching value cleanly**.
+
+The basic structure is extremely readable:
+
+```excel
+XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])
+```
+
+**That's it.** No messy column numbers. No hidden approximate matches. No fear of breaking your formulas when inserting new columns.
+
+* * *
+
+## Why XLOOKUP is Better Than VLOOKUP
+
+Here’s a quick side-by-side you need to remember:
+
+In short: **XLOOKUP is what VLOOKUP always wanted to be but never was.**
+
+* * *
+
+## A Simple Example
+
+Imagine you have the following table:
+
+You want to find Jessica’s salary by entering her ID.
+
+With XLOOKUP, the formula is incredibly intuitive:
+
+```excel
+=XLOOKUP(53, B2:B6, D2:D6)
+```
+
+No more worrying whether you should put “column 3” or “column 4” — **you directly tell Excel where to search and where to fetch**.
+
+* * *
+
+## Handling Errors Gracefully
+
+One brilliant feature: **built-in error handling**.  
+If a value is missing, you can instruct XLOOKUP to return a custom message:
+
+```excel
+=XLOOKUP(999, B2:B6, D2:D6, "Not Found")
+```
+
+Instead of throwing ugly `#N/A` errors at your user, you can now **design a much more user-friendly spreadsheet**.
+
+* * *
+
+## Beyond Basics: Powerful Options
+
+XLOOKUP also allows **wildcard matching** — handy for fuzzy searches:
+
+```excel
+=XLOOKUP("*mia*", C2:C6, D2:D6, "Not Found", 2)
+```
+
+And if you want **to search from the bottom up** (not just top to bottom), you can set `search_mode` to `-1`.  
+This is **extremely useful** if your data contains multiple entries and you want the latest one.
+
+Example:
+
+```excel
+=XLOOKUP(30, B2:B6, D2:D6, "Not Found", 0, -1)
+```
+
+* * *
+
+## Important Considerations Before You Switch
+
+-   **Version Compatibility:**  
+    XLOOKUP is **only available in Excel 365, Excel 2019, and later versions**.  
+    If you’re sharing files with people using Excel 2016 or older, they won’t see XLOOKUP — they'll see broken formulas.
+-   **Performance on Massive Datasets:**  
+    XLOOKUP is efficient, but if you are handling **hundreds of thousands of rows**, it still pays to be careful with how you structure lookups (e.g., avoid recalculating unnecessarily).
+-   **Array Returns:**  
+    One little-known but powerful feature: **XLOOKUP can return multiple columns at once**.  
+    You are not limited to returning just one field!
+
+Example:
+
+```excel
+=XLOOKUP(53, B2:B6, C2:D6)
+```
+
+returns **both Name and Salary** at once!
+
+* * *
+
+## Finally
+
+If you are still building everything with **VLOOKUP**, it is time to **modernize your Excel skills**.  
+**XLOOKUP is simpler, stronger, and smarter** — it embodies what good software evolution looks like: fewer rules, fewer mistakes, better results.
+
+It is not an exaggeration to say:  
+**Once you start using XLOOKUP, you will never want to go back.**

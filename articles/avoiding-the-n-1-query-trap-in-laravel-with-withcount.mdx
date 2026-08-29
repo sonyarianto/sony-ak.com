@@ -2,22 +2,89 @@
 title: "Avoiding the N+1 Query Trap in Laravel with withCount()"
 date: "2025-05-06T18:40:43.000Z"
 description: "When working with Laravel Eloquent, one of the most common performance pitfalls is the N+1 query problem —and it often happens without developers realizing it. ..."
-tags: ["laravel","database","performance","clean-code"]
+tags: ["php","laravel","database","performance","clean-code"]
 ---
 
-<p>When working with Laravel Eloquent, one of the most common performance pitfalls is the <strong>N+1 query problem</strong>—and it often happens without developers realizing it.</p><p>Imagine you're displaying a list of blog posts along with the number of comments each one has. You might think this is straightforward:</p><pre><code class="language-php">$posts = Post::all();
+When working with Laravel Eloquent, one of the most common performance pitfalls is the **N+1 query problem**—and it often happens without developers realizing it.
+
+Imagine you're displaying a list of blog posts along with the number of comments each one has. You might think this is straightforward:
+
+```php
+$posts = Post::all();
 foreach ($posts as $post) {
-    $post-&gt;comments_count = $post-&gt;comments()-&gt;count(); // 😬
+    $post->comments_count = $post->comments()->count(); // 😬
 }
-</code></pre><p>Looks simple, right? But under the hood, Laravel will:</p><ul><li>Execute <strong>1 query to fetch all posts</strong></li><li>Then <strong>1 query per post</strong> to count comments</li></ul><p>That’s <strong>N+1 queries total</strong>, where N = number of posts. If you have 100 posts, that’s <strong>101 queries</strong>. This quickly gets out of hand and kills performance, especially at scale.</p><hr><h2 id="%E2%9C%85-the-better-way-withcount">✅ The Better Way: <code>withCount()</code></h2><p>Laravel provides a built-in, elegant solution: <code>withCount()</code>. Here’s how you should do it:</p><pre><code class="language-php">$posts = Post::withCount('comments')-&gt;get();
-</code></pre><p>This executes <strong>only 1 query</strong>, using SQL’s <code>COUNT()</code> via a <code>LEFT JOIN</code>, and Laravel appends the result as a <code>comments_count</code> attribute to each post.</p><p>Now you can access:</p><pre><code class="language-php">echo $post-&gt;comments_count;
-</code></pre><p>No extra queries. No loops. Just fast, clean, efficient code.</p><hr><h2 id="%F0%9F%A7%A0-why-withcount-is-better">🧠 Why <code>withCount()</code> is Better</h2><ul><li><strong>Performance</strong>: Reduces your queries from N+1 to just 1.</li><li><strong>Clean Code</strong>: Avoids manual looping and counting logic.</li><li><strong>Database Optimization</strong>: The database does the counting in one optimized query.</li><li><strong>Scalability</strong>: Works well even with hundreds or thousands of records.</li></ul><hr><h2 id="%F0%9F%9A%80-bonus-multiple-counts-and-aliases">🚀 Bonus: Multiple Counts and Aliases</h2><p>You can count multiple relations in one go:</p><pre><code class="language-php">$posts = Post::withCount(['comments', 'likes']);
-</code></pre><p>Or use aliases for clarity:</p><pre><code class="language-php">$posts = Post::withCount([
+```
+
+Looks simple, right? But under the hood, Laravel will:
+
+-   Execute **1 query to fetch all posts**
+-   Then **1 query per post** to count comments
+
+That’s **N+1 queries total**, where N = number of posts. If you have 100 posts, that’s **101 queries**. This quickly gets out of hand and kills performance, especially at scale.
+
+* * *
+
+## ✅ The Better Way: `withCount()`
+
+Laravel provides a built-in, elegant solution: `withCount()`. Here’s how you should do it:
+
+```php
+$posts = Post::withCount('comments')->get();
+```
+
+This executes **only 1 query**, using SQL’s `COUNT()` via a `LEFT JOIN`, and Laravel appends the result as a `comments_count` attribute to each post.
+
+Now you can access:
+
+```php
+echo $post->comments_count;
+```
+
+No extra queries. No loops. Just fast, clean, efficient code.
+
+* * *
+
+## 🧠 Why `withCount()` is Better
+
+-   **Performance**: Reduces your queries from N+1 to just 1.
+-   **Clean Code**: Avoids manual looping and counting logic.
+-   **Database Optimization**: The database does the counting in one optimized query.
+-   **Scalability**: Works well even with hundreds or thousands of records.
+
+* * *
+
+## 🚀 Bonus: Multiple Counts and Aliases
+
+You can count multiple relations in one go:
+
+```php
+$posts = Post::withCount(['comments', 'likes']);
+```
+
+Or use aliases for clarity:
+
+```php
+$posts = Post::withCount([
     'comments as comments_total',
     'likes as total_likes'
 ]);
-</code></pre><p>Now you can access <code>$post-&gt;comments_total</code> and <code>$post-&gt;total_likes</code> with ease.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-common-mistakes-to-avoid">⚠️ Common Mistakes to Avoid</h2><ul><li><strong>Using <code>count()</code> in a loop</strong> — never do this unless you're intentionally querying live for one record.</li><li><strong>Forgetting to index foreign keys</strong> — if you're using <code>withCount()</code> on large tables, make sure your foreign keys are indexed.</li><li><strong>Assuming <code>with()</code> and <code>withCount()</code> are the same</strong> — <code>with()</code> eager loads the entire relationship, while <code>withCount()</code> only brings in the count.</li></ul><hr><h2 id="finally">Finally</h2><p>When building performant Laravel applications, always be on the lookout for <strong>query inefficiencies</strong>. Small changes like replacing <code>count()</code> in a loop with <code>withCount()</code> can lead to <strong>massive gains</strong> in response time and resource usage.</p><p><strong>Code smart, scale clean.</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Now you can access `$post->comments_total` and `$post->total_likes` with ease.
+
+* * *
+
+## ⚠️ Common Mistakes to Avoid
+
+-   **Using `count()` in a loop** — never do this unless you're intentionally querying live for one record.
+-   **Forgetting to index foreign keys** — if you're using `withCount()` on large tables, make sure your foreign keys are indexed.
+-   **Assuming `with()` and `withCount()` are the same** — `with()` eager loads the entire relationship, while `withCount()` only brings in the count.
+
+* * *
+
+## Finally
+
+When building performant Laravel applications, always be on the lookout for **query inefficiencies**. Small changes like replacing `count()` in a loop with `withCount()` can lead to **massive gains** in response time and resource usage.
+
+**Code smart, scale clean.**

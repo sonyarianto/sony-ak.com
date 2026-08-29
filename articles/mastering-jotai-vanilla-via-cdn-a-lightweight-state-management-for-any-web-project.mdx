@@ -5,20 +5,66 @@ description: "When people talk about state management , they usually mention big
 tags: ["javascript","react","laravel","svelte","vue"]
 ---
 
-<p>When people talk about <strong>state management</strong>, they usually mention big frameworks like React, Vue, or Angular. But what if you want <strong>reactive state</strong> without committing to a full framework?</p><p>Enter <strong>Jotai Vanilla</strong> — a <strong>minimal, atomic state management library</strong> that doesn’t require React and can even run directly in a plain HTML + JavaScript environment. With <strong>v2</strong>, Jotai offers a <strong><code>vanilla</code> export</strong> that you can use with or without any frontend framework.</p><p>In this article, we’ll explore <strong>how to use Jotai Vanilla via a CDN</strong>, step-by-step, with an <strong>increment &amp; decrement counter</strong> example.</p><hr><h2 id="why-jotai-vanilla"><strong>Why Jotai Vanilla?</strong></h2><p>While Jotai is often associated with React, its <strong>vanilla mode</strong> makes it perfect for:</p><ul><li><strong>Framework-agnostic development</strong> (no React needed)</li><li><strong>Small projects</strong> where installing npm packages isn’t worth it</li><li><strong>Embedding in CMS templates</strong> (WordPress, Laravel Blade, etc.)</li><li><strong>Lightweight widgets</strong> that only need a reactive store</li></ul><p><strong>Key benefits:</strong></p><ul><li><strong>Atomic state</strong> — each piece of state is isolated and subscribable</li><li><strong>No boilerplate</strong> — no reducers, actions, or complex setup</li><li><strong>Reactivity</strong> — changes trigger updates automatically for subscribed elements</li></ul><hr><h2 id="getting-started-via-cdn"><strong>Getting Started via CDN</strong></h2><p>Unlike React or Vue, Jotai doesn’t ship a UMD file like <code>jotai.min.js</code>. Instead, we can <strong>import it as an ES module</strong> from a CDN such as:</p><ul><li><a href="https://esm.sh/">esm.sh</a></li><li><a href="https://esm.run/">esm.run</a></li></ul><p>We’ll <strong>lock the version</strong> for stability. For example:</p><pre><code class="language-js">import { atom } from "https://esm.sh/jotai@2.13.0/vanilla";
-import { createStore } from "https://esm.sh/jotai@2.13.0/vanilla";
-</code></pre><p>Locking the version prevents unexpected breaking changes when new Jotai versions are released.</p><hr><h2 id="example-increment-decrement-counter"><strong>Example: Increment &amp; Decrement Counter</strong></h2><p>Here’s the <strong>full working example</strong>:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-  &lt;meta charset="UTF-8"&gt;
-  &lt;title&gt;Jotai Vanilla Example&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div id="counter" style="font-size: 2em; margin-bottom: 10px;"&gt;0&lt;/div&gt;
-  &lt;button id="decrement"&gt;Decrement&lt;/button&gt;
-  &lt;button id="increment"&gt;Increment&lt;/button&gt;
+When people talk about **state management**, they usually mention big frameworks like React, Vue, or Angular. But what if you want **reactive state** without committing to a full framework?
 
-  &lt;script type="module"&gt;
+Enter **Jotai Vanilla** — a **minimal, atomic state management library** that doesn’t require React and can even run directly in a plain HTML + JavaScript environment. With **v2**, Jotai offers a **`vanilla` export** that you can use with or without any frontend framework.
+
+In this article, we’ll explore **how to use Jotai Vanilla via a CDN**, step-by-step, with an **increment & decrement counter** example.
+
+* * *
+
+## **Why Jotai Vanilla?**
+
+While Jotai is often associated with React, its **vanilla mode** makes it perfect for:
+
+-   **Framework-agnostic development** (no React needed)
+-   **Small projects** where installing npm packages isn’t worth it
+-   **Embedding in CMS templates** (WordPress, Laravel Blade, etc.)
+-   **Lightweight widgets** that only need a reactive store
+
+**Key benefits:**
+
+-   **Atomic state** — each piece of state is isolated and subscribable
+-   **No boilerplate** — no reducers, actions, or complex setup
+-   **Reactivity** — changes trigger updates automatically for subscribed elements
+
+* * *
+
+## **Getting Started via CDN**
+
+Unlike React or Vue, Jotai doesn’t ship a UMD file like `jotai.min.js`. Instead, we can **import it as an ES module** from a CDN such as:
+
+-   [esm.sh](https://esm.sh/)
+-   [esm.run](https://esm.run/)
+
+We’ll **lock the version** for stability. For example:
+
+```js
+import { atom } from "https://esm.sh/jotai@2.13.0/vanilla";
+import { createStore } from "https://esm.sh/jotai@2.13.0/vanilla";
+```
+
+Locking the version prevents unexpected breaking changes when new Jotai versions are released.
+
+* * *
+
+## **Example: Increment & Decrement Counter**
+
+Here’s the **full working example**:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Jotai Vanilla Example</title>
+</head>
+<body>
+  <div id="counter" style="font-size: 2em; margin-bottom: 10px;">0</div>
+  <button id="decrement">Decrement</button>
+  <button id="increment">Increment</button>
+
+  <script type="module">
     import { atom } from "https://esm.sh/jotai@2.13.0/vanilla";
     import { createStore } from "https://esm.sh/jotai@2.13.0/vanilla";
 
@@ -29,7 +75,7 @@ import { createStore } from "https://esm.sh/jotai@2.13.0/vanilla";
     const countAtom = atom(0);
 
     // 3. UI update function
-    const updateUI = () =&gt; {
+    const updateUI = () => {
       document.getElementById("counter").textContent = store.get(countAtom);
     };
 
@@ -37,24 +83,92 @@ import { createStore } from "https://esm.sh/jotai@2.13.0/vanilla";
     store.sub(countAtom, updateUI);
 
     // 5. Button event listeners
-    document.getElementById("increment").addEventListener("click", () =&gt; {
-      store.set(countAtom, (c) =&gt; c + 1);
+    document.getElementById("increment").addEventListener("click", () => {
+      store.set(countAtom, (c) => c + 1);
     });
 
-    document.getElementById("decrement").addEventListener("click", () =&gt; {
-      store.set(countAtom, (c) =&gt; c - 1);
+    document.getElementById("decrement").addEventListener("click", () => {
+      store.set(countAtom, (c) => c - 1);
     });
 
     // 6. Initial render
     updateUI();
-  &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">👨‍💻</div><div class="kg-callout-text">Demo <a href="https://onecompiler.com/html/43t9yuvpw" rel="noreferrer">here</a>.</div></div><hr><h2 id="how-it-works"><strong>How It Works</strong></h2><ol><li><strong><code>createStore()</code></strong> — creates an isolated Jotai store to hold atoms.</li><li><code><strong>atom(0)</strong></code> — creates an atom with an initial value of <code>0</code>.</li><li><strong><code>store.get(atom)</code></strong> — retrieves the current atom value.</li><li><strong><code>store.set(atom, updater)</code></strong> — updates the atom value.</li><li><strong><code>store.sub(atom, listener)</code></strong> — subscribes to changes so the UI updates automatically.</li></ol><hr><h2 id="additional-considerations"><strong>Additional Considerations</strong></h2><h3 id="1-version-locking"><strong>1. Version Locking</strong></h3><p>Always <strong>lock the Jotai version</strong> in your CDN URL. This prevents issues if a future version introduces breaking changes.</p><h3 id="2-performance"><strong>2. Performance</strong></h3><p>For small apps, Jotai Vanilla is extremely lightweight. But if your state grows complex:</p><ul><li>Use <strong>multiple atoms</strong> instead of one big state object.</li><li>Subscribe only where needed to avoid unnecessary re-renders.</li></ul><h3 id="3-persistence"><strong>3. Persistence</strong></h3><p>To keep the state across page reloads, integrate with <code>localStorage</code>:</p><pre><code class="language-js">store.sub(countAtom, () =&gt; {
+  </script>
+</body>
+</html>
+```
+
+👨‍💻
+
+Demo [here](https://onecompiler.com/html/43t9yuvpw).
+
+* * *
+
+## **How It Works**
+
+1.  **`createStore()`** — creates an isolated Jotai store to hold atoms.
+2.  `**atom(0)**` — creates an atom with an initial value of `0`.
+3.  **`store.get(atom)`** — retrieves the current atom value.
+4.  **`store.set(atom, updater)`** — updates the atom value.
+5.  **`store.sub(atom, listener)`** — subscribes to changes so the UI updates automatically.
+
+* * *
+
+## **Additional Considerations**
+
+### **1\. Version Locking**
+
+Always **lock the Jotai version** in your CDN URL. This prevents issues if a future version introduces breaking changes.
+
+### **2\. Performance**
+
+For small apps, Jotai Vanilla is extremely lightweight. But if your state grows complex:
+
+-   Use **multiple atoms** instead of one big state object.
+-   Subscribe only where needed to avoid unnecessary re-renders.
+
+### **3\. Persistence**
+
+To keep the state across page reloads, integrate with `localStorage`:
+
+```js
+store.sub(countAtom, () => {
   localStorage.setItem("count", store.get(countAtom));
 });
 
 // Restore on page load
 const saved = localStorage.getItem("count");
 if (saved !== null) store.set(countAtom, parseInt(saved, 10));
-</code></pre><h3 id="4-integration-with-frameworks"><strong>4. Integration with Frameworks</strong></h3><p>Even in a CDN setup, you can use <strong>Jotai Vanilla</strong> with:</p><ul><li>React</li><li>Preact</li><li>Svelte</li><li>Vue (via wrappers)</li></ul><p>This makes it easy to migrate from a pure HTML setup to a full app later.</p><h3 id="5-event-handling"><strong>5. Event Handling</strong></h3><p>You can manage <strong>multiple buttons, inputs, or UI parts</strong> from the same atom. Jotai’s subscription model ensures only the subscribed parts update.</p><hr><h2 id="when-should-you-use-jotai-vanilla-via-cdn"><strong>When Should You Use Jotai Vanilla via CDN?</strong></h2><ul><li><strong>Quick prototypes</strong> — no npm install, no bundler setup.</li><li><strong>Embeddable widgets</strong> — can be dropped into existing sites.</li><li><strong>Learning purposes</strong> — great for understanding atomic state before diving into a full framework.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>Jotai Vanilla is an <strong>elegant, minimalistic state management solution</strong> that works seamlessly even without a build system.<br>Using it <strong>via CDN</strong> keeps things simple and lightweight, perfect for small projects or embedded scripts. With <strong>atoms</strong> as your building blocks, you can start small (like our counter) and scale up to more complex UIs — all without the overhead of a large framework.</p><p>If you’ve been looking for a <strong>reactive, framework-free state management</strong> option, Jotai Vanilla is absolutely worth exploring.</p>
+```
+
+### **4\. Integration with Frameworks**
+
+Even in a CDN setup, you can use **Jotai Vanilla** with:
+
+-   React
+-   Preact
+-   Svelte
+-   Vue (via wrappers)
+
+This makes it easy to migrate from a pure HTML setup to a full app later.
+
+### **5\. Event Handling**
+
+You can manage **multiple buttons, inputs, or UI parts** from the same atom. Jotai’s subscription model ensures only the subscribed parts update.
+
+* * *
+
+## **When Should You Use Jotai Vanilla via CDN?**
+
+-   **Quick prototypes** — no npm install, no bundler setup.
+-   **Embeddable widgets** — can be dropped into existing sites.
+-   **Learning purposes** — great for understanding atomic state before diving into a full framework.
+
+* * *
+
+## **Finally**
+
+Jotai Vanilla is an **elegant, minimalistic state management solution** that works seamlessly even without a build system.  
+Using it **via CDN** keeps things simple and lightweight, perfect for small projects or embedded scripts. With **atoms** as your building blocks, you can start small (like our counter) and scale up to more complex UIs — all without the overhead of a large framework.
+
+If you’ve been looking for a **reactive, framework-free state management** option, Jotai Vanilla is absolutely worth exploring.

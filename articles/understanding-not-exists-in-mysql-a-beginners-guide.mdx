@@ -5,30 +5,79 @@ description: "In MySQL, the NOT EXISTS condition is a useful tool for filtering 
 tags: ["database","performance","productivity"]
 ---
 
-<p>In MySQL, the <code>NOT EXISTS</code> condition is a useful tool for filtering data based on the absence of a certain relationship between two tables. It allows you to query rows from one table that do not have corresponding entries in another table. This is particularly helpful when you need to find data that is missing from one table but present in another.</p><h4 id="what-is-not-exists">What is <code>NOT EXISTS</code>?</h4><p><code>NOT EXISTS</code> is used in a subquery to check for non-existence. It returns <code>TRUE</code> if the subquery does not return any rows. If the subquery finds a row, <code>NOT EXISTS</code> returns <code>FALSE</code>.</p><h3 id="basic-syntax-of-not-exists">Basic Syntax of <code>NOT EXISTS</code></h3><pre><code class="language-sql">SELECT columns
+In MySQL, the `NOT EXISTS` condition is a useful tool for filtering data based on the absence of a certain relationship between two tables. It allows you to query rows from one table that do not have corresponding entries in another table. This is particularly helpful when you need to find data that is missing from one table but present in another.
+
+#### What is `NOT EXISTS`?
+
+`NOT EXISTS` is used in a subquery to check for non-existence. It returns `TRUE` if the subquery does not return any rows. If the subquery finds a row, `NOT EXISTS` returns `FALSE`.
+
+### Basic Syntax of `NOT EXISTS`
+
+```sql
+SELECT columns
 FROM table1
 WHERE NOT EXISTS (subquery);
-</code></pre><p><strong>subquery</strong>: This is a query that checks whether certain rows exist in a related table. If no matching rows are found, <code>NOT EXISTS</code> returns <code>TRUE</code> for the outer query.</p><h3 id="simple-example">Simple Example</h3><p>Let’s say you are managing a small online store. You have two tables: <code>customers</code> and <code>orders</code>.</p><ol><li><strong><code>customers</code></strong> table (list of all customers):<ul><li><code>customer_id</code>: The unique ID of each customer.</li><li><code>name</code>: The name of the customer.</li></ul></li><li><strong><code>orders</code></strong> table (list of orders made by customers):<ul><li><code>order_id</code>: The unique ID of each order.</li><li><code>customer_id</code>: The ID of the customer who made the order.</li></ul></li></ol><p>You want to find out which customers have <strong>never</strong> made any orders. Here’s how you can use <code>NOT EXISTS</code> to accomplish this.</p><h3 id="example-tables">Example Tables</h3><p><strong><code>customers</code> Table:</strong></p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>customer_id</th><th>name</th></tr></thead><tbody><tr><td>1</td><td>Alice</td></tr><tr><td>2</td><td>Bob</td></tr><tr><td>3</td><td>Charlie</td></tr><tr><td>4</td><td>Diana</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<p><strong><code>orders</code> Table:</strong></p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>order_id</th><th>customer_id</th></tr></thead><tbody><tr><td>101</td><td>1</td></tr><tr><td>102</td><td>2</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<p>In this example:</p><ul><li>Alice and Bob have made orders (their <code>customer_id</code> exists in the <code>orders</code> table).</li><li>Charlie and Diana have <strong>not</strong> made any orders.</li></ul><h3 id="query-using-not-exists">Query Using <code>NOT EXISTS</code></h3><p>We can use <code>NOT EXISTS</code> to find customers who do not have any matching rows in the <code>orders</code> table.</p><pre><code class="language-sql">SELECT c.name
+```
+
+**subquery**: This is a query that checks whether certain rows exist in a related table. If no matching rows are found, `NOT EXISTS` returns `TRUE` for the outer query.
+
+### Simple Example
+
+Let’s say you are managing a small online store. You have two tables: `customers` and `orders`.
+
+1.  **`customers`** table (list of all customers):
+    -   `customer_id`: The unique ID of each customer.
+    -   `name`: The name of the customer.
+2.  **`orders`** table (list of orders made by customers):
+    -   `order_id`: The unique ID of each order.
+    -   `customer_id`: The ID of the customer who made the order.
+
+You want to find out which customers have **never** made any orders. Here’s how you can use `NOT EXISTS` to accomplish this.
+
+### Example Tables
+
+**`customers` Table:**
+
+**`orders` Table:**
+
+In this example:
+
+-   Alice and Bob have made orders (their `customer_id` exists in the `orders` table).
+-   Charlie and Diana have **not** made any orders.
+
+### Query Using `NOT EXISTS`
+
+We can use `NOT EXISTS` to find customers who do not have any matching rows in the `orders` table.
+
+```sql
+SELECT c.name
 FROM customers c
 WHERE NOT EXISTS (
     SELECT 1
     FROM orders o
     WHERE o.customer_id = c.customer_id
 );
-</code></pre><h3 id="explanation-of-the-query">Explanation of the Query:</h3><ol><li><strong>Outer query</strong>:<ul><li>We are selecting <code>name</code> from the <code>customers</code> table (aliased as <code>c</code>).</li><li>We want to return customers whose <code>customer_id</code> does <strong>not</strong> have a matching entry in the <code>orders</code> table.</li></ul></li><li><strong>Subquery</strong>:<ul><li>The subquery checks the <code>orders</code> table to see if a matching <code>customer_id</code> exists.</li><li>If it finds a matching row, the <code>NOT EXISTS</code> condition will return <code>FALSE</code>, meaning that customer <strong>has</strong> placed an order.</li></ul></li><li><strong>Result</strong>:<ul><li>If the subquery finds no matching rows (i.e., the customer has not placed any orders), the outer query will return that customer’s name.</li></ul></li></ol><p>Output of the Query:</p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>name</th></tr></thead><tbody><tr><td>Charlie</td></tr><tr><td>Diana</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<p>The result shows that Charlie and Diana have not made any orders.</p><h3 id="why-use-not-exists">Why Use <code>NOT EXISTS</code>?</h3><p><code>NOT EXISTS</code> is preferred when you want to ensure that the subquery checks for non-existence, as opposed to using alternatives like <code>LEFT JOIN</code> with <code>IS NULL</code>. The performance of <code>NOT EXISTS</code> can be better in some scenarios, especially when indexes are properly applied on the related columns.</p><h3 id="finally">Finally</h3><p>The <code>NOT EXISTS</code> clause is a powerful way to query for records that do not exist in another table. It’s helpful when you need to filter out data that lacks certain relationships.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### Explanation of the Query:
+
+1.  **Outer query**:
+    -   We are selecting `name` from the `customers` table (aliased as `c`).
+    -   We want to return customers whose `customer_id` does **not** have a matching entry in the `orders` table.
+2.  **Subquery**:
+    -   The subquery checks the `orders` table to see if a matching `customer_id` exists.
+    -   If it finds a matching row, the `NOT EXISTS` condition will return `FALSE`, meaning that customer **has** placed an order.
+3.  **Result**:
+    -   If the subquery finds no matching rows (i.e., the customer has not placed any orders), the outer query will return that customer’s name.
+
+Output of the Query:
+
+The result shows that Charlie and Diana have not made any orders.
+
+### Why Use `NOT EXISTS`?
+
+`NOT EXISTS` is preferred when you want to ensure that the subquery checks for non-existence, as opposed to using alternatives like `LEFT JOIN` with `IS NULL`. The performance of `NOT EXISTS` can be better in some scenarios, especially when indexes are properly applied on the related columns.
+
+### Finally
+
+The `NOT EXISTS` clause is a powerful way to query for records that do not exist in another table. It’s helpful when you need to filter out data that lacks certain relationships.

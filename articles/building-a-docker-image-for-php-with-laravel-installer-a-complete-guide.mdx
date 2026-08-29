@@ -5,12 +5,27 @@ description: "When creating a Docker container for your PHP environment, ensurin
 tags: ["javascript","php","laravel","database","bash"]
 ---
 
-<p>When creating a Docker container for your PHP environment, ensuring it’s optimized for your Laravel projects can save significant time and effort. By integrating the Laravel installer into your Docker image, you’ll have a streamlined setup where you can directly scaffold new Laravel projects within your container. Here’s a <strong>step-by-step guide</strong> to building a PHP Docker image with the Laravel installer, along with additional tips and considerations.</p><h2 id="why-include-the-laravel-installer-in-your-php-docker-image"><strong>Why Include the Laravel Installer in Your PHP Docker Image?</strong></h2><p>The Laravel installer is a convenient tool for bootstrapping new Laravel projects with a single command (<code>laravel new &lt;project-name&gt;</code>). Including it in your Docker image eliminates the need to install it every time you start a container, boosting productivity.</p><h2 id="step-1-base-dockerfile-setup"><strong>Step 1: Base Dockerfile Setup</strong></h2><p>We begin by extending the official <code>php:8.4-fpm</code> image and installing essential system dependencies. These include libraries and extensions required by PHP and Laravel, such as MySQL, PostgreSQL, GD for image manipulation, and Memcached.</p><h3 id="dockerfile-overview"><strong>Dockerfile Overview</strong></h3><p>Here’s the Dockerfile setup:</p><pre><code>FROM php:8.4-fpm
+When creating a Docker container for your PHP environment, ensuring it’s optimized for your Laravel projects can save significant time and effort. By integrating the Laravel installer into your Docker image, you’ll have a streamlined setup where you can directly scaffold new Laravel projects within your container. Here’s a **step-by-step guide** to building a PHP Docker image with the Laravel installer, along with additional tips and considerations.
+
+## **Why Include the Laravel Installer in Your PHP Docker Image?**
+
+The Laravel installer is a convenient tool for bootstrapping new Laravel projects with a single command (`laravel new <project-name>`). Including it in your Docker image eliminates the need to install it every time you start a container, boosting productivity.
+
+## **Step 1: Base Dockerfile Setup**
+
+We begin by extending the official `php:8.4-fpm` image and installing essential system dependencies. These include libraries and extensions required by PHP and Laravel, such as MySQL, PostgreSQL, GD for image manipulation, and Memcached.
+
+### **Dockerfile Overview**
+
+Here’s the Dockerfile setup:
+
+```
+FROM php:8.4-fpm
 
 # Install system dependencies
 RUN apt-get update \
-    &amp;&amp; apt-get upgrade -y \
-    &amp;&amp; apt-get install -y \
+    && apt-get upgrade -y \
+    && apt-get install -y \
     git \
     zip \
     unzip \
@@ -23,44 +38,124 @@ RUN apt-get update \
     zlib1g-dev \
     libsqlite3-dev \
     libssl-dev \
-    &amp;&amp; docker-php-ext-configure gd --with-freetype --with-jpeg \
-    &amp;&amp; docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql pdo_pgsql pgsql pdo exif pdo_sqlite \
-    &amp;&amp; apt-get clean \
-    &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-</code></pre><p><strong>Key Points:</strong></p><ul><li><strong>PHP Extensions:</strong> Installing extensions like <code>pdo_mysql</code>, <code>gd</code>, and <code>pdo_pgsql</code> ensures compatibility with common Laravel packages.</li><li><strong>System Libraries:</strong> Tools like <code>zip</code>, <code>unzip</code>, and <code>git</code> are essential for Laravel and Composer operations.</li></ul><h2 id="step-2-adding-memcached-support"><strong>Step 2: Adding Memcached Support</strong></h2><p>Memcached is commonly used for caching in Laravel. Here, we install the Memcached PHP extension from source:</p><pre><code># Install memcached from source
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql pdo_pgsql pgsql pdo exif pdo_sqlite \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+```
+
+**Key Points:**
+
+-   **PHP Extensions:** Installing extensions like `pdo_mysql`, `gd`, and `pdo_pgsql` ensures compatibility with common Laravel packages.
+-   **System Libraries:** Tools like `zip`, `unzip`, and `git` are essential for Laravel and Composer operations.
+
+## **Step 2: Adding Memcached Support**
+
+Memcached is commonly used for caching in Laravel. Here, we install the Memcached PHP extension from source:
+
+```
+# Install memcached from source
 RUN curl -L -o php-memcached.tar.gz https://github.com/php-memcached-dev/php-memcached/archive/refs/tags/v3.3.0.tar.gz \
-    &amp;&amp; tar -xvzf php-memcached.tar.gz \
-    &amp;&amp; cd php-memcached-3.3.0 \
-    &amp;&amp; phpize \
-    &amp;&amp; ./configure \
-    &amp;&amp; make \
-    &amp;&amp; make install \
-    &amp;&amp; docker-php-ext-enable memcached
-</code></pre><p><strong>Key Consideration:</strong></p><ul><li>Always ensure you’re using the latest stable version of extensions for compatibility and security.</li></ul><h2 id="step-3-installing-composer"><strong>Step 3: Installing Composer</strong></h2><p>Composer is the backbone of modern PHP development, and it’s a must-have for any Laravel project. Install Composer globally:</p><pre><code># Install composer
+    && tar -xvzf php-memcached.tar.gz \
+    && cd php-memcached-3.3.0 \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && docker-php-ext-enable memcached
+```
+
+**Key Consideration:**
+
+-   Always ensure you’re using the latest stable version of extensions for compatibility and security.
+
+## **Step 3: Installing Composer**
+
+Composer is the backbone of modern PHP development, and it’s a must-have for any Laravel project. Install Composer globally:
+
+```
+# Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-</code></pre><h2 id="step-4-adding-laravel-installer"><strong>Step 4: Adding Laravel Installer</strong></h2><p>With Composer installed, you can add the Laravel installer to your image:</p><pre><code># Install Laravel Installer globally
+```
+
+## **Step 4: Adding Laravel Installer**
+
+With Composer installed, you can add the Laravel installer to your image:
+
+```
+# Install Laravel Installer globally
 RUN composer global require laravel/installer \
-    &amp;&amp; echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' &gt;&gt; /root/.bashrc
-</code></pre><p><strong>Key Points:</strong></p><ul><li>The Laravel installer is installed globally using Composer.</li><li>The <code>PATH</code> update ensures that the <code>laravel</code> command is accessible from anywhere inside the container.</li></ul><hr><h2 id="step-5-building-and-verifying-your-image"><strong>Step 5: Building and Verifying Your Image</strong></h2><ol><li><strong>Build the Docker Image:</strong></li></ol><pre><code>docker build -t php-laravel:latest .
-</code></pre><ol start="2"><li><strong>Run a Container from the Image:</strong></li></ol><pre><code>docker run -it --rm php-laravel:latest bash
-</code></pre><ol start="3"><li><strong>Verify Laravel Installer:</strong> Inside the container, run:</li></ol><pre><code>laravel --version
-</code></pre><p>You should see the Laravel installer version output.</p><h2 id="additional-considerations"><strong>Additional Considerations</strong></h2><ol><li><strong>Set Up a Non-Root User:</strong> By default, PHP Docker containers run as the <code>root</code> user. This can cause <strong>file permission issues</strong> in your Laravel projects. Add a non-root user:</li></ol><pre><code>RUN useradd -ms /bin/bash laravel
+    && echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> /root/.bashrc
+```
+
+**Key Points:**
+
+-   The Laravel installer is installed globally using Composer.
+-   The `PATH` update ensures that the `laravel` command is accessible from anywhere inside the container.
+
+* * *
+
+## **Step 5: Building and Verifying Your Image**
+
+1.  **Build the Docker Image:**
+
+```
+docker build -t php-laravel:latest .
+```
+
+2.  **Run a Container from the Image:**
+
+```
+docker run -it --rm php-laravel:latest bash
+```
+
+3.  **Verify Laravel Installer:** Inside the container, run:
+
+```
+laravel --version
+```
+
+You should see the Laravel installer version output.
+
+## **Additional Considerations**
+
+1.  **Set Up a Non-Root User:** By default, PHP Docker containers run as the `root` user. This can cause **file permission issues** in your Laravel projects. Add a non-root user:
+
+```
+RUN useradd -ms /bin/bash laravel
 USER laravel
-</code></pre><ol start="2"><li><strong>Install Node.js and npm:</strong> Many Laravel projects use tools like <strong>Vite</strong> for asset bundling. Consider adding Node.js:</li></ol><pre><code>RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
-    &amp;&amp; apt-get install -y nodejs
-</code></pre><ol start="3"><li><strong>Optimize Image Size:</strong> To reduce image size, consider using <strong>multi-stage builds</strong>:</li></ol><pre><code>FROM php:8.4-fpm AS base
+```
+
+2.  **Install Node.js and npm:** Many Laravel projects use tools like **Vite** for asset bundling. Consider adding Node.js:
+
+```
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs
+```
+
+3.  **Optimize Image Size:** To reduce image size, consider using **multi-stage builds**:
+
+```
+FROM php:8.4-fpm AS base
 
 # Install dependencies and build Laravel installer
-RUN apt-get update &amp;&amp; apt-get install -y git zip unzip ...
+RUN apt-get update && apt-get install -y git zip unzip ...
 RUN composer global require laravel/installer
 
 FROM php:8.4-fpm
 COPY --from=base /root/.composer /root/.composer
-</code></pre><ol start="4"><li><strong>Environment Variables:</strong> Predefine common Laravel environment variables, like:</li></ol><pre><code>ENV APP_ENV=local \
+```
+
+4.  **Environment Variables:** Predefine common Laravel environment variables, like:
+
+```
+ENV APP_ENV=local \
     APP_DEBUG=true \
     APP_KEY=base64:...
-</code></pre><h2 id="finally"><strong>Finally</strong></h2><p>By integrating the <strong>Laravel installer</strong>, Composer, and other essential tools into your PHP Docker image, you can create a robust, reusable development environment tailored for Laravel projects. <strong>Don’t forget</strong> to address potential issues like file permissions and include additional tools like Node.js for a more comprehensive setup.</p><p>With this guide, you now have everything you need to start building your PHP containers optimized for Laravel development.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+## **Finally**
+
+By integrating the **Laravel installer**, Composer, and other essential tools into your PHP Docker image, you can create a robust, reusable development environment tailored for Laravel projects. **Don’t forget** to address potential issues like file permissions and include additional tools like Node.js for a more comprehensive setup.
+
+With this guide, you now have everything you need to start building your PHP containers optimized for Laravel development.

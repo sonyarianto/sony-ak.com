@@ -5,18 +5,48 @@ description: "Enums in TypeScript are a powerful feature that allow you to defin
 tags: ["javascript","typescript","performance","debugging","logging"]
 ---
 
-<p>Enums in TypeScript are a powerful feature that allow you to define a set of named constants. They make your code more expressive and easier to read by replacing hard-coded values with meaningful names. However, TypeScript provides two types of enums: <strong>regular enums</strong> and <strong><code>const</code> enums</strong>. Understanding the differences between them is key to making the right choice for your project.</p><h2 id="what-are-enums-in-typescript">What Are Enums in TypeScript?</h2><p>At their core, enums allow you to define a collection of related values that can be <strong>numeric</strong> or <strong>string-based</strong>. For example:</p><pre><code class="language-typescript">enum Direction {
+Enums in TypeScript are a powerful feature that allow you to define a set of named constants. They make your code more expressive and easier to read by replacing hard-coded values with meaningful names. However, TypeScript provides two types of enums: **regular enums** and **`const` enums**. Understanding the differences between them is key to making the right choice for your project.
+
+## What Are Enums in TypeScript?
+
+At their core, enums allow you to define a collection of related values that can be **numeric** or **string-based**. For example:
+
+```typescript
+enum Direction {
     Up,
     Down,
     Left,
     Right
 }
-</code></pre><p>Here, <code>Direction.Up</code> has a default value of <code>0</code>, <code>Direction.Down</code> is <code>1</code>, and so on. This default behavior is called <strong>numeric enum auto-incrementing</strong>.</p><p>Alternatively, enums can have explicit values:</p><pre><code class="language-typescript">enum Status {
+```
+
+Here, `Direction.Up` has a default value of `0`, `Direction.Down` is `1`, and so on. This default behavior is called **numeric enum auto-incrementing**.
+
+Alternatively, enums can have explicit values:
+
+```typescript
+enum Status {
     Success = "SUCCESS",
     Failure = "FAILURE",
     Pending = "PENDING"
 }
-</code></pre><p>Now that we understand what enums are, let’s dive into the differences between <strong>regular enums</strong> and <strong><code>const</code> enums</strong>.</p><h2 id="regular-enums-a-runtime-object">Regular Enums: A Runtime Object</h2><p>Regular enums compile into a <strong>JavaScript object</strong> that exists at runtime. This makes them dynamic and versatile but can lead to slightly larger output.</p><h3 id="key-features-of-regular-enums">Key Features of Regular Enums:</h3><ol><li><strong>Runtime Object:</strong> Regular enums generate an object in the compiled JavaScript code, making them accessible at runtime.</li><li><strong>Reverse Mapping:</strong> These enums allow <strong>bidirectional mapping</strong>, meaning you can look up the name of an enum using its value and vice versa.</li></ol><h4 id="example">Example:</h4><pre><code class="language-typescript">enum Direction {
+```
+
+Now that we understand what enums are, let’s dive into the differences between **regular enums** and **`const` enums**.
+
+## Regular Enums: A Runtime Object
+
+Regular enums compile into a **JavaScript object** that exists at runtime. This makes them dynamic and versatile but can lead to slightly larger output.
+
+### Key Features of Regular Enums:
+
+1.  **Runtime Object:** Regular enums generate an object in the compiled JavaScript code, making them accessible at runtime.
+2.  **Reverse Mapping:** These enums allow **bidirectional mapping**, meaning you can look up the name of an enum using its value and vice versa.
+
+#### Example:
+
+```typescript
+enum Direction {
     Up,
     Down,
     Left,
@@ -25,7 +55,12 @@ tags: ["javascript","typescript","performance","debugging","logging"]
 
 console.log(Direction.Up);     // Outputs: 0
 console.log(Direction[0]);     // Outputs: "Up"
-</code></pre><h4 id="compiled-javascript">Compiled JavaScript:</h4><pre><code class="language-javascript">var Direction;
+```
+
+#### Compiled JavaScript:
+
+```javascript
+var Direction;
 (function (Direction) {
     Direction[Direction["Up"] = 0] = "Up";
     Direction[Direction["Down"] = 1] = "Down";
@@ -35,7 +70,29 @@ console.log(Direction[0]);     // Outputs: "Up"
 
 console.log(Direction.Up);     // 0
 console.log(Direction[0]);     // "Up"
-</code></pre><p>This two-way mapping is a unique feature of regular enums, but it comes at the cost of slightly increased bundle size and runtime overhead.</p><h3 id="when-to-use-regular-enums">When to Use Regular Enums:</h3><ul><li>When you need <strong>reverse mapping</strong>.</li><li>If your application requires enums to exist as objects at runtime.</li><li>When working with <strong>dynamic or runtime-driven scenarios</strong>, such as iterating over enum values.</li></ul><h2 id="const-enums-efficient-and-inlined">Const Enums: Efficient and Inlined</h2><p><code>const</code> enums are a more <strong>performance-focused</strong> version of enums. Instead of creating a runtime object, <code>const</code> enums are <strong>inlined</strong> directly into the compiled JavaScript.</p><h3 id="key-features-of-const-enums">Key Features of Const Enums:</h3><ol><li><strong>No Runtime Object:</strong> The compiler removes <code>const</code> enums entirely, replacing their usage with the corresponding values.</li><li><strong>No Reverse Mapping:</strong> Unlike regular enums, you cannot look up a name using a value.</li></ol><h4 id="example-1">Example:</h4><pre><code class="language-typescript">const enum Direction {
+```
+
+This two-way mapping is a unique feature of regular enums, but it comes at the cost of slightly increased bundle size and runtime overhead.
+
+### When to Use Regular Enums:
+
+-   When you need **reverse mapping**.
+-   If your application requires enums to exist as objects at runtime.
+-   When working with **dynamic or runtime-driven scenarios**, such as iterating over enum values.
+
+## Const Enums: Efficient and Inlined
+
+`const` enums are a more **performance-focused** version of enums. Instead of creating a runtime object, `const` enums are **inlined** directly into the compiled JavaScript.
+
+### Key Features of Const Enums:
+
+1.  **No Runtime Object:** The compiler removes `const` enums entirely, replacing their usage with the corresponding values.
+2.  **No Reverse Mapping:** Unlike regular enums, you cannot look up a name using a value.
+
+#### Example:
+
+```typescript
+const enum Direction {
     Up,
     Down,
     Left,
@@ -44,62 +101,72 @@ console.log(Direction[0]);     // "Up"
 
 const move = Direction.Up;
 console.log(move); // Outputs: 0
-</code></pre><h4 id="compiled-javascript-1">Compiled JavaScript:</h4><pre><code class="language-javascript">const move = 0;
+```
+
+#### Compiled JavaScript:
+
+```javascript
+const move = 0;
 console.log(move); // 0
-</code></pre><p>Notice how the enum was completely removed from the compiled code, leaving only the inlined value.</p><h3 id="when-to-use-const-enums">When to Use Const Enums:</h3><ul><li>When performance and bundle size are critical.</li><li>If you don’t need reverse mapping or runtime enum objects.</li><li>For <strong>static and predictable use cases</strong>, such as configuration constants.</li></ul><h2 id="additional-considerations">Additional Considerations</h2><h3 id="string-enums">String Enums</h3><p>Both regular and <code>const</code> enums support string values, but only regular enums offer reverse mapping for numeric values. For example:</p><pre><code class="language-typescript">enum Status {
+```
+
+Notice how the enum was completely removed from the compiled code, leaving only the inlined value.
+
+### When to Use Const Enums:
+
+-   When performance and bundle size are critical.
+-   If you don’t need reverse mapping or runtime enum objects.
+-   For **static and predictable use cases**, such as configuration constants.
+
+## Additional Considerations
+
+### String Enums
+
+Both regular and `const` enums support string values, but only regular enums offer reverse mapping for numeric values. For example:
+
+```typescript
+enum Status {
     Success = "SUCCESS",
     Failure = "FAILURE"
 }
-</code></pre><p>String enums do not support reverse mapping, regardless of whether they are regular or <code>const</code>.</p><h3 id="mixed-enums">Mixed Enums</h3><p>Enums can mix string and numeric values, but this is generally discouraged for clarity and consistency.</p><pre><code class="language-typescript">enum Mixed {
+```
+
+String enums do not support reverse mapping, regardless of whether they are regular or `const`.
+
+### Mixed Enums
+
+Enums can mix string and numeric values, but this is generally discouraged for clarity and consistency.
+
+```typescript
+enum Mixed {
     Yes = 1,
     No = "NO"
 }
-</code></pre><h3 id="namespace-and-module-compatibility">Namespace and Module Compatibility</h3><p>Regular enums integrate seamlessly with TypeScript namespaces, while <code>const</code> enums do not.</p><h3 id="debugging">Debugging</h3><p>Regular enums are easier to debug because they exist as objects in the runtime, making their structure inspectable during debugging. <code>Const</code> enums, being inlined, lack this advantage.</p><h3 id="compiler-flags">Compiler Flags</h3><p>Using <code>const</code> enums may require specific compiler settings. The <code>--preserveConstEnums</code> flag can ensure that <code>const</code> enums remain in the output for certain use cases, but by default, they are removed.</p><h2 id="summary">Summary</h2><p>Here’s a quick comparison of the two types of enums:</p>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Feature</th>
-<th>Regular Enum</th>
-<th>Const Enum</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Runtime Object</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Reverse Mapping</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Inlining</td>
-<td>No</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Debugging Ease</td>
-<td>Easier</td>
-<td>Harder</td>
-</tr>
-<tr>
-<td>Performance</td>
-<td>Slower</td>
-<td>Faster</td>
-</tr>
-<tr>
-<td>Use in Dynamic Scenarios</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<h3 id="choosing-the-right-enum">Choosing the Right Enum</h3><ul><li>Use <strong>regular enums</strong> when you need runtime features, such as reverse mapping or dynamic usage.</li><li>Use <strong><code>const</code> enums</strong> for performance-critical scenarios where runtime access to the enum is unnecessary.</li></ul><p>By understanding these differences, you can make informed decisions to optimize both your code’s performance and readability.</p><h3 id="finally">Finally</h3><p>For many projects, a mix of regular and <code>const</code> enums might be appropriate. Use each type where its strengths align with your specific needs!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### Namespace and Module Compatibility
+
+Regular enums integrate seamlessly with TypeScript namespaces, while `const` enums do not.
+
+### Debugging
+
+Regular enums are easier to debug because they exist as objects in the runtime, making their structure inspectable during debugging. `Const` enums, being inlined, lack this advantage.
+
+### Compiler Flags
+
+Using `const` enums may require specific compiler settings. The `--preserveConstEnums` flag can ensure that `const` enums remain in the output for certain use cases, but by default, they are removed.
+
+## Summary
+
+Here’s a quick comparison of the two types of enums:
+
+### Choosing the Right Enum
+
+-   Use **regular enums** when you need runtime features, such as reverse mapping or dynamic usage.
+-   Use **`const` enums** for performance-critical scenarios where runtime access to the enum is unnecessary.
+
+By understanding these differences, you can make informed decisions to optimize both your code’s performance and readability.
+
+### Finally
+
+For many projects, a mix of regular and `const` enums might be appropriate. Use each type where its strengths align with your specific needs!

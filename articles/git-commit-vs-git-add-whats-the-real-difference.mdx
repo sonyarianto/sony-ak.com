@@ -2,59 +2,121 @@
 title: "Git Commit vs Git Add: What's the Real Difference?"
 date: "2025-05-30T22:22:36.000Z"
 description: "In the world of Git , two commands often get mixed up: git add . and git commit -am \"message\" . While they might seem similar at first glance, they serve distin..."
-tags: ["javascript","css","git","deployment"]
+tags: ["javascript","css","bash","git","deployment"]
 ---
 
-<p>In the world of <strong>Git</strong>, two commands often get mixed up: <code>git add .</code> and <code>git commit -am "message"</code>. While they might seem similar at first glance, <strong>they serve distinct purposes</strong>, and understanding their differences can save you from unnecessary headaches.</p><p>Let’s dive into <strong>what they really do, when to use them, and some additional tips</strong> you might not have considered.</p><hr><h3 id="1%EF%B8%8F%E2%83%A3-the-basics"><strong>1️⃣ The Basics</strong></h3><ul><li><strong><code>git add .</code></strong><br>This command tells Git:</li></ul><blockquote>“Take <strong>all the changes</strong> (new, modified, deleted) in the current directory and <strong>stage them</strong> for the next commit.”</blockquote><p>It doesn’t <strong>commit</strong> anything yet. It just prepares the files. Think of it as <strong>lining up your changes for review</strong> before you seal the deal with a commit. This includes:</p><ul><li><strong>New files</strong>: Yes.</li><li><strong>Modified files</strong>: Yes.</li><li><strong>Deleted files</strong>: Yes.</li></ul><p>Once you’ve done <code>git add .</code>, you’ll still need to run:</p><pre><code class="language-bash">git commit -m "Your commit message"
-</code></pre><ul><li><strong><code>git commit -am "Your commit message"</code></strong><br>This is like saying:</li></ul><blockquote>“Automatically <strong>stage all modified and deleted files</strong> (tracked ones only) and commit them with the message I provided.”</blockquote><p>It <strong>skips the staging step</strong> for files that Git already knows about (tracked files), but <strong>ignores new files</strong> you haven’t explicitly added yet.</p><hr><h3 id="2%EF%B8%8F%E2%83%A3-key-differences"><strong>2️⃣ Key Differences</strong></h3>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Aspect</th>
-<th><code inline="">git add .</code></th>
-<th><code inline="">git commit -am "msg"</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Stages new files</strong></td>
-<td>✅ Yes (including untracked files)</td>
-<td>❌ No (ignores untracked files)</td>
-</tr>
-<tr>
-<td><strong>Stages modified files</strong></td>
-<td>✅ Yes</td>
-<td>✅ Yes</td>
-</tr>
-<tr>
-<td><strong>Stages deleted files</strong></td>
-<td>✅ Yes</td>
-<td>✅ Yes</td>
-</tr>
-<tr>
-<td><strong>Commits immediately</strong></td>
-<td>❌ No (requires a separate <code inline="">git commit</code>)</td>
-<td>✅ Yes (one command for staging &amp; committing)</td>
-</tr>
-<tr>
-<td><strong>Use case</strong></td>
-<td>Preparing commits (with flexibility)</td>
-<td>Quick commit of all tracked changes</td>
-</tr>
-<tr>
-<td><strong>Best for</strong></td>
-<td>Careful staging and review</td>
-<td>Fast commits during active development</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h3 id="3%EF%B8%8F%E2%83%A3-but-wait%E2%80%A6-there%E2%80%99s-more"><strong>3️⃣ But Wait… There’s More!</strong></h3><p>Here are some <strong>extra considerations</strong> you might not have thought of:</p><p>✅ <strong>Why <code>git commit -am</code> skips new files:</strong><br>Git only stages files it already knows. If you create a brand-new file, it’s considered <strong>untracked</strong>. You need to explicitly tell Git,</p><pre><code class="language-bash">git add newfile.txt
-</code></pre><p>before <code>git commit -am</code> will include it. This is a <strong>safety feature</strong> to avoid accidentally committing files you didn’t intend to.</p><p>✅ <strong>The Dot in <code>git add .</code> Matters:</strong><br>That <code>.</code> means “current directory and everything inside it.” Be careful—if you’re in a subdirectory, it might only add files from that subdirectory. Use <code>git add -A</code> or <code>git add --all</code> for a broader sweep.</p><p>✅ <strong>Forgetting to Add New Files with <code>-am</code>:</strong><br>Many developers <strong>forget to run <code>git add</code> for new files</strong> when relying too much on <code>git commit -am</code>. This often leads to commits missing those files, which can be frustrating during deployment or merges.</p><p>✅ <strong>Selective Staging with <code>git add</code>:</strong><br>You don’t have to stage everything. You can run:</p><pre><code class="language-bash">git add file1.js file2.css
-</code></pre><p>to stage specific files, review changes, and commit only the ones you’re confident about.</p><p>✅ <strong>Better Commit Practices:</strong><br>While <code>git commit -am</code> is convenient for quick commits, <strong>larger or more critical commits</strong> are better handled with deliberate staging (<code>git add .</code> or selective <code>git add</code>) and a clear commit message. This gives you <strong>more control</strong> and reduces mistakes.</p><p>✅ <strong>Interactive Staging (<code>git add -p</code>):</strong><br>For <strong>fine-grained control</strong>, use:</p><pre><code class="language-bash">git add -p
-</code></pre><p>This lets you review <strong>hunks of changes</strong> and decide which to stage, especially useful when you’ve made multiple unrelated changes.</p><hr><h3 id="4%EF%B8%8F%E2%83%A3-so-which-should-you-use"><strong>4️⃣ So, Which Should You Use?</strong></h3><ul><li><strong>Use <code>git add .</code></strong> when:<ul><li>You have <strong>new files</strong> to commit.</li><li>You want to <strong>carefully review changes</strong> before committing.</li><li>You need <strong>precise control</strong> over what’s being staged.</li></ul></li><li><strong>Use <code>git commit -am</code></strong> when:<ul><li>You only modified or deleted existing files (no new files).</li><li>You want a <strong>quick, one-step commit</strong>.</li><li>You’re doing <strong>frequent, small updates</strong> during active development.</li></ul></li></ul><hr><h3 id="5%EF%B8%8F%E2%83%A3-pro-tip-avoid-bad-habits"><strong>5️⃣ Pro Tip: Avoid Bad Habits!</strong></h3><p>Many developers, especially under tight deadlines, overuse <code>git commit -am</code>. It’s fast, but it can lead to:</p><ul><li><strong>Missed new files</strong> in commits.</li><li><strong>Messy commit histories</strong>.</li><li><strong>Accidental commits of incomplete changes</strong>.</li></ul><p>The best practice is to <strong>stage intentionally</strong>, review diffs, and write <strong>meaningful commit messages</strong>.</p><hr><h3 id="finally"><strong>Finally</strong></h3><p>In the world of Git, <strong>precision matters</strong>. While <code>git commit -am</code> is convenient, don’t let it replace the <strong>discipline of carefully staging and committing</strong>. Use <code>git add .</code> or even better, <strong><code>git add -p</code></strong>, to maintain a clean and intentional history.</p><p>Remember:</p><ul><li><strong><code>git add .</code> = Stage everything, then commit.</strong></li><li><strong><code>git commit -am</code> = Quick commit for modified/deleted tracked files (no new files).</strong></li></ul><p>So, next time you’re about to mash that <code>git commit -am</code>, take a moment—ask yourself, <strong>“Am I missing anything important?”</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In the world of **Git**, two commands often get mixed up: `git add .` and `git commit -am "message"`. While they might seem similar at first glance, **they serve distinct purposes**, and understanding their differences can save you from unnecessary headaches.
 
+Let’s dive into **what they really do, when to use them, and some additional tips** you might not have considered.
+
+* * *
+
+### **1️⃣ The Basics**
+
+-   **`git add .`**  
+    This command tells Git:
+
+> “Take **all the changes** (new, modified, deleted) in the current directory and **stage them** for the next commit.”
+
+It doesn’t **commit** anything yet. It just prepares the files. Think of it as **lining up your changes for review** before you seal the deal with a commit. This includes:
+
+-   **New files**: Yes.
+-   **Modified files**: Yes.
+-   **Deleted files**: Yes.
+
+Once you’ve done `git add .`, you’ll still need to run:
+
+```bash
+git commit -m "Your commit message"
+```
+
+-   **`git commit -am "Your commit message"`**  
+    This is like saying:
+
+> “Automatically **stage all modified and deleted files** (tracked ones only) and commit them with the message I provided.”
+
+It **skips the staging step** for files that Git already knows about (tracked files), but **ignores new files** you haven’t explicitly added yet.
+
+* * *
+
+### **2️⃣ Key Differences**
+
+* * *
+
+### **3️⃣ But Wait… There’s More!**
+
+Here are some **extra considerations** you might not have thought of:
+
+✅ **Why `git commit -am` skips new files:**  
+Git only stages files it already knows. If you create a brand-new file, it’s considered **untracked**. You need to explicitly tell Git,
+
+```bash
+git add newfile.txt
+```
+
+before `git commit -am` will include it. This is a **safety feature** to avoid accidentally committing files you didn’t intend to.
+
+✅ **The Dot in `git add .` Matters:**  
+That `.` means “current directory and everything inside it.” Be careful—if you’re in a subdirectory, it might only add files from that subdirectory. Use `git add -A` or `git add --all` for a broader sweep.
+
+✅ **Forgetting to Add New Files with `-am`:**  
+Many developers **forget to run `git add` for new files** when relying too much on `git commit -am`. This often leads to commits missing those files, which can be frustrating during deployment or merges.
+
+✅ **Selective Staging with `git add`:**  
+You don’t have to stage everything. You can run:
+
+```bash
+git add file1.js file2.css
+```
+
+to stage specific files, review changes, and commit only the ones you’re confident about.
+
+✅ **Better Commit Practices:**  
+While `git commit -am` is convenient for quick commits, **larger or more critical commits** are better handled with deliberate staging (`git add .` or selective `git add`) and a clear commit message. This gives you **more control** and reduces mistakes.
+
+✅ **Interactive Staging (`git add -p`):**  
+For **fine-grained control**, use:
+
+```bash
+git add -p
+```
+
+This lets you review **hunks of changes** and decide which to stage, especially useful when you’ve made multiple unrelated changes.
+
+* * *
+
+### **4️⃣ So, Which Should You Use?**
+
+-   **Use `git add .`** when:
+    -   You have **new files** to commit.
+    -   You want to **carefully review changes** before committing.
+    -   You need **precise control** over what’s being staged.
+-   **Use `git commit -am`** when:
+    -   You only modified or deleted existing files (no new files).
+    -   You want a **quick, one-step commit**.
+    -   You’re doing **frequent, small updates** during active development.
+
+* * *
+
+### **5️⃣ Pro Tip: Avoid Bad Habits!**
+
+Many developers, especially under tight deadlines, overuse `git commit -am`. It’s fast, but it can lead to:
+
+-   **Missed new files** in commits.
+-   **Messy commit histories**.
+-   **Accidental commits of incomplete changes**.
+
+The best practice is to **stage intentionally**, review diffs, and write **meaningful commit messages**.
+
+* * *
+
+### **Finally**
+
+In the world of Git, **precision matters**. While `git commit -am` is convenient, don’t let it replace the **discipline of carefully staging and committing**. Use `git add .` or even better, **`git add -p`**, to maintain a clean and intentional history.
+
+Remember:
+
+-   **`git add .` = Stage everything, then commit.**
+-   **`git commit -am` = Quick commit for modified/deleted tracked files (no new files).**
+
+So, next time you’re about to mash that `git commit -am`, take a moment—ask yourself, **“Am I missing anything important?”**

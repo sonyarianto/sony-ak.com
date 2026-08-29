@@ -2,15 +2,40 @@
 title: "Ubuntu Tip: Cannot Upgrade with do-release-upgrade"
 date: "2024-09-24T21:56:37.000Z"
 description: "Problem: When I type sudo do-release-upgrade there is error like this. Checking for a new Ubuntu release In /etc/update-manager/release-upgrades Prompt is set t..."
-tags: ["linux"]
+tags: ["bash","linux"]
 ---
 
-<h3 id="problem">Problem:</h3><p>When I type <code>sudo do-release-upgrade</code> there is error like this.</p><pre><code>Checking for a new Ubuntu release
-In /etc/update-manager/release-upgrades Prompt
-is set to never so upgrading is not possible.</code></pre><h3 id="solution">Solution:</h3><p>The message you're seeing indicates that your system's configuration is preventing the release upgrade due to the setting in the <code>/etc/update-manager/release-upgrades</code> file. Here’s how to resolve this issue:</p><ol><li><strong>Open the configuration file</strong>: You need to edit the <code>release-upgrades</code> configuration file. You can use a text editor like <code>nano</code> or <code>vim</code>. For example, using <code>nano</code>:</li></ol><pre><code class="language-bash">sudo nano /etc/update-manager/release-upgrades
-</code></pre><ol start="2"><li><strong>Change the Prompt setting</strong>: Look for the line that starts with <code>Prompt=</code>. It may look like this:</li></ol><pre><code class="language-bash">Prompt=never
-</code></pre><p>Change <code>never</code> to either <code>lts</code> (if you only want to upgrade to the next Long Term Support version) or <code>normal</code> (to upgrade to any new release).</p><ol start="3"><li><strong>Save the changes</strong></li><li><strong>Run the upgrade command again</strong>: <code>sudo do-release-upgrade</code></li></ol><p>This should allow you to check for and proceed with the Ubuntu release upgrade. Easy right?</p><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+### Problem:
 
+When I type `sudo do-release-upgrade` there is error like this.
+
+```
+Checking for a new Ubuntu release
+In /etc/update-manager/release-upgrades Prompt
+is set to never so upgrading is not possible.
+```
+
+### Solution:
+
+The message you're seeing indicates that your system's configuration is preventing the release upgrade due to the setting in the `/etc/update-manager/release-upgrades` file. Here’s how to resolve this issue:
+
+1.  **Open the configuration file**: You need to edit the `release-upgrades` configuration file. You can use a text editor like `nano` or `vim`. For example, using `nano`:
+
+```bash
+sudo nano /etc/update-manager/release-upgrades
+```
+
+2.  **Change the Prompt setting**: Look for the line that starts with `Prompt=`. It may look like this:
+
+```bash
+Prompt=never
+```
+
+Change `never` to either `lts` (if you only want to upgrade to the next Long Term Support version) or `normal` (to upgrade to any new release).
+
+3.  **Save the changes**
+4.  **Run the upgrade command again**: `sudo do-release-upgrade`
+
+This should allow you to check for and proceed with the Ubuntu release upgrade. Easy right?
+
+Hope it helps.

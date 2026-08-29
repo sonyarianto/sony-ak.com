@@ -5,17 +5,68 @@ description: "Working with dates is a common need in PHP development, especially
 tags: ["php"]
 ---
 
-<p>Working with dates is a common need in PHP development, especially when you need to manipulate or compare them based on user input or system events. One of the most convenient ways PHP offers to handle <strong>relative date and time calculations</strong> is the <code>strtotime()</code> function.</p><p>Let's break down this simple yet powerful code snippet:</p><pre><code class="language-php">&lt;?php
+Working with dates is a common need in PHP development, especially when you need to manipulate or compare them based on user input or system events. One of the most convenient ways PHP offers to handle **relative date and time calculations** is the `strtotime()` function.
+
+Let's break down this simple yet powerful code snippet:
+
+```php
+<?php
 echo (date("Y-m-d", strtotime("12 days ago")));
-</code></pre><h3 id="what-does-it-do"><strong>What Does It Do?</strong></h3><ul><li><code>strtotime("12 days ago")</code> parses the human-readable string <strong>"12 days ago"</strong> into a Unix timestamp.</li><li><code>date("Y-m-d", ...)</code> formats that timestamp into a <strong><code>YYYY-MM-DD</code></strong> string, which is a common standard format for storing and displaying dates.</li></ul><h3 id="why-is-this-useful"><strong>Why Is This Useful?</strong></h3><p>This approach is extremely handy when you need to:</p><ul><li><strong>Calculate a date range</strong>, for example: fetching records created in the last 12 days.</li><li>Create filters for <strong>daily/weekly reports</strong>.</li><li>Manage <strong>expiration dates</strong> or <strong>scheduled tasks</strong>.</li></ul><p>Instead of manually calculating timestamps or subtracting seconds, <code>strtotime()</code> simplifies the process using plain English expressions.</p><h3 id="other-relative-strings-you-can-use"><strong>Other Relative Strings You Can Use</strong></h3><p>PHP supports a variety of relative date formats in <code>strtotime()</code>:</p><ul><li><code>"yesterday"</code></li><li><code>"next Monday"</code></li><li><code>"last Friday"</code></li><li><code>"+3 weeks"</code></li><li><code>"-2 months"</code></li><li><code>"first day of last month"</code></li></ul><p>Each of these can be parsed naturally, making your code both powerful and readable.</p><h3 id="timezones-consideration"><strong>Timezones Consideration</strong></h3><p>If your application depends on a specific timezone (especially in multi-region apps), make sure you <strong>set the timezone properly</strong> using:</p><pre><code class="language-php">date_default_timezone_set('Asia/Jakarta');
-</code></pre><p>Otherwise, PHP might use the default system timezone, which could lead to <strong>unexpected results</strong>.</p><h3 id="when-to-be-careful"><strong>When to Be Careful</strong></h3><ul><li>The result of <code>strtotime()</code> depends on the <strong>validity and clarity</strong> of the string. If PHP can't understand the string, it will return <code>false</code>.</li></ul><p>Always check the result before formatting:</p><pre><code class="language-php">$timestamp = strtotime("12 days ago");
+```
+
+### **What Does It Do?**
+
+-   `strtotime("12 days ago")` parses the human-readable string **"12 days ago"** into a Unix timestamp.
+-   `date("Y-m-d", ...)` formats that timestamp into a **`YYYY-MM-DD`** string, which is a common standard format for storing and displaying dates.
+
+### **Why Is This Useful?**
+
+This approach is extremely handy when you need to:
+
+-   **Calculate a date range**, for example: fetching records created in the last 12 days.
+-   Create filters for **daily/weekly reports**.
+-   Manage **expiration dates** or **scheduled tasks**.
+
+Instead of manually calculating timestamps or subtracting seconds, `strtotime()` simplifies the process using plain English expressions.
+
+### **Other Relative Strings You Can Use**
+
+PHP supports a variety of relative date formats in `strtotime()`:
+
+-   `"yesterday"`
+-   `"next Monday"`
+-   `"last Friday"`
+-   `"+3 weeks"`
+-   `"-2 months"`
+-   `"first day of last month"`
+
+Each of these can be parsed naturally, making your code both powerful and readable.
+
+### **Timezones Consideration**
+
+If your application depends on a specific timezone (especially in multi-region apps), make sure you **set the timezone properly** using:
+
+```php
+date_default_timezone_set('Asia/Jakarta');
+```
+
+Otherwise, PHP might use the default system timezone, which could lead to **unexpected results**.
+
+### **When to Be Careful**
+
+-   The result of `strtotime()` depends on the **validity and clarity** of the string. If PHP can't understand the string, it will return `false`.
+
+Always check the result before formatting:
+
+```php
+$timestamp = strtotime("12 days ago");
 if ($timestamp !== false) {
     echo date("Y-m-d", $timestamp);
 } else {
     echo "Invalid date expression.";
 }
-</code></pre><h3 id="finally"><strong>Finally</strong></h3><p>Using <code>strtotime("12 days ago")</code> is a <strong>concise and expressive</strong> way to calculate past dates in PHP. It helps keep your code <strong>clean, readable, and flexible</strong>. Just make sure to handle edge cases like invalid input and timezone differences to ensure consistent results across environments.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### **Finally**
+
+Using `strtotime("12 days ago")` is a **concise and expressive** way to calculate past dates in PHP. It helps keep your code **clean, readable, and flexible**. Just make sure to handle edge cases like invalid input and timezone differences to ensure consistent results across environments.

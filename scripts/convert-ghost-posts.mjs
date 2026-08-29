@@ -1,5 +1,55 @@
 import fs from "fs";
 import path from "path";
+import TurndownService from "turndown";
+
+const turndown = new TurndownService({
+  headingStyle: "atx",
+  codeBlockStyle: "fenced",
+  bulletListMarker: "-",
+});
+
+// Handle images
+turndown.addRule("images", {
+  filter: "img",
+  replacement: (content, node) => {
+    const src = node.getAttribute("src") || "";
+    const alt = node.getAttribute("alt") || "";
+    return `![${alt}](${src})`;
+  },
+});
+
+// Handle Ghost embeds - convert to placeholder
+turndown.addRule("ghost-embeds", {
+  filter: (node) => {
+    return (
+      node.nodeName === "FIGURE" &&
+      node.className &&
+      node.className.includes("kg-")
+    );
+  },
+  replacement: (content) => content,
+});
+
+// Handle iframes
+turndown.addRule("iframes", {
+  filter: "iframe",
+  replacement: (content, node) => {
+    const src = node.getAttribute("src") || "";
+    return `[Embedded Content](${src})`;
+  },
+});
+
+// Handle script tags (remove them)
+turndown.addRule("scripts", {
+  filter: "script",
+  replacement: () => "",
+});
+
+// Handle style tags (remove them)
+turndown.addRule("styles", {
+  filter: "style",
+  replacement: () => "",
+});
 
 const postsPath = path.join("/tmp/ghost-posts/posts.json");
 const outputDir = path.join(process.cwd(), "articles");
@@ -28,6 +78,25 @@ function escapeYaml(str) {
     .replace(/\n/g, " ");
 }
 
+// Clean up HTML before conversion
+function cleanHtml(html) {
+  if (!html) return "";
+  let cleaned = html
+    // Remove Ghost card wrappers but keep content
+    .replace(/<figure class="kg-card[^"]*">/g, "")
+    .replace(/<\/figure>/g, "")
+    .replace(/<figcaption[^>]*>.*?<\/figcaption>/gs, "")
+    // Remove buy me a coffee / support buttons
+    .replace(/<script[^>]*buymeacoffee[^>]*>.*?<\/script>/gs, "")
+    .replace(/<!--kg-card-begin: html-->[\s\S]*?<!--kg-card-end: html-->/g, "")
+    // Clean up empty paragraphs
+    .replace(/<p><br><\/p>/g, "")
+    .replace(/<p><\/p>/g, "")
+    // Remove support us sections at the end
+    .replace(/<h3 id="support-us">.*$/s, "");
+  return cleaned.trim();
+}
+
 // Process each post
 let converted = 0;
 let skipped = 0;
@@ -48,14 +117,29 @@ for (const post of posts) {
 
     const description = custom_excerpt || generateDescription(html);
 
-    // Create frontmatter file with HTML content
+    // Clean and convert HTML to markdown
+    const cleanedHtml = cleanHtml(html);
+    let markdown;
+    try {
+      markdown = turndown.turndown(cleanedHtml);
+    } catch (e) {
+      // If turndown fails, keep the cleaned HTML
+      markdown = cleanedHtml;
+    }
+
+    // Clean up excessive newlines
+    markdown = markdown
+      .replace(/\n{4,}/g, "\n\n\n")
+      .trim();
+
+    // Create MDX content
     const mdxContent = `---
 title: "${escapeYaml(title)}"
 date: "${date}"
 description: "${escapeYaml(description)}"
 ---
 
-${html}
+${markdown}
 `;
 
     const filename = `${slug}.mdx`;

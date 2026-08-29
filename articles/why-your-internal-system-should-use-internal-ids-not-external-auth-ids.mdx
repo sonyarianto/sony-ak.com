@@ -2,78 +2,162 @@
 title: "Why Your Internal System Should Use Internal IDs (Not External Auth IDs)"
 date: "2025-07-25T21:35:41.000Z"
 description: "Many systems today integrate with external identity providers —services that handle user authentication and issue secure tokens for login. These providers typic..."
-tags: ["api","security","performance","email","database-design"]
+tags: ["database","api","security","email","database-design"]
 ---
 
-<p>Many systems today integrate with <strong>external identity providers</strong>—services that handle user authentication and issue secure tokens for login. These providers typically return a unique user identifier (like an <code>external_oid</code>, <code>sub</code>, or <code>auth_id</code>) with each session.</p><p>It might seem convenient to use these external identifiers as the <strong>primary key</strong> across your database. After all, they are unique and already available from the identity provider.</p><p>However, using external IDs as your system’s core identity is a <strong>bad idea</strong>. Here’s why you should always generate and use an <strong>internal <code>uid</code></strong>, and treat external IDs only as <strong>lookup references</strong>.</p><hr><h2 id="1-use-internal-uid-as-primary-key"><strong>1. Use Internal <code>uid</code> as Primary Key</strong></h2><p>Your <code>users</code> table should have a system-generated internal ID like:</p><pre><code class="language-sql">uid BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
-</code></pre><p>This key is:</p><ul><li><strong>Small</strong> and <strong>fast</strong> to index</li><li>Efficient for <strong>foreign key relationships</strong></li><li>Decoupled from any third-party identity provider</li></ul><p>Avoid using this:</p><pre><code class="language-sql">PRIMARY KEY (external_oid)
-</code></pre><p>Why? Because you're letting an outside system dictate how your internal database functions — and that creates unnecessary fragility.</p><hr><h2 id="2-store-external-ids-as-lookup-fields"><strong>2. Store External IDs as Lookup Fields</strong></h2><p>External identifiers (e.g. <code>external_oid</code>, <code>auth_id</code>, <code>sub</code>) should be stored with a <code>UNIQUE</code> constraint, not as primary keys.</p><pre><code class="language-sql">external_oid VARCHAR(100) UNIQUE NOT NULL
-</code></pre><p>These fields should be used <strong>only during authentication</strong>, not in internal business logic or table relationships.</p><hr><h2 id="3-map-external-ids-to-internal-ids-at-login"><strong>3. Map External IDs to Internal IDs at Login</strong></h2><p>Here’s the typical flow:</p><ol><li>A user logs in using an external identity system.</li><li>Your app receives a token containing an <code>external_oid</code>.</li><li>You attach that <code>uid</code> to the session or your own internal JWT.</li><li>All further API interactions use the internal <code>uid</code>.</li></ol><p>You query:</p><pre><code class="language-sql">SELECT uid FROM users WHERE external_oid = ?;
-</code></pre><p>That’s it. No need to use or expose the external identifier again until the next login or token refresh.</p><hr><h2 id="4-avoid-foreign-keys-to-external-ids"><strong>4. Avoid Foreign Keys to External IDs</strong></h2><p>You should <strong>never create foreign keys</strong> to an external identifier like <code>external_oid</code>. Instead, always use your internal <code>uid</code>.</p><pre><code class="language-sql">-- ❌ Don't do this
+Many systems today integrate with **external identity providers**—services that handle user authentication and issue secure tokens for login. These providers typically return a unique user identifier (like an `external_oid`, `sub`, or `auth_id`) with each session.
+
+It might seem convenient to use these external identifiers as the **primary key** across your database. After all, they are unique and already available from the identity provider.
+
+However, using external IDs as your system’s core identity is a **bad idea**. Here’s why you should always generate and use an **internal `uid`**, and treat external IDs only as **lookup references**.
+
+* * *
+
+## **1\. Use Internal `uid` as Primary Key**
+
+Your `users` table should have a system-generated internal ID like:
+
+```sql
+uid BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
+```
+
+This key is:
+
+-   **Small** and **fast** to index
+-   Efficient for **foreign key relationships**
+-   Decoupled from any third-party identity provider
+
+Avoid using this:
+
+```sql
+PRIMARY KEY (external_oid)
+```
+
+Why? Because you're letting an outside system dictate how your internal database functions — and that creates unnecessary fragility.
+
+* * *
+
+## **2\. Store External IDs as Lookup Fields**
+
+External identifiers (e.g. `external_oid`, `auth_id`, `sub`) should be stored with a `UNIQUE` constraint, not as primary keys.
+
+```sql
+external_oid VARCHAR(100) UNIQUE NOT NULL
+```
+
+These fields should be used **only during authentication**, not in internal business logic or table relationships.
+
+* * *
+
+## **3\. Map External IDs to Internal IDs at Login**
+
+Here’s the typical flow:
+
+1.  A user logs in using an external identity system.
+2.  Your app receives a token containing an `external_oid`.
+3.  You attach that `uid` to the session or your own internal JWT.
+4.  All further API interactions use the internal `uid`.
+
+You query:
+
+```sql
+SELECT uid FROM users WHERE external_oid = ?;
+```
+
+That’s it. No need to use or expose the external identifier again until the next login or token refresh.
+
+* * *
+
+## **4\. Avoid Foreign Keys to External IDs**
+
+You should **never create foreign keys** to an external identifier like `external_oid`. Instead, always use your internal `uid`.
+
+```sql
+-- ❌ Don't do this
 FOREIGN KEY (user_oid) REFERENCES users(external_oid)
 
 -- ✅ Do this
 FOREIGN KEY (user_uid) REFERENCES users(uid)
-</code></pre><p>This keeps your schema optimized and under your control.</p><hr><h2 id="5-benefits-of-using-internal-ids"><strong>5. Benefits of Using Internal IDs</strong></h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Benefit</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Performance</strong></td>
-<td><code inline="">BIGINT</code> PKs are much faster than long strings like <code inline="">VARCHAR(100)</code></td>
-</tr>
-<tr>
-<td><strong>Decoupling</strong></td>
-<td>Avoids lock-in or schema changes if the external ID format changes</td>
-</tr>
-<tr>
-<td><strong>Flexibility</strong></td>
-<td>Easy to support multiple identity providers in the future</td>
-</tr>
-<tr>
-<td><strong>Clean Schema</strong></td>
-<td>Simple and efficient joins and indexes</td>
-</tr>
-<tr>
-<td><strong>Better Logging &amp; Auditing</strong></td>
-<td>Internal <code inline="">uid</code> is consistent across logs, APIs, and analytics</td>
-</tr>
-<tr>
-<td><strong>Security</strong></td>
-<td>Keeps opaque, external identifiers away from the core of your system</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="6-supporting-multiple-identity-providers"><strong>6. Supporting Multiple Identity Providers</strong></h2><p>You can expand your <code>users</code> table to support various identity sources by adding additional <code>UNIQUE</code> external ID fields:</p><pre><code class="language-sql">external_oid_provider_a  VARCHAR(100) UNIQUE
+```
+
+This keeps your schema optimized and under your control.
+
+* * *
+
+## **5\. Benefits of Using Internal IDs**
+
+* * *
+
+## **6\. Supporting Multiple Identity Providers**
+
+You can expand your `users` table to support various identity sources by adding additional `UNIQUE` external ID fields:
+
+```sql
+external_oid_provider_a  VARCHAR(100) UNIQUE
 external_oid_provider_b  VARCHAR(100) UNIQUE
 external_oid_provider_c  VARCHAR(100) UNIQUE
-</code></pre><p>Alternatively, normalize this into a <code>user_identities</code> table:</p><pre><code class="language-sql">CREATE TABLE user_identities (
+```
+
+Alternatively, normalize this into a `user_identities` table:
+
+```sql
+CREATE TABLE user_identities (
   uid BIGINT UNSIGNED,
   provider ENUM('provider_a', 'provider_b', 'provider_c'),
   external_oid VARCHAR(100),
   UNIQUE(provider, external_oid),
   FOREIGN KEY (uid) REFERENCES users(uid)
 );
-</code></pre><p>This model scales better and keeps the <code>users</code> table clean.</p><hr><h2 id="7-session-validity-use-external-id-only-at-boundaries"><strong>7. Session Validity: Use External ID Only at Boundaries</strong></h2><p>If your system periodically re-checks session validity or refreshes tokens, you may still need to extract and validate the external ID. That’s fine — but it should <strong>not replace the internal <code>uid</code></strong> in your app's core operations.</p><p>Always translate the external identity into your internal <code>uid</code>, and <strong>operate solely on <code>uid</code></strong> within your app and database.</p><hr><h2 id="8-final-schema-pattern"><strong>8. Final Schema Pattern</strong></h2><p>Your <code>users</code> table:</p><pre><code class="language-sql">CREATE TABLE users (
+```
+
+This model scales better and keeps the `users` table clean.
+
+* * *
+
+## **7\. Session Validity: Use External ID Only at Boundaries**
+
+If your system periodically re-checks session validity or refreshes tokens, you may still need to extract and validate the external ID. That’s fine — but it should **not replace the internal `uid`** in your app's core operations.
+
+Always translate the external identity into your internal `uid`, and **operate solely on `uid`** within your app and database.
+
+* * *
+
+## **8\. Final Schema Pattern**
+
+Your `users` table:
+
+```sql
+CREATE TABLE users (
   uid BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   external_oid VARCHAR(100) UNIQUE NOT NULL,
   email VARCHAR(255),
   -- other fields...
 );
-</code></pre><p>Your related tables:</p><pre><code class="language-sql">CREATE TABLE user_images (
+```
+
+Your related tables:
+
+```sql
+CREATE TABLE user_images (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   user_uid BIGINT UNSIGNED,
   FOREIGN KEY (user_uid) REFERENCES users(uid)
 );
-</code></pre><hr><h2 id="9-other-considerations"><strong>9. Other Considerations</strong></h2><ul><li>✅ <strong>Index your external IDs</strong> for fast lookup at login</li><li>✅ Use <code>uid</code> in analytics, audit logs, and internal APIs</li><li>✅ Normalize external identities into separate tables if supporting multiple sources</li><li>⚠️ Avoid exposing <code>external_oid</code> in URLs or client-side logic</li></ul><hr><h2 id="%E2%9C%85-finally">✅ Finally</h2><p>Your application should treat external identity systems as <strong>external</strong>. Let them handle authentication and give you unique IDs, but don’t let those IDs dictate your database schema.</p><p>Instead, build your internal system around a simple, performant, and provider-agnostic <strong><code>uid</code></strong>. Doing so makes your application faster, more maintainable, and resilient to change — no matter which identity system you use today or switch to tomorrow.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+* * *
+
+## **9\. Other Considerations**
+
+-   ✅ **Index your external IDs** for fast lookup at login
+-   ✅ Use `uid` in analytics, audit logs, and internal APIs
+-   ✅ Normalize external identities into separate tables if supporting multiple sources
+-   ⚠️ Avoid exposing `external_oid` in URLs or client-side logic
+
+* * *
+
+## ✅ Finally
+
+Your application should treat external identity systems as **external**. Let them handle authentication and give you unique IDs, but don’t let those IDs dictate your database schema.
+
+Instead, build your internal system around a simple, performant, and provider-agnostic **`uid`**. Doing so makes your application faster, more maintainable, and resilient to change — no matter which identity system you use today or switch to tomorrow.

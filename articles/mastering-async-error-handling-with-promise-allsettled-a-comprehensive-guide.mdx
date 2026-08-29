@@ -5,14 +5,23 @@ description: "In modern JavaScript development, managing multiple asynchronous o
 tags: ["javascript","api","performance","debugging","logging"]
 ---
 
-<p>In modern JavaScript development, managing multiple asynchronous operations is a frequent requirement. While handling these operations, <strong>errors and rejections can disrupt the flow</strong> if not managed gracefully. Enter <code>Promise.allSettled()</code>, a powerful utility to capture the outcome of <strong>every promise, whether it resolves or rejects</strong>. This method shines particularly when dealing with multiple promises, but did you know you can also leverage it with a single promise? Let’s explore this and more.</p><h2 id="what-is-promiseallsettled"><strong>What is Promise.allSettled()?</strong></h2><p><code>Promise.allSettled()</code> is a method introduced in ES2020 that <strong>waits for all promises in a given array to settle</strong>, regardless of whether they are resolved (<code>fulfilled</code>) or rejected. Unlike <code>Promise.all()</code>, which short-circuits on the first rejection, <code>Promise.allSettled()</code> ensures that you get the results of every promise. Each result includes a <code>status</code> (<code>fulfilled</code> or <code>rejected</code>) and the corresponding <code>value</code> or <code>reason</code>.</p><p>Here’s an example of handling multiple promises:</p><pre><code class="language-javascript">const tasks = [
+In modern JavaScript development, managing multiple asynchronous operations is a frequent requirement. While handling these operations, **errors and rejections can disrupt the flow** if not managed gracefully. Enter `Promise.allSettled()`, a powerful utility to capture the outcome of **every promise, whether it resolves or rejects**. This method shines particularly when dealing with multiple promises, but did you know you can also leverage it with a single promise? Let’s explore this and more.
+
+## **What is Promise.allSettled()?**
+
+`Promise.allSettled()` is a method introduced in ES2020 that **waits for all promises in a given array to settle**, regardless of whether they are resolved (`fulfilled`) or rejected. Unlike `Promise.all()`, which short-circuits on the first rejection, `Promise.allSettled()` ensures that you get the results of every promise. Each result includes a `status` (`fulfilled` or `rejected`) and the corresponding `value` or `reason`.
+
+Here’s an example of handling multiple promises:
+
+```javascript
+const tasks = [
   Promise.resolve("Task 1 completed"),
   Promise.reject("Task 2 failed"),
   Promise.resolve("Task 3 completed"),
 ];
 
-Promise.allSettled(tasks).then(results =&gt; {
-  results.forEach(result =&gt; {
+Promise.allSettled(tasks).then(results => {
+  results.forEach(result => {
     if (result.status === "fulfilled") {
       console.log("✅ Success:", result.value);
     } else {
@@ -20,26 +29,54 @@ Promise.allSettled(tasks).then(results =&gt; {
     }
   });
 });
-</code></pre><p>Output:</p><pre><code>✅ Success: Task 1 completed
+```
+
+Output:
+
+```
+✅ Success: Task 1 completed
 ❌ Error: Task 2 failed
 ✅ Success: Task 3 completed
-</code></pre><h2 id="using-promiseallsettled-for-a-single-promise"><strong>Using Promise.allSettled() for a Single Promise</strong></h2><p>While designed for multiple promises, you can use <code>Promise.allSettled()</code> for a <strong>single promise</strong> by wrapping it in an array. This ensures consistent handling if your code alternates between single and multiple promises.</p><pre><code class="language-javascript">const task = Promise.reject("Something went wrong!");
+```
 
-Promise.allSettled([task]).then(([result]) =&gt; {
+## **Using Promise.allSettled() for a Single Promise**
+
+While designed for multiple promises, you can use `Promise.allSettled()` for a **single promise** by wrapping it in an array. This ensures consistent handling if your code alternates between single and multiple promises.
+
+```javascript
+const task = Promise.reject("Something went wrong!");
+
+Promise.allSettled([task]).then(([result]) => {
   if (result.status === "fulfilled") {
     console.log("✅ Fulfilled:", result.value);
   } else {
     console.error("❌ Rejected:", result.reason);
   }
 });
-</code></pre><p>This approach works but introduces unnecessary overhead for single promises. If you’re only handling one promise, <strong>stick with <code>.then()</code> and <code>.catch()</code></strong>, which is more straightforward:</p><pre><code class="language-javascript">task
-  .then(data =&gt; console.log("✅ Fulfilled:", data))
-  .catch(err =&gt; console.error("❌ Rejected:", err));
-</code></pre><h2 id="why-use-promiseallsettled"><strong>Why Use Promise.allSettled()?</strong></h2><p>There are specific scenarios where <code>Promise.allSettled()</code> outshines alternatives like <code>Promise.all()</code> or sequential <code>then()</code>/<code>catch()</code> chains:</p><h3 id="1-batch-processing-with-fault-tolerance">1. <strong>Batch Processing with Fault Tolerance</strong></h3><p>If you have multiple promises and need to ensure that all tasks are attempted even if some fail, <code>Promise.allSettled()</code> is perfect. For example, when fetching data from several APIs, one failing API shouldn’t stop the others.</p><pre><code class="language-javascript">const urls = ["url1", "url2", "url3"];
-const requests = urls.map(url =&gt; fetch(url));
+```
 
-Promise.allSettled(requests).then(results =&gt; {
-  results.forEach((result, index) =&gt; {
+This approach works but introduces unnecessary overhead for single promises. If you’re only handling one promise, **stick with `.then()` and `.catch()`**, which is more straightforward:
+
+```javascript
+task
+  .then(data => console.log("✅ Fulfilled:", data))
+  .catch(err => console.error("❌ Rejected:", err));
+```
+
+## **Why Use Promise.allSettled()?**
+
+There are specific scenarios where `Promise.allSettled()` outshines alternatives like `Promise.all()` or sequential `then()`/`catch()` chains:
+
+### 1\. **Batch Processing with Fault Tolerance**
+
+If you have multiple promises and need to ensure that all tasks are attempted even if some fail, `Promise.allSettled()` is perfect. For example, when fetching data from several APIs, one failing API shouldn’t stop the others.
+
+```javascript
+const urls = ["url1", "url2", "url3"];
+const requests = urls.map(url => fetch(url));
+
+Promise.allSettled(requests).then(results => {
+  results.forEach((result, index) => {
     if (result.status === "fulfilled") {
       console.log(`Data from ${urls[index]}:`, result.value);
     } else {
@@ -47,26 +84,53 @@ Promise.allSettled(requests).then(results =&gt; {
     }
   });
 });
-</code></pre><h3 id="2-collecting-successes-and-failures-separately">2. <strong>Collecting Successes and Failures Separately</strong></h3><p>By iterating over the results, you can segregate successes and failures into different arrays for easier processing.</p><pre><code class="language-javascript">const promises = [Promise.resolve(1), Promise.reject("Error"), Promise.resolve(3)];
+```
 
-Promise.allSettled(promises).then(results =&gt; {
-  const successes = results.filter(r =&gt; r.status === "fulfilled").map(r =&gt; r.value);
-  const errors = results.filter(r =&gt; r.status === "rejected").map(r =&gt; r.reason);
+### 2\. **Collecting Successes and Failures Separately**
+
+By iterating over the results, you can segregate successes and failures into different arrays for easier processing.
+
+```javascript
+const promises = [Promise.resolve(1), Promise.reject("Error"), Promise.resolve(3)];
+
+Promise.allSettled(promises).then(results => {
+  const successes = results.filter(r => r.status === "fulfilled").map(r => r.value);
+  const errors = results.filter(r => r.status === "rejected").map(r => r.reason);
 
   console.log("✅ Successes:", successes);
   console.log("❌ Errors:", errors);
 });
-</code></pre><h3 id="3-unified-error-handling">3. <strong>Unified Error Handling</strong></h3><p>When working with a mix of resolved and rejected promises, <code>Promise.allSettled()</code> simplifies error handling without stopping the execution midway.</p><h2 id="other-considerations-and-tips"><strong>Other Considerations and Tips</strong></h2><ol><li><strong>Understand the Overhead</strong><br>While <code>Promise.allSettled()</code> is great for collections, using it for a single promise might be overkill. Opt for <code>.then()</code>/<code>.catch()</code> where simplicity matters.</li><li><strong>Fallback Mechanisms for Rejections</strong><br>Combine <code>Promise.allSettled()</code> with fallback logic. For example, retry failed promises or log their errors for debugging.</li></ol><pre><code class="language-javascript">const tasks = [
-  fetch("url1").catch(() =&gt; "Fallback data 1"),
-  fetch("url2").catch(() =&gt; "Fallback data 2"),
+```
+
+### 3\. **Unified Error Handling**
+
+When working with a mix of resolved and rejected promises, `Promise.allSettled()` simplifies error handling without stopping the execution midway.
+
+## **Other Considerations and Tips**
+
+1.  **Understand the Overhead**  
+    While `Promise.allSettled()` is great for collections, using it for a single promise might be overkill. Opt for `.then()`/`.catch()` where simplicity matters.
+2.  **Fallback Mechanisms for Rejections**  
+    Combine `Promise.allSettled()` with fallback logic. For example, retry failed promises or log their errors for debugging.
+
+```javascript
+const tasks = [
+  fetch("url1").catch(() => "Fallback data 1"),
+  fetch("url2").catch(() => "Fallback data 2"),
 ];
 
-Promise.allSettled(tasks).then(results =&gt; {
-  results.forEach(result =&gt; {
+Promise.allSettled(tasks).then(results => {
+  results.forEach(result => {
     console.log(result.status === "fulfilled" ? result.value : "Using fallback");
   });
 });
-</code></pre><ol start="3"><li><strong>Async/Await Syntax</strong><br>You can still use <code>Promise.allSettled()</code> seamlessly with <code>async/await</code> for better readability:</li></ol><pre><code class="language-javascript">const tasks = [fetch("url1"), fetch("url2")];
+```
+
+3.  **Async/Await Syntax**  
+    You can still use `Promise.allSettled()` seamlessly with `async/await` for better readability:
+
+```javascript
+const tasks = [fetch("url1"), fetch("url2")];
 
 const results = await Promise.allSettled(tasks);
 for (const result of results) {
@@ -76,8 +140,15 @@ for (const result of results) {
     console.error("❌ Error:", result.reason);
   }
 }
-</code></pre><ol start="4"><li><strong>Performance Impact</strong><br>Avoid overusing <code>Promise.allSettled()</code> if the application doesn’t require capturing both resolved and rejected outcomes. Simpler alternatives might suffice for straightforward use cases.</li></ol><h2 id="finally"><strong>Finally</strong></h2><p><code>Promise.allSettled()</code> is a versatile method that excels at <strong>managing multiple asynchronous operations with comprehensive error handling</strong>. While it’s primarily designed for collections of promises, it can be adapted for single promises if necessary—though this isn’t its sweet spot.</p><p>When used correctly, it provides an elegant way to collect results, handle errors, and maintain the execution flow. Asynchronous programming can be tricky, but with tools like <code>Promise.allSettled()</code>, you can write robust, fault-tolerant JavaScript applications.</p><p>Remember: <strong>Promise.allSettled() lets you handle success and failure equally, without breaking a sweat!</strong></p><h3 id="support-us"><strong>Support Us</strong></h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+4.  **Performance Impact**  
+    Avoid overusing `Promise.allSettled()` if the application doesn’t require capturing both resolved and rejected outcomes. Simpler alternatives might suffice for straightforward use cases.
+
+## **Finally**
+
+`Promise.allSettled()` is a versatile method that excels at **managing multiple asynchronous operations with comprehensive error handling**. While it’s primarily designed for collections of promises, it can be adapted for single promises if necessary—though this isn’t its sweet spot.
+
+When used correctly, it provides an elegant way to collect results, handle errors, and maintain the execution flow. Asynchronous programming can be tricky, but with tools like `Promise.allSettled()`, you can write robust, fault-tolerant JavaScript applications.
+
+Remember: **Promise.allSettled() lets you handle success and failure equally, without breaking a sweat!**

@@ -5,10 +5,34 @@ description: "In the world of React , custom hooks have become an essential tool
 tags: ["javascript","react","testing","seo","design"]
 ---
 
-<p>In the world of <strong>React</strong>, <strong>custom hooks</strong> have become an essential tool for writing <strong>clean</strong>, <strong>reusable</strong>, and <strong>modular logic</strong>. They allow developers to <strong>extract repeated behavior</strong> into a simple function, enhancing both readability and maintainability.</p><p>One interesting use case is managing the <strong>browser window title</strong> (i.e., <code>document.title</code>). Imagine you want to dynamically set the page’s title based on user navigation, data fetching, or any specific action. Instead of cluttering your components with repetitive <code>useEffect</code> calls, you can <strong>encapsulate this logic into a custom hook</strong>. Let’s call it <code>useSetWindowTitle</code>.</p><hr><h2 id="what-is-usesetwindowtitle"><strong>What is <code>useSetWindowTitle</code>?</strong></h2><p><code>useSetWindowTitle</code> is a <strong>custom React hook</strong> that serves as a wrapper for <strong><code>useEffect</code></strong>, designed to <strong>update the browser’s window title</strong> dynamically. It simplifies what would otherwise be <strong>boilerplate code</strong> in every component.</p><h3 id="%E2%9C%A8-key-features">✨ <strong>Key Features</strong></h3><ul><li><strong>Encapsulation of logic</strong>: Handles title updates in one place.</li><li><strong>Reusability</strong>: Import and use in any component with a single call.</li><li><strong>Clean code</strong>: Keeps components focused on UI rather than browser behaviors.</li><li><strong>Restores original title</strong> (optional): Ensures a component can clean up after itself.</li></ul><hr><h2 id="%F0%9F%9B%A0%EF%B8%8F-how-to-build-usesetwindowtitle">🛠️ <strong>How to Build <code>useSetWindowTitle</code></strong></h2><p>Here’s a <strong>complete implementation</strong> of <code>useSetWindowTitle</code>:</p><pre><code class="language-jsx">import { useEffect } from 'react';
+In the world of **React**, **custom hooks** have become an essential tool for writing **clean**, **reusable**, and **modular logic**. They allow developers to **extract repeated behavior** into a simple function, enhancing both readability and maintainability.
+
+One interesting use case is managing the **browser window title** (i.e., `document.title`). Imagine you want to dynamically set the page’s title based on user navigation, data fetching, or any specific action. Instead of cluttering your components with repetitive `useEffect` calls, you can **encapsulate this logic into a custom hook**. Let’s call it `useSetWindowTitle`.
+
+* * *
+
+## **What is `useSetWindowTitle`?**
+
+`useSetWindowTitle` is a **custom React hook** that serves as a wrapper for **`useEffect`**, designed to **update the browser’s window title** dynamically. It simplifies what would otherwise be **boilerplate code** in every component.
+
+### ✨ **Key Features**
+
+-   **Encapsulation of logic**: Handles title updates in one place.
+-   **Reusability**: Import and use in any component with a single call.
+-   **Clean code**: Keeps components focused on UI rather than browser behaviors.
+-   **Restores original title** (optional): Ensures a component can clean up after itself.
+
+* * *
+
+## 🛠️ **How to Build `useSetWindowTitle`**
+
+Here’s a **complete implementation** of `useSetWindowTitle`:
+
+```jsx
+import { useEffect } from 'react';
 
 function useSetWindowTitle(title) {
-  useEffect(() =&gt; {
+  useEffect(() => {
     // Save the original title
     const originalTitle = document.title;
 
@@ -16,25 +40,68 @@ function useSetWindowTitle(title) {
     document.title = title;
 
     // Cleanup: Restore original title when component unmounts
-    return () =&gt; {
+    return () => {
       document.title = originalTitle;
     };
   }, [title]); // Run effect when 'title' changes
 }
 
 export default useSetWindowTitle;
-</code></pre><p>This function:</p><ul><li><strong>Takes a <code>title</code> parameter</strong> representing the new window title.</li><li><strong>Saves the original title</strong> so it can be restored later.</li><li><strong>Updates <code>document.title</code></strong> whenever the <code>title</code> argument changes.</li><li><strong>Cleans up on unmount</strong>, restoring the previous title to avoid unexpected changes.</li></ul><hr><h2 id="%F0%9F%9A%80-how-to-use-it">🚀 <strong>How to Use It</strong></h2><p>Here’s an example of how you might use <code>useSetWindowTitle</code> in a React component:</p><pre><code class="language-jsx">import React from 'react';
+```
+
+This function:
+
+-   **Takes a `title` parameter** representing the new window title.
+-   **Saves the original title** so it can be restored later.
+-   **Updates `document.title`** whenever the `title` argument changes.
+-   **Cleans up on unmount**, restoring the previous title to avoid unexpected changes.
+
+* * *
+
+## 🚀 **How to Use It**
+
+Here’s an example of how you might use `useSetWindowTitle` in a React component:
+
+```jsx
+import React from 'react';
 import useSetWindowTitle from './useSetWindowTitle';
 
 function ProfilePage() {
   useSetWindowTitle("User Profile");
 
-  return &lt;h1&gt;Welcome to your profile!&lt;/h1&gt;;
+  return <h1>Welcome to your profile!</h1>;
 }
 
 export default ProfilePage;
-</code></pre><p>Every time <code>ProfilePage</code> is mounted, the window title changes to <strong>"User Profile"</strong>. When you navigate away, the previous title is restored.</p><hr><h2 id="%F0%9F%94%8E-why-use-a-custom-hook-for-this">🔎 <strong>Why Use a Custom Hook for This?</strong></h2><p>You might wonder: <em>"Why not just put <code>useEffect</code> directly in the component?"</em> While that works, <strong>custom hooks offer several advantages</strong>:</p><ul><li><strong>DRY Principle</strong>: Avoid repeating the same logic across multiple components.</li><li><strong>Testability</strong>: It’s easier to test a hook’s logic in isolation.</li><li><strong>Organization</strong>: Keeps components focused on rendering and user interaction.</li><li><strong>Scalability</strong>: When multiple components need the same behavior, simply call the hook.</li></ul><hr><h2 id="%E2%9A%A0%EF%B8%8F-things-to-consider">⚠️ <strong>Things to Consider</strong></h2><ul><li><strong>Always use the <code>use</code> prefix</strong> for custom hooks to let React recognize them as hooks.</li><li><strong>Follow the rules of hooks</strong>: Only call hooks at the top level of your components, not inside loops or conditionals.</li><li><strong>Dependency management</strong>: If you plan to depend on multiple variables to control the title, you can expand the hook’s dependency array.</li><li><strong>SEO implications</strong>: Remember that <strong><code>document.title</code> is a client-side change</strong>. Search engines don’t necessarily see it if they don’t render JavaScript.</li><li><strong>React Router integration</strong>: You can combine this with <strong>React Router</strong> to set titles based on routes.</li></ul><hr><h2 id="%F0%9F%93%9D-finally">📝 <strong>Finally</strong></h2><p>The <code>useSetWindowTitle</code> hook is a <strong>simple yet powerful example</strong> of how custom hooks can <strong>clean up repetitive logic</strong>, <strong>enhance readability</strong>, and <strong>improve maintainability</strong>. Whether you’re working on a small side project or a large-scale application, this approach can <strong>save you time</strong> and <strong>reduce errors</strong>.</p><p>If you haven’t embraced <strong>custom hooks</strong> yet, this might be the perfect reason to start.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Every time `ProfilePage` is mounted, the window title changes to **"User Profile"**. When you navigate away, the previous title is restored.
+
+* * *
+
+## 🔎 **Why Use a Custom Hook for This?**
+
+You might wonder: _"Why not just put `useEffect` directly in the component?"_ While that works, **custom hooks offer several advantages**:
+
+-   **DRY Principle**: Avoid repeating the same logic across multiple components.
+-   **Testability**: It’s easier to test a hook’s logic in isolation.
+-   **Organization**: Keeps components focused on rendering and user interaction.
+-   **Scalability**: When multiple components need the same behavior, simply call the hook.
+
+* * *
+
+## ⚠️ **Things to Consider**
+
+-   **Always use the `use` prefix** for custom hooks to let React recognize them as hooks.
+-   **Follow the rules of hooks**: Only call hooks at the top level of your components, not inside loops or conditionals.
+-   **Dependency management**: If you plan to depend on multiple variables to control the title, you can expand the hook’s dependency array.
+-   **SEO implications**: Remember that **`document.title` is a client-side change**. Search engines don’t necessarily see it if they don’t render JavaScript.
+-   **React Router integration**: You can combine this with **React Router** to set titles based on routes.
+
+* * *
+
+## 📝 **Finally**
+
+The `useSetWindowTitle` hook is a **simple yet powerful example** of how custom hooks can **clean up repetitive logic**, **enhance readability**, and **improve maintainability**. Whether you’re working on a small side project or a large-scale application, this approach can **save you time** and **reduce errors**.
+
+If you haven’t embraced **custom hooks** yet, this might be the perfect reason to start.

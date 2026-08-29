@@ -5,26 +5,56 @@ description: "JavaScript is an incredibly versatile language, and one of its les
 tags: ["javascript","api","performance","debugging","data-structures"]
 ---
 
-<p>JavaScript is an incredibly <strong>versatile</strong> language, and one of its lesser-known yet powerful features is the ability to use <strong>computed property names</strong> in object literals. This allows us to define object keys dynamically at runtime, making our code more <strong>flexible</strong> and <strong>dynamic</strong>.</p><h2 id="what-are-computed-property-names"><strong>What Are Computed Property Names?</strong></h2><p>Computed property names allow you to use an <strong>expression</strong> inside square brackets <code>[]</code> as a key when defining an object. The expression is evaluated, and the result is used as the property name. Here's a simple example:</p><pre><code class="language-javascript">const key = 'name';
+JavaScript is an incredibly **versatile** language, and one of its lesser-known yet powerful features is the ability to use **computed property names** in object literals. This allows us to define object keys dynamically at runtime, making our code more **flexible** and **dynamic**.
+
+## **What Are Computed Property Names?**
+
+Computed property names allow you to use an **expression** inside square brackets `[]` as a key when defining an object. The expression is evaluated, and the result is used as the property name. Here's a simple example:
+
+```javascript
+const key = 'name';
 const obj = {
   [key]: 'JavaScript'
 };
 
 console.log(obj); // { name: 'JavaScript' }
-</code></pre><p>Instead of hardcoding the key, we assign it dynamically using a variable.</p><h2 id="using-expressions-as-object-keys"><strong>Using Expressions as Object Keys</strong></h2><p>JavaScript goes even further by allowing <strong>any valid expression</strong> as an object key. This means you can perform calculations, call functions, or even use <code>Math.random()</code> to generate unique keys dynamically:</p><pre><code class="language-javascript">const KEY = Math.random();
+```
+
+Instead of hardcoding the key, we assign it dynamically using a variable.
+
+## **Using Expressions as Object Keys**
+
+JavaScript goes even further by allowing **any valid expression** as an object key. This means you can perform calculations, call functions, or even use `Math.random()` to generate unique keys dynamically:
+
+```javascript
+const KEY = Math.random();
 const obj = {
   [KEY + 1000]: 'I love JS'
 };
 
 console.log(obj);
-</code></pre><p>In this example, the key will be a <strong>randomly generated number</strong> plus 1000, ensuring uniqueness.</p><h2 id="use-cases-for-computed-property-names"><strong>Use Cases for Computed Property Names</strong></h2><p><strong>Generating Unique Keys for Caching</strong> If you’re building a caching system, computed property names can help create unique keys:</p><pre><code class="language-javascript">const cache = {};
+```
+
+In this example, the key will be a **randomly generated number** plus 1000, ensuring uniqueness.
+
+## **Use Cases for Computed Property Names**
+
+**Generating Unique Keys for Caching** If you’re building a caching system, computed property names can help create unique keys:
+
+```javascript
+const cache = {};
 function storeData(key, data) {
   cache[`cache_${Date.now()}`] = data;
 }
 
 storeData('user_data', { name: 'John', age: 30 });
 console.log(cache);
-</code></pre><p><strong>Merging Dynamic API Data</strong> When working with APIs, you may need to dynamically map keys from responses:</p><pre><code class="language-javascript">const apiResponse = {
+```
+
+**Merging Dynamic API Data** When working with APIs, you may need to dynamically map keys from responses:
+
+```javascript
+const apiResponse = {
   id: 101,
   name: 'Product A',
   price: 25
@@ -36,18 +66,32 @@ const formattedData = {
 
 console.log(formattedData);
 // { product_101: { id: 101, name: 'Product A', price: 25 } }
-</code></pre><p><strong>Dynamic Object Properties in Loops</strong> When processing data dynamically, you might need to assign object keys based on a condition or calculation:</p><pre><code class="language-javascript">const prefix = 'user_';
+```
+
+**Dynamic Object Properties in Loops** When processing data dynamically, you might need to assign object keys based on a condition or calculation:
+
+```javascript
+const prefix = 'user_';
 const users = ['Alice', 'Bob', 'Charlie'];
 
 const userObj = {};
-users.forEach((user, index) =&gt; {
+users.forEach((user, index) => {
   userObj[`${prefix}${index}`] = user;
 });
 
 console.log(userObj);
 // { user_0: 'Alice', user_1: 'Bob', user_2: 'Charlie' }
-</code></pre><h2 id="considerations-when-using-dynamic-keys"><strong>Considerations When Using Dynamic Keys</strong></h2><ul><li><strong>Performance Impact</strong>: If you generate keys dynamically using <code>Math.random()</code> or <code>Date.now()</code>, it might be harder to track or retrieve specific data.</li><li><strong>Object Property Order</strong>: JavaScript objects do not guarantee a specific order for non-numeric keys.</li><li><strong>Stringification Issues</strong>: If the computed key isn't a string, it will be converted to one automatically.</li><li><strong>Debugging Complexity</strong>: Dynamically generated keys can make debugging more challenging if they are not predictable.</li></ul><h2 id="finally"><strong>Finally</strong></h2><p>Computed property names in JavaScript provide a <strong>powerful</strong> way to define dynamic object keys. Whether you're working with APIs, managing dynamic data structures, or creating unique identifiers, this feature can significantly <strong>enhance</strong> your code's flexibility and maintainability.</p><p>By understanding how and when to use dynamic keys effectively, you can <strong>unlock</strong> new possibilities in JavaScript development.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+## **Considerations When Using Dynamic Keys**
+
+-   **Performance Impact**: If you generate keys dynamically using `Math.random()` or `Date.now()`, it might be harder to track or retrieve specific data.
+-   **Object Property Order**: JavaScript objects do not guarantee a specific order for non-numeric keys.
+-   **Stringification Issues**: If the computed key isn't a string, it will be converted to one automatically.
+-   **Debugging Complexity**: Dynamically generated keys can make debugging more challenging if they are not predictable.
+
+## **Finally**
+
+Computed property names in JavaScript provide a **powerful** way to define dynamic object keys. Whether you're working with APIs, managing dynamic data structures, or creating unique identifiers, this feature can significantly **enhance** your code's flexibility and maintainability.
+
+By understanding how and when to use dynamic keys effectively, you can **unlock** new possibilities in JavaScript development.

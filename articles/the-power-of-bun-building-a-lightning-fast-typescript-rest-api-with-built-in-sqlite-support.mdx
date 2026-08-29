@@ -5,7 +5,27 @@ description: "When it comes to building modern backends, developers often wrestl
 tags: ["javascript","typescript","database","web-server","api"]
 ---
 
-<p>When it comes to building modern backends, developers often wrestle with setting up the right tools and dependencies. <strong>Bun</strong>, a high-performance JavaScript runtime, is changing the game. It’s fast, it’s simple, and it comes with powerful built-in features like an HTTP server and SQLite support. Let’s dive into how you can use Bun to create a lean, blazing-fast REST API with TypeScript.</p><h3 id="why-bun"><strong>Why Bun?</strong></h3><p>Bun isn’t just another runtime; it’s a developer-friendly powerhouse. Here’s what makes Bun stand out:</p><ol><li><strong>Built-in SQLite Support</strong>: Forget about installing external SQLite libraries. Bun integrates SQLite natively, simplifying database interactions.</li><li><strong>Native HTTP Server</strong>: No need for frameworks like Express to handle HTTP requests. Bun’s built-in HTTP server is lightweight and efficient.</li><li><strong>Lightning-Fast Performance</strong>: Bun is written in Zig, making it one of the fastest JavaScript runtimes available.</li><li><strong>TypeScript First-Class Citizen</strong>: With built-in TypeScript transpilation, you don’t need tools like <code>ts-node</code> or additional configurations.</li></ol><h3 id="building-a-rest-api-with-bun"><strong>Building a REST API with Bun</strong></h3><p>Here’s how simple it is to build a REST API with Bun and SQLite.</p><h4 id="step-1-setting-up-the-project"><strong>Step 1: Setting Up the Project</strong></h4><p>First, initialize your project and install dependencies. The <code>package.json</code> file in Bun is straightforward:</p><pre><code class="language-json">{
+When it comes to building modern backends, developers often wrestle with setting up the right tools and dependencies. **Bun**, a high-performance JavaScript runtime, is changing the game. It’s fast, it’s simple, and it comes with powerful built-in features like an HTTP server and SQLite support. Let’s dive into how you can use Bun to create a lean, blazing-fast REST API with TypeScript.
+
+### **Why Bun?**
+
+Bun isn’t just another runtime; it’s a developer-friendly powerhouse. Here’s what makes Bun stand out:
+
+1.  **Built-in SQLite Support**: Forget about installing external SQLite libraries. Bun integrates SQLite natively, simplifying database interactions.
+2.  **Native HTTP Server**: No need for frameworks like Express to handle HTTP requests. Bun’s built-in HTTP server is lightweight and efficient.
+3.  **Lightning-Fast Performance**: Bun is written in Zig, making it one of the fastest JavaScript runtimes available.
+4.  **TypeScript First-Class Citizen**: With built-in TypeScript transpilation, you don’t need tools like `ts-node` or additional configurations.
+
+### **Building a REST API with Bun**
+
+Here’s how simple it is to build a REST API with Bun and SQLite.
+
+#### **Step 1: Setting Up the Project**
+
+First, initialize your project and install dependencies. The `package.json` file in Bun is straightforward:
+
+```json
+{
   "name": "typescript-backend",
   "scripts": {
     "start": "bun run --watch index.ts"
@@ -16,7 +36,16 @@ tags: ["javascript","typescript","database","web-server","api"]
     "typescript": "^5.7.2"
   }
 }
-</code></pre><p>This setup ensures you have TypeScript support, along with type definitions for Bun and Node.js. The <code>--watch</code> flag enables hot reloading for an enhanced development experience.</p><h4 id="step-2-writing-the-code"><strong>Step 2: Writing the Code</strong></h4><p>Here’s the core API logic:</p><pre><code class="language-typescript">import { Database } from "bun:sqlite";
+```
+
+This setup ensures you have TypeScript support, along with type definitions for Bun and Node.js. The `--watch` flag enables hot reloading for an enhanced development experience.
+
+#### **Step 2: Writing the Code**
+
+Here’s the core API logic:
+
+```typescript
+import { Database } from "bun:sqlite";
 const db = new Database("db.sqlite");
 
 Bun.serve({
@@ -32,15 +61,64 @@ Bun.serve({
     }
   },
 });
-</code></pre><p><strong>What’s happening here?</strong></p><ul><li><strong>Database Initialization</strong>: A SQLite database is created (or opened if it already exists) with <code>db.sqlite</code>.</li><li><strong>Route Handling</strong>: The <code>fetch</code> function checks the request’s path and executes SQL queries accordingly.</li><li><strong>JSON Response</strong>: The API converts the SQLite query result to JSON, making it ready for consumption by front-end applications.</li></ul><p>This minimalistic code creates a fully functional REST endpoint for <code>/vehicles</code>.</p><h3 id="additional-enhancements-to-consider"><strong>Additional Enhancements to Consider</strong></h3><p>While this setup is impressive in its simplicity, there are a few improvements and considerations to keep in mind:</p><h4 id="1-use-prepared-statements"><strong>1. Use Prepared Statements</strong></h4><p>To prevent SQL injection attacks, always use prepared statements when handling dynamic input in your queries:</p><pre><code class="language-typescript">const vehicles = db.query("SELECT * FROM vehicle WHERE type = ?", [vehicleType]);
-</code></pre><h4 id="2-add-error-handling"><strong>2. Add Error Handling</strong></h4><p>Currently, the API doesn’t handle database or runtime errors. Wrapping your logic in a <code>try...catch</code> block ensures stability:</p><pre><code class="language-typescript">try {
+```
+
+**What’s happening here?**
+
+-   **Database Initialization**: A SQLite database is created (or opened if it already exists) with `db.sqlite`.
+-   **Route Handling**: The `fetch` function checks the request’s path and executes SQL queries accordingly.
+-   **JSON Response**: The API converts the SQLite query result to JSON, making it ready for consumption by front-end applications.
+
+This minimalistic code creates a fully functional REST endpoint for `/vehicles`.
+
+### **Additional Enhancements to Consider**
+
+While this setup is impressive in its simplicity, there are a few improvements and considerations to keep in mind:
+
+#### **1\. Use Prepared Statements**
+
+To prevent SQL injection attacks, always use prepared statements when handling dynamic input in your queries:
+
+```typescript
+const vehicles = db.query("SELECT * FROM vehicle WHERE type = ?", [vehicleType]);
+```
+
+#### **2\. Add Error Handling**
+
+Currently, the API doesn’t handle database or runtime errors. Wrapping your logic in a `try...catch` block ensures stability:
+
+```typescript
+try {
   const vehicles = db.query("SELECT * FROM vehicle");
   return new Response(JSON.stringify(vehicles));
 } catch (err) {
   return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
 }
-</code></pre><h4 id="3-modularize-the-code"><strong>3. Modularize the Code</strong></h4><p>As your project grows, consider separating the routes, database queries, and server logic into distinct files for better maintainability.</p><h4 id="4-secure-the-application"><strong>4. Secure the Application</strong></h4><p>For production:</p><ul><li>Set up <strong>CORS policies</strong> to restrict access.</li><li>Use <strong>HTTPS</strong> for secure communication.</li><li>Protect your SQLite database file by ensuring proper file permissions.</li></ul><h4 id="5-optimize-for-deployment"><strong>5. Optimize for Deployment</strong></h4><p>Although Bun is fast, you can take additional steps to ensure your application scales:</p><ul><li><strong>Connection Pooling</strong>: Use SQLite in a read-heavy environment or consider migrating to a database better suited for concurrent writes.</li><li><strong>Load Testing</strong>: Use tools like Apache Benchmark (<code>ab</code>) to ensure your API performs well under load.</li></ul><h3 id="finally"><strong>Finally</strong></h3><p><strong>Bun makes it incredibly easy to build fast and efficient REST APIs with minimal boilerplate.</strong> Its built-in features reduce the dependency footprint, enabling developers to focus on building functionality rather than setting up tooling. By following the sample code and implementing the additional considerations mentioned, you can create a robust and secure backend.</p><p>If you’re tired of the overhead in traditional back-end setups, give Bun a try. It’s not just fast—it’s the future of JavaScript runtime development.</p><p>What’s your favorite feature of Bun so far? Let me know in the comments! 🚀</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+#### **3\. Modularize the Code**
+
+As your project grows, consider separating the routes, database queries, and server logic into distinct files for better maintainability.
+
+#### **4\. Secure the Application**
+
+For production:
+
+-   Set up **CORS policies** to restrict access.
+-   Use **HTTPS** for secure communication.
+-   Protect your SQLite database file by ensuring proper file permissions.
+
+#### **5\. Optimize for Deployment**
+
+Although Bun is fast, you can take additional steps to ensure your application scales:
+
+-   **Connection Pooling**: Use SQLite in a read-heavy environment or consider migrating to a database better suited for concurrent writes.
+-   **Load Testing**: Use tools like Apache Benchmark (`ab`) to ensure your API performs well under load.
+
+### **Finally**
+
+**Bun makes it incredibly easy to build fast and efficient REST APIs with minimal boilerplate.** Its built-in features reduce the dependency footprint, enabling developers to focus on building functionality rather than setting up tooling. By following the sample code and implementing the additional considerations mentioned, you can create a robust and secure backend.
+
+If you’re tired of the overhead in traditional back-end setups, give Bun a try. It’s not just fast—it’s the future of JavaScript runtime development.
+
+What’s your favorite feature of Bun so far? Let me know in the comments! 🚀

@@ -5,21 +5,106 @@ description: "If you're trying to use the laravel command after installing the L
 tags: ["laravel","bash","performance","environment"]
 ---
 
-<p>If you're trying to use the <code>laravel</code> command after installing the Laravel installer globally with Composer but encounter the error <code>laravel: command not found</code>, don’t worry. This is a common issue that can easily be resolved. In this article, we’ll walk through the steps to fix it and make sure everything is working correctly, including some extra considerations you might have missed.</p><h4 id="step-1-verify-composer-installation">Step 1: Verify Composer Installation</h4><p>First, let's ensure that the <strong>Laravel Installer</strong> is installed properly. Run the following command to check:</p><pre><code class="language-bash">composer global show laravel/installer
-</code></pre><p>If the installation was successful, you should see version information for the <strong>Laravel installer</strong>. If not, try reinstalling it with the following command:</p><pre><code class="language-bash">composer global require laravel/installer
-</code></pre><p>This command should download and install the Laravel installer globally on your system. If you see any errors, make sure that your Composer setup is working correctly and that there are no network issues preventing the download.</p><h4 id="step-2-check-the-composer-global-bin-directory">Step 2: Check the Composer Global Bin Directory</h4><p>Next, you need to check if the <strong>Composer global bin directory</strong> is included in your system's <strong>PATH</strong>. Composer installs globally required packages into a directory that needs to be accessible from anywhere in your terminal.</p><p>For most systems, this global directory is located in either of these locations:</p><ul><li><code>~/.composer/vendor/bin</code> (for older Composer versions)</li><li><code>~/.config/composer/vendor/bin</code> (for newer Composer versions)</li></ul><p>If the <code>laravel</code> command is still not found, it likely means that this directory is not in your <strong>PATH</strong>. You can fix this by adding it manually.</p><h4 id="step-3-add-the-composer-global-bin-to-path">Step 3: Add the Composer Global Bin to PATH</h4><p>To add the global Composer bin directory to your <strong>PATH</strong>, you need to modify your shell profile file (<code>~/.bashrc</code>, <code>~/.zshrc</code>, or similar).</p><ol><li>Open the appropriate profile file in your favorite text editor:</li></ol><pre><code>nano ~/.bashrc   # If you’re using Bash
-nano ~/.zshrc    # If you’re using Zsh
-</code></pre><ol start="2"><li>Add the following line to the end of the file:</li></ol><pre><code>export PATH="$HOME/.composer/vendor/bin:$PATH"    # For older Composer versions
-export PATH="$HOME/.config/composer/vendor/bin:$PATH"    # For newer Composer versions
-</code></pre><ol start="3"><li>Save and close the file, then reload it:</li></ol><pre><code class="language-bash">source ~/.bashrc    # Or source ~/.zshrc for Zsh users
-</code></pre><p>By doing this, you’re making sure that the <code>laravel</code> command is accessible globally from any terminal session.</p><h4 id="step-4-check-if-the-laravel-command-works">Step 4: Check if the <code>laravel</code> Command Works</h4><p>Now that the path is set up, verify that the <code>laravel</code> command is recognized by the terminal. Run:</p><pre><code class="language-bash">laravel --version
-</code></pre><p>You should now see the version of the Laravel installer, indicating that everything is working correctly.</p><h4 id="extra-considerations">Extra Considerations</h4><ol><li><strong>Ensure Proper Permissions</strong><br>If you're working on a shared server or using a custom setup, make sure that the permissions for the Composer bin directory and the <code>laravel</code> binary are set correctly. Sometimes, permission issues can cause the <code>laravel</code> command to be inaccessible. Run:</li></ol><pre><code class="language-bash">chmod -R 755 ~/.composer
-</code></pre><ol start="2"><li><strong>Composer Autoloader</strong><br>If you're still facing issues, try clearing the Composer cache to ensure there’s no conflict or corruption with installed packages:</li></ol><pre><code class="language-bash">composer clear-cache
-</code></pre><ol start="3"><li><strong>Ensure Composer Is Installed Globally</strong><br>If Composer itself is not globally accessible, that can also cause issues. To check if Composer is available globally, run:</li></ol><pre><code class="language-bash">composer --version
-</code></pre><p>If Composer isn’t installed, you'll need to install it globally before proceeding.</p><ol start="4"><li><strong>Reinstall Laravel Installer</strong><br>In some rare cases, if the <code>laravel</code> command isn't found despite everything being set up, you may want to completely remove the Laravel installer and reinstall it:</li></ol><pre><code class="language-bash">composer global remove laravel/installer
-composer global require laravel/installer
-</code></pre><h4 id="finally">Finally</h4><p>Fixing the <code>laravel: command not found</code> error is usually a matter of ensuring the global <strong>Composer bin directory</strong> is in your <strong>PATH</strong>. By following the steps outlined in this article, you should be able to fix the issue and start using the <code>laravel</code> command without problems. Make sure that the installation is successful, your environment variables are configured correctly, and Composer is accessible from any terminal session.</p><p>If you continue to run into issues, don’t hesitate to check the <strong>permissions</strong> on your Composer directories, clear your cache, or reinstall the Laravel installer. These are simple steps that can resolve most common problems with Laravel installation.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you're trying to use the `laravel` command after installing the Laravel installer globally with Composer but encounter the error `laravel: command not found`, don’t worry. This is a common issue that can easily be resolved. In this article, we’ll walk through the steps to fix it and make sure everything is working correctly, including some extra considerations you might have missed.
 
+#### Step 1: Verify Composer Installation
+
+First, let's ensure that the **Laravel Installer** is installed properly. Run the following command to check:
+
+```bash
+composer global show laravel/installer
+```
+
+If the installation was successful, you should see version information for the **Laravel installer**. If not, try reinstalling it with the following command:
+
+```bash
+composer global require laravel/installer
+```
+
+This command should download and install the Laravel installer globally on your system. If you see any errors, make sure that your Composer setup is working correctly and that there are no network issues preventing the download.
+
+#### Step 2: Check the Composer Global Bin Directory
+
+Next, you need to check if the **Composer global bin directory** is included in your system's **PATH**. Composer installs globally required packages into a directory that needs to be accessible from anywhere in your terminal.
+
+For most systems, this global directory is located in either of these locations:
+
+-   `~/.composer/vendor/bin` (for older Composer versions)
+-   `~/.config/composer/vendor/bin` (for newer Composer versions)
+
+If the `laravel` command is still not found, it likely means that this directory is not in your **PATH**. You can fix this by adding it manually.
+
+#### Step 3: Add the Composer Global Bin to PATH
+
+To add the global Composer bin directory to your **PATH**, you need to modify your shell profile file (`~/.bashrc`, `~/.zshrc`, or similar).
+
+1.  Open the appropriate profile file in your favorite text editor:
+
+```
+nano ~/.bashrc   # If you’re using Bash
+nano ~/.zshrc    # If you’re using Zsh
+```
+
+2.  Add the following line to the end of the file:
+
+```
+export PATH="$HOME/.composer/vendor/bin:$PATH"    # For older Composer versions
+export PATH="$HOME/.config/composer/vendor/bin:$PATH"    # For newer Composer versions
+```
+
+3.  Save and close the file, then reload it:
+
+```bash
+source ~/.bashrc    # Or source ~/.zshrc for Zsh users
+```
+
+By doing this, you’re making sure that the `laravel` command is accessible globally from any terminal session.
+
+#### Step 4: Check if the `laravel` Command Works
+
+Now that the path is set up, verify that the `laravel` command is recognized by the terminal. Run:
+
+```bash
+laravel --version
+```
+
+You should now see the version of the Laravel installer, indicating that everything is working correctly.
+
+#### Extra Considerations
+
+1.  **Ensure Proper Permissions**  
+    If you're working on a shared server or using a custom setup, make sure that the permissions for the Composer bin directory and the `laravel` binary are set correctly. Sometimes, permission issues can cause the `laravel` command to be inaccessible. Run:
+
+```bash
+chmod -R 755 ~/.composer
+```
+
+2.  **Composer Autoloader**  
+    If you're still facing issues, try clearing the Composer cache to ensure there’s no conflict or corruption with installed packages:
+
+```bash
+composer clear-cache
+```
+
+3.  **Ensure Composer Is Installed Globally**  
+    If Composer itself is not globally accessible, that can also cause issues. To check if Composer is available globally, run:
+
+```bash
+composer --version
+```
+
+If Composer isn’t installed, you'll need to install it globally before proceeding.
+
+4.  **Reinstall Laravel Installer**  
+    In some rare cases, if the `laravel` command isn't found despite everything being set up, you may want to completely remove the Laravel installer and reinstall it:
+
+```bash
+composer global remove laravel/installer
+composer global require laravel/installer
+```
+
+#### Finally
+
+Fixing the `laravel: command not found` error is usually a matter of ensuring the global **Composer bin directory** is in your **PATH**. By following the steps outlined in this article, you should be able to fix the issue and start using the `laravel` command without problems. Make sure that the installation is successful, your environment variables are configured correctly, and Composer is accessible from any terminal session.
+
+If you continue to run into issues, don’t hesitate to check the **permissions** on your Composer directories, clear your cache, or reinstall the Laravel installer. These are simple steps that can resolve most common problems with Laravel installation.

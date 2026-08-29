@@ -5,8 +5,65 @@ description: "In the ever-evolving world of React and Next.js , developers often
 tags: ["javascript","react","nextjs","api","testing"]
 ---
 
-<p>In the ever-evolving world of <strong>React</strong> and <strong>Next.js</strong>, developers often face tough choices when it comes to <strong>data fetching and caching solutions</strong>. For years, <strong>SWR</strong> has been a beloved choice for its <strong>simplicity</strong> and <strong>elegance</strong>. Recently, however, many developers (including some of my friends) have recommended a switch to <strong>TanStack Query</strong> (formerly React Query) for its <strong>advanced features</strong> and <strong>robustness</strong>.</p><p>If you’re using <strong>Next.js 15</strong> like I am and currently relying on <strong>SWR</strong>, this article will help you decide if it’s time to stick with what works or embrace the growing power of <strong>TanStack Query</strong>.</p><hr><h3 id="understanding-the-basics"><strong>Understanding the Basics</strong></h3><p>Both <strong>SWR</strong> and <strong>TanStack Query</strong> solve a common problem in React apps: <strong>efficient data fetching</strong>. Instead of manually managing fetch calls, retries, caching, and stale data, these libraries provide <strong>hooks</strong> and <strong>built-in logic</strong> to handle it for you.</p><ul><li><strong>SWR (Stale-While-Revalidate)</strong> follows a simple philosophy: show cached data first (<strong>stale</strong>), then fetch new data (<strong>revalidate</strong>) in the background. It’s lightweight and easy to plug into any React app.</li><li><strong>TanStack Query</strong> goes beyond that. It introduces a <strong>query-centric approach</strong> with granular control over data fetching, caching, retries, background updates, <strong>mutations</strong>, and even developer tools.</li></ul><hr><h3 id="what-makes-tanstack-query-shine"><strong>What Makes TanStack Query Shine?</strong></h3><p>Here’s where <strong>TanStack Query</strong> stands out:</p><ul><li><strong>Mutations Built-In:</strong> Unlike <strong>SWR</strong>, which focuses mostly on fetching, TanStack Query supports <strong>mutations</strong> with powerful tools like <strong>optimistic updates</strong> and <strong>rollback on failure</strong>. This is crucial for apps where data is frequently updated (e.g., dashboards, admin panels, forms).</li><li><strong>Advanced Query Control:</strong> TanStack Query offers <strong>query invalidation</strong>, <strong>dependent queries</strong>, <strong>parallel queries</strong>, and <strong>fine-grained cache configuration</strong> (like <code>staleTime</code>, <code>cacheTime</code>). This allows you to control when data is fetched and how long it stays cached.</li><li><strong>Prefetching &amp; Hydration:</strong> Perfect for <strong>Next.js 15</strong> with <strong>Server Components</strong> and <strong>Streaming</strong>. You can prefetch data on the server and hydrate it on the client, which boosts <strong>SEO</strong> and improves <strong>performance</strong>.</li><li><strong>DevTools:</strong> The <strong>TanStack Query DevTools</strong> make it easy to inspect query caches, monitor background updates, and debug query behavior. This can <strong>save hours</strong> during development.</li><li><strong>Pagination &amp; Infinite Queries:</strong> TanStack Query has built-in support for <strong>pagination</strong> and <strong>infinite scrolling</strong>, which can be tricky to implement with SWR.</li></ul><hr><h3 id="why-stick-with-swr"><strong>Why Stick with SWR?</strong></h3><p>That said, <strong>SWR</strong> is not going away anytime soon. It’s still a solid choice, especially if:</p><ul><li>You value <strong>simplicity</strong> and don’t need the extra features. SWR’s API is minimalistic, and it integrates seamlessly with <strong>React Server Components</strong> and <strong>Suspense</strong> in <strong>Next.js 15</strong>.</li><li>Your app has <strong>basic data-fetching needs</strong> (e.g., static pages with occasional updates) and you don’t want the <strong>added bundle size</strong> of TanStack Query.</li><li>You already have a <strong>well-tested SWR setup</strong>, and the app’s complexity doesn’t justify a switch yet.</li></ul><hr><h3 id="other-key-considerations"><strong>Other Key Considerations</strong></h3><p>Here are a few extra points you might not have thought of:</p><ul><li><strong>Bundle Size:</strong> TanStack Query is bigger than SWR. For <strong>small projects</strong>, this might impact your <strong>performance budget</strong>. Consider using a <strong>bundle analyzer</strong> to check the trade-off.</li><li><strong>Learning Curve:</strong> Switching from SWR to TanStack Query requires learning new concepts (e.g., <code>useQuery</code>, <code>useMutation</code>, query keys). The payoff is higher <strong>flexibility</strong>, but it might take time.</li><li><strong>Community &amp; Ecosystem:</strong> Both libraries are well-supported, but <strong>TanStack Query</strong> has gained immense popularity, meaning more <strong>plugins</strong>, <strong>tutorials</strong>, and <strong>StackOverflow answers</strong>.</li><li><strong>Server-Side Rendering (SSR):</strong> Both libraries support SSR, but <strong>TanStack Query’s prefetching and hydration</strong> mechanisms make it more powerful for <strong>Next.js 15’s App Router</strong> and <strong>Server Components</strong>.</li><li><strong>Developer Experience:</strong> If you care about <strong>debugging tools</strong>, <strong>TanStack Query DevTools</strong> offer a much richer experience than what SWR currently provides.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p>If your app’s data fetching is <strong>relatively simple</strong>, or if you’re focused on <strong>small bundle sizes</strong> and a <strong>minimal setup</strong>, <strong>SWR</strong> remains an excellent choice. However, if you’re looking to scale up, need <strong>advanced features</strong> like <strong>mutations</strong>, <strong>dependent queries</strong>, <strong>query cancellation</strong>, and <strong>developer tools</strong>, <strong>TanStack Query</strong> is a clear winner.</p><p>For <strong>Next.js 15</strong> developers, especially those working with <strong>App Router</strong> and <strong>React Server Components</strong>, <strong>TanStack Query’s prefetching and hydration</strong> capabilities make it a very attractive option.</p><hr><h3 id="my-recommendation"><strong>My Recommendation</strong></h3><ul><li>For <strong>simple apps</strong> or when you need a <strong>quick setup</strong>, stick with <strong>SWR</strong>.</li><li>For <strong>complex apps</strong> with multiple queries, <strong>mutations</strong>, or <strong>advanced caching needs</strong>, start exploring <strong>TanStack Query</strong>.</li><li>If you’re in doubt, consider <strong>gradually migrating</strong> a few key queries from SWR to TanStack Query to test the waters.</li></ul><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In the ever-evolving world of **React** and **Next.js**, developers often face tough choices when it comes to **data fetching and caching solutions**. For years, **SWR** has been a beloved choice for its **simplicity** and **elegance**. Recently, however, many developers (including some of my friends) have recommended a switch to **TanStack Query** (formerly React Query) for its **advanced features** and **robustness**.
 
+If you’re using **Next.js 15** like I am and currently relying on **SWR**, this article will help you decide if it’s time to stick with what works or embrace the growing power of **TanStack Query**.
+
+* * *
+
+### **Understanding the Basics**
+
+Both **SWR** and **TanStack Query** solve a common problem in React apps: **efficient data fetching**. Instead of manually managing fetch calls, retries, caching, and stale data, these libraries provide **hooks** and **built-in logic** to handle it for you.
+
+-   **SWR (Stale-While-Revalidate)** follows a simple philosophy: show cached data first (**stale**), then fetch new data (**revalidate**) in the background. It’s lightweight and easy to plug into any React app.
+-   **TanStack Query** goes beyond that. It introduces a **query-centric approach** with granular control over data fetching, caching, retries, background updates, **mutations**, and even developer tools.
+
+* * *
+
+### **What Makes TanStack Query Shine?**
+
+Here’s where **TanStack Query** stands out:
+
+-   **Mutations Built-In:** Unlike **SWR**, which focuses mostly on fetching, TanStack Query supports **mutations** with powerful tools like **optimistic updates** and **rollback on failure**. This is crucial for apps where data is frequently updated (e.g., dashboards, admin panels, forms).
+-   **Advanced Query Control:** TanStack Query offers **query invalidation**, **dependent queries**, **parallel queries**, and **fine-grained cache configuration** (like `staleTime`, `cacheTime`). This allows you to control when data is fetched and how long it stays cached.
+-   **Prefetching & Hydration:** Perfect for **Next.js 15** with **Server Components** and **Streaming**. You can prefetch data on the server and hydrate it on the client, which boosts **SEO** and improves **performance**.
+-   **DevTools:** The **TanStack Query DevTools** make it easy to inspect query caches, monitor background updates, and debug query behavior. This can **save hours** during development.
+-   **Pagination & Infinite Queries:** TanStack Query has built-in support for **pagination** and **infinite scrolling**, which can be tricky to implement with SWR.
+
+* * *
+
+### **Why Stick with SWR?**
+
+That said, **SWR** is not going away anytime soon. It’s still a solid choice, especially if:
+
+-   You value **simplicity** and don’t need the extra features. SWR’s API is minimalistic, and it integrates seamlessly with **React Server Components** and **Suspense** in **Next.js 15**.
+-   Your app has **basic data-fetching needs** (e.g., static pages with occasional updates) and you don’t want the **added bundle size** of TanStack Query.
+-   You already have a **well-tested SWR setup**, and the app’s complexity doesn’t justify a switch yet.
+
+* * *
+
+### **Other Key Considerations**
+
+Here are a few extra points you might not have thought of:
+
+-   **Bundle Size:** TanStack Query is bigger than SWR. For **small projects**, this might impact your **performance budget**. Consider using a **bundle analyzer** to check the trade-off.
+-   **Learning Curve:** Switching from SWR to TanStack Query requires learning new concepts (e.g., `useQuery`, `useMutation`, query keys). The payoff is higher **flexibility**, but it might take time.
+-   **Community & Ecosystem:** Both libraries are well-supported, but **TanStack Query** has gained immense popularity, meaning more **plugins**, **tutorials**, and **StackOverflow answers**.
+-   **Server-Side Rendering (SSR):** Both libraries support SSR, but **TanStack Query’s prefetching and hydration** mechanisms make it more powerful for **Next.js 15’s App Router** and **Server Components**.
+-   **Developer Experience:** If you care about **debugging tools**, **TanStack Query DevTools** offer a much richer experience than what SWR currently provides.
+
+* * *
+
+### **Finally**
+
+If your app’s data fetching is **relatively simple**, or if you’re focused on **small bundle sizes** and a **minimal setup**, **SWR** remains an excellent choice. However, if you’re looking to scale up, need **advanced features** like **mutations**, **dependent queries**, **query cancellation**, and **developer tools**, **TanStack Query** is a clear winner.
+
+For **Next.js 15** developers, especially those working with **App Router** and **React Server Components**, **TanStack Query’s prefetching and hydration** capabilities make it a very attractive option.
+
+* * *
+
+### **My Recommendation**
+
+-   For **simple apps** or when you need a **quick setup**, stick with **SWR**.
+-   For **complex apps** with multiple queries, **mutations**, or **advanced caching needs**, start exploring **TanStack Query**.
+-   If you’re in doubt, consider **gradually migrating** a few key queries from SWR to TanStack Query to test the waters.

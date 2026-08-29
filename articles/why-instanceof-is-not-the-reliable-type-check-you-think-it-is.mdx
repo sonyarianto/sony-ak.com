@@ -5,12 +5,62 @@ description: "If you’ve been writing JavaScript long enough, you’ve probably
 tags: ["javascript","react","performance","debugging","json"]
 ---
 
-<p>If you’ve been writing JavaScript long enough, you’ve probably reached for <code>instanceof</code> at some point. At first glance, it feels like a neat way to verify if an object is an <strong>Array</strong>, a <strong>Date</strong>, a <strong>custom class</strong>, or something else. Unfortunately, <code>instanceof</code> is one of those features that looks good on the surface but hides a swamp of inconsistencies underneath.</p><p>Let’s unpack why relying on it can be a mistake, what alternatives exist, and some deeper considerations every JavaScript developer should keep in mind.</p><hr><h2 id="the-core-problem-with-instanceof">The Core Problem with <code>instanceof</code></h2><p><code>instanceof</code> works by walking the <strong>prototype chain</strong> of an object to see if a specific <code>constructor.prototype</code> exists in it. Conceptually simple, but in practice, this creates a series of <strong>fragile assumptions</strong>:</p><ol><li><strong>Multiple Library Copies</strong><br>Load React, Moment.js, or any library twice, and objects from version A will fail checks against version B’s constructors, even if they’re “the same thing” in your head.</li><li><strong>Subclassing and Inheritance Gotchas</strong><br>Extending built-ins like Array, Error, or Promise can lead to surprising results because the language hasn’t historically handled subclassing cleanly.</li></ol><p><strong>Prototype Manipulation</strong><br>Since JavaScript lets you mess with <code>__proto__</code>, <code>instanceof</code> can be fooled:</p><pre><code class="language-js">function A() {}
+If you’ve been writing JavaScript long enough, you’ve probably reached for `instanceof` at some point. At first glance, it feels like a neat way to verify if an object is an **Array**, a **Date**, a **custom class**, or something else. Unfortunately, `instanceof` is one of those features that looks good on the surface but hides a swamp of inconsistencies underneath.
+
+Let’s unpack why relying on it can be a mistake, what alternatives exist, and some deeper considerations every JavaScript developer should keep in mind.
+
+* * *
+
+## The Core Problem with `instanceof`
+
+`instanceof` works by walking the **prototype chain** of an object to see if a specific `constructor.prototype` exists in it. Conceptually simple, but in practice, this creates a series of **fragile assumptions**:
+
+1.  **Multiple Library Copies**  
+    Load React, Moment.js, or any library twice, and objects from version A will fail checks against version B’s constructors, even if they’re “the same thing” in your head.
+2.  **Subclassing and Inheritance Gotchas**  
+    Extending built-ins like Array, Error, or Promise can lead to surprising results because the language hasn’t historically handled subclassing cleanly.
+
+**Prototype Manipulation**  
+Since JavaScript lets you mess with `__proto__`, `instanceof` can be fooled:
+
+```js
+function A() {}
 const obj = new A();
 Object.setPrototypeOf(obj, {});  
 console.log(obj instanceof A); // false
-</code></pre><p><strong>Different Realms (Contexts)</strong><br>Open a new browser tab, an iframe, or use Node.js <code>vm</code> contexts, and suddenly you’ve got multiple “worlds” with their own built-in constructors.</p><pre><code class="language-js">new iframe.contentWindow.Array() instanceof Array; // false
-</code></pre><p>The object is still an Array… just not <em>this realm’s</em> Array.</p><hr><h2 id="when-instanceof-is-%E2%80%9Cgood-enough%E2%80%9D">When <code>instanceof</code> is “Good Enough”</h2><p>To be fair, <code>instanceof</code> isn’t <em>always</em> broken. It works well in <strong>controlled environments</strong>, such as:</p><ul><li>Your own classes within a single runtime.</li><li>Basic checks like <code>if (user instanceof User)</code> in back-end code where you don’t cross execution contexts.</li></ul><p>But once you start mixing <strong>browser iframes, multiple libraries, or JSON-parsed data</strong>, the cracks show.</p><hr><h2 id="better-alternatives">Better Alternatives</h2><p>So, if not <code>instanceof</code>, what should you use? Here are the safer and more reliable options:</p><p><strong>Custom Branding with Symbols</strong><br>A modern pattern is to “brand” your objects with hidden markers.</p><pre><code class="language-js">const MY_TYPE = Symbol("MyType");
+```
+
+**Different Realms (Contexts)**  
+Open a new browser tab, an iframe, or use Node.js `vm` contexts, and suddenly you’ve got multiple “worlds” with their own built-in constructors.
+
+```js
+new iframe.contentWindow.Array() instanceof Array; // false
+```
+
+The object is still an Array… just not _this realm’s_ Array.
+
+* * *
+
+## When `instanceof` is “Good Enough”
+
+To be fair, `instanceof` isn’t _always_ broken. It works well in **controlled environments**, such as:
+
+-   Your own classes within a single runtime.
+-   Basic checks like `if (user instanceof User)` in back-end code where you don’t cross execution contexts.
+
+But once you start mixing **browser iframes, multiple libraries, or JSON-parsed data**, the cracks show.
+
+* * *
+
+## Better Alternatives
+
+So, if not `instanceof`, what should you use? Here are the safer and more reliable options:
+
+**Custom Branding with Symbols**  
+A modern pattern is to “brand” your objects with hidden markers.
+
+```js
+const MY_TYPE = Symbol("MyType");
 
 class MyClass {
   [MY_TYPE] = true;
@@ -19,48 +69,63 @@ class MyClass {
 function isMyClass(obj) {
   return obj?.[MY_TYPE] === true;
 }
-</code></pre><p><strong>Duck Typing (Structural Checks)</strong><br>Instead of asking “is it an array?”, ask “does it behave like one?”</p><pre><code class="language-js">if (val &amp;&amp; typeof val.push === "function") { /* treat as array */ }
-</code></pre><p><strong><code>Object.prototype.toString.call()</code></strong><br>An old-school trick, but very consistent.</p><pre><code class="language-js">Object.prototype.toString.call(new Date()); // "[object Date]"
+```
+
+**Duck Typing (Structural Checks)**  
+Instead of asking “is it an array?”, ask “does it behave like one?”
+
+```js
+if (val && typeof val.push === "function") { /* treat as array */ }
+```
+
+**`Object.prototype.toString.call()`**  
+An old-school trick, but very consistent.
+
+```js
+Object.prototype.toString.call(new Date()); // "[object Date]"
 Object.prototype.toString.call([]); // "[object Array]"
-</code></pre><p><strong><code>Array.isArray()</code> for Arrays</strong><br>This was added specifically to fix the “is this an array across realms?” problem.</p><pre><code class="language-js">Array.isArray([]); // true
-</code></pre><p><strong><code>typeof</code> for Primitives</strong></p><pre><code class="language-js">typeof 42 === "number";  
+```
+
+**`Array.isArray()` for Arrays**  
+This was added specifically to fix the “is this an array across realms?” problem.
+
+```js
+Array.isArray([]); // true
+```
+
+**`typeof` for Primitives**
+
+```js
+typeof 42 === "number";  
 typeof "hello" === "string";  
 typeof null === "object"; // the famous caveat
-</code></pre><hr><h2 id="other-considerations-you-might-miss">Other Considerations You Might Miss</h2><ul><li><strong>JSON Round-Tripping</strong><br>Once you serialize and parse back data (<code>JSON.stringify → JSON.parse</code>), the prototype chain is gone. An object that was once a <code>Date</code> comes back as a string. Here, <code>instanceof</code> isn’t just unreliable — it’s useless.</li><li><strong>Cross-Platform Code (Node vs Browser)</strong><br>If you’re building libraries meant to run in <strong>Node.js</strong> and the <strong>browser</strong>, assume <code>instanceof</code> will betray you somewhere. Stick to safer checks.</li><li><strong>Performance Implications</strong><br>While <code>instanceof</code> isn’t “slow” in most cases, the extra prototype walking can add overhead if you’re running millions of checks in hot loops. Structural checks are often faster and more explicit.</li><li><strong>Error Handling Pitfalls</strong><br>Developers often do <code>if (err instanceof Error)</code> to check exceptions. But not all errors are guaranteed to be true <code>Error</code> instances (some APIs throw strings or custom objects). Safer approach: check for <code>err &amp;&amp; err.message</code>.</li></ul><hr><h2 id="quick-reference-what-to-use-instead">Quick Reference: What to Use Instead</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Safer Alternative</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String/Number/Boolean</td>
-<td><code inline="">typeof</code></td>
-</tr>
-<tr>
-<td>Array</td>
-<td><code inline="">Array.isArray()</code></td>
-</tr>
-<tr>
-<td>Date</td>
-<td><code inline="">Object.prototype.toString.call(obj) === "[object Date]"</code></td>
-</tr>
-<tr>
-<td>Error</td>
-<td><code inline="">obj &amp;&amp; typeof obj.message === "string"</code></td>
-</tr>
-<tr>
-<td>Custom Class</td>
-<td>Symbol branding or duck typing</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="finally">Finally</h2><p>JavaScript’s <strong>inconsistencies are part of its DNA</strong>, and <code>instanceof</code> is a perfect example of that. While it works in narrow situations, it’s rarely the <em>most reliable</em> way to check what something is.</p><p>The modern approach is to <strong>lean on safer built-ins</strong>, use <strong>duck typing</strong> when possible, and <strong>brand your custom types</strong> with symbols. By doing so, your code becomes <strong>more portable, more predictable, and less brittle</strong> when your app scales or interacts with external systems.</p><hr><p>👉 In short: Treat <code>instanceof</code> like a friendly neighbor — good for small talk across the fence, but don’t give them your house keys.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+* * *
+
+## Other Considerations You Might Miss
+
+-   **JSON Round-Tripping**  
+    Once you serialize and parse back data (`JSON.stringify → JSON.parse`), the prototype chain is gone. An object that was once a `Date` comes back as a string. Here, `instanceof` isn’t just unreliable — it’s useless.
+-   **Cross-Platform Code (Node vs Browser)**  
+    If you’re building libraries meant to run in **Node.js** and the **browser**, assume `instanceof` will betray you somewhere. Stick to safer checks.
+-   **Performance Implications**  
+    While `instanceof` isn’t “slow” in most cases, the extra prototype walking can add overhead if you’re running millions of checks in hot loops. Structural checks are often faster and more explicit.
+-   **Error Handling Pitfalls**  
+    Developers often do `if (err instanceof Error)` to check exceptions. But not all errors are guaranteed to be true `Error` instances (some APIs throw strings or custom objects). Safer approach: check for `err && err.message`.
+
+* * *
+
+## Quick Reference: What to Use Instead
+
+* * *
+
+## Finally
+
+JavaScript’s **inconsistencies are part of its DNA**, and `instanceof` is a perfect example of that. While it works in narrow situations, it’s rarely the _most reliable_ way to check what something is.
+
+The modern approach is to **lean on safer built-ins**, use **duck typing** when possible, and **brand your custom types** with symbols. By doing so, your code becomes **more portable, more predictable, and less brittle** when your app scales or interacts with external systems.
+
+* * *
+
+👉 In short: Treat `instanceof` like a friendly neighbor — good for small talk across the fence, but don’t give them your house keys.

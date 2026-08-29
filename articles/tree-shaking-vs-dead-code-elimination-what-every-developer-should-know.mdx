@@ -5,14 +5,48 @@ description: "When developers talk about optimizing JavaScript bundles, two term
 tags: ["javascript","rust","ci-cd","api","performance"]
 ---
 
-<p>When developers talk about optimizing JavaScript bundles, two terms often pop up: <strong>tree shaking</strong> and <strong>dead code elimination</strong>. They sound similar, and both aim to reduce the final bundle size, but they work in different ways and at different stages. Understanding the difference helps you reason about why certain pieces of code are (or aren’t) removed, and what you can do to help your tools generate leaner output.</p><hr><h2 id="what-is-tree-shaking">What is Tree Shaking?</h2><p><strong>Tree shaking</strong> is the process of removing <strong>unused exports</strong> from ES modules. The name comes from the analogy of “shaking a tree” so that dead leaves fall off — only the parts of the code tree you actually use remain.</p><ul><li><strong>How it works:</strong><br>Tree shaking relies on the <strong>static structure</strong> of ES modules (<code>import</code> and <code>export</code>). Bundlers like <strong>Webpack, Rollup, Vite, Bun, or Parcel</strong> analyze which exports are imported, and discard the rest during bundling.</li><li><strong>Key limitation:</strong><br>Tree shaking works only when imports/exports can be analyzed statically. If you use <strong>CommonJS (<code>require</code>)</strong> or dynamic imports with unpredictable patterns, tree shaking might not be able to do its job.</li></ul><p><strong>Example:</strong></p><pre><code class="language-js">// math.js
+When developers talk about optimizing JavaScript bundles, two terms often pop up: **tree shaking** and **dead code elimination**. They sound similar, and both aim to reduce the final bundle size, but they work in different ways and at different stages. Understanding the difference helps you reason about why certain pieces of code are (or aren’t) removed, and what you can do to help your tools generate leaner output.
+
+* * *
+
+## What is Tree Shaking?
+
+**Tree shaking** is the process of removing **unused exports** from ES modules. The name comes from the analogy of “shaking a tree” so that dead leaves fall off — only the parts of the code tree you actually use remain.
+
+-   **How it works:**  
+    Tree shaking relies on the **static structure** of ES modules (`import` and `export`). Bundlers like **Webpack, Rollup, Vite, Bun, or Parcel** analyze which exports are imported, and discard the rest during bundling.
+-   **Key limitation:**  
+    Tree shaking works only when imports/exports can be analyzed statically. If you use **CommonJS (`require`)** or dynamic imports with unpredictable patterns, tree shaking might not be able to do its job.
+
+**Example:**
+
+```js
+// math.js
 export function add(a, b) { return a + b; }
 export function subtract(a, b) { return a - b; }
 
 // app.js
 import { add } from "./math.js";
 console.log(add(2, 3));
-</code></pre><p>In this example, only <code>add</code> is imported, so <code>subtract</code> gets “shaken off” and won’t appear in the final bundle.</p><hr><h2 id="what-is-dead-code-elimination">What is Dead Code Elimination?</h2><p><strong>Dead code elimination (DCE)</strong> is a more general optimization technique that removes <strong>code paths that can never be executed</strong>. This is not limited to unused exports — it can apply to any part of your program.</p><ul><li><strong>How it works:</strong><br>DCE depends on <strong>control-flow and data-flow analysis</strong>. Minifiers and compilers like <strong>Terser, UglifyJS, Closure Compiler, GCC, or LLVM</strong> identify unreachable code and strip it out.</li><li><strong>Key strength:</strong><br>DCE goes beyond imports/exports. It eliminates <strong>unreachable logic</strong>, removes <strong>unused variables</strong>, folds constants, and simplifies conditional expressions.</li></ul><p><strong>Example:</strong></p><pre><code class="language-js">if (false) {
+```
+
+In this example, only `add` is imported, so `subtract` gets “shaken off” and won’t appear in the final bundle.
+
+* * *
+
+## What is Dead Code Elimination?
+
+**Dead code elimination (DCE)** is a more general optimization technique that removes **code paths that can never be executed**. This is not limited to unused exports — it can apply to any part of your program.
+
+-   **How it works:**  
+    DCE depends on **control-flow and data-flow analysis**. Minifiers and compilers like **Terser, UglifyJS, Closure Compiler, GCC, or LLVM** identify unreachable code and strip it out.
+-   **Key strength:**  
+    DCE goes beyond imports/exports. It eliminates **unreachable logic**, removes **unused variables**, folds constants, and simplifies conditional expressions.
+
+**Example:**
+
+```js
+if (false) {
   console.log("This will never run");
 }
 
@@ -20,10 +54,64 @@ function alwaysFalse() { return false; }
 if (alwaysFalse()) {
   console.log("Also removed");
 }
-</code></pre><p>Both blocks will be removed because the optimizer can prove they will never run.</p><hr><h2 id="how-they-work-together">How They Work Together</h2><p>A typical modern JavaScript build pipeline looks like this:</p><ol><li><strong>Bundler Stage (Tree Shaking):</strong><ul><li>Bundler analyzes ES module imports/exports.</li><li>Only the code you explicitly import survives.</li><li>Example: <code>unusedFn</code> is removed if it’s never imported.</li></ul></li><li><strong>Minifier Stage (Dead Code Elimination):</strong><ul><li>Minifier strips unreachable code, removes unused variables, and compresses syntax.</li><li>Example: <code>if (false) { … }</code> is completely gone.</li></ul></li></ol><p>Together, tree shaking and dead code elimination complement each other. Tree shaking works at the <strong>module level</strong>, while DCE works at the <strong>execution logic level</strong>.</p><hr><h2 id="additional-considerations">Additional Considerations</h2><ul><li><strong>Side Effects:</strong><br>Some modules perform side effects when imported (e.g., polyfills that modify globals). Bundlers are careful not to shake these off unless you explicitly mark them as <strong>side-effect free</strong> in <code>package.json</code> (<code>"sideEffects": false</code>). Misconfiguring this can lead to broken behavior.</li><li><strong>Dynamic Imports and CommonJS:</strong><br>Tree shaking works best with <strong>ESM (<code>import</code>/<code>export</code>)</strong>. If you rely heavily on <strong><code>require()</code></strong>, <strong>dynamic property access</strong>, or runtime code generation, the bundler often can’t determine what’s unused.</li><li><strong>Production Builds vs Development Builds:</strong><br>Tree shaking and DCE are usually applied in <strong>production builds</strong>, not in development. That’s why your development bundle may look bloated, but your production build is leaner.</li><li><strong>Beyond JavaScript:</strong><br>The concepts aren’t limited to JS. C/C++ compilers use DCE. Languages with module systems (like Rust or Go) do their own form of tree shaking by eliminating unused imports or symbols.</li></ul><p><strong>Tree Shaking Isn’t Execution-Aware:</strong><br>If you import something and never use it, tree shaking may still include it. For example:</p><pre><code class="language-js">import { bigFn } from "./utils.js";
-// never called, but bundled
-</code></pre><p>In this case, DCE may later strip it if the minifier can prove it’s unused.</p><hr><h2 id="finally">Finally</h2><p>Both <strong>tree shaking</strong> and <strong>dead code elimination</strong> aim to reduce bundle size, but they attack the problem from different angles:</p><ul><li><strong>Tree shaking</strong> is about unused exports at the <strong>module level</strong>.</li><li><strong>Dead code elimination</strong> is about unreachable logic at the <strong>execution level</strong>.</li></ul><p>When combined, they ensure that your final production code is as small and efficient as possible — provided your code and dependencies are structured in ways that allow these optimizations to work.</p><p>👉 As a developer, the best thing you can do is:</p><ul><li>Prefer <strong>ES modules</strong> over CommonJS.</li><li>Mark packages correctly for side effects.</li><li>Avoid patterns that make static analysis impossible.</li></ul><p>That way, both tree shaking and dead code elimination can work to their fullest potential.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Both blocks will be removed because the optimizer can prove they will never run.
+
+* * *
+
+## How They Work Together
+
+A typical modern JavaScript build pipeline looks like this:
+
+1.  **Bundler Stage (Tree Shaking):**
+    -   Bundler analyzes ES module imports/exports.
+    -   Only the code you explicitly import survives.
+    -   Example: `unusedFn` is removed if it’s never imported.
+2.  **Minifier Stage (Dead Code Elimination):**
+    -   Minifier strips unreachable code, removes unused variables, and compresses syntax.
+    -   Example: `if (false) { … }` is completely gone.
+
+Together, tree shaking and dead code elimination complement each other. Tree shaking works at the **module level**, while DCE works at the **execution logic level**.
+
+* * *
+
+## Additional Considerations
+
+-   **Side Effects:**  
+    Some modules perform side effects when imported (e.g., polyfills that modify globals). Bundlers are careful not to shake these off unless you explicitly mark them as **side-effect free** in `package.json` (`"sideEffects": false`). Misconfiguring this can lead to broken behavior.
+-   **Dynamic Imports and CommonJS:**  
+    Tree shaking works best with **ESM (`import`/`export`)**. If you rely heavily on **`require()`**, **dynamic property access**, or runtime code generation, the bundler often can’t determine what’s unused.
+-   **Production Builds vs Development Builds:**  
+    Tree shaking and DCE are usually applied in **production builds**, not in development. That’s why your development bundle may look bloated, but your production build is leaner.
+-   **Beyond JavaScript:**  
+    The concepts aren’t limited to JS. C/C++ compilers use DCE. Languages with module systems (like Rust or Go) do their own form of tree shaking by eliminating unused imports or symbols.
+
+**Tree Shaking Isn’t Execution-Aware:**  
+If you import something and never use it, tree shaking may still include it. For example:
+
+```js
+import { bigFn } from "./utils.js";
+// never called, but bundled
+```
+
+In this case, DCE may later strip it if the minifier can prove it’s unused.
+
+* * *
+
+## Finally
+
+Both **tree shaking** and **dead code elimination** aim to reduce bundle size, but they attack the problem from different angles:
+
+-   **Tree shaking** is about unused exports at the **module level**.
+-   **Dead code elimination** is about unreachable logic at the **execution level**.
+
+When combined, they ensure that your final production code is as small and efficient as possible — provided your code and dependencies are structured in ways that allow these optimizations to work.
+
+👉 As a developer, the best thing you can do is:
+
+-   Prefer **ES modules** over CommonJS.
+-   Mark packages correctly for side effects.
+-   Avoid patterns that make static analysis impossible.
+
+That way, both tree shaking and dead code elimination can work to their fullest potential.

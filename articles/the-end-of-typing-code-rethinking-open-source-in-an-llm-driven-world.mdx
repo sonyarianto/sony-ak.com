@@ -5,11 +5,187 @@ description: "There’s a strange but increasingly believable idea floating arou
 tags: ["api","performance","deployment","ai","open-source"]
 ---
 
-<p>There’s a strange but increasingly believable idea floating around: what if the future of open source isn’t humans writing code at all?</p><p>Not “less coding,” not “AI-assisted coding,” but a complete inversion—where humans stop touching implementation entirely. People still open issues, argue about priorities, design systems, and debate trade-offs… but when it comes to actually writing the code, submitting pull requests, fixing bugs, or responding to review comments, that entire layer is handled by <strong>LLMs</strong>.</p><p>At first glance, this sounds extreme. But if you zoom out and look at where things are heading, it’s not as far-fetched as it initially feels.</p><hr><h2 id="from-craft-to-orchestration"><strong>From Craft to Orchestration</strong></h2><p>For decades, programming has been treated as a form of <strong>craftsmanship</strong>. You write functions, shape abstractions, refactor code, and gradually build systems. Open source, in particular, has always celebrated this craft—your commits are your identity, your pull requests are your voice.</p><p>Now introduce LLMs into the loop.</p><p>Suddenly, the act of typing code becomes less important than the act of <strong>describing intent</strong>. The bottleneck shifts. It’s no longer about how fast you can implement something, but how clearly you can express what should be implemented.</p><p>This creates a subtle but powerful transition:</p><blockquote><strong>Coding becomes orchestration.</strong></blockquote><p>Instead of writing code, you define:</p><ul><li>constraints</li><li>expected behavior</li><li>edge cases</li><li>system invariants</li></ul><p>And the LLM fills in the rest.</p><p>The interesting part is that this doesn’t feel like “not coding.” It feels like coding at a higher level. But technically, the human is no longer the one producing the implementation.</p><hr><h2 id="the-illusion-that-implementation-is-the-easy-part"><strong>The Illusion That Implementation Is the Easy Part</strong></h2><p>The idea that LLMs can fully take over implementation rests on an assumption: that implementation is mostly mechanical.</p><p>Sometimes it is. But often, it isn’t.</p><p>In real systems, implementation is where ambiguity lives. Requirements are incomplete, edge cases are hidden, and trade-offs only become visible when you try to turn ideas into working code. This is why experienced engineers often say that <strong>writing code is thinking</strong>.</p><p>So if LLMs take over implementation, what actually happens is not that humans stop implementing—but that implementation gets pushed into a different form.</p><p>Instead of writing:</p><pre><code class="language-go">if user.IsActive() {
+There’s a strange but increasingly believable idea floating around: what if the future of open source isn’t humans writing code at all?
+
+Not “less coding,” not “AI-assisted coding,” but a complete inversion—where humans stop touching implementation entirely. People still open issues, argue about priorities, design systems, and debate trade-offs… but when it comes to actually writing the code, submitting pull requests, fixing bugs, or responding to review comments, that entire layer is handled by **LLMs**.
+
+At first glance, this sounds extreme. But if you zoom out and look at where things are heading, it’s not as far-fetched as it initially feels.
+
+* * *
+
+## **From Craft to Orchestration**
+
+For decades, programming has been treated as a form of **craftsmanship**. You write functions, shape abstractions, refactor code, and gradually build systems. Open source, in particular, has always celebrated this craft—your commits are your identity, your pull requests are your voice.
+
+Now introduce LLMs into the loop.
+
+Suddenly, the act of typing code becomes less important than the act of **describing intent**. The bottleneck shifts. It’s no longer about how fast you can implement something, but how clearly you can express what should be implemented.
+
+This creates a subtle but powerful transition:
+
+> **Coding becomes orchestration.**
+
+Instead of writing code, you define:
+
+-   constraints
+-   expected behavior
+-   edge cases
+-   system invariants
+
+And the LLM fills in the rest.
+
+The interesting part is that this doesn’t feel like “not coding.” It feels like coding at a higher level. But technically, the human is no longer the one producing the implementation.
+
+* * *
+
+## **The Illusion That Implementation Is the Easy Part**
+
+The idea that LLMs can fully take over implementation rests on an assumption: that implementation is mostly mechanical.
+
+Sometimes it is. But often, it isn’t.
+
+In real systems, implementation is where ambiguity lives. Requirements are incomplete, edge cases are hidden, and trade-offs only become visible when you try to turn ideas into working code. This is why experienced engineers often say that **writing code is thinking**.
+
+So if LLMs take over implementation, what actually happens is not that humans stop implementing—but that implementation gets pushed into a different form.
+
+Instead of writing:
+
+```go
+if user.IsActive() {
     processPayment()
 }
-</code></pre><p>You might say:</p><blockquote>“Ensure inactive users cannot trigger billing flows, including cases where session state is stale or inconsistent across services.”</blockquote><p>That sentence is not just a requirement. It is already a form of <strong>implementation logic</strong>, just expressed in natural language.</p><p>Which leads to a subtle realization:</p><blockquote>Even in an LLM-driven world, humans are still implementing—they’re just doing it indirectly.</blockquote><hr><h2 id="what-happens-to-open-source-culture"><strong>What Happens to Open Source Culture</strong></h2><p>Open source has never been just about code. It’s about <strong>ownership</strong>, <strong>identity</strong>, and <strong>learning through contribution</strong>.</p><p>When someone submits their first pull request, it’s not just about fixing a bug. It’s about entering a community. It’s about understanding how systems evolve, how decisions are made, and how to collaborate with others.</p><p>If you remove human-written code entirely, you risk removing that pathway.</p><p>Imagine a repository where:</p><ul><li>All pull requests are generated by AI</li><li>Reviews are handled by AI</li><li>Iterations happen between AI agents</li></ul><p>Humans become supervisors rather than contributors.</p><p>At that point, the project starts to look less like traditional open source and more like a <strong>curated AI system</strong>, where humans define direction but don’t participate in the building process itself.</p><p>That’s a fundamentally different model.</p><hr><h2 id="the-problem-of-trust-and-accountability"><strong>The Problem of Trust and Accountability</strong></h2><p>One thing that doesn’t disappear, no matter how good LLMs get, is the need for <strong>accountability</strong>.</p><p>If an AI-generated change introduces a subtle bug that only appears under production load, someone still needs to:</p><ul><li>understand what went wrong</li><li>explain why it happened</li><li>decide how to fix it</li></ul><p>LLMs can assist, but responsibility doesn’t transfer so easily.</p><p>Open source projects rely heavily on trust. Maintainers trust contributors. Users trust maintainers. That trust is built on the assumption that someone understands the system deeply enough to stand behind it.</p><p>Without that, you don’t just lose control—you lose confidence in the system itself.</p><hr><h2 id="the-%E2%80%9Cslop%E2%80%9D-phase-and-what-comes-after"><strong>The “Slop” Phase and What Comes After</strong></h2><p>Right now, we’re in a phase where AI-generated code is everywhere. A lot of it is low quality. People call it <strong>“slop”</strong>—code that technically works but lacks depth, clarity, or long-term maintainability.</p><p>It’s tempting to think that the solution is to eliminate human coding entirely and let “better” models take over.</p><p>But history suggests something else will happen.</p><p>Instead of removing slop, the ecosystem will build layers to <strong>filter it</strong>:</p><ul><li>stronger review processes</li><li>better automated validation</li><li>higher expectations from maintainers</li></ul><p>In other words, the problem won’t disappear—it will be managed.</p><p>And ironically, that management requires more human judgment, not less.</p><hr><h2 id="a-glimpse-of-an-ai-first-repository"><strong>A Glimpse of an AI-First Repository</strong></h2><p>To make this more concrete, imagine a typical workflow in this new model.</p><p>A human opens an issue:</p><blockquote>“Users can bypass rate limits when switching between API keys rapidly. We need consistent enforcement across distributed nodes, including during cache invalidation windows.”</blockquote><p>An LLM reads this and generates:</p><ul><li>a proposed design</li><li>implementation code</li><li>unit and integration tests</li></ul><p>Another LLM reviews it, flags potential race conditions, and suggests improvements.</p><p>The original LLM updates the PR.</p><p>At the end of this loop, a human maintainer steps in—not to rewrite code, but to evaluate whether the <strong>intent has been correctly captured</strong>.</p><p>This is a completely different kind of contribution. The human is not writing code, but they are still deeply involved in the <strong>correctness of the system</strong>.</p><hr><h2 id="what-you-might-be-missing"><strong>What You Might Be Missing</strong></h2><p>There are a few deeper implications that are easy to overlook.</p><p>First, the definition of “implementation” itself changes. If describing behavior precisely is enough to generate working systems, then <strong>language becomes the new programming interface</strong>. This raises the bar for clarity, not lowers it.</p><p>Second, the role of expertise becomes more abstract. Instead of being known for writing elegant code, engineers may be valued for:</p><ul><li>defining robust constraints</li><li>anticipating failure modes</li><li>designing systems that are hard to misuse</li></ul><p>Third, the feedback loop becomes faster—but also more dangerous. When iteration is cheap, it’s easier to introduce complexity without realizing it. Systems can grow in ways that feel correct locally but are flawed globally.</p><hr><h2 id="so-will-humans-stop-coding"><strong>So, Will Humans Stop Coding?</strong></h2><p>Probably not in the absolute sense.</p><p>What’s more likely is a gradual shift where:</p><ul><li>manual coding becomes rare for routine work</li><li>LLMs handle most of the mechanical implementation</li><li>humans operate at a higher level of abstraction</li></ul><p>But that doesn’t mean humans are removed from implementation. It means implementation becomes <strong>less visible, but more conceptual</strong>.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>The future of open source is not about removing humans from the process. It’s about <strong>moving human effort to where it matters most</strong>.</p><p>And ironically, as machines get better at writing code, the importance of human judgment doesn’t decrease—it increases.</p><p>Because at the end of the day, someone still has to decide what “correct” actually means.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+You might say:
+
+> “Ensure inactive users cannot trigger billing flows, including cases where session state is stale or inconsistent across services.”
+
+That sentence is not just a requirement. It is already a form of **implementation logic**, just expressed in natural language.
+
+Which leads to a subtle realization:
+
+> Even in an LLM-driven world, humans are still implementing—they’re just doing it indirectly.
+
+* * *
+
+## **What Happens to Open Source Culture**
+
+Open source has never been just about code. It’s about **ownership**, **identity**, and **learning through contribution**.
+
+When someone submits their first pull request, it’s not just about fixing a bug. It’s about entering a community. It’s about understanding how systems evolve, how decisions are made, and how to collaborate with others.
+
+If you remove human-written code entirely, you risk removing that pathway.
+
+Imagine a repository where:
+
+-   All pull requests are generated by AI
+-   Reviews are handled by AI
+-   Iterations happen between AI agents
+
+Humans become supervisors rather than contributors.
+
+At that point, the project starts to look less like traditional open source and more like a **curated AI system**, where humans define direction but don’t participate in the building process itself.
+
+That’s a fundamentally different model.
+
+* * *
+
+## **The Problem of Trust and Accountability**
+
+One thing that doesn’t disappear, no matter how good LLMs get, is the need for **accountability**.
+
+If an AI-generated change introduces a subtle bug that only appears under production load, someone still needs to:
+
+-   understand what went wrong
+-   explain why it happened
+-   decide how to fix it
+
+LLMs can assist, but responsibility doesn’t transfer so easily.
+
+Open source projects rely heavily on trust. Maintainers trust contributors. Users trust maintainers. That trust is built on the assumption that someone understands the system deeply enough to stand behind it.
+
+Without that, you don’t just lose control—you lose confidence in the system itself.
+
+* * *
+
+## **The “Slop” Phase and What Comes After**
+
+Right now, we’re in a phase where AI-generated code is everywhere. A lot of it is low quality. People call it **“slop”**—code that technically works but lacks depth, clarity, or long-term maintainability.
+
+It’s tempting to think that the solution is to eliminate human coding entirely and let “better” models take over.
+
+But history suggests something else will happen.
+
+Instead of removing slop, the ecosystem will build layers to **filter it**:
+
+-   stronger review processes
+-   better automated validation
+-   higher expectations from maintainers
+
+In other words, the problem won’t disappear—it will be managed.
+
+And ironically, that management requires more human judgment, not less.
+
+* * *
+
+## **A Glimpse of an AI-First Repository**
+
+To make this more concrete, imagine a typical workflow in this new model.
+
+A human opens an issue:
+
+> “Users can bypass rate limits when switching between API keys rapidly. We need consistent enforcement across distributed nodes, including during cache invalidation windows.”
+
+An LLM reads this and generates:
+
+-   a proposed design
+-   implementation code
+-   unit and integration tests
+
+Another LLM reviews it, flags potential race conditions, and suggests improvements.
+
+The original LLM updates the PR.
+
+At the end of this loop, a human maintainer steps in—not to rewrite code, but to evaluate whether the **intent has been correctly captured**.
+
+This is a completely different kind of contribution. The human is not writing code, but they are still deeply involved in the **correctness of the system**.
+
+* * *
+
+## **What You Might Be Missing**
+
+There are a few deeper implications that are easy to overlook.
+
+First, the definition of “implementation” itself changes. If describing behavior precisely is enough to generate working systems, then **language becomes the new programming interface**. This raises the bar for clarity, not lowers it.
+
+Second, the role of expertise becomes more abstract. Instead of being known for writing elegant code, engineers may be valued for:
+
+-   defining robust constraints
+-   anticipating failure modes
+-   designing systems that are hard to misuse
+
+Third, the feedback loop becomes faster—but also more dangerous. When iteration is cheap, it’s easier to introduce complexity without realizing it. Systems can grow in ways that feel correct locally but are flawed globally.
+
+* * *
+
+## **So, Will Humans Stop Coding?**
+
+Probably not in the absolute sense.
+
+What’s more likely is a gradual shift where:
+
+-   manual coding becomes rare for routine work
+-   LLMs handle most of the mechanical implementation
+-   humans operate at a higher level of abstraction
+
+But that doesn’t mean humans are removed from implementation. It means implementation becomes **less visible, but more conceptual**.
+
+* * *
+
+## **Finally**
+
+The future of open source is not about removing humans from the process. It’s about **moving human effort to where it matters most**.
+
+And ironically, as machines get better at writing code, the importance of human judgment doesn’t decrease—it increases.
+
+Because at the end of the day, someone still has to decide what “correct” actually means.

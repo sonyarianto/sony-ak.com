@@ -5,27 +5,49 @@ description: "Hierarchical data structures, or tree structures, are common in ma
 tags: ["database","data-structures"]
 ---
 
-<p>Hierarchical data structures, or tree structures, are common in many systems, from representing organizational charts to category structures in e-commerce applications. One way to model such structures in a relational database is by using the <em>Nested Set Model</em>. Unlike the adjacency list model, the nested set model allows efficient querying of both ancestors and descendants with fewer SQL queries. In this article, we'll explore how to implement and manipulate tree data using the nested set model in MySQL.</p><h3 id="why-use-the-nested-set-model"><strong>Why Use the Nested Set Model?</strong></h3><p>The Nested Set Model is particularly useful when you need to frequently query entire subtrees or get a list of ancestors in hierarchical data. For example:</p><ul><li>Querying all descendants of a node (subcategories in a category tree).</li><li>Fetching the entire tree structure or a specific branch efficiently.</li></ul><p>Compared to the adjacency list model, which stores only parent-child relationships, the nested set model assigns two numbers (<code>lft</code> and <code>rght</code>) to each node, representing the position of that node in a depth-first traversal of the tree.</p><h3 id="table-structure-for-the-nested-set-model"><strong>Table Structure for the Nested Set Model</strong></h3><p>Let’s consider a table that represents a simple hierarchy of categories. Here's how the table looks in MySQL:</p><pre><code class="language-sql">CREATE TABLE categories (
+Hierarchical data structures, or tree structures, are common in many systems, from representing organizational charts to category structures in e-commerce applications. One way to model such structures in a relational database is by using the _Nested Set Model_. Unlike the adjacency list model, the nested set model allows efficient querying of both ancestors and descendants with fewer SQL queries. In this article, we'll explore how to implement and manipulate tree data using the nested set model in MySQL.
+
+### **Why Use the Nested Set Model?**
+
+The Nested Set Model is particularly useful when you need to frequently query entire subtrees or get a list of ancestors in hierarchical data. For example:
+
+-   Querying all descendants of a node (subcategories in a category tree).
+-   Fetching the entire tree structure or a specific branch efficiently.
+
+Compared to the adjacency list model, which stores only parent-child relationships, the nested set model assigns two numbers (`lft` and `rght`) to each node, representing the position of that node in a depth-first traversal of the tree.
+
+### **Table Structure for the Nested Set Model**
+
+Let’s consider a table that represents a simple hierarchy of categories. Here's how the table looks in MySQL:
+
+```sql
+CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     lft INT NOT NULL,
     rght INT NOT NULL
 );
-</code></pre>
-<ul><li><code>id</code>: Unique identifier for each node.</li><li><code>name</code>: Descriptive name for each node (e.g., category, department).</li><li><code>lft</code> and <code>rght</code>: These columns define the nested set's tree structure.</li></ul><h3 id="how-the-nested-set-model-works"><strong>How the Nested Set Model Works</strong></h3><p>The <code>lft</code> and <code>rght</code> values indicate a node's position in a tree traversal:</p><ul><li>For a parent node, all its child nodes will have <code>lft</code> and <code>rght</code> values that are inside the range of the parent's <code>lft</code> and <code>rght</code>.</li><li>Leaf nodes have consecutive <code>lft</code> and <code>rght</code> values.</li></ul><p>For example, consider this tree structure:</p>
-<!--kg-card-begin: html-->
-<pre>1. Electronics
-  1.1. Phones
-    1.1.1. Smartphones
-  1.2. Computers
-    1.2.1. Laptops
-    1.2.2. Desktops</pre>
-<!--kg-card-end: html-->
-<p>A corresponding <code>categories</code> table using the nested set model might look like this:</p>
-<!--kg-card-begin: html-->
-<table><thead><tr><th>id</th><th>name</th><th>lft</th><th>rght</th></tr></thead><tbody><tr><td>1</td><td>Electronics</td><td>1</td><td>10</td></tr><tr><td>2</td><td>Phones</td><td>2</td><td>5</td></tr><tr><td>3</td><td>Smartphones</td><td>3</td><td>4</td></tr><tr><td>4</td><td>Computers</td><td>6</td><td>9</td></tr><tr><td>5</td><td>Laptops</td><td>7</td><td>8</td></tr></tbody></table>
-<!--kg-card-end: html-->
-<p>Here is the SQL INSERT INTO if you want to try.</p><pre><code class="language-sql">-- Root category "Electronics"
+```
+
+-   `id`: Unique identifier for each node.
+-   `name`: Descriptive name for each node (e.g., category, department).
+-   `lft` and `rght`: These columns define the nested set's tree structure.
+
+### **How the Nested Set Model Works**
+
+The `lft` and `rght` values indicate a node's position in a tree traversal:
+
+-   For a parent node, all its child nodes will have `lft` and `rght` values that are inside the range of the parent's `lft` and `rght`.
+-   Leaf nodes have consecutive `lft` and `rght` values.
+
+For example, consider this tree structure:
+
+A corresponding `categories` table using the nested set model might look like this:
+
+Here is the SQL INSERT INTO if you want to try.
+
+```sql
+-- Root category "Electronics"
 INSERT INTO categories (name, lft, rght) VALUES ('Electronics', 1, 10);
 
 -- Subcategory "Phones" under "Electronics"
@@ -39,49 +61,29 @@ INSERT INTO categories (name, lft, rght) VALUES ('Computers', 6, 9);
 
 -- Sub-subcategory "Laptops" under "Computers"
 INSERT INTO categories (name, lft, rght) VALUES ('Laptops', 7, 8);
-</code></pre>
-<p>Here is the visualization of the <strong><code>lft</code></strong> and <strong><code>rght</code></strong> for each node on the tree.</p>
-<!--kg-card-begin: html-->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300">
-  <style>
-    text { font-family: Arial, sans-serif; font-size: 14px; }
-    .small { font-size: 12px; }
-  </style>
-  
-  <!-- Electronics -->
-  <rect x="10" y="10" width="580" height="280" fill="none" stroke="black" />
-  <text x="20" y="30">Electronics (1,12)</text>
-  
-  <!-- Phones -->
-  <rect x="30" y="50" width="270" height="100" fill="none" stroke="black" />
-  <text x="40" y="70">Phones (2,5)</text>
-  
-  <!-- Smartphones -->
-  <rect x="50" y="90" width="230" height="40" fill="none" stroke="black" />
-  <text x="60" y="115">Smartphones (3,4)</text>
-  
-  <!-- Computers -->
-  <rect x="320" y="50" width="250" height="220" fill="none" stroke="black" />
-  <text x="330" y="70">Computers (6,11)</text>
-  
-  <!-- Laptops -->
-  <rect x="340" y="90" width="210" height="40" fill="none" stroke="black" />
-  <text x="350" y="115">Laptops (7,8)</text>
-  
-  <!-- Desktops -->
-  <rect x="340" y="150" width="210" height="40" fill="none" stroke="black" />
-  <text x="350" y="175">Desktops (9,10)</text>
-  
-  <!-- Legend -->
-  <text x="20" y="280" class="small">Format: Category Name (left value, right value)</text>
-</svg>
-<!--kg-card-end: html-->
-<h3 id="querying-data-using-the-nested-set-model"><strong>Querying Data Using the Nested Set Model</strong></h3><h5 id="1-fetching-all-descendants-of-a-node">1. <strong>Fetching All Descendants of a Node</strong></h5><p>To fetch all descendants of a category (e.g., all subcategories under "Electronics"), you can use the following query:</p><pre><code class="language-sql">SELECT name
+```
+
+Here is the visualization of the **`lft`** and **`rght`** for each node on the tree.
+
+### **Querying Data Using the Nested Set Model**
+
+##### 1\. **Fetching All Descendants of a Node**
+
+To fetch all descendants of a category (e.g., all subcategories under "Electronics"), you can use the following query:
+
+```sql
+SELECT name
 FROM categories
 WHERE lft BETWEEN (SELECT lft FROM categories WHERE name = 'Electronics')
 AND (SELECT rght FROM categories WHERE name = 'Electronics');
-</code></pre>
-<p>This query efficiently retrieves all categories between the <code>lft</code> and <code>rght</code> values of "Electronics".</p><p>We can use WITH RECURSIVE as well for above query, here is the query.</p><pre><code class="language-sql">WITH RECURSIVE category_tree AS (
+```
+
+This query efficiently retrieves all categories between the `lft` and `rght` values of "Electronics".
+
+We can use WITH RECURSIVE as well for above query, here is the query.
+
+```sql
+WITH RECURSIVE category_tree AS (
     SELECT id, name, lft, rght
     FROM categories
     WHERE name = 'Electronics'
@@ -90,17 +92,25 @@ AND (SELECT rght FROM categories WHERE name = 'Electronics');
 
     SELECT c.id, c.name, c.lft, c.rght
     FROM categories c
-    INNER JOIN category_tree ct ON c.lft &gt; ct.lft AND c.lft &lt; ct.rght
+    INNER JOIN category_tree ct ON c.lft > ct.lft AND c.lft < ct.rght
 )
 SELECT name
 FROM category_tree;
-</code></pre>
-<p>The result of above query will include "Electronics" as well, to exclude we can use this query.</p><pre><code class="language-sql">SELECT name
+```
+
+The result of above query will include "Electronics" as well, to exclude we can use this query.
+
+```sql
+SELECT name
 FROM categories
-WHERE lft &gt; (SELECT lft FROM categories WHERE name = 'Electronics')
-AND rght &lt; (SELECT rght FROM categories WHERE name = 'Electronics');
-</code></pre>
-<p>And here is the equal query if using WITH RECURSIVE.</p><pre><code class="language-sql">WITH RECURSIVE category_tree AS (
+WHERE lft > (SELECT lft FROM categories WHERE name = 'Electronics')
+AND rght < (SELECT rght FROM categories WHERE name = 'Electronics');
+```
+
+And here is the equal query if using WITH RECURSIVE.
+
+```sql
+WITH RECURSIVE category_tree AS (
     SELECT id, name, lft, rght
     FROM categories
     WHERE name = 'Electronics'
@@ -109,52 +119,91 @@ AND rght &lt; (SELECT rght FROM categories WHERE name = 'Electronics');
 
     SELECT c.id, c.name, c.lft, c.rght
     FROM categories c
-    INNER JOIN category_tree ct ON c.lft &gt; ct.lft AND c.lft &lt; ct.rght
+    INNER JOIN category_tree ct ON c.lft > ct.lft AND c.lft < ct.rght
 )
 SELECT name
 FROM category_tree
 WHERE name != 'Electronics';
-</code></pre>
-<h5 id="2-fetching-the-entire-tree-structure">2. <strong>Fetching the Entire Tree Structure</strong></h5><p>To retrieve the entire tree in the correct hierarchical order, you can use:</p><pre><code class="language-sql">SELECT name, lft, rght
+```
+
+##### 2\. **Fetching the Entire Tree Structure**
+
+To retrieve the entire tree in the correct hierarchical order, you can use:
+
+```sql
+SELECT name, lft, rght
 FROM categories
 ORDER BY lft;
-</code></pre>
-<p>This will list all categories based on their <code>lft</code> values, preserving the tree hierarchy.</p><h5 id="3-fetching-the-ancestors-of-a-node">3. <strong>Fetching the Ancestors of a Node</strong></h5><p>To get all the ancestors of a specific node (e.g., "Smartphones"), use the following query:</p><pre><code class="language-sql">SELECT parent.name
+```
+
+This will list all categories based on their `lft` values, preserving the tree hierarchy.
+
+##### 3\. **Fetching the Ancestors of a Node**
+
+To get all the ancestors of a specific node (e.g., "Smartphones"), use the following query:
+
+```sql
+SELECT parent.name
 FROM categories AS node,
      categories AS parent
 WHERE node.lft BETWEEN parent.lft AND parent.rght
 AND node.name = 'Smartphones'
 ORDER BY parent.lft;
-</code></pre>
-<p>This query returns all parent categories of "Smartphones", starting from the root.</p><h3 id="inserting-nodes-into-the-nested-set-model"><strong>Inserting Nodes into the Nested Set Model</strong></h3><p>Inserting a node into the tree involves updating the <code>lft</code> and <code>rght</code> values of the existing nodes and then inserting the new node with appropriate <code>lft</code> and <code>rght</code> values. For example, to insert a new category called "Tablets" under "Phones", you need to:</p><ol><li>Update the <code>lft</code> and <code>rght</code> values of the existing nodes.</li><li>Insert the new node with its corresponding <code>lft</code> and <code>rght</code> values.</li></ol><pre><code class="language-sql">-- Update the right values
+```
+
+This query returns all parent categories of "Smartphones", starting from the root.
+
+### **Inserting Nodes into the Nested Set Model**
+
+Inserting a node into the tree involves updating the `lft` and `rght` values of the existing nodes and then inserting the new node with appropriate `lft` and `rght` values. For example, to insert a new category called "Tablets" under "Phones", you need to:
+
+1.  Update the `lft` and `rght` values of the existing nodes.
+2.  Insert the new node with its corresponding `lft` and `rght` values.
+
+```sql
+-- Update the right values
 UPDATE categories
 SET rght = rght + 2
-WHERE rght &gt;= 5;
+WHERE rght >= 5;
 
 -- Update the left values
 UPDATE categories
 SET lft = lft + 2
-WHERE lft &gt; 5;
+WHERE lft > 5;
 
 -- Insert the new node
 INSERT INTO categories (name, lft, rght)
 VALUES ('Tablets', 5, 6);
-</code></pre>
-<p>This query adds "Tablets" as a child of "Phones".</p><h3 id="deleting-nodes"><strong>Deleting Nodes</strong></h3><p>To delete a node (and all its descendants), you need to:</p><ol><li>Remove the node and its children.</li><li>Update the <code>lft</code> and <code>rght</code> values of the remaining nodes.</li></ol><p>For example, to delete the "Phones" node and all its descendants:</p><pre><code class="language-sql">-- Delete the node and its descendants
+```
+
+This query adds "Tablets" as a child of "Phones".
+
+### **Deleting Nodes**
+
+To delete a node (and all its descendants), you need to:
+
+1.  Remove the node and its children.
+2.  Update the `lft` and `rght` values of the remaining nodes.
+
+For example, to delete the "Phones" node and all its descendants:
+
+```sql
+-- Delete the node and its descendants
 DELETE FROM categories
 WHERE lft BETWEEN 2 AND 5;
 
 -- Update the remaining nodes
 UPDATE categories
 SET rght = rght - 4
-WHERE rght &gt; 5;
+WHERE rght > 5;
 
 UPDATE categories
 SET lft = lft - 4
-WHERE lft &gt; 5;
-</code></pre>
-<h3 id="what-we-learned-so-far"><strong>What we learned so far?</strong></h3><p>The Nested Set Model is a powerful technique for managing hierarchical data in MySQL. Although inserting and deleting nodes require more complex operations, the model offers significant advantages for querying entire branches or subtrees. Understanding and applying this model can significantly improve the efficiency of applications that need to work with hierarchical data.</p><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+WHERE lft > 5;
+```
 
+### **What we learned so far?**
+
+The Nested Set Model is a powerful technique for managing hierarchical data in MySQL. Although inserting and deleting nodes require more complex operations, the model offers significant advantages for querying entire branches or subtrees. Understanding and applying this model can significantly improve the efficiency of applications that need to work with hierarchical data.
+
+Hope it helps.

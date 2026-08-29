@@ -5,7 +5,21 @@ description: "Setting up a web domain like example.com requires careful configur
 tags: ["web-server","security","performance","deployment","seo"]
 ---
 
-<p>Setting up a web domain like <code>example.com</code> requires careful configuration to ensure security, performance, and user accessibility. Below are the best practices for configuring a domain to support HTTPS, enforce redirections, and manage non-www to www (or vice versa) traffic redirection.</p><h4 id="obtain-and-install-ssl-certificates-for-https"><strong>Obtain and Install SSL Certificates for HTTPS</strong></h4><p>Securing your domain with HTTPS is essential to protect data transmission between your server and users. To do this, you need to obtain and install an SSL/TLS certificate.</p><p><strong>Steps:</strong></p><ul><li><strong>Purchase an SSL Certificate</strong>: You can obtain a certificate from trusted Certificate Authorities (CAs) like Let’s Encrypt (free), DigiCert, or Comodo.</li><li><strong>Install the SSL Certificate</strong>: Once obtained, install it on your web server. Configuration varies based on your server software (Nginx, Apache, etc.).</li></ul><p>For <strong>Nginx</strong>:</p><pre><code>server {
+Setting up a web domain like `example.com` requires careful configuration to ensure security, performance, and user accessibility. Below are the best practices for configuring a domain to support HTTPS, enforce redirections, and manage non-www to www (or vice versa) traffic redirection.
+
+#### **Obtain and Install SSL Certificates for HTTPS**
+
+Securing your domain with HTTPS is essential to protect data transmission between your server and users. To do this, you need to obtain and install an SSL/TLS certificate.
+
+**Steps:**
+
+-   **Purchase an SSL Certificate**: You can obtain a certificate from trusted Certificate Authorities (CAs) like Let’s Encrypt (free), DigiCert, or Comodo.
+-   **Install the SSL Certificate**: Once obtained, install it on your web server. Configuration varies based on your server software (Nginx, Apache, etc.).
+
+For **Nginx**:
+
+```
+server {
     listen 443 ssl;
     server_name example.com www.example.com;
 
@@ -16,7 +30,12 @@ tags: ["web-server","security","performance","deployment","seo"]
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
 }
-</code></pre><p>For <strong>Apache</strong>:</p><pre><code>&lt;VirtualHost *:443&gt;
+```
+
+For **Apache**:
+
+```
+<VirtualHost *:443>
     ServerName example.com
     ServerAlias www.example.com
 
@@ -25,19 +44,48 @@ tags: ["web-server","security","performance","deployment","seo"]
     SSLCertificateKeyFile /etc/apache2/ssl/example.com.key
 
     # Other settings
-&lt;/VirtualHost&gt;
-</code></pre><h4 id="force-http-to-https-redirection"><strong>Force HTTP to HTTPS Redirection</strong></h4><p>After enabling HTTPS, ensure that any HTTP traffic is automatically redirected to the secure HTTPS version. This not only improves security but also helps your SEO, as search engines prioritize HTTPS.</p><p>For <strong>Nginx</strong>:</p><pre><code>server {
+</VirtualHost>
+```
+
+#### **Force HTTP to HTTPS Redirection**
+
+After enabling HTTPS, ensure that any HTTP traffic is automatically redirected to the secure HTTPS version. This not only improves security but also helps your SEO, as search engines prioritize HTTPS.
+
+For **Nginx**:
+
+```
+server {
     listen 80;
     server_name example.com www.example.com;
 
     return 301 https://$host$request_uri;
 }
-</code></pre><p>For <strong>Apache</strong>:</p><pre><code>&lt;VirtualHost *:80&gt;
+```
+
+For **Apache**:
+
+```
+<VirtualHost *:80>
     ServerName example.com
     ServerAlias www.example.com
     Redirect permanent / https://example.com/
-&lt;/VirtualHost&gt;
-</code></pre><p>The <code>301</code> status code ensures a permanent redirect, informing search engines that the HTTP URL has been moved permanently to HTTPS.</p><h4 id="choose-between-www-or-non-www-and-redirect-accordingly"><strong>Choose Between www or non-www and Redirect Accordingly</strong></h4><p>It’s important to decide whether you want your domain to appear with or without <code>www</code>. This is primarily a matter of preference, but consistency helps with SEO and branding.</p><p><strong>Redirect non-www to www</strong>:</p><ul><li>Redirect <code>example.com</code> to <code>www.example.com</code> for uniformity and better caching (some CDNs prefer www domains).</li></ul><p>For <strong>Nginx</strong>:</p><pre><code>server {
+</VirtualHost>
+```
+
+The `301` status code ensures a permanent redirect, informing search engines that the HTTP URL has been moved permanently to HTTPS.
+
+#### **Choose Between www or non-www and Redirect Accordingly**
+
+It’s important to decide whether you want your domain to appear with or without `www`. This is primarily a matter of preference, but consistency helps with SEO and branding.
+
+**Redirect non-www to www**:
+
+-   Redirect `example.com` to `www.example.com` for uniformity and better caching (some CDNs prefer www domains).
+
+For **Nginx**:
+
+```
+server {
     listen 443 ssl;
     server_name example.com;
 
@@ -50,16 +98,30 @@ server {
 
     # SSL configuration and site settings here
 }
-</code></pre><p>For <strong>Apache</strong>:</p><pre><code>&lt;VirtualHost *:443&gt;
+```
+
+For **Apache**:
+
+```
+<VirtualHost *:443>
     ServerName example.com
     Redirect permanent / https://www.example.com/
-&lt;/VirtualHost&gt;
+</VirtualHost>
 
-&lt;VirtualHost *:443&gt;
+<VirtualHost *:443>
     ServerName www.example.com
     # SSL configuration and site settings here
-&lt;/VirtualHost&gt;
-</code></pre><p><strong>Redirect www to non-www</strong>:</p><ul><li>If you prefer <code>example.com</code> over <code>www.example.com</code>, you can reverse the redirect.</li></ul><p>For <strong>Nginx</strong>:</p><pre><code>server {
+</VirtualHost>
+```
+
+**Redirect www to non-www**:
+
+-   If you prefer `example.com` over `www.example.com`, you can reverse the redirect.
+
+For **Nginx**:
+
+```
+server {
     listen 443 ssl;
     server_name www.example.com;
 
@@ -72,19 +134,45 @@ server {
 
     # SSL configuration and site settings here
 }
-</code></pre><p>For <strong>Apache</strong>:</p><pre><code>&lt;VirtualHost *:443&gt;
+```
+
+For **Apache**:
+
+```
+<VirtualHost *:443>
     ServerName www.example.com
     Redirect permanent / https://example.com/
-&lt;/VirtualHost&gt;
+</VirtualHost>
 
-&lt;VirtualHost *:443&gt;
+<VirtualHost *:443>
     ServerName example.com
     # SSL configuration and site settings here
-&lt;/VirtualHost&gt;
-</code></pre><h4 id="http-strict-transport-security-hsts"><strong>HTTP Strict Transport Security (HSTS)</strong></h4><p>Enforcing HTTPS through HSTS ensures that browsers always load your website securely by preventing any request over HTTP. This is important for protecting against downgrade attacks and cookie hijacking.</p><p>For <strong>Nginx</strong>:</p><pre><code>add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-</code></pre><p>For <strong>Apache</strong>:</p><pre><code>Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-</code></pre><p>This setting ensures that once a browser visits your site, it will remember to always use HTTPS for future requests.</p><h4 id="optimize-for-performance-and-seo"><strong>Optimize for Performance and SEO</strong></h4><ul><li><strong>Enable HTTP/2 or HTTP/3</strong>: HTTP/2 improves performance by allowing multiple requests over a single connection, reducing latency.</li><li><strong>Redirect Chains</strong>: Avoid multiple redirects (e.g., from <code>http://example.com</code> to <code>https://example.com</code>, then to <code>https://www.example.com</code>). Always aim for a single redirect to reduce delay.</li></ul><h4 id="finally">Finally</h4><p>Setting up a domain like <code>example.com</code> for production requires a well-configured server that supports HTTPS, redirects HTTP traffic to HTTPS, and enforces consistent domain redirection (either from www to non-www or vice versa). Implementing these best practices ensures a secure, user-friendly, and SEO-optimized domain configuration.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+</VirtualHost>
+```
 
+#### **HTTP Strict Transport Security (HSTS)**
+
+Enforcing HTTPS through HSTS ensures that browsers always load your website securely by preventing any request over HTTP. This is important for protecting against downgrade attacks and cookie hijacking.
+
+For **Nginx**:
+
+```
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+```
+
+For **Apache**:
+
+```
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+```
+
+This setting ensures that once a browser visits your site, it will remember to always use HTTPS for future requests.
+
+#### **Optimize for Performance and SEO**
+
+-   **Enable HTTP/2 or HTTP/3**: HTTP/2 improves performance by allowing multiple requests over a single connection, reducing latency.
+-   **Redirect Chains**: Avoid multiple redirects (e.g., from `http://example.com` to `https://example.com`, then to `https://www.example.com`). Always aim for a single redirect to reduce delay.
+
+#### Finally
+
+Setting up a domain like `example.com` for production requires a well-configured server that supports HTTPS, redirects HTTP traffic to HTTPS, and enforces consistent domain redirection (either from www to non-www or vice versa). Implementing these best practices ensures a secure, user-friendly, and SEO-optimized domain configuration.

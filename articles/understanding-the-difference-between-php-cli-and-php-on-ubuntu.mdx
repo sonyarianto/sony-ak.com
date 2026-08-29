@@ -5,11 +5,70 @@ description: "When setting up PHP on an Ubuntu system, you may come across diffe
 tags: ["php","database","bash","web-server","linux"]
 ---
 
-<p>When setting up PHP on an Ubuntu system, you may come across different packages like <code>php-cli</code> and <code>php</code>. These can be confusing at first, especially if you're new to the world of PHP and Linux. In this article, we’ll explore the differences between these two packages, what they are used for, and when to choose one over the other. We'll also discuss a few other points you should consider when installing PHP on Ubuntu.</p><h3 id="what-is-php-cli"><strong>What is <code>php-cli</code>?</strong></h3><p>The package <strong><code>php-cli</code></strong> refers to the <strong>PHP Command Line Interface</strong>. This version of PHP is designed to be used directly in the <strong>command line</strong> or <strong>terminal</strong>. It allows you to run PHP scripts without the need for a web server. For example, if you want to execute a PHP script that doesn’t require a browser or web server interaction, you would use the <code>php-cli</code> package.</p><p>Common uses of <code>php-cli</code> include:</p><ul><li>Running <strong>cron jobs</strong> or scheduled tasks that require PHP.</li><li>Executing <strong>standalone scripts</strong> that don’t interact with the web.</li><li><strong>Development and testing</strong> scripts directly in the terminal.</li></ul><p>To install <code>php-cli</code>, you can use:</p><pre><code class="language-bash">sudo apt install php-cli
-</code></pre><p>This command installs only the necessary components for running PHP in the terminal, making it a lightweight choice if you don't need web server integration.</p><h3 id="what-is-php"><strong>What is <code>php</code>?</strong></h3><p>The <code>php</code> package is a more comprehensive <strong>PHP runtime</strong> that includes the <strong>PHP CLI</strong>, but also installs additional components like <strong>PHP-FPM</strong> (FastCGI Process Manager) for web server integration. This is the default package for most PHP installations that will be used in conjunction with a web server, such as <strong>Apache</strong> or <strong>Nginx</strong>.</p><p>By installing <code>php</code>, you get:</p><ul><li>The <strong>PHP CLI</strong>, for running PHP scripts in the terminal.</li><li><strong>PHP-FPM</strong>, which is necessary for serving PHP content on a web server. PHP-FPM handles incoming requests from a web server like Nginx or Apache and processes the PHP code accordingly.</li><li>Other <strong>modules</strong> and dependencies for full PHP functionality, including support for various libraries and extensions.</li></ul><p>To install the <code>php</code> package, you can run:</p><pre><code class="language-bash">sudo apt install php
-</code></pre><p>This command installs a complete PHP environment suitable for both command-line and web applications.</p><h3 id="when-to-use-php-cli-vs-php"><strong>When to Use <code>php-cli</code> vs. <code>php</code></strong></h3><ol><li><strong>Use <code>php-cli</code></strong> if:<ul><li>You are only working with <strong>command-line scripts</strong> and have no need for a web server.</li><li>You are running <strong>background processes</strong>, cron jobs, or simple scripts that do not require a web interface.</li></ul></li><li><strong>Use <code>php</code></strong> if:<ul><li>You need a <strong>complete PHP environment</strong> with the ability to handle web requests.</li><li>You plan to integrate PHP with a <strong>web server</strong> like Apache or Nginx.</li><li>You require access to additional PHP modules and configurations that come with the full PHP package.</li></ul></li></ol><h3 id="other-considerations"><strong>Other Considerations</strong></h3><p>While understanding the difference between <code>php-cli</code> and <code>php</code> is important, here are a few additional points to consider when managing PHP on Ubuntu:</p><ul><li><strong>PHP Versioning</strong>: Different PHP packages may come in different versions. Ubuntu repositories may provide a specific version of PHP, but if you need a different version (e.g., PHP 7.4, PHP 8.0, etc.), you might have to install from an external repository like <strong>Ondřej Surý's PHP PPA</strong>. Use <code>sudo add-apt-repository ppa:ondrej/php</code> to install newer PHP versions.</li><li><strong>PHP Modules</strong>: Both <code>php-cli</code> and <code>php</code> may come with essential modules, but if you’re working on web applications, you might need additional modules like <code>php-mysql</code>, <code>php-xml</code>, <code>php-curl</code>, etc. For these, you can install them separately. For example:</li></ul><pre><code class="language-bash">sudo apt install php-mysql php-xml php-curl
-</code></pre><ul><li><strong>Web Server Integration</strong>: If you're running a <strong>web application</strong> and need to serve PHP pages, make sure that <strong>PHP-FPM</strong> is properly configured with your web server. For example, if you're using <strong>Nginx</strong>, you would configure it to use PHP-FPM for processing PHP requests.</li><li><strong>Security</strong>: Be cautious with PHP versions in production environments. Always ensure that your PHP installation is up-to-date, as older versions may have known security vulnerabilities. Consider using PHP security advisories and patch management tools to keep your system secure.</li></ul><h3 id="finally"><strong>Finally</strong></h3><p>The main difference between <code>php-cli</code> and <code>php</code> on Ubuntu boils down to what you need PHP for. If you’re only using the command line and need a lightweight package to run scripts, <code>php-cli</code> is the way to go. If you’re building web applications that require a full PHP runtime with web server integration, then the <code>php</code> package is what you’ll want to install.</p><p>Make sure to consider your project requirements, PHP version needs, and whether you’re working in a command-line or web environment when choosing which package to install. With this knowledge, you'll be able to make an informed decision and set up PHP in the most efficient way for your use case.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When setting up PHP on an Ubuntu system, you may come across different packages like `php-cli` and `php`. These can be confusing at first, especially if you're new to the world of PHP and Linux. In this article, we’ll explore the differences between these two packages, what they are used for, and when to choose one over the other. We'll also discuss a few other points you should consider when installing PHP on Ubuntu.
 
+### **What is `php-cli`?**
+
+The package **`php-cli`** refers to the **PHP Command Line Interface**. This version of PHP is designed to be used directly in the **command line** or **terminal**. It allows you to run PHP scripts without the need for a web server. For example, if you want to execute a PHP script that doesn’t require a browser or web server interaction, you would use the `php-cli` package.
+
+Common uses of `php-cli` include:
+
+-   Running **cron jobs** or scheduled tasks that require PHP.
+-   Executing **standalone scripts** that don’t interact with the web.
+-   **Development and testing** scripts directly in the terminal.
+
+To install `php-cli`, you can use:
+
+```bash
+sudo apt install php-cli
+```
+
+This command installs only the necessary components for running PHP in the terminal, making it a lightweight choice if you don't need web server integration.
+
+### **What is `php`?**
+
+The `php` package is a more comprehensive **PHP runtime** that includes the **PHP CLI**, but also installs additional components like **PHP-FPM** (FastCGI Process Manager) for web server integration. This is the default package for most PHP installations that will be used in conjunction with a web server, such as **Apache** or **Nginx**.
+
+By installing `php`, you get:
+
+-   The **PHP CLI**, for running PHP scripts in the terminal.
+-   **PHP-FPM**, which is necessary for serving PHP content on a web server. PHP-FPM handles incoming requests from a web server like Nginx or Apache and processes the PHP code accordingly.
+-   Other **modules** and dependencies for full PHP functionality, including support for various libraries and extensions.
+
+To install the `php` package, you can run:
+
+```bash
+sudo apt install php
+```
+
+This command installs a complete PHP environment suitable for both command-line and web applications.
+
+### **When to Use `php-cli` vs. `php`**
+
+1.  **Use `php-cli`** if:
+    -   You are only working with **command-line scripts** and have no need for a web server.
+    -   You are running **background processes**, cron jobs, or simple scripts that do not require a web interface.
+2.  **Use `php`** if:
+    -   You need a **complete PHP environment** with the ability to handle web requests.
+    -   You plan to integrate PHP with a **web server** like Apache or Nginx.
+    -   You require access to additional PHP modules and configurations that come with the full PHP package.
+
+### **Other Considerations**
+
+While understanding the difference between `php-cli` and `php` is important, here are a few additional points to consider when managing PHP on Ubuntu:
+
+-   **PHP Versioning**: Different PHP packages may come in different versions. Ubuntu repositories may provide a specific version of PHP, but if you need a different version (e.g., PHP 7.4, PHP 8.0, etc.), you might have to install from an external repository like **Ondřej Surý's PHP PPA**. Use `sudo add-apt-repository ppa:ondrej/php` to install newer PHP versions.
+-   **PHP Modules**: Both `php-cli` and `php` may come with essential modules, but if you’re working on web applications, you might need additional modules like `php-mysql`, `php-xml`, `php-curl`, etc. For these, you can install them separately. For example:
+
+```bash
+sudo apt install php-mysql php-xml php-curl
+```
+
+-   **Web Server Integration**: If you're running a **web application** and need to serve PHP pages, make sure that **PHP-FPM** is properly configured with your web server. For example, if you're using **Nginx**, you would configure it to use PHP-FPM for processing PHP requests.
+-   **Security**: Be cautious with PHP versions in production environments. Always ensure that your PHP installation is up-to-date, as older versions may have known security vulnerabilities. Consider using PHP security advisories and patch management tools to keep your system secure.
+
+### **Finally**
+
+The main difference between `php-cli` and `php` on Ubuntu boils down to what you need PHP for. If you’re only using the command line and need a lightweight package to run scripts, `php-cli` is the way to go. If you’re building web applications that require a full PHP runtime with web server integration, then the `php` package is what you’ll want to install.
+
+Make sure to consider your project requirements, PHP version needs, and whether you’re working in a command-line or web environment when choosing which package to install. With this knowledge, you'll be able to make an informed decision and set up PHP in the most efficient way for your use case.

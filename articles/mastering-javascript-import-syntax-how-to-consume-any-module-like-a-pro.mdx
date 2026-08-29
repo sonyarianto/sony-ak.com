@@ -5,38 +5,169 @@ description: "A Companion Guide to export with Practical Use Cases and Gotchas"
 tags: ["javascript","react","package-manager","json"]
 ---
 
-<p>If you’ve already familiarized yourself with the various ways to <strong>export</strong> in JavaScript modules, the next natural step is understanding how to <strong>import</strong> them efficiently.</p><p>This article walks you through <strong>all valid import patterns</strong> in JavaScript, how they relate to the different <code>export</code> types, and provides <strong>real-world usage tips</strong> to avoid confusion—especially when dealing with default vs named exports.</p><hr><h2 id="%F0%9F%94%B9-why-use-import">🔹 Why Use <code>import</code>?</h2><p>The <code>import</code> keyword allows your JavaScript file to <strong>consume exported functionality from another file or module</strong>. It’s a core feature of <strong>ES Modules (ESM)</strong>, which are now natively supported in all modern environments, including the browser and Node.js (with <code>.mjs</code> or <code>type: "module"</code> in <code>package.json</code>).</p><hr><h2 id="%E2%9C%85-basic-import-patterns">✅ Basic Import Patterns</h2><h3 id="1-importing-default-exports">1. <strong>Importing Default Exports</strong></h3><pre><code class="language-js">import MyModule from './my-module.js';
-</code></pre><p>This works with:</p><pre><code class="language-js">// my-module.js
+If you’ve already familiarized yourself with the various ways to **export** in JavaScript modules, the next natural step is understanding how to **import** them efficiently.
+
+This article walks you through **all valid import patterns** in JavaScript, how they relate to the different `export` types, and provides **real-world usage tips** to avoid confusion—especially when dealing with default vs named exports.
+
+* * *
+
+## 🔹 Why Use `import`?
+
+The `import` keyword allows your JavaScript file to **consume exported functionality from another file or module**. It’s a core feature of **ES Modules (ESM)**, which are now natively supported in all modern environments, including the browser and Node.js (with `.mjs` or `type: "module"` in `package.json`).
+
+* * *
+
+## ✅ Basic Import Patterns
+
+### 1\. **Importing Default Exports**
+
+```js
+import MyModule from './my-module.js';
+```
+
+This works with:
+
+```js
+// my-module.js
 export default function MyModule() { }
-</code></pre><blockquote>✅ <strong>Note:</strong> You can name the default import <strong>anything you want</strong>, since it's not tied to the original declaration name.</blockquote><hr><h3 id="2-importing-named-exports">2. <strong>Importing Named Exports</strong></h3><pre><code class="language-js">import { add, subtract } from './math.js';
-</code></pre><p>This works with:</p><pre><code class="language-js">// math.js
+```
+
+> ✅ **Note:** You can name the default import **anything you want**, since it's not tied to the original declaration name.
+
+* * *
+
+### 2\. **Importing Named Exports**
+
+```js
+import { add, subtract } from './math.js';
+```
+
+This works with:
+
+```js
+// math.js
 export function add(a, b) { return a + b; }
 export function subtract(a, b) { return a - b; }
-</code></pre><blockquote>🟡 <strong>Must match the exported name exactly.</strong></blockquote><hr><h3 id="3-renaming-imports-with-as">3. <strong>Renaming Imports with <code>as</code></strong></h3><pre><code class="language-js">import { add as sum } from './math.js';
-</code></pre><p>This is useful to avoid naming collisions or make naming more meaningful in your context.</p><hr><h3 id="4-importing-everything-as-a-namespace">4. <strong>Importing Everything as a Namespace</strong></h3><pre><code class="language-js">import * as utils from './utils.js';
-</code></pre><p>Now you can use it like:</p><pre><code class="language-js">utils.validate();
+```
+
+> 🟡 **Must match the exported name exactly.**
+
+* * *
+
+### 3\. **Renaming Imports with `as`**
+
+```js
+import { add as sum } from './math.js';
+```
+
+This is useful to avoid naming collisions or make naming more meaningful in your context.
+
+* * *
+
+### 4\. **Importing Everything as a Namespace**
+
+```js
+import * as utils from './utils.js';
+```
+
+Now you can use it like:
+
+```js
+utils.validate();
 utils.format();
-</code></pre><p>This works well when you're importing a <strong>utility module</strong> or when you want <strong>clarity on where a function comes from</strong>.</p><hr><h3 id="5-importing-mixed-default-and-named-exports">5. <strong>Importing Mixed Default and Named Exports</strong></h3><pre><code class="language-js">import MyComponent, { helper } from './component.js';
-</code></pre><p>This matches:</p><pre><code class="language-js">export default function MyComponent() { }
-export const helper = () =&gt; { /* ... */ }
-</code></pre><hr><h3 id="6-importing-from-re-exported-modules">6. <strong>Importing from Re-exported Modules</strong></h3><p>If another file re-exports something:</p><pre><code class="language-js">// index.js
+```
+
+This works well when you're importing a **utility module** or when you want **clarity on where a function comes from**.
+
+* * *
+
+### 5\. **Importing Mixed Default and Named Exports**
+
+```js
+import MyComponent, { helper } from './component.js';
+```
+
+This matches:
+
+```js
+export default function MyComponent() { }
+export const helper = () => { /* ... */ }
+```
+
+* * *
+
+### 6\. **Importing from Re-exported Modules**
+
+If another file re-exports something:
+
+```js
+// index.js
 export * from './math.js';
 export { default as Logger } from './logger.js';
-</code></pre><p>You can import it like:</p><pre><code class="language-js">import { add } from './index.js';
+```
+
+You can import it like:
+
+```js
+import { add } from './index.js';
 import { Logger } from './index.js';
-</code></pre><hr><h2 id="%E2%9A%A0%EF%B8%8F-common-import-mistakes">⚠️ Common Import Mistakes</h2><h3 id="%E2%9D%8C-mixing-up-default-vs-named">❌ Mixing Up Default vs Named</h3><pre><code class="language-js">// Wrong!
+```
+
+* * *
+
+## ⚠️ Common Import Mistakes
+
+### ❌ Mixing Up Default vs Named
+
+```js
+// Wrong!
 import { MyComponent } from './MyComponent'; // throws if MyComponent is default
 
 // Correct:
 import MyComponent from './MyComponent';
-</code></pre><h3 id="%E2%9D%8C-forgetting-file-extensions-in-the-browser">❌ Forgetting File Extensions (in the browser)</h3><p>In Node.js, <code>.js</code> extensions can often be omitted, but <strong>in the browser</strong> (especially when using native <code>&lt;script type="module"&gt;</code>), you must include <code>.js</code> or <code>.mjs</code>.</p><hr><h2 id="%F0%9F%93%8C-dynamic-imports-import">📌 Dynamic Imports (<code>import()</code>)</h2><p>You can also load modules <strong>dynamically</strong>:</p><pre><code class="language-js">const module = await import('./my-module.js');
+```
+
+### ❌ Forgetting File Extensions (in the browser)
+
+In Node.js, `.js` extensions can often be omitted, but **in the browser** (especially when using native `<script type="module">`), you must include `.js` or `.mjs`.
+
+* * *
+
+## 📌 Dynamic Imports (`import()`)
+
+You can also load modules **dynamically**:
+
+```js
+const module = await import('./my-module.js');
 module.default();
-</code></pre><p>Useful for:</p><ul><li>Lazy loading components or logic</li><li>Loading based on conditions or routes</li><li>Reducing bundle size (tree-shaking)</li></ul><hr><h2 id="%F0%9F%93%A6-importing-from-npm-packages">📦 Importing from NPM Packages</h2><pre><code class="language-js">import React from 'react';                       // default export
+```
+
+Useful for:
+
+-   Lazy loading components or logic
+-   Loading based on conditions or routes
+-   Reducing bundle size (tree-shaking)
+
+* * *
+
+## 📦 Importing from NPM Packages
+
+```js
+import React from 'react';                       // default export
 import { useState } from 'react';                // named export
 import * as lodash from 'lodash';                // namespace
 import debounce from 'lodash/debounce';          // scoped import
-</code></pre><blockquote>✅ <strong>Tip:</strong> Use bundlers (like Vite, Webpack, ESBuild) to handle optimized imports and tree-shaking.</blockquote><hr><h2 id="%F0%9F%A7%A0-finally">🧠 Finally</h2><p><strong>Importing is the flip side of exporting</strong>, and being fluent in both gives you <strong>powerful control over code organization</strong>.</p><ul><li>Use <strong>default imports</strong> when a file has one main purpose.</li><li>Use <strong>named imports</strong> for utilities and shared logic.</li><li>Use <strong>namespace imports</strong> when grouping makes your code easier to read.</li><li>Avoid mixing import styles unnecessarily—<strong>consistency matters</strong>.</li></ul><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+> ✅ **Tip:** Use bundlers (like Vite, Webpack, ESBuild) to handle optimized imports and tree-shaking.
+
+* * *
+
+## 🧠 Finally
+
+**Importing is the flip side of exporting**, and being fluent in both gives you **powerful control over code organization**.
+
+-   Use **default imports** when a file has one main purpose.
+-   Use **named imports** for utilities and shared logic.
+-   Use **namespace imports** when grouping makes your code easier to read.
+-   Avoid mixing import styles unnecessarily—**consistency matters**.

@@ -5,8 +5,93 @@ description: "When it comes to raw performance, especially in serving static fil
 tags: ["javascript","api","performance","design","career"]
 ---
 
-<p>When it comes to raw performance, especially in serving static files like <code>package.json</code>, <strong>Bun</strong> has been making waves with numbers that seem almost too good to be true. A recent benchmark shows:</p><ul><li><strong>Bun v1.2.16</strong>: 219,714 requests per second</li><li><strong>Node.js v24.1.0</strong>: 39,178 requests per second</li></ul><p>That’s over <strong>5x faster</strong>. But what’s driving this massive difference?</p><p>One of the lesser-known but critical optimizations in Bun is this:</p><blockquote><strong>"All streaming file reads use the same single 250 KB buffer, so memory usage is O(1) instead of O(N). Reading more files won’t use more memory."</strong></blockquote><p>Let’s unpack this statement, why it matters, and how it affects real-world performance.</p><hr><h2 id="o1-memory-usage-why-its-a-game-changer"><strong>O(1) Memory Usage: Why It's a Game-Changer</strong></h2><p>In Bun’s design, there is <strong>only one 250 KB buffer</strong> allocated for reading files from disk. Regardless of how many files are being streamed concurrently, <strong>they all reuse this same buffer</strong>.</p><p>This results in <strong>constant memory usage</strong>, or <strong>O(1)</strong> memory complexity. It doesn't matter whether you're serving 10 files or 10,000 — memory use stays flat, predictable, and efficient.</p><p>Contrast this with <strong>Node.js</strong>, where <strong>each file stream typically creates its own buffer</strong>. That means:</p><ul><li>Serving more files = allocating more memory</li><li>Memory usage scales linearly (O(N)) with the number of concurrent file reads</li><li>Under heavy load, it can trigger more garbage collection (GC), cache misses, and even memory exhaustion</li></ul><hr><h2 id="does-the-fixed-buffer-limit-performance"><strong>Does the Fixed Buffer Limit Performance?</strong></h2><p>A fair question is whether using a fixed 250 KB buffer limits the size of files you can serve.</p><p><strong>Short answer: Not really.</strong></p><p>The buffer size <strong>only controls how much data is read from disk in one I/O operation</strong>. Even if you’re serving a large file (say, 10 MB), Bun will read it in 250 KB chunks, <strong>reusing the same buffer for each chunk</strong>.</p><p>While this may involve more read iterations compared to a runtime like Node.js (which might allocate a larger per-stream buffer), the <strong>performance trade-off is minimal</strong>, especially when the benefit is:</p><ul><li>Drastically reduced memory pressure</li><li>Less GC activity</li><li>More stable behavior under high concurrency</li></ul><p>So unless you're serving gigabyte-scale files at very low concurrency, <strong>Bun's approach actually performs better overall</strong>.</p><hr><h2 id="why-nodejs-uses-per-stream-buffers"><strong>Why Node.js Uses Per-Stream Buffers</strong></h2><p>Node.js allocates a new buffer for each stream, often 64 KB or more. This design:</p><ul><li>Can improve throughput when reading a <strong>single large file</strong></li><li>Reduces the number of system read calls</li></ul><p>However, this comes at a cost:</p><ul><li>Every new stream adds memory usage</li><li>If you’re serving hundreds or thousands of files concurrently, it scales poorly</li><li>Unbounded buffer growth = higher memory usage = more GC pauses</li></ul><p>In contrast, <strong>Bun trades a tiny bit of per-stream optimization</strong> for massive <strong>overall system-level efficiency</strong>.</p><hr><h2 id="real-world-analogy"><strong>Real-World Analogy</strong></h2><p>Imagine a print shop with 1,000 print jobs:</p><ul><li><strong>Node.js</strong> gives every job its own paper tray — fast for one job, but clutters the room quickly.</li><li><strong>Bun</strong> shares <strong>one ultra-fast tray</strong> for all jobs. You get slightly more coordination, but far less waste.</li></ul><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><p>Here are a few more points to think about:</p><ul><li><strong>I/O coordination in Bun is likely more sophisticated</strong>. Reusing a buffer requires tight management of I/O pointers and concurrency — which Bun seems to handle elegantly.</li><li><strong>CPU cache locality</strong> improves in Bun’s model because memory isn't fragmented across many buffers.</li><li><strong>This optimization is only one of many</strong> — Bun’s compiler, JIT engine, and I/O stack all contribute to performance. But the buffer reuse is one of the most elegant and impactful tricks.</li></ul><hr><h2 id="conclusion-bounded-memory-unbounded-performance"><strong>Conclusion: Bounded Memory, Unbounded Performance</strong></h2><p>Bun’s decision to use a single 250 KB buffer for streaming file reads is a textbook case of <strong>smart trade-off engineering</strong>. By controlling memory usage up front, it avoids the unpredictable behavior that comes with scaling file servers in environments like Node.js.</p><p>So while Node.js may offer more raw flexibility in memory usage, <strong>Bun wins in the real-world scenario where scalability, predictability, and concurrency matter</strong>.</p><p>If you're building a high-performance web server or API that needs to serve static files under load, Bun’s buffer-sharing design is one of the reasons it's not just faster — it's <strong>smarter</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When it comes to raw performance, especially in serving static files like `package.json`, **Bun** has been making waves with numbers that seem almost too good to be true. A recent benchmark shows:
 
+-   **Bun v1.2.16**: 219,714 requests per second
+-   **Node.js v24.1.0**: 39,178 requests per second
+
+That’s over **5x faster**. But what’s driving this massive difference?
+
+One of the lesser-known but critical optimizations in Bun is this:
+
+> **"All streaming file reads use the same single 250 KB buffer, so memory usage is O(1) instead of O(N). Reading more files won’t use more memory."**
+
+Let’s unpack this statement, why it matters, and how it affects real-world performance.
+
+* * *
+
+## **O(1) Memory Usage: Why It's a Game-Changer**
+
+In Bun’s design, there is **only one 250 KB buffer** allocated for reading files from disk. Regardless of how many files are being streamed concurrently, **they all reuse this same buffer**.
+
+This results in **constant memory usage**, or **O(1)** memory complexity. It doesn't matter whether you're serving 10 files or 10,000 — memory use stays flat, predictable, and efficient.
+
+Contrast this with **Node.js**, where **each file stream typically creates its own buffer**. That means:
+
+-   Serving more files = allocating more memory
+-   Memory usage scales linearly (O(N)) with the number of concurrent file reads
+-   Under heavy load, it can trigger more garbage collection (GC), cache misses, and even memory exhaustion
+
+* * *
+
+## **Does the Fixed Buffer Limit Performance?**
+
+A fair question is whether using a fixed 250 KB buffer limits the size of files you can serve.
+
+**Short answer: Not really.**
+
+The buffer size **only controls how much data is read from disk in one I/O operation**. Even if you’re serving a large file (say, 10 MB), Bun will read it in 250 KB chunks, **reusing the same buffer for each chunk**.
+
+While this may involve more read iterations compared to a runtime like Node.js (which might allocate a larger per-stream buffer), the **performance trade-off is minimal**, especially when the benefit is:
+
+-   Drastically reduced memory pressure
+-   Less GC activity
+-   More stable behavior under high concurrency
+
+So unless you're serving gigabyte-scale files at very low concurrency, **Bun's approach actually performs better overall**.
+
+* * *
+
+## **Why Node.js Uses Per-Stream Buffers**
+
+Node.js allocates a new buffer for each stream, often 64 KB or more. This design:
+
+-   Can improve throughput when reading a **single large file**
+-   Reduces the number of system read calls
+
+However, this comes at a cost:
+
+-   Every new stream adds memory usage
+-   If you’re serving hundreds or thousands of files concurrently, it scales poorly
+-   Unbounded buffer growth = higher memory usage = more GC pauses
+
+In contrast, **Bun trades a tiny bit of per-stream optimization** for massive **overall system-level efficiency**.
+
+* * *
+
+## **Real-World Analogy**
+
+Imagine a print shop with 1,000 print jobs:
+
+-   **Node.js** gives every job its own paper tray — fast for one job, but clutters the room quickly.
+-   **Bun** shares **one ultra-fast tray** for all jobs. You get slightly more coordination, but far less waste.
+
+* * *
+
+## **Other Considerations**
+
+Here are a few more points to think about:
+
+-   **I/O coordination in Bun is likely more sophisticated**. Reusing a buffer requires tight management of I/O pointers and concurrency — which Bun seems to handle elegantly.
+-   **CPU cache locality** improves in Bun’s model because memory isn't fragmented across many buffers.
+-   **This optimization is only one of many** — Bun’s compiler, JIT engine, and I/O stack all contribute to performance. But the buffer reuse is one of the most elegant and impactful tricks.
+
+* * *
+
+## **Conclusion: Bounded Memory, Unbounded Performance**
+
+Bun’s decision to use a single 250 KB buffer for streaming file reads is a textbook case of **smart trade-off engineering**. By controlling memory usage up front, it avoids the unpredictable behavior that comes with scaling file servers in environments like Node.js.
+
+So while Node.js may offer more raw flexibility in memory usage, **Bun wins in the real-world scenario where scalability, predictability, and concurrency matter**.
+
+If you're building a high-performance web server or API that needs to serve static files under load, Bun’s buffer-sharing design is one of the reasons it's not just faster — it's **smarter**.

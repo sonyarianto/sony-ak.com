@@ -5,51 +5,114 @@ description: "When building a modern web application, especially with React Rout
 tags: ["react","laravel","html","web-server","hosting"]
 ---
 
-<p>When building a modern web application, especially with <strong>React Router v7</strong>, understanding the right type of router to use is crucial for ensuring smooth navigation, proper deep linking, and compatibility with your deployment environment. One of the most common confusions is whether <code>createBrowserRouter</code> can be used to create a <strong>hash-based router</strong>.</p><p>Let’s clear this up — and explore the deeper considerations around choosing the right router for your app.</p><hr><h2 id="%F0%9F%A7%A0-the-core-difference-browser-vs-hash-routers">🧠 The Core Difference: Browser vs. Hash Routers</h2><p>React Router v7 offers two main router creation functions:</p><h3 id="1-createbrowserrouter">1. <strong><code>createBrowserRouter</code></strong></h3><ul><li>Uses the <strong>HTML5 History API</strong></li><li>Produces clean, user-friendly URLs like <code>/dashboard</code>, <code>/settings</code></li><li>Requires <strong>server-side configuration</strong> to support routing (e.g., fallback to <code>index.html</code>)</li></ul><h3 id="2-createhashrouter">2. <strong><code>createHashRouter</code></strong></h3><ul><li>Uses the <strong>URL hash (<code>#</code>) for routing</strong></li><li>URLs look like <code>/#/dashboard</code>, <code>/#/settings</code></li><li>Does <strong>not require server configuration</strong> for deep linking</li><li>Ideal for <strong>environments without server-side routing control</strong>, such as <strong>Chrome Extensions</strong> or <strong>GitHub Pages</strong></li></ul><p><strong>👉 Important:</strong><br><code>createBrowserRouter</code> <strong>cannot</strong> be used to create a hash-based router. If you attempt to use it expecting hash behavior, your routes will break in environments where the server cannot handle client-side routing.</p><hr><h2 id="%F0%9F%9B%A0%EF%B8%8F-which-should-you-use">🛠️ Which Should You Use?</h2><p>Here’s a simple rule of thumb:</p>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Use Case</th>
-<th>Recommended Router</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Regular web app with control over the server (e.g., Nginx, Vercel, Netlify)</td>
-<td><strong><code inline="">createBrowserRouter</code></strong></td>
-</tr>
-<tr>
-<td>Static hosting (e.g., GitHub Pages) or browser extensions</td>
-<td><strong><code inline="">createHashRouter</code></strong></td>
-</tr>
-<tr>
-<td>Developing a <strong>Chrome Extension</strong> that opens a page on a new tab</td>
-<td><strong><code inline="">createHashRouter</code></strong></td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="%E2%9A%A0%EF%B8%8F-real-world-considerations">⚠️ Real-world Considerations</h2><h3 id="%F0%9F%A7%A9-chrome-extension-development">🧩 <strong>Chrome Extension Development</strong></h3><ul><li>In <strong>Chrome Extensions</strong>, routing with the HTML5 History API (<code>createBrowserRouter</code>) can lead to broken links because you <strong>cannot configure the server</strong> to fallback to <code>index.html</code>.</li><li>Use <code>createHashRouter</code> for guaranteed navigation compatibility.</li></ul><h3 id="%F0%9F%94%80-deployment-environments">🔀 <strong>Deployment Environments</strong></h3><ul><li>But if you’re deploying to platforms like <strong>GitHub Pages</strong> or <strong>IPFS</strong>, hash routing is the safest bet.</li></ul><p>Platforms like <strong>Netlify</strong> and <strong>Vercel</strong> support rewrite rules to handle browser history routing. For example, in Netlify you can add a <code>_redirects</code> file:</p><pre><code>/*    /index.html   200
-</code></pre><h3 id="%F0%9F%93%82-file-system-access">📂 <strong>File System Access</strong></h3><ul><li>With <code>createBrowserRouter</code>, direct access to nested routes like <code>/settings</code> will fail if the server does not route all requests to <code>index.html</code>.</li><li>With <code>createHashRouter</code>, everything after <code>#</code> is client-side only — <strong>no server-side config needed.</strong></li></ul><hr><h2 id="%F0%9F%A7%AA-example-how-to-use-createhashrouter">🧪 Example: How to Use <code>createHashRouter</code></h2><pre><code class="language-tsx">import { createHashRouter, RouterProvider } from "react-router-dom";
+When building a modern web application, especially with **React Router v7**, understanding the right type of router to use is crucial for ensuring smooth navigation, proper deep linking, and compatibility with your deployment environment. One of the most common confusions is whether `createBrowserRouter` can be used to create a **hash-based router**.
+
+Let’s clear this up — and explore the deeper considerations around choosing the right router for your app.
+
+* * *
+
+## 🧠 The Core Difference: Browser vs. Hash Routers
+
+React Router v7 offers two main router creation functions:
+
+### 1\. **`createBrowserRouter`**
+
+-   Uses the **HTML5 History API**
+-   Produces clean, user-friendly URLs like `/dashboard`, `/settings`
+-   Requires **server-side configuration** to support routing (e.g., fallback to `index.html`)
+
+### 2\. **`createHashRouter`**
+
+-   Uses the **URL hash (`#`) for routing**
+-   URLs look like `/#/dashboard`, `/#/settings`
+-   Does **not require server configuration** for deep linking
+-   Ideal for **environments without server-side routing control**, such as **Chrome Extensions** or **GitHub Pages**
+
+**👉 Important:**  
+`createBrowserRouter` **cannot** be used to create a hash-based router. If you attempt to use it expecting hash behavior, your routes will break in environments where the server cannot handle client-side routing.
+
+* * *
+
+## 🛠️ Which Should You Use?
+
+Here’s a simple rule of thumb:
+
+* * *
+
+## ⚠️ Real-world Considerations
+
+### 🧩 **Chrome Extension Development**
+
+-   In **Chrome Extensions**, routing with the HTML5 History API (`createBrowserRouter`) can lead to broken links because you **cannot configure the server** to fallback to `index.html`.
+-   Use `createHashRouter` for guaranteed navigation compatibility.
+
+### 🔀 **Deployment Environments**
+
+-   But if you’re deploying to platforms like **GitHub Pages** or **IPFS**, hash routing is the safest bet.
+
+Platforms like **Netlify** and **Vercel** support rewrite rules to handle browser history routing. For example, in Netlify you can add a `_redirects` file:
+
+```
+/*    /index.html   200
+```
+
+### 📂 **File System Access**
+
+-   With `createBrowserRouter`, direct access to nested routes like `/settings` will fail if the server does not route all requests to `index.html`.
+-   With `createHashRouter`, everything after `#` is client-side only — **no server-side config needed.**
+
+* * *
+
+## 🧪 Example: How to Use `createHashRouter`
+
+```tsx
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import About from "./About";
 
 const router = createHashRouter([
   {
     path: "/",
-    element: &lt;App /&gt;,
+    element: <App />,
     children: [
-      { path: "about", element: &lt;About /&gt; },
+      { path: "about", element: <About /> },
     ],
   },
 ]);
 
 function Root() {
-  return &lt;RouterProvider router={router} /&gt;;
+  return <RouterProvider router={router} />;
 }
-</code></pre><p>This ensures that navigation works properly even if the user refreshes the page or pastes a deep link like <code>/#/about</code>.</p><hr><h2 id="%F0%9F%94%AE-should-you-ever-migrate-from-hash-to-browser-router">🔮 Should You Ever Migrate from Hash to Browser Router?</h2><p>Yes, if:</p><ul><li>You move from static hosting to a proper server (e.g., Node, Laravel, Nginx, etc.)</li><li>You want SEO-friendly URLs (hash fragments are <strong>not indexed by search engines</strong>)</li><li>You want to leverage analytics or structured URLs</li></ul><p>Migration would involve:</p><ul><li>Switching to <code>createBrowserRouter</code></li><li>Setting up route rewrites or fallback rules on the server</li></ul><hr><h2 id="%F0%9F%93%9D-finally">📝 Finally</h2><p>Choosing between <code>createBrowserRouter</code> and <code>createHashRouter</code> isn't about which is "better" — it's about <strong>what your deployment environment supports</strong> and what <strong>experience</strong> you want to give your users.</p><ul><li>Use <strong><code>createBrowserRouter</code></strong> if you control the backend and want <strong>clean URLs</strong>.</li><li>Use <strong><code>createHashRouter</code></strong> if you're building a <strong>Chrome Extension</strong>, hosting on <strong>static sites</strong>, or want <strong>zero-config routing</strong>.</li></ul><p><strong>💡 Pro Tip:</strong> Don't forget to test routing behavior in your <strong>actual deployment environment</strong>, not just your local dev setup. Many routing issues only surface after deployment.</p><hr><p>If you're building a Chrome Extension or targeting restricted hosting environments, <strong>stick to <code>createHashRouter</code></strong>. Otherwise, go with <strong><code>createBrowserRouter</code></strong> for cleaner URLs and better SEO.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This ensures that navigation works properly even if the user refreshes the page or pastes a deep link like `/#/about`.
+
+* * *
+
+## 🔮 Should You Ever Migrate from Hash to Browser Router?
+
+Yes, if:
+
+-   You move from static hosting to a proper server (e.g., Node, Laravel, Nginx, etc.)
+-   You want SEO-friendly URLs (hash fragments are **not indexed by search engines**)
+-   You want to leverage analytics or structured URLs
+
+Migration would involve:
+
+-   Switching to `createBrowserRouter`
+-   Setting up route rewrites or fallback rules on the server
+
+* * *
+
+## 📝 Finally
+
+Choosing between `createBrowserRouter` and `createHashRouter` isn't about which is "better" — it's about **what your deployment environment supports** and what **experience** you want to give your users.
+
+-   Use **`createBrowserRouter`** if you control the backend and want **clean URLs**.
+-   Use **`createHashRouter`** if you're building a **Chrome Extension**, hosting on **static sites**, or want **zero-config routing**.
+
+**💡 Pro Tip:** Don't forget to test routing behavior in your **actual deployment environment**, not just your local dev setup. Many routing issues only surface after deployment.
+
+* * *
+
+If you're building a Chrome Extension or targeting restricted hosting environments, **stick to `createHashRouter`**. Otherwise, go with **`createBrowserRouter`** for cleaner URLs and better SEO.

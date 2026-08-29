@@ -5,8 +5,78 @@ description: "For decades, developers have been trained—often unconsciously—
 tags: ["database","testing","performance","architecture","design"]
 ---
 
-<p>For decades, developers have been trained—often unconsciously—to begin building software by designing the database. <strong>Tables come first</strong>, and from those schemas, code is scaffolded, models are generated, and behavior is implemented to match.</p><p>But what if this entire process is <strong>inside out</strong>?</p><p>Recently, veteran software engineer Robert C. Martin (known as <strong>Uncle Bob</strong>) reignited a discussion on this issue, arguing that <strong>embedding SQL directly into core logic was one of our industry's most foundational missteps</strong>. Regardless of whether you agree with his stance on SQL itself, his <strong>larger architectural message deserves deeper reflection</strong>.</p><hr><h3 id="%F0%9F%A7%A0-software-architecture-should-start-with-behavior-not-data">🧠 Software Architecture Should Start with Behavior, Not Data</h3><p>Your application exists to serve <strong>users</strong>, not tables.</p><p>When you begin your design with a database schema, you’re making a critical assumption: that your persistence model accurately reflects the <strong>business domain</strong>. In reality, what’s needed is the opposite.</p><blockquote><strong>Start from user stories</strong>, not SQL schemas.</blockquote><p>Build from the <strong>top-down</strong>, focusing first on <strong>use cases, workflows, and behaviors</strong>. Let your domain model evolve organically. Delay touching the persistence layer until the business logic is clear and testable in memory.</p><hr><h3 id="%F0%9F%94%84-invert-your-thinking-and-your-dependencies">🔄 Invert Your Thinking (and Your Dependencies)</h3><p>One of the central tenets of <strong>Clean Architecture</strong> is the <strong>Dependency Rule</strong>: dependencies must always point <strong>inward</strong>, from outer technical layers to the core business logic—not the other way around.</p><p>When you tightly couple your application logic to SQL queries, ORMs, or migration files, you create <strong>fragile, rigid systems</strong> that are hard to test, hard to evolve, and easy to break.</p><p>Instead:</p><ul><li>Define <strong>interfaces</strong> that describe what your domain needs (e.g., <code>UserRepository</code>, <code>OrderStorage</code>)</li><li>Provide an <strong>in-memory implementation</strong> first for fast iteration and testing</li><li>Only later, introduce a real database adapter that fulfills the contract</li></ul><p>This technique not only improves flexibility—it also gives you room to choose the <strong>right</strong> persistence strategy, not just the <strong>first available</strong> one.</p><hr><h3 id="%F0%9F%9B%A0%EF%B8%8F-sql-is-a-tool-not-a-blueprint">🛠️ SQL Is a Tool, Not a Blueprint</h3><p>SQL isn’t evil. It’s just <strong>a technology detail</strong>. It doesn’t belong at the center of your design.</p><p>Too often, we use SQL as a <strong>starting point</strong>, which locks us into its limitations:</p><ul><li><strong>Rigid schemas</strong> that resist change</li><li><strong>Impedance mismatch</strong> between objects and tables</li><li><strong>Coupling</strong> to specific relational database assumptions</li></ul><p>By putting SQL behind an interface and delaying its adoption, you give your software the space to <strong>evolve naturally</strong>. You might even discover that some parts of your application need <strong>SQL</strong>, others might need <strong>NoSQL</strong>, and still others could just stay <strong>in memory</strong> or <strong>in files</strong>.</p><hr><h3 id="%E2%9A%99%EF%B8%8F-practical-benefits-of-delayed-persistence">⚙️ Practical Benefits of Delayed Persistence</h3><ul><li>✅ <strong>Improved testability</strong>: Run unit tests without needing a live database</li><li>✅ <strong>Faster iteration</strong>: Implement domain logic without waiting on migrations</li><li>✅ <strong>Better architecture</strong>: Interfaces drive design, not technology choices</li><li>✅ <strong>Future-proofing</strong>: Switch out data layers without touching business logic</li></ul><hr><h3 id="%F0%9F%A7%AD-other-considerations-developers-often-miss">🧭 Other Considerations Developers Often Miss</h3><ol><li><strong>Premature Optimization</strong>: Picking a DB engine for performance before understanding access patterns is like buying a racecar before knowing where the road leads.</li><li><strong>Polyglot Persistence</strong>: Different domain modules might require different storage engines. One-size-fits-all rarely works at scale.</li><li><strong>Behavior-Driven Development (BDD)</strong>: Starting from user expectations naturally aligns with this architecture style.</li><li><strong>Onboarding Simplicity</strong>: New engineers can work on domain code without needing full local DB setups.</li><li><strong>Decoupled Environments</strong>: Infrastructure decisions (like scaling, sharding, or caching) can evolve independently from the app logic.</li></ol><hr><h3 id="%F0%9F%93%8C-finally">📌 Finally</h3><p><strong>Data persistence should be a plugin, not a foundation.</strong><br>The database is just one tool among many. Start instead with <strong>use cases</strong>, build your <strong>domain model</strong>, and keep persistence at <strong>arm’s length</strong> until the last responsible moment.</p><p>Uncle Bob’s remarks are less about SQL specifically and more about a philosophy: <strong>design from the core outwards, not the infrastructure inwards.</strong> Your future self—and your teammates—will thank you.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+For decades, developers have been trained—often unconsciously—to begin building software by designing the database. **Tables come first**, and from those schemas, code is scaffolded, models are generated, and behavior is implemented to match.
 
+But what if this entire process is **inside out**?
+
+Recently, veteran software engineer Robert C. Martin (known as **Uncle Bob**) reignited a discussion on this issue, arguing that **embedding SQL directly into core logic was one of our industry's most foundational missteps**. Regardless of whether you agree with his stance on SQL itself, his **larger architectural message deserves deeper reflection**.
+
+* * *
+
+### 🧠 Software Architecture Should Start with Behavior, Not Data
+
+Your application exists to serve **users**, not tables.
+
+When you begin your design with a database schema, you’re making a critical assumption: that your persistence model accurately reflects the **business domain**. In reality, what’s needed is the opposite.
+
+> **Start from user stories**, not SQL schemas.
+
+Build from the **top-down**, focusing first on **use cases, workflows, and behaviors**. Let your domain model evolve organically. Delay touching the persistence layer until the business logic is clear and testable in memory.
+
+* * *
+
+### 🔄 Invert Your Thinking (and Your Dependencies)
+
+One of the central tenets of **Clean Architecture** is the **Dependency Rule**: dependencies must always point **inward**, from outer technical layers to the core business logic—not the other way around.
+
+When you tightly couple your application logic to SQL queries, ORMs, or migration files, you create **fragile, rigid systems** that are hard to test, hard to evolve, and easy to break.
+
+Instead:
+
+-   Define **interfaces** that describe what your domain needs (e.g., `UserRepository`, `OrderStorage`)
+-   Provide an **in-memory implementation** first for fast iteration and testing
+-   Only later, introduce a real database adapter that fulfills the contract
+
+This technique not only improves flexibility—it also gives you room to choose the **right** persistence strategy, not just the **first available** one.
+
+* * *
+
+### 🛠️ SQL Is a Tool, Not a Blueprint
+
+SQL isn’t evil. It’s just **a technology detail**. It doesn’t belong at the center of your design.
+
+Too often, we use SQL as a **starting point**, which locks us into its limitations:
+
+-   **Rigid schemas** that resist change
+-   **Impedance mismatch** between objects and tables
+-   **Coupling** to specific relational database assumptions
+
+By putting SQL behind an interface and delaying its adoption, you give your software the space to **evolve naturally**. You might even discover that some parts of your application need **SQL**, others might need **NoSQL**, and still others could just stay **in memory** or **in files**.
+
+* * *
+
+### ⚙️ Practical Benefits of Delayed Persistence
+
+-   ✅ **Improved testability**: Run unit tests without needing a live database
+-   ✅ **Faster iteration**: Implement domain logic without waiting on migrations
+-   ✅ **Better architecture**: Interfaces drive design, not technology choices
+-   ✅ **Future-proofing**: Switch out data layers without touching business logic
+
+* * *
+
+### 🧭 Other Considerations Developers Often Miss
+
+1.  **Premature Optimization**: Picking a DB engine for performance before understanding access patterns is like buying a racecar before knowing where the road leads.
+2.  **Polyglot Persistence**: Different domain modules might require different storage engines. One-size-fits-all rarely works at scale.
+3.  **Behavior-Driven Development (BDD)**: Starting from user expectations naturally aligns with this architecture style.
+4.  **Onboarding Simplicity**: New engineers can work on domain code without needing full local DB setups.
+5.  **Decoupled Environments**: Infrastructure decisions (like scaling, sharding, or caching) can evolve independently from the app logic.
+
+* * *
+
+### 📌 Finally
+
+**Data persistence should be a plugin, not a foundation.**  
+The database is just one tool among many. Start instead with **use cases**, build your **domain model**, and keep persistence at **arm’s length** until the last responsible moment.
+
+Uncle Bob’s remarks are less about SQL specifically and more about a philosophy: **design from the core outwards, not the infrastructure inwards.** Your future self—and your teammates—will thank you.

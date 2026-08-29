@@ -5,16 +5,95 @@ description: "If you’re familiar with command-line installation shortcuts, you
 tags: ["bash","linux","security","open-source","productivity"]
 ---
 
-<p>If you’re familiar with command-line installation shortcuts, you might have come across commands like this one:</p><pre><code>powershell -c "irm bun.sh/install.ps1 | iex"
-</code></pre><p>At first glance, it’s a slick, efficient way to install software—but what’s really happening under the hood? This guide will break down this PowerShell one-liner, highlight some <strong>important security considerations</strong>, and explore a few <strong>additional points</strong> you may not have thought about. Let’s dive in!</p><h3 id="understanding-the-command-in-pieces">Understanding the Command in Pieces</h3><p>To get a full picture, let’s break down the command piece by piece.</p><ol><li><strong><code>powershell -c</code></strong><br>This tells your system to run <strong>PowerShell in command mode</strong> (<code>-c</code> stands for "command"). PowerShell will then interpret whatever command follows the <code>-c</code> flag as if it were typed directly into a PowerShell terminal.</li><li><strong><code>irm</code> (Short for <code>Invoke-RestMethod</code>)</strong><br><code>Invoke-RestMethod</code>, or <code>irm</code>, is a PowerShell command used to make HTTP and HTTPS requests. When we write <code>irm bun.sh/install.ps1</code>, it’s essentially <strong>downloading a script file</strong> from <code>https://bun.sh/install.ps1</code>. Think of it like using <code>curl</code> or <code>wget</code> in Linux: <code>irm</code> fetches the file from the URL, which is then available to PowerShell as raw text.</li><li><code><strong>| iex</strong></code> (Short for <code>Invoke-Expression</code>)<br>The <strong>pipe symbol (<code>|</code>)</strong> passes the output of one command as input to another. In this case, the output of <code>irm bun.sh/install.ps1</code> is piped to <code>iex</code>, which stands for <code>Invoke-Expression</code>. <code>Invoke-Expression</code> <strong>runs any code it receives</strong>, meaning it will interpret the downloaded script as executable PowerShell code. So whatever is in <code>install.ps1</code> will be executed immediately after it’s downloaded.</li></ol><h3 id="why-use-this-command">Why Use This Command?</h3><p>The main appeal of using a command like this is <strong>simplicity</strong>. Instead of manually downloading and executing a script, a single line does it all—ideal for quick setups and installations. Developers often use this method to make installations frictionless, especially for open-source tools and smaller utilities.</p><h3 id="key-considerations-the-security-implications">Key Considerations: The Security Implications</h3><p>While this one-liner is convenient, it’s also a <strong>security risk</strong>. By downloading and immediately executing a script from a remote URL, you’re essentially <strong>giving full control to whatever code is hosted at that URL</strong>. Here are a few points to keep in mind:</p><ul><li><strong>Trustworthiness of the Source</strong><br>Always verify that the source is reputable. For example, if the URL is from the official website or GitHub repository of a well-known tool, it’s generally safer than an obscure source. In this case, make sure <code>bun.sh</code> is a trusted domain before executing anything from it.</li><li><strong>Review the Script Content</strong><br>Ideally, you should download and inspect scripts before running them. This extra step can help prevent malicious code from running on your system. Here’s how you could manually review the script:</li></ul><pre><code>irm https://bun.sh/install.ps1 -OutFile install.ps1
-notepad install.ps1
-</code></pre><p>After inspecting the script, you can run it using <code>iex</code> or directly in PowerShell.</p><ul><li><strong>Avoid Running as Admin Unless Necessary</strong><br>For most installations, you don’t need administrator privileges, so <strong>avoid running PowerShell as Administrator</strong> unless explicitly required by the installation instructions. Running as Admin opens the door for greater system access, which can be dangerous if the script has malicious intent.</li></ul><h3 id="other-important-points-to-consider">Other Important Points to Consider</h3><p>There are some other best practices and tips to keep in mind:</p><ul><li><strong>Network Security Tools and Restrictions</strong><br>Some organizations and networks restrict or monitor scripts executed over the internet. If you’re using this in a professional setting, be aware that this command might be flagged or blocked by security software, as it downloads and runs remote scripts.</li><li><strong>PowerShell Execution Policies</strong><br>Windows has built-in <strong>execution policies</strong> that govern the types of scripts that can be run. For example, the <code>Restricted</code> policy prevents any script from running, while <code>RemoteSigned</code> allows only signed scripts to be executed. Running <code>iex</code> may sometimes bypass these policies, which can be both a benefit and a risk.You can check your current execution policy by running:</li></ul><pre><code>Get-ExecutionPolicy
-</code></pre><p>And if necessary, you can adjust it temporarily with:</p><pre><code>Set-ExecutionPolicy Bypass -Scope Process
-</code></pre><ul><li><strong>PowerShell Version Compatibility</strong><br>Make sure you’re using a compatible version of PowerShell. Some commands, including <code>Invoke-RestMethod</code>, may not be available on older PowerShell versions (pre-PowerShell 3.0), so check your version if you encounter issues. You can check your PowerShell version with:</li></ul><pre><code>$PSVersionTable.PSVersion
-</code></pre><h3 id="alternatives-to-iex-piping">Alternatives to <code>iex</code> Piping</h3><p>If you want a bit more control, consider downloading the script and running it separately:</p><ol><li><strong>Download the Script First</strong></li></ol><pre><code>irm https://bun.sh/install.ps1 -OutFile install.ps1
-</code></pre><ol start="2"><li><strong>Review the Script</strong><br>Open <code>install.ps1</code> in any text editor to inspect it.</li><li><strong>Run the Script</strong><br>Once you’ve confirmed it’s safe, execute it manually:</li></ol><pre><code>.\install.ps1
-</code></pre><p>This approach is slightly longer but offers an extra layer of security by separating download and execution.</p><h3 id="finally-balancing-convenience-and-security">Finally: Balancing Convenience and Security</h3><p>The one-liner <code>powershell -c "irm bun.sh/install.ps1 | iex"</code> provides a <strong>fast and efficient installation method</strong> for PowerShell users, especially when you’re installing trusted software. However, the <strong>convenience of downloading and executing a script directly</strong> comes with risks. Make sure you trust the source, inspect scripts when possible, and avoid running commands like this with elevated privileges unless absolutely necessary.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you’re familiar with command-line installation shortcuts, you might have come across commands like this one:
 
+```
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+At first glance, it’s a slick, efficient way to install software—but what’s really happening under the hood? This guide will break down this PowerShell one-liner, highlight some **important security considerations**, and explore a few **additional points** you may not have thought about. Let’s dive in!
+
+### Understanding the Command in Pieces
+
+To get a full picture, let’s break down the command piece by piece.
+
+1.  **`powershell -c`**  
+    This tells your system to run **PowerShell in command mode** (`-c` stands for "command"). PowerShell will then interpret whatever command follows the `-c` flag as if it were typed directly into a PowerShell terminal.
+2.  **`irm` (Short for `Invoke-RestMethod`)**  
+    `Invoke-RestMethod`, or `irm`, is a PowerShell command used to make HTTP and HTTPS requests. When we write `irm bun.sh/install.ps1`, it’s essentially **downloading a script file** from `https://bun.sh/install.ps1`. Think of it like using `curl` or `wget` in Linux: `irm` fetches the file from the URL, which is then available to PowerShell as raw text.
+3.  `**| iex**` (Short for `Invoke-Expression`)  
+    The **pipe symbol (`|`)** passes the output of one command as input to another. In this case, the output of `irm bun.sh/install.ps1` is piped to `iex`, which stands for `Invoke-Expression`. `Invoke-Expression` **runs any code it receives**, meaning it will interpret the downloaded script as executable PowerShell code. So whatever is in `install.ps1` will be executed immediately after it’s downloaded.
+
+### Why Use This Command?
+
+The main appeal of using a command like this is **simplicity**. Instead of manually downloading and executing a script, a single line does it all—ideal for quick setups and installations. Developers often use this method to make installations frictionless, especially for open-source tools and smaller utilities.
+
+### Key Considerations: The Security Implications
+
+While this one-liner is convenient, it’s also a **security risk**. By downloading and immediately executing a script from a remote URL, you’re essentially **giving full control to whatever code is hosted at that URL**. Here are a few points to keep in mind:
+
+-   **Trustworthiness of the Source**  
+    Always verify that the source is reputable. For example, if the URL is from the official website or GitHub repository of a well-known tool, it’s generally safer than an obscure source. In this case, make sure `bun.sh` is a trusted domain before executing anything from it.
+-   **Review the Script Content**  
+    Ideally, you should download and inspect scripts before running them. This extra step can help prevent malicious code from running on your system. Here’s how you could manually review the script:
+
+```
+irm https://bun.sh/install.ps1 -OutFile install.ps1
+notepad install.ps1
+```
+
+After inspecting the script, you can run it using `iex` or directly in PowerShell.
+
+-   **Avoid Running as Admin Unless Necessary**  
+    For most installations, you don’t need administrator privileges, so **avoid running PowerShell as Administrator** unless explicitly required by the installation instructions. Running as Admin opens the door for greater system access, which can be dangerous if the script has malicious intent.
+
+### Other Important Points to Consider
+
+There are some other best practices and tips to keep in mind:
+
+-   **Network Security Tools and Restrictions**  
+    Some organizations and networks restrict or monitor scripts executed over the internet. If you’re using this in a professional setting, be aware that this command might be flagged or blocked by security software, as it downloads and runs remote scripts.
+-   **PowerShell Execution Policies**  
+    Windows has built-in **execution policies** that govern the types of scripts that can be run. For example, the `Restricted` policy prevents any script from running, while `RemoteSigned` allows only signed scripts to be executed. Running `iex` may sometimes bypass these policies, which can be both a benefit and a risk.You can check your current execution policy by running:
+
+```
+Get-ExecutionPolicy
+```
+
+And if necessary, you can adjust it temporarily with:
+
+```
+Set-ExecutionPolicy Bypass -Scope Process
+```
+
+-   **PowerShell Version Compatibility**  
+    Make sure you’re using a compatible version of PowerShell. Some commands, including `Invoke-RestMethod`, may not be available on older PowerShell versions (pre-PowerShell 3.0), so check your version if you encounter issues. You can check your PowerShell version with:
+
+```
+$PSVersionTable.PSVersion
+```
+
+### Alternatives to `iex` Piping
+
+If you want a bit more control, consider downloading the script and running it separately:
+
+1.  **Download the Script First**
+
+```
+irm https://bun.sh/install.ps1 -OutFile install.ps1
+```
+
+2.  **Review the Script**  
+    Open `install.ps1` in any text editor to inspect it.
+3.  **Run the Script**  
+    Once you’ve confirmed it’s safe, execute it manually:
+
+```
+.\install.ps1
+```
+
+This approach is slightly longer but offers an extra layer of security by separating download and execution.
+
+### Finally: Balancing Convenience and Security
+
+The one-liner `powershell -c "irm bun.sh/install.ps1 | iex"` provides a **fast and efficient installation method** for PowerShell users, especially when you’re installing trusted software. However, the **convenience of downloading and executing a script directly** comes with risks. Make sure you trust the source, inspect scripts when possible, and avoid running commands like this with elevated privileges unless absolutely necessary.

@@ -5,13 +5,78 @@ description: "Upgrading your Ubuntu operating system to the latest Long-Term Sup
 tags: ["bash","linux","security","performance","productivity"]
 ---
 
-<p>Upgrading your Ubuntu operating system to the latest Long-Term Support (LTS) version is crucial for maintaining <strong>security, stability, and access to new features</strong>. Thankfully, Ubuntu offers a straightforward tool—<code>do-release-upgrade</code>—that streamlines the upgrade process from one LTS version to the next. This guide will walk you through the process, offering useful tips and troubleshooting advice to ensure your upgrade goes smoothly.</p><h3 id="why-upgrade-with-do-release-upgrade">Why Upgrade with do-release-upgrade?</h3><p>The <code>do-release-upgrade</code> command is specifically designed for <strong>major version upgrades</strong>, such as moving from Ubuntu 16.04 LTS to 18.04 LTS. This tool handles package management gracefully, ensuring dependencies are addressed and that your system remains stable throughout the process. Using this tool is highly recommended over simply updating individual packages, as it is optimized to handle the complexities of system-wide version transitions.</p><h3 id="preparing-for-the-upgrade">Preparing for the Upgrade</h3><p>Before initiating the upgrade, it’s essential to <strong>update your current system</strong> to ensure compatibility. This can be done by running:</p><pre><code class="language-bash">sudo apt-get update &amp;&amp; sudo apt-get upgrade
-</code></pre><p>This command updates the package list and installs the latest versions of your installed packages, ensuring a clean starting point for the upgrade.</p><h3 id="ensuring-you-have-the-necessary-tool-update-manager-core">Ensuring You Have the Necessary Tool: <code>update-manager-core</code></h3><p>The <code>do-release-upgrade</code> tool is part of the <code>update-manager-core</code> package, which is typically pre-installed on Ubuntu systems. However, if you encounter a “command not found” error when attempting to run <code>do-release-upgrade</code>, it’s likely that <code>update-manager-core</code> is missing. You can install it with:</p><pre><code class="language-bash">sudo apt-get install update-manager-core
-</code></pre><h3 id="starting-the-upgrade-process">Starting the Upgrade Process</h3><p>With everything in place, you can begin the upgrade by running:</p><pre><code class="language-bash">sudo do-release-upgrade
-</code></pre><p>This command will automatically detect if a newer LTS version is available and initiate the upgrade process. You will be prompted to confirm certain actions, such as removing outdated packages and upgrading existing ones.</p><p><strong>Pro Tip:</strong> Run this command from a <strong>terminal session that supports reconnection</strong> (e.g., <code>screen</code> or <code>tmux</code>) if you’re upgrading remotely. This will prevent the upgrade from interrupting if your connection drops.</p><h3 id="addressing-potential-issues-and-prompts">Addressing Potential Issues and Prompts</h3><p>As the upgrade progresses, <code>do-release-upgrade</code> may prompt you to make decisions about <strong>updating configuration files</strong>. Here are some pointers:</p><ul><li><strong>Configuration Files</strong>: If you have customized configuration files, you’ll be prompted to choose between keeping your current versions or overwriting them with new ones. Carefully review these prompts; keeping existing configurations might be preferable for services where you’ve made custom adjustments.</li><li><strong>Outdated Packages</strong>: During the upgrade, obsolete packages that are no longer supported in the new release might be marked for removal. Generally, it’s safe to agree to this removal, as these packages are often no longer compatible with the upgraded system.</li></ul><h3 id="finalizing-the-upgrade-with-a-system-reboot">Finalizing the Upgrade with a System Reboot</h3><p>Once the upgrade completes, it’s essential to reboot your system to fully apply all changes and ensure all services are running correctly. This can be done with:</p><pre><code class="language-bash">sudo reboot
-</code></pre><h3 id="post-upgrade-checks-and-maintenance">Post-Upgrade Checks and Maintenance</h3><p>After the reboot, it’s wise to perform some <strong>post-upgrade maintenance</strong> to confirm that everything is functioning smoothly:</p><ol><li><strong>Verify Software and Services</strong>: Check that critical services are running as expected. You can use <code>systemctl status &lt;service-name&gt;</code> to inspect specific services.</li><li><strong>Check for Residual Configuration Files</strong>: Sometimes, old configurations can linger. To clean them up, use:</li></ol><pre><code class="language-bash">sudo apt-get autoremove
-</code></pre><ol start="3"><li><strong>Update Package Sources</strong>: After upgrading, some third-party repositories (PPAs) might need to be updated to versions compatible with the new Ubuntu release.</li></ol><h3 id="troubleshooting-tips">Troubleshooting Tips</h3><p>If you encounter issues during or after the upgrade, here are a few steps that may help:</p><ul><li><strong>Review Logs</strong>: Upgrade logs, often found in <code>/var/log/dist-upgrade/</code>, can provide insight into errors.</li><li><strong>Fix Broken Dependencies</strong>: If you find some packages didn’t install properly, running <code>sudo apt-get -f install</code> can often resolve these issues.</li><li><strong>Consider a Dry Run</strong>: If you’re concerned about potential issues, running <code>do-release-upgrade</code> with the <code>-d</code> flag initiates a dry run, allowing you to preview actions without committing.</li></ul><h3 id="finally">Finally</h3><p>Upgrading Ubuntu with <code>do-release-upgrade</code> is a powerful way to keep your system <strong>secure and up-to-date</strong> while minimizing the risks associated with major OS changes. By carefully preparing your system, keeping configurations in mind, and addressing prompts thoughtfully, you can make this upgrade smooth and effective. With each new LTS release, Ubuntu brings significant improvements in performance, security, and functionality, making it well worth the time spent on a careful, guided upgrade.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+Upgrading your Ubuntu operating system to the latest Long-Term Support (LTS) version is crucial for maintaining **security, stability, and access to new features**. Thankfully, Ubuntu offers a straightforward tool—`do-release-upgrade`—that streamlines the upgrade process from one LTS version to the next. This guide will walk you through the process, offering useful tips and troubleshooting advice to ensure your upgrade goes smoothly.
 
+### Why Upgrade with do-release-upgrade?
+
+The `do-release-upgrade` command is specifically designed for **major version upgrades**, such as moving from Ubuntu 16.04 LTS to 18.04 LTS. This tool handles package management gracefully, ensuring dependencies are addressed and that your system remains stable throughout the process. Using this tool is highly recommended over simply updating individual packages, as it is optimized to handle the complexities of system-wide version transitions.
+
+### Preparing for the Upgrade
+
+Before initiating the upgrade, it’s essential to **update your current system** to ensure compatibility. This can be done by running:
+
+```bash
+sudo apt-get update && sudo apt-get upgrade
+```
+
+This command updates the package list and installs the latest versions of your installed packages, ensuring a clean starting point for the upgrade.
+
+### Ensuring You Have the Necessary Tool: `update-manager-core`
+
+The `do-release-upgrade` tool is part of the `update-manager-core` package, which is typically pre-installed on Ubuntu systems. However, if you encounter a “command not found” error when attempting to run `do-release-upgrade`, it’s likely that `update-manager-core` is missing. You can install it with:
+
+```bash
+sudo apt-get install update-manager-core
+```
+
+### Starting the Upgrade Process
+
+With everything in place, you can begin the upgrade by running:
+
+```bash
+sudo do-release-upgrade
+```
+
+This command will automatically detect if a newer LTS version is available and initiate the upgrade process. You will be prompted to confirm certain actions, such as removing outdated packages and upgrading existing ones.
+
+**Pro Tip:** Run this command from a **terminal session that supports reconnection** (e.g., `screen` or `tmux`) if you’re upgrading remotely. This will prevent the upgrade from interrupting if your connection drops.
+
+### Addressing Potential Issues and Prompts
+
+As the upgrade progresses, `do-release-upgrade` may prompt you to make decisions about **updating configuration files**. Here are some pointers:
+
+-   **Configuration Files**: If you have customized configuration files, you’ll be prompted to choose between keeping your current versions or overwriting them with new ones. Carefully review these prompts; keeping existing configurations might be preferable for services where you’ve made custom adjustments.
+-   **Outdated Packages**: During the upgrade, obsolete packages that are no longer supported in the new release might be marked for removal. Generally, it’s safe to agree to this removal, as these packages are often no longer compatible with the upgraded system.
+
+### Finalizing the Upgrade with a System Reboot
+
+Once the upgrade completes, it’s essential to reboot your system to fully apply all changes and ensure all services are running correctly. This can be done with:
+
+```bash
+sudo reboot
+```
+
+### Post-Upgrade Checks and Maintenance
+
+After the reboot, it’s wise to perform some **post-upgrade maintenance** to confirm that everything is functioning smoothly:
+
+1.  **Verify Software and Services**: Check that critical services are running as expected. You can use `systemctl status <service-name>` to inspect specific services.
+2.  **Check for Residual Configuration Files**: Sometimes, old configurations can linger. To clean them up, use:
+
+```bash
+sudo apt-get autoremove
+```
+
+3.  **Update Package Sources**: After upgrading, some third-party repositories (PPAs) might need to be updated to versions compatible with the new Ubuntu release.
+
+### Troubleshooting Tips
+
+If you encounter issues during or after the upgrade, here are a few steps that may help:
+
+-   **Review Logs**: Upgrade logs, often found in `/var/log/dist-upgrade/`, can provide insight into errors.
+-   **Fix Broken Dependencies**: If you find some packages didn’t install properly, running `sudo apt-get -f install` can often resolve these issues.
+-   **Consider a Dry Run**: If you’re concerned about potential issues, running `do-release-upgrade` with the `-d` flag initiates a dry run, allowing you to preview actions without committing.
+
+### Finally
+
+Upgrading Ubuntu with `do-release-upgrade` is a powerful way to keep your system **secure and up-to-date** while minimizing the risks associated with major OS changes. By carefully preparing your system, keeping configurations in mind, and addressing prompts thoughtfully, you can make this upgrade smooth and effective. With each new LTS release, Ubuntu brings significant improvements in performance, security, and functionality, making it well worth the time spent on a careful, guided upgrade.

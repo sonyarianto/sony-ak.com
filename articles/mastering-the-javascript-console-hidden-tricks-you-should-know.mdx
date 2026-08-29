@@ -5,17 +5,115 @@ description: "The JavaScript Console in your browser's DevTools is a powerful to
 tags: ["javascript","css","html","api","debugging"]
 ---
 
-<p>The <strong>JavaScript Console</strong> in your browser's DevTools is a powerful tool that goes beyond just logging messages. If you're a developer, you can speed up debugging and DOM manipulation with a few <strong>handy shortcuts</strong>. Here are some essential JavaScript console tips that will make your workflow smoother.</p><h2 id="1-%E2%80%93-shorthand-for-documentqueryselector">1. <code>$()</code> – Shorthand for <code>document.querySelector()</code></h2><p>If you're tired of writing <code>document.querySelector()</code>, good news: Chrome DevTools provides <strong><code>$()</code> as a shortcut</strong>.</p><p><strong>Example:</strong></p><pre><code class="language-js">$('h1') // Selects the first &lt;h1&gt; element
-</code></pre><p>This works exactly like <code>document.querySelector('h1')</code>, making it easier to grab elements quickly.</p><h2 id="2-%E2%80%93-shorthand-for-documentqueryselectorall">2. <code>$$()</code> – Shorthand for <code>document.querySelectorAll()</code></h2><p>Need to select multiple elements? Use <strong><code>$$()</code> instead of <code>document.querySelectorAll()</code></strong>. It returns an array-like <code>NodeList</code>.</p><p><strong>Example:</strong></p><pre><code class="language-js">$$('p') // Selects all &lt;p&gt; elements on the page
-</code></pre><p>This is useful for quick debugging when you need to see all elements of a specific type.</p><h2 id="3-0-%E2%86%92-4-%E2%80%93-access-recently-selected-elements">3. <code>$0 → $4</code> – Access Recently Selected Elements</h2><p>While working with the <strong>Elements panel</strong>, DevTools keeps track of the last <strong>five</strong> elements you clicked on. You can access them using:</p><ul><li><strong><code>$0</code></strong> – The most recently selected element.</li><li><strong><code>$1</code></strong> – The second last selected element.</li><li><strong><code>$2</code></strong> to <strong><code>$4</code></strong> – Older selections.</li></ul><p><strong>Example:</strong></p><pre><code class="language-js">console.log($0) // Logs the last selected element
-</code></pre><p>This is incredibly useful when debugging styles or JavaScript interactions without manually reselecting elements.</p><h2 id="4-%E2%80%93-access-the-last-evaluated-expression-result">4. <code>$_</code> – Access the Last Evaluated Expression Result</h2><p>Sometimes, you execute a command and realize you need the result again. Instead of retyping, use <strong><code>$_</code></strong>, which stores the last evaluated expression.</p><p><strong>Example:</strong></p><pre><code class="language-js">5 + 10
-$_ // Returns 15
-</code></pre><p>This is helpful for quickly reusing calculations or function outputs.</p><hr><h2 id="5-consoletable-%E2%80%93-display-data-in-a-table-format">5. <code>console.table()</code> – Display Data in a Table Format</h2><p>If you’re working with arrays or objects, use <strong><code>console.table()</code></strong> for a cleaner display.</p><p><strong>Example:</strong></p><pre><code class="language-js">console.table([{name: 'Alice', age: 25}, {name: 'Bob', age: 30}]);
-</code></pre><p>This prints data in a structured table instead of a collapsed object format.</p><h2 id="6-copy-%E2%80%93-copy-data-to-clipboard">6. <code>copy()</code> – Copy Data to Clipboard</h2><p>Want to copy text or an object from the console to your clipboard? Use <strong><code>copy()</code></strong>.</p><p><strong>Example:</strong></p><pre><code class="language-js">copy($0) // Copies the last selected element's HTML to clipboard
-</code></pre><p>This is useful for extracting large text blocks or copying API responses.</p><h2 id="7-debug-%E2%80%93-pause-execution-in-a-function">7. <code>debug()</code> – Pause Execution in a Function</h2><p>If you want to inspect a function while it's running, use <strong><code>debug(functionName)</code></strong> to trigger a <strong>breakpoint</strong> automatically.</p><p><strong>Example:</strong></p><pre><code class="language-js">debug(myFunction) // Execution will pause inside `myFunction` when called
-</code></pre><p>This is like manually adding <code>debugger;</code> inside your function but without modifying the code.</p><h2 id="8-x-%E2%80%93-use-xpath-to-select-elements">8. <code>$x()</code> – Use XPath to Select Elements</h2><p>If CSS selectors are not enough, you can use <strong>XPath</strong> via <code>$x()</code>.</p><p><strong>Example:</strong></p><pre><code class="language-js">$x("//button[text()='Submit']") // Selects the button with text 'Submit'
-</code></pre><p>This is powerful when dealing with complex DOM structures.</p><hr><h2 id="finally">Finally</h2><p>The <strong>JavaScript console is more than just <code>console.log()</code></strong>. These shortcuts can significantly improve your debugging speed and efficiency. Try them out in DevTools and start working <strong>smarter, not harder</strong>!</p><p>Do you know any other console tricks? Share them in the comments!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+The **JavaScript Console** in your browser's DevTools is a powerful tool that goes beyond just logging messages. If you're a developer, you can speed up debugging and DOM manipulation with a few **handy shortcuts**. Here are some essential JavaScript console tips that will make your workflow smoother.
 
+## 1\. `$()` – Shorthand for `document.querySelector()`
+
+If you're tired of writing `document.querySelector()`, good news: Chrome DevTools provides **`$()` as a shortcut**.
+
+**Example:**
+
+```js
+$('h1') // Selects the first <h1> element
+```
+
+This works exactly like `document.querySelector('h1')`, making it easier to grab elements quickly.
+
+## 2\. `$$()` – Shorthand for `document.querySelectorAll()`
+
+Need to select multiple elements? Use **`$$()` instead of `document.querySelectorAll()`**. It returns an array-like `NodeList`.
+
+**Example:**
+
+```js
+$$('p') // Selects all <p> elements on the page
+```
+
+This is useful for quick debugging when you need to see all elements of a specific type.
+
+## 3\. `$0 → $4` – Access Recently Selected Elements
+
+While working with the **Elements panel**, DevTools keeps track of the last **five** elements you clicked on. You can access them using:
+
+-   **`$0`** – The most recently selected element.
+-   **`$1`** – The second last selected element.
+-   **`$2`** to **`$4`** – Older selections.
+
+**Example:**
+
+```js
+console.log($0) // Logs the last selected element
+```
+
+This is incredibly useful when debugging styles or JavaScript interactions without manually reselecting elements.
+
+## 4\. `$_` – Access the Last Evaluated Expression Result
+
+Sometimes, you execute a command and realize you need the result again. Instead of retyping, use **`$_`**, which stores the last evaluated expression.
+
+**Example:**
+
+```js
+5 + 10
+$_ // Returns 15
+```
+
+This is helpful for quickly reusing calculations or function outputs.
+
+* * *
+
+## 5\. `console.table()` – Display Data in a Table Format
+
+If you’re working with arrays or objects, use **`console.table()`** for a cleaner display.
+
+**Example:**
+
+```js
+console.table([{name: 'Alice', age: 25}, {name: 'Bob', age: 30}]);
+```
+
+This prints data in a structured table instead of a collapsed object format.
+
+## 6\. `copy()` – Copy Data to Clipboard
+
+Want to copy text or an object from the console to your clipboard? Use **`copy()`**.
+
+**Example:**
+
+```js
+copy($0) // Copies the last selected element's HTML to clipboard
+```
+
+This is useful for extracting large text blocks or copying API responses.
+
+## 7\. `debug()` – Pause Execution in a Function
+
+If you want to inspect a function while it's running, use **`debug(functionName)`** to trigger a **breakpoint** automatically.
+
+**Example:**
+
+```js
+debug(myFunction) // Execution will pause inside `myFunction` when called
+```
+
+This is like manually adding `debugger;` inside your function but without modifying the code.
+
+## 8\. `$x()` – Use XPath to Select Elements
+
+If CSS selectors are not enough, you can use **XPath** via `$x()`.
+
+**Example:**
+
+```js
+$x("//button[text()='Submit']") // Selects the button with text 'Submit'
+```
+
+This is powerful when dealing with complex DOM structures.
+
+* * *
+
+## Finally
+
+The **JavaScript console is more than just `console.log()`**. These shortcuts can significantly improve your debugging speed and efficiency. Try them out in DevTools and start working **smarter, not harder**!
+
+Do you know any other console tricks? Share them in the comments!

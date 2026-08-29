@@ -5,8 +5,42 @@ description: "If you’re using Visual Studio Code Insiders and the GitHub Copil
 tags: ["api","open-source"]
 ---
 
-<p>If you’re using <strong>Visual Studio Code Insiders</strong> and the <strong>GitHub Copilot Chat</strong> extension, you may have encountered an error message that says something like this:</p><blockquote><em>"This extension is using the API proposal 'lmTools' that is not compatible with the current version of VS Code."</em></blockquote><p>Don’t worry, it’s a common issue that happens when extensions rely on <strong>experimental or proposed APIs</strong> that might not yet be fully supported in your current version of VS Code Insiders.</p><p>If you're just starting out with VS Code Insiders, it might seem confusing at first, but here's the good news: there’s usually a simple fix, and I’ll walk you through it.</p><h3 id="why-the-error-happens">Why the Error Happens</h3><p>The <strong>Insiders version of VS Code</strong> gives you early access to new features that aren't yet available in the stable release. Extensions like <strong>GitHub Copilot Chat</strong> are often at the cutting edge, using APIs that are still in the proposal phase. These APIs (in this case, the <code>lmTools</code> API) are experimental, meaning they may not work out-of-the-box unless you take a few extra steps.</p><h3 id="how-to-fix-it">How to Fix It</h3><p>When I ran into this error, the fix was straightforward: <strong>switching to the pre-release version of the GitHub Copilot Chat extension</strong>. Here's what I did:</p><ol><li>Open the <strong>Extensions</strong> panel in VS Code Insiders.</li><li>Search for the <strong>GitHub Copilot Chat</strong> extension.</li><li>You’ll see an option to <strong>“Switch to Pre-release Version”</strong>. Clicking on that allowed me to start using the extension without issues.</li></ol><p>The reason this works is that pre-release versions of extensions are usually designed to work with the latest experimental features of VS Code, including proposed APIs like <code>lmTools</code>. By using the pre-release version, you’re getting access to a version of the extension that’s specifically built to handle the changes in the Insiders build.</p><h3 id="keep-your-vs-code-insiders-updated">Keep Your VS Code Insiders Updated</h3><p>One thing to keep in mind is that <strong>VS Code Insiders is constantly being updated</strong>. New builds are pushed out frequently, sometimes even daily, which means you could get new features (or bug fixes) regularly. Keeping your <strong>VS Code Insiders</strong> up to date will help avoid compatibility issues like this in the future.</p><h3 id="why-use-vs-code-insiders">Why Use VS Code Insiders?</h3><p>You might wonder, if the Insiders build has these types of issues, <strong>why use it in the first place?</strong> The Insiders build is fantastic if you love being on the cutting edge of technology. It lets you try new features long before they make it to the stable release, and for developers working with tools like <strong>GitHub Copilot Chat</strong>, it's often necessary because those extensions rely on the latest APIs.</p><p>However, keep in mind that with cutting-edge features comes the risk of encountering bugs or incompatibilities, like the <code>lmTools</code> API error.</p><h3 id="finally">Finally</h3><p>If you're new to <strong>VS Code Insiders</strong> and run into this type of issue, it’s usually nothing to stress about. The <strong>pre-release version</strong> of the extension is often the key to solving it, and it only takes a few clicks to get everything working smoothly again.</p><p>By staying on top of updates and knowing how to switch versions or enable experimental features, you'll be better prepared to handle any future hiccups. And, of course, if you're ever unsure, the <strong>VS Code community</strong> is full of helpful resources to guide you through.</p><p>Just remember to keep your <strong>VS Code Insiders</strong> up to date, and don't be afraid to try <strong>pre-release</strong> versions of extensions when you run into compatibility issues. It's all part of the adventure of working on the cutting edge!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you’re using **Visual Studio Code Insiders** and the **GitHub Copilot Chat** extension, you may have encountered an error message that says something like this:
 
+> _"This extension is using the API proposal 'lmTools' that is not compatible with the current version of VS Code."_
+
+Don’t worry, it’s a common issue that happens when extensions rely on **experimental or proposed APIs** that might not yet be fully supported in your current version of VS Code Insiders.
+
+If you're just starting out with VS Code Insiders, it might seem confusing at first, but here's the good news: there’s usually a simple fix, and I’ll walk you through it.
+
+### Why the Error Happens
+
+The **Insiders version of VS Code** gives you early access to new features that aren't yet available in the stable release. Extensions like **GitHub Copilot Chat** are often at the cutting edge, using APIs that are still in the proposal phase. These APIs (in this case, the `lmTools` API) are experimental, meaning they may not work out-of-the-box unless you take a few extra steps.
+
+### How to Fix It
+
+When I ran into this error, the fix was straightforward: **switching to the pre-release version of the GitHub Copilot Chat extension**. Here's what I did:
+
+1.  Open the **Extensions** panel in VS Code Insiders.
+2.  Search for the **GitHub Copilot Chat** extension.
+3.  You’ll see an option to **“Switch to Pre-release Version”**. Clicking on that allowed me to start using the extension without issues.
+
+The reason this works is that pre-release versions of extensions are usually designed to work with the latest experimental features of VS Code, including proposed APIs like `lmTools`. By using the pre-release version, you’re getting access to a version of the extension that’s specifically built to handle the changes in the Insiders build.
+
+### Keep Your VS Code Insiders Updated
+
+One thing to keep in mind is that **VS Code Insiders is constantly being updated**. New builds are pushed out frequently, sometimes even daily, which means you could get new features (or bug fixes) regularly. Keeping your **VS Code Insiders** up to date will help avoid compatibility issues like this in the future.
+
+### Why Use VS Code Insiders?
+
+You might wonder, if the Insiders build has these types of issues, **why use it in the first place?** The Insiders build is fantastic if you love being on the cutting edge of technology. It lets you try new features long before they make it to the stable release, and for developers working with tools like **GitHub Copilot Chat**, it's often necessary because those extensions rely on the latest APIs.
+
+However, keep in mind that with cutting-edge features comes the risk of encountering bugs or incompatibilities, like the `lmTools` API error.
+
+### Finally
+
+If you're new to **VS Code Insiders** and run into this type of issue, it’s usually nothing to stress about. The **pre-release version** of the extension is often the key to solving it, and it only takes a few clicks to get everything working smoothly again.
+
+By staying on top of updates and knowing how to switch versions or enable experimental features, you'll be better prepared to handle any future hiccups. And, of course, if you're ever unsure, the **VS Code community** is full of helpful resources to guide you through.
+
+Just remember to keep your **VS Code Insiders** up to date, and don't be afraid to try **pre-release** versions of extensions when you run into compatibility issues. It's all part of the adventure of working on the cutting edge!

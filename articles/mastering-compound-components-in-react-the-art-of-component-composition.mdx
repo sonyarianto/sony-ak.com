@@ -5,20 +5,70 @@ description: "If you’ve spent some time working with React, chances are you’
 tags: ["javascript","typescript","react","api","testing"]
 ---
 
-<p>If you’ve spent some time working with React, chances are you’ve come across a syntax like <code>Form.Input</code> or <code>Menu.Item</code>. It may look a little unusual at first, but it represents a powerful pattern known as the <strong>Compound Component</strong>. This design pattern enables developers to build <strong>highly flexible and expressive component APIs</strong>, particularly useful for building design systems or UI libraries.</p><p>In this article, we’ll explore what compound components are, why they matter, how to implement them, and a few <strong>gotchas</strong> to keep in mind along the way.</p><hr><h2 id="what-are-compound-components"><strong>What Are Compound Components?</strong></h2><p>In essence, <strong>compound components</strong> are a set of components that work together as a <strong>unified abstraction</strong>, often sharing internal logic or state. Instead of scattering related components everywhere and hoping users will wire them up correctly, you encapsulate the relationship <strong>within a parent component</strong>.</p><p>Think of it like this:</p><pre><code class="language-jsx">&lt;Form&gt;
-  &lt;Form.Label&gt;Email&lt;/Form.Label&gt;
-  &lt;Form.Input type="email" /&gt;
-&lt;/Form&gt;
-</code></pre><p>Here, <code>Form.Label</code> and <code>Form.Input</code> aren’t separate components imported from different files. They are <strong>attached to the <code>Form</code> component itself</strong>. This makes it clear that these pieces belong together — they are part of the same conceptual “form unit.”</p><hr><h2 id="why-use-compound-components"><strong>Why Use Compound Components?</strong></h2><h3 id="%E2%9C%85-better-api-design">✅ <strong>Better API Design</strong></h3><p>Attaching subcomponents to a parent creates a <strong>cohesive namespace</strong> that makes the API more readable and intuitive.</p><pre><code class="language-jsx">// Better than this:
+If you’ve spent some time working with React, chances are you’ve come across a syntax like `Form.Input` or `Menu.Item`. It may look a little unusual at first, but it represents a powerful pattern known as the **Compound Component**. This design pattern enables developers to build **highly flexible and expressive component APIs**, particularly useful for building design systems or UI libraries.
+
+In this article, we’ll explore what compound components are, why they matter, how to implement them, and a few **gotchas** to keep in mind along the way.
+
+* * *
+
+## **What Are Compound Components?**
+
+In essence, **compound components** are a set of components that work together as a **unified abstraction**, often sharing internal logic or state. Instead of scattering related components everywhere and hoping users will wire them up correctly, you encapsulate the relationship **within a parent component**.
+
+Think of it like this:
+
+```jsx
+<Form>
+  <Form.Label>Email</Form.Label>
+  <Form.Input type="email" />
+</Form>
+```
+
+Here, `Form.Label` and `Form.Input` aren’t separate components imported from different files. They are **attached to the `Form` component itself**. This makes it clear that these pieces belong together — they are part of the same conceptual “form unit.”
+
+* * *
+
+## **Why Use Compound Components?**
+
+### ✅ **Better API Design**
+
+Attaching subcomponents to a parent creates a **cohesive namespace** that makes the API more readable and intuitive.
+
+```jsx
+// Better than this:
 import { FormLabel, FormInput } from "./components";
 
-&lt;FormLabel /&gt;
-&lt;FormInput /&gt;
-</code></pre><p>By using compound components:</p><pre><code class="language-jsx">&lt;Form&gt;
-  &lt;Form.Label /&gt;
-  &lt;Form.Input /&gt;
-&lt;/Form&gt;
-</code></pre><p>You clearly communicate <strong>hierarchy</strong> and <strong>responsibility</strong>.</p><h3 id="%E2%9C%85-logical-grouping">✅ <strong>Logical Grouping</strong></h3><p>It’s easier for other developers (or future-you) to <strong>discover available subcomponents</strong> without needing to search through docs or code. Just inspecting <code>Form.</code> gives you all related elements.</p><h3 id="%E2%9C%85-shared-state-logic">✅ <strong>Shared State &amp; Logic</strong></h3><p>Compound components often leverage <strong>React context</strong> internally to share state between the parent and children automatically. This removes the need to manually pass props like <code>value</code>, <code>onChange</code>, etc.</p><hr><h2 id="how-to-build-a-compound-component-in-react"><strong>How to Build a Compound Component in React</strong></h2><p>Let’s walk through a simple example using a <code>Tabs</code> component.</p><pre><code class="language-jsx">// Tabs.js
+<FormLabel />
+<FormInput />
+```
+
+By using compound components:
+
+```jsx
+<Form>
+  <Form.Label />
+  <Form.Input />
+</Form>
+```
+
+You clearly communicate **hierarchy** and **responsibility**.
+
+### ✅ **Logical Grouping**
+
+It’s easier for other developers (or future-you) to **discover available subcomponents** without needing to search through docs or code. Just inspecting `Form.` gives you all related elements.
+
+### ✅ **Shared State & Logic**
+
+Compound components often leverage **React context** internally to share state between the parent and children automatically. This removes the need to manually pass props like `value`, `onChange`, etc.
+
+* * *
+
+## **How to Build a Compound Component in React**
+
+Let’s walk through a simple example using a `Tabs` component.
+
+```jsx
+// Tabs.js
 import { createContext, useContext, useState } from 'react';
 
 const TabsContext = createContext();
@@ -26,14 +76,14 @@ const TabsContext = createContext();
 function Tabs({ children }) {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
-    &lt;TabsContext.Provider value={{ activeIndex, setActiveIndex }}&gt;
-      &lt;div className="tabs"&gt;{children}&lt;/div&gt;
-    &lt;/TabsContext.Provider&gt;
+    <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
+      <div className="tabs">{children}</div>
+    </TabsContext.Provider>
   );
 }
 
 function TabList({ children }) {
-  return &lt;div className="tab-list"&gt;{children}&lt;/div&gt;;
+  return <div className="tab-list">{children}</div>;
 }
 
 function Tab({ index, children }) {
@@ -41,18 +91,18 @@ function Tab({ index, children }) {
   const isActive = index === activeIndex;
 
   return (
-    &lt;button
+    <button
       className={isActive ? 'tab active' : 'tab'}
-      onClick={() =&gt; setActiveIndex(index)}
-    &gt;
+      onClick={() => setActiveIndex(index)}
+    >
       {children}
-    &lt;/button&gt;
+    </button>
   );
 }
 
 function TabPanel({ index, children }) {
   const { activeIndex } = useContext(TabsContext);
-  return activeIndex === index ? &lt;div className="tab-panel"&gt;{children}&lt;/div&gt; : null;
+  return activeIndex === index ? <div className="tab-panel">{children}</div> : null;
 }
 
 // Attach children
@@ -61,16 +111,57 @@ Tabs.Tab = Tab;
 Tabs.Panel = TabPanel;
 
 export default Tabs;
-</code></pre><h3 id="usage"><strong>Usage:</strong></h3><pre><code class="language-jsx">&lt;Tabs&gt;
-  &lt;Tabs.List&gt;
-    &lt;Tabs.Tab index={0}&gt;Home&lt;/Tabs.Tab&gt;
-    &lt;Tabs.Tab index={1}&gt;Profile&lt;/Tabs.Tab&gt;
-  &lt;/Tabs.List&gt;
-  &lt;Tabs.Panel index={0}&gt;Welcome Home!&lt;/Tabs.Panel&gt;
-  &lt;Tabs.Panel index={1}&gt;Your Profile&lt;/Tabs.Panel&gt;
-&lt;/Tabs&gt;
-</code></pre><hr><h2 id="gotchas-considerations"><strong>Gotchas &amp; Considerations</strong></h2><h3 id="%E2%9D%97-be-careful-with-props-drilling">❗ <strong>Be Careful with Props Drilling</strong></h3><p>If you don’t use React context, passing props manually between parent and subcomponents can become messy. Compound components shine when you combine them with <strong>context API</strong> to share logic cleanly.</p><h3 id="%E2%9D%97-testing-can-be-tricky">❗ <strong>Testing Can Be Tricky</strong></h3><p>When you nest components like <code>Form.Input</code>, your tests may require extra steps to import or reference subcomponents properly. A good workaround is to export subcomponents separately as well, in case they're needed independently.</p><h3 id="%E2%9D%97-intellisense-may-struggle">❗ <strong>Intellisense May Struggle</strong></h3><p>Depending on your editor or tooling, <strong>auto-completion for static properties</strong> (like <code>Form.Input</code>) may not always work out of the box. TypeScript users can manually declare static members on the parent component to fix this.</p><hr><h2 id="when-to-use-compound-components"><strong>When to Use Compound Components</strong></h2><p>Use this pattern when:</p><ul><li>You’re building <strong>design systems or UI libraries</strong></li><li>You need <strong>tight coordination</strong> between components</li><li>You want to provide a <strong>clear and discoverable API</strong></li><li>You’re working on <strong>composable abstractions</strong> like Tabs, Forms, Modals, etc.</li></ul><p>Avoid it if:</p><ul><li>The components are completely independent</li><li>You want to allow <strong>maximum flexibility</strong> or usage outside a specific structure</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>The <strong>Compound Component pattern</strong> is one of React's most elegant patterns for building <strong>modular and expressive UI components</strong>. When used well, it enhances maintainability, readability, and reusability — especially in large codebases or shared component libraries.</p><p>If you’re building something like a <code>Dropdown</code>, <code>Accordion</code>, <code>Tabs</code>, or <code>Form</code>, consider implementing it using this approach. Your future self — and your teammates — will thank you.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+### **Usage:**
+
+```jsx
+<Tabs>
+  <Tabs.List>
+    <Tabs.Tab index={0}>Home</Tabs.Tab>
+    <Tabs.Tab index={1}>Profile</Tabs.Tab>
+  </Tabs.List>
+  <Tabs.Panel index={0}>Welcome Home!</Tabs.Panel>
+  <Tabs.Panel index={1}>Your Profile</Tabs.Panel>
+</Tabs>
+```
+
+* * *
+
+## **Gotchas & Considerations**
+
+### ❗ **Be Careful with Props Drilling**
+
+If you don’t use React context, passing props manually between parent and subcomponents can become messy. Compound components shine when you combine them with **context API** to share logic cleanly.
+
+### ❗ **Testing Can Be Tricky**
+
+When you nest components like `Form.Input`, your tests may require extra steps to import or reference subcomponents properly. A good workaround is to export subcomponents separately as well, in case they're needed independently.
+
+### ❗ **Intellisense May Struggle**
+
+Depending on your editor or tooling, **auto-completion for static properties** (like `Form.Input`) may not always work out of the box. TypeScript users can manually declare static members on the parent component to fix this.
+
+* * *
+
+## **When to Use Compound Components**
+
+Use this pattern when:
+
+-   You’re building **design systems or UI libraries**
+-   You need **tight coordination** between components
+-   You want to provide a **clear and discoverable API**
+-   You’re working on **composable abstractions** like Tabs, Forms, Modals, etc.
+
+Avoid it if:
+
+-   The components are completely independent
+-   You want to allow **maximum flexibility** or usage outside a specific structure
+
+* * *
+
+## **Finally**
+
+The **Compound Component pattern** is one of React's most elegant patterns for building **modular and expressive UI components**. When used well, it enhances maintainability, readability, and reusability — especially in large codebases or shared component libraries.
+
+If you’re building something like a `Dropdown`, `Accordion`, `Tabs`, or `Form`, consider implementing it using this approach. Your future self — and your teammates — will thank you.

@@ -5,7 +5,14 @@ description: "When working with PHP, especially in modern versions like 8.2.x th
 tags: ["php","database","json"]
 ---
 
-<p>When working with PHP, especially in modern versions like <strong>8.2.x through 8.4.x</strong>, many developers stumble upon <strong>unexpected behaviors</strong> around type-checking. This is especially true when dealing with <strong><code>strict_types</code></strong>, <strong><code>is_float</code></strong>, and <strong>type coercion</strong>. Let’s dive deep into this with an example, breaking down what’s happening behind the scenes and what it means for your code.</p><hr><h2 id="the-code-a-simple-example"><strong>The Code: A Simple Example</strong></h2><pre><code class="language-php">&lt;?php
+When working with PHP, especially in modern versions like **8.2.x through 8.4.x**, many developers stumble upon **unexpected behaviors** around type-checking. This is especially true when dealing with **`strict_types`**, **`is_float`**, and **type coercion**. Let’s dive deep into this with an example, breaking down what’s happening behind the scenes and what it means for your code.
+
+* * *
+
+## **The Code: A Simple Example**
+
+```php
+<?php
 declare(strict_types=1);
 
 var_dump(is_float(1));
@@ -21,15 +28,82 @@ function f(float $f){
 }
 
 f(1);
-</code></pre><hr><h2 id="breaking-it-down"><strong>Breaking It Down</strong></h2><h3 id="1%EF%B8%8F%E2%83%A3-strict-types-declarestricttypes1">1️⃣ <strong>Strict Types (<code>declare(strict_types=1)</code>)</strong></h3><p>By declaring <code>strict_types=1</code>, PHP is instructed to enforce <strong>strict type-checking</strong> when calling functions and methods. This means that <strong>type coercion (implicit conversion)</strong> is disabled <strong>for scalar types</strong> (like <code>int</code>, <code>float</code>, <code>string</code>, <code>bool</code>). If you pass an <code>int</code> where a <code>float</code> is expected, PHP should ideally <strong>throw a <code>TypeError</code></strong>. But here’s the twist.</p><hr><h3 id="2%EF%B8%8F%E2%83%A3-type-checking-with-isfloat-and-gettype">2️⃣ <strong>Type Checking with <code>is_float</code> and <code>gettype</code></strong></h3><ul><li><code>is_float(1)</code> checks whether the literal <code>1</code> is a <strong>float</strong>. Since <code>1</code> is an <strong>integer</strong>, it returns <strong>false</strong>.</li><li><code>gettype(1)</code> returns the type of <code>1</code>, which is <strong>"integer"</strong>.</li><li>When we pass <code>1</code> to <code>f(float $f)</code>, we’d expect a <strong>TypeError</strong> because we’re passing an integer into a float-typed function with <code>strict_types=1</code>. But instead, it <strong>silently converts <code>1</code> to <code>1.0</code> (a float)</strong>.</li></ul><hr><h3 id="3%EF%B8%8F%E2%83%A3-the-reality-of-php%E2%80%99s-float-coercion">3️⃣ <strong>The Reality of PHP’s Float Coercion</strong></h3><p>Here’s the surprising part: <strong>PHP, even with <code>strict_types</code>, allows implicit conversion of integers to floats.</strong> This means:</p><ul><li>Passing <code>1</code> to <code>f(float $f)</code> converts <code>1</code> (integer) to <code>1.0</code> (float).</li><li><code>is_float($f)</code> inside <code>f()</code> returns <strong>true</strong>.</li><li><code>gettype($f)</code> returns <strong>"double"</strong> (which is PHP’s internal name for <code>float</code>).</li><li>The value of <code>$f</code> is <strong>float(1)</strong>.</li></ul><p>Why does this happen? <strong>PHP considers integers and floats “compatible” in many contexts</strong>, even under strict type-checking. This is because <strong>floating-point numbers naturally include all integers</strong>—an <code>int</code> like <code>1</code> can be precisely represented as a <code>float</code> (<code>1.0</code>).</p><hr><h2 id="the-output"><strong>The Output</strong></h2><p>For <strong>PHP versions 8.2.x, 8.3.x, and 8.4.x</strong>, the output is:</p><pre><code>bool(false)
+```
+
+* * *
+
+## **Breaking It Down**
+
+### 1️⃣ **Strict Types (`declare(strict_types=1)`)**
+
+By declaring `strict_types=1`, PHP is instructed to enforce **strict type-checking** when calling functions and methods. This means that **type coercion (implicit conversion)** is disabled **for scalar types** (like `int`, `float`, `string`, `bool`). If you pass an `int` where a `float` is expected, PHP should ideally **throw a `TypeError`**. But here’s the twist.
+
+* * *
+
+### 2️⃣ **Type Checking with `is_float` and `gettype`**
+
+-   `is_float(1)` checks whether the literal `1` is a **float**. Since `1` is an **integer**, it returns **false**.
+-   `gettype(1)` returns the type of `1`, which is **"integer"**.
+-   When we pass `1` to `f(float $f)`, we’d expect a **TypeError** because we’re passing an integer into a float-typed function with `strict_types=1`. But instead, it **silently converts `1` to `1.0` (a float)**.
+
+* * *
+
+### 3️⃣ **The Reality of PHP’s Float Coercion**
+
+Here’s the surprising part: **PHP, even with `strict_types`, allows implicit conversion of integers to floats.** This means:
+
+-   Passing `1` to `f(float $f)` converts `1` (integer) to `1.0` (float).
+-   `is_float($f)` inside `f()` returns **true**.
+-   `gettype($f)` returns **"double"** (which is PHP’s internal name for `float`).
+-   The value of `$f` is **float(1)**.
+
+Why does this happen? **PHP considers integers and floats “compatible” in many contexts**, even under strict type-checking. This is because **floating-point numbers naturally include all integers**—an `int` like `1` can be precisely represented as a `float` (`1.0`).
+
+* * *
+
+## **The Output**
+
+For **PHP versions 8.2.x, 8.3.x, and 8.4.x**, the output is:
+
+```
+bool(false)
 string(7) "integer"
 int(1)
 
 bool(true)
 string(6) "double"
 float(1)
-</code></pre><hr><h2 id="why-no-typeerror"><strong>Why No TypeError?</strong></h2><p>This behavior highlights an <strong>exception to <code>strict_types</code></strong>. <strong>Scalar values that can be safely and precisely converted, such as <code>int</code> to <code>float</code>, are allowed.</strong> However, passing a <code>float</code> to a <code>function(int $i)</code> <strong>will throw a <code>TypeError</code></strong>, because floating-point numbers can’t always be converted to integers without potential loss of precision.</p><hr><h2 id="key-takeaways"><strong>Key Takeaways</strong></h2><p>✅ <strong><code>strict_types=1</code> applies to function/method parameters, but not to internal functions like <code>is_float</code> and <code>gettype</code>.</strong></p><p>✅ <strong>PHP treats integers and floats as safely interchangeable when passing to a <code>float</code> parameter, even with strict types.</strong></p><p>✅ <strong><code>gettype</code> returns "double" for floats</strong>, which can be confusing, but it’s PHP’s convention.</p><p>✅ <strong>Be cautious with implicit type conversions</strong>, especially when designing APIs or critical systems where precision matters.</p><hr><h2 id="other-considerations-you-might-miss"><strong>Other Considerations You Might Miss</strong></h2><ul><li><strong>Rounding Issues:</strong> When converting floats to ints (e.g., <code>1.9</code> to <code>int</code>), PHP truncates rather than rounds. This is <strong>not reversible</strong>, unlike <code>int</code> to <code>float</code>.</li><li><strong>Database Implications:</strong> If you’re storing numeric values, always be explicit about types. Databases like MySQL have clear distinctions between <code>INT</code> and <code>FLOAT/DOUBLE</code>, and mismatches can cause subtle bugs.</li><li><strong>Interfacing with External APIs:</strong> When sending data as JSON or to APIs, <strong>be explicit</strong> in your serialization. <code>1</code> might be sent as an <code>integer</code> but expected as a <code>float</code> on the other side.</li><li><strong>PHP Version Differences:</strong> Although your code works the same in <strong>8.2.x to 8.4.x</strong>, future versions of PHP might <strong>tighten rules</strong> or introduce <strong>deprecation warnings</strong> for implicit coercion.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>This example teaches us that <strong>PHP’s type system isn’t always as strict as we think</strong>, even with <code>strict_types=1</code>. Understanding these subtle behaviors is crucial for writing <strong>robust</strong>, <strong>type-safe</strong> code. Always consider <strong>how your types interact</strong>, especially when crossing boundaries like databases, APIs, or strict business logic.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+* * *
+
+## **Why No TypeError?**
+
+This behavior highlights an **exception to `strict_types`**. **Scalar values that can be safely and precisely converted, such as `int` to `float`, are allowed.** However, passing a `float` to a `function(int $i)` **will throw a `TypeError`**, because floating-point numbers can’t always be converted to integers without potential loss of precision.
+
+* * *
+
+## **Key Takeaways**
+
+✅ **`strict_types=1` applies to function/method parameters, but not to internal functions like `is_float` and `gettype`.**
+
+✅ **PHP treats integers and floats as safely interchangeable when passing to a `float` parameter, even with strict types.**
+
+✅ **`gettype` returns "double" for floats**, which can be confusing, but it’s PHP’s convention.
+
+✅ **Be cautious with implicit type conversions**, especially when designing APIs or critical systems where precision matters.
+
+* * *
+
+## **Other Considerations You Might Miss**
+
+-   **Rounding Issues:** When converting floats to ints (e.g., `1.9` to `int`), PHP truncates rather than rounds. This is **not reversible**, unlike `int` to `float`.
+-   **Database Implications:** If you’re storing numeric values, always be explicit about types. Databases like MySQL have clear distinctions between `INT` and `FLOAT/DOUBLE`, and mismatches can cause subtle bugs.
+-   **Interfacing with External APIs:** When sending data as JSON or to APIs, **be explicit** in your serialization. `1` might be sent as an `integer` but expected as a `float` on the other side.
+-   **PHP Version Differences:** Although your code works the same in **8.2.x to 8.4.x**, future versions of PHP might **tighten rules** or introduce **deprecation warnings** for implicit coercion.
+
+* * *
+
+## **Finally**
+
+This example teaches us that **PHP’s type system isn’t always as strict as we think**, even with `strict_types=1`. Understanding these subtle behaviors is crucial for writing **robust**, **type-safe** code. Always consider **how your types interact**, especially when crossing boundaries like databases, APIs, or strict business logic.

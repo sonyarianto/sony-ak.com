@@ -2,29 +2,73 @@
 title: "Ensuring Proper Email Validation in PHP: Avoiding False Positives"
 date: "2025-02-15T20:50:16.000Z"
 description: "When working with email validation in PHP , you might assume that using FILTER_VALIDATE_EMAIL is enough. However, this built-in filter can sometimes allow inval..."
-tags: ["php","api","dns","email"]
+tags: ["php","api","security","http","dns"]
 ---
 
-<p>When working with <strong>email validation in PHP</strong>, you might assume that using <code>FILTER_VALIDATE_EMAIL</code> is enough. However, this built-in filter <strong>can sometimes allow invalid email formats</strong>, leading to unexpected issues in your application. A common example is a string like <code>+44112233</code>, which is clearly not an email, yet PHP may not flag it as invalid.</p><h3 id="why-filtervalidateemail-alone-is-not-enough"><strong>Why <code>FILTER_VALIDATE_EMAIL</code> Alone Is Not Enough</strong></h3><p>PHP's <code>filter_var($email, FILTER_VALIDATE_EMAIL)</code> function <strong>only checks for a valid email syntax</strong> based on the RFC 822 standard. However, this standard is quite broad, allowing many unusual formats that are technically valid but <strong>not suitable for real-world applications</strong>.</p><p>For example:</p><pre><code class="language-php">$email = "+44112233";
+When working with **email validation in PHP**, you might assume that using `FILTER_VALIDATE_EMAIL` is enough. However, this built-in filter **can sometimes allow invalid email formats**, leading to unexpected issues in your application. A common example is a string like `+44112233`, which is clearly not an email, yet PHP may not flag it as invalid.
+
+### **Why `FILTER_VALIDATE_EMAIL` Alone Is Not Enough**
+
+PHP's `filter_var($email, FILTER_VALIDATE_EMAIL)` function **only checks for a valid email syntax** based on the RFC 822 standard. However, this standard is quite broad, allowing many unusual formats that are technically valid but **not suitable for real-world applications**.
+
+For example:
+
+```php
+$email = "+44112233";
 if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo "Valid email";
 } else {
     echo "Invalid email";
 }
-</code></pre><p>The above <strong>incorrectly considers</strong> <code>+44112233</code> to be valid because, under RFC rules, it can be interpreted as a valid email with an implicit domain. This is a problem!</p><h3 id="a-more-robust-email-validation-approach"><strong>A More Robust Email Validation Approach</strong></h3><p>To avoid such issues, you should <strong>combine <code>FILTER_VALIDATE_EMAIL</code> with a regular expression</strong> to enforce a stricter format. A better approach is:</p><pre><code class="language-php">$email = "+44112233";
+```
+
+The above **incorrectly considers** `+44112233` to be valid because, under RFC rules, it can be interpreted as a valid email with an implicit domain. This is a problem!
+
+### **A More Robust Email Validation Approach**
+
+To avoid such issues, you should **combine `FILTER_VALIDATE_EMAIL` with a regular expression** to enforce a stricter format. A better approach is:
+
+```php
+$email = "+44112233";
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/', $email)) {
     echo "Invalid email format";
 } else {
     echo "Valid email";
 }
-</code></pre><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">Live demo <a href="https://onecompiler.com/php/4397yqkae" rel="noreferrer">here</a>.</div></div><h3 id="breaking-down-the-improved-validation"><strong>Breaking Down the Improved Validation</strong></h3><ol><li><strong><code>FILTER_VALIDATE_EMAIL</code></strong> – Ensures basic email structure is present.</li><li><strong>Regular expression (<code>preg_match</code>)</strong> – Checks if the email contains an <code>@</code> symbol and a valid domain (<code>example.com</code>).<ul><li><code>[^@]+@[^@]+\.[a-zA-Z]{2,}$</code> ensures that:<ul><li>There is at least one character before the <code>@</code>.</li><li>A domain name exists after <code>@</code>.</li><li>The domain contains a dot (<code>.</code>) followed by <strong>at least two letters</strong> (TLD).</li></ul></li></ul></li></ol><h3 id="additional-considerations-for-email-validation"><strong>Additional Considerations for Email Validation</strong></h3><ol><li><strong>Disposable Emails</strong>: Some users use temporary/disposable emails. You can integrate an API or maintain a blacklist to prevent such emails.</li><li><strong>Length Limits</strong>: RFC 5321 states that an email address should be no more than <strong>320 characters long</strong>.</li><li><strong>Allowing Internationalized Domains</strong>: If your application supports <strong>internationalized domain names (IDN)</strong> (e.g., <code>jörg@exämple.de</code>), consider using <code>idn_to_ascii()</code> to normalize the domain before validation.</li></ol><p><strong>DNS Verification</strong>: Checking only the format is not enough; you should verify that the domain exists using <code>checkdnsrr()</code>.</p><pre><code class="language-php">function isValidEmail($email) {
+```
+
+💡
+
+Live demo [here](https://onecompiler.com/php/4397yqkae).
+
+### **Breaking Down the Improved Validation**
+
+1.  **`FILTER_VALIDATE_EMAIL`** – Ensures basic email structure is present.
+2.  **Regular expression (`preg_match`)** – Checks if the email contains an `@` symbol and a valid domain (`example.com`).
+    -   `[^@]+@[^@]+\.[a-zA-Z]{2,}$` ensures that:
+        -   There is at least one character before the `@`.
+        -   A domain name exists after `@`.
+        -   The domain contains a dot (`.`) followed by **at least two letters** (TLD).
+
+### **Additional Considerations for Email Validation**
+
+1.  **Disposable Emails**: Some users use temporary/disposable emails. You can integrate an API or maintain a blacklist to prevent such emails.
+2.  **Length Limits**: RFC 5321 states that an email address should be no more than **320 characters long**.
+3.  **Allowing Internationalized Domains**: If your application supports **internationalized domain names (IDN)** (e.g., `jörg@exämple.de`), consider using `idn_to_ascii()` to normalize the domain before validation.
+
+**DNS Verification**: Checking only the format is not enough; you should verify that the domain exists using `checkdnsrr()`.
+
+```php
+function isValidEmail($email) {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
     $domain = substr(strrchr($email, "@"), 1);
     return checkdnsrr($domain, "MX");
 }
-</code></pre><p>This ensures that the domain has a valid <strong>Mail Exchange (MX) record</strong>, meaning emails can be received.</p><h3 id="finally"><strong>Finally</strong></h3><p>While PHP provides a built-in function for email validation, it <strong>is not always strict enough</strong> for real-world applications. Combining it with <strong>regular expressions</strong>, <strong>DNS validation</strong>, and <strong>other checks</strong> ensures better accuracy and prevents invalid emails from passing through. By implementing a more robust validation strategy, you can <strong>improve data integrity</strong> and <strong>reduce errors in user input</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This ensures that the domain has a valid **Mail Exchange (MX) record**, meaning emails can be received.
+
+### **Finally**
+
+While PHP provides a built-in function for email validation, it **is not always strict enough** for real-world applications. Combining it with **regular expressions**, **DNS validation**, and **other checks** ensures better accuracy and prevents invalid emails from passing through. By implementing a more robust validation strategy, you can **improve data integrity** and **reduce errors in user input**.

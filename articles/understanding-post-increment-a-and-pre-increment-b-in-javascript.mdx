@@ -5,26 +5,129 @@ description: "When you're new to programming, one of the first things you learn 
 tags: ["javascript","logging"]
 ---
 
-<p>When you're new to programming, one of the first things you learn is how to work with variables and operators. JavaScript, like many other languages, offers various ways to manipulate variables. Two commonly used operations that often confuse beginners are <strong>post-increment</strong> (<code>a++</code>) and <strong>pre-increment</strong> (<code>++a</code>). These terms refer to how numbers are increased by 1. In this article, we'll break down these concepts using a simple example to make sure novice programmers understand how it all works.</p><h3 id="a-simple-example">A Simple Example</h3><p>Let's start by looking at this piece of JavaScript code:</p><pre><code class="language-javascript">let a = 10;
+When you're new to programming, one of the first things you learn is how to work with variables and operators. JavaScript, like many other languages, offers various ways to manipulate variables. Two commonly used operations that often confuse beginners are **post-increment** (`a++`) and **pre-increment** (`++a`). These terms refer to how numbers are increased by 1. In this article, we'll break down these concepts using a simple example to make sure novice programmers understand how it all works.
+
+### A Simple Example
+
+Let's start by looking at this piece of JavaScript code:
+
+```javascript
+let a = 10;
 let b = 5;
 let c = a++ + ++b;
 
 console.log(c); // What will c be? OK, the answer is 16 but the process to get there maybe not like you think
-</code></pre>
-<p>This may seem confusing at first, especially with the <code>a++</code> and <code>++b</code>. However, once we break it down, it will be much clearer.</p><h3 id="the-basics-incrementing-variables">The Basics: Incrementing Variables</h3><p>In programming, <strong>incrementing</strong> means increasing a value by 1. For example:</p><pre><code class="language-javascript">let x = 5;
+```
+
+This may seem confusing at first, especially with the `a++` and `++b`. However, once we break it down, it will be much clearer.
+
+### The Basics: Incrementing Variables
+
+In programming, **incrementing** means increasing a value by 1. For example:
+
+```javascript
+let x = 5;
 x++; // x is now 6
-</code></pre>
-<p>This code adds <code>1</code> to the variable <code>x</code>. Easy enough, right? But what does the <code>++</code> mean when it appears <strong>before</strong> or <strong>after</strong> a variable? That’s where it gets interesting!</p><h3 id="post-increment-a-vs-pre-increment-a">Post-Increment (<code>a++</code>) vs. Pre-Increment (<code>++a</code>)</h3><ul><li><strong>Post-Increment (<code>a++</code>)</strong>: The current value of the variable is used <strong>first</strong>, and then the variable is incremented.</li><li><strong>Pre-Increment (<code>++a</code>)</strong>: The variable is incremented <strong>first</strong>, and then the new value is used.</li></ul><p>Let’s explain this in a step-by-step way.</p><h3 id="step-by-step-breakdown">Step-by-Step Breakdown</h3><p><strong>Setting initial values</strong>:</p><pre><code class="language-javascript">let a = 10;
+```
+
+This code adds `1` to the variable `x`. Easy enough, right? But what does the `++` mean when it appears **before** or **after** a variable? That’s where it gets interesting!
+
+### Post-Increment (`a++`) vs. Pre-Increment (`++a`)
+
+-   **Post-Increment (`a++`)**: The current value of the variable is used **first**, and then the variable is incremented.
+-   **Pre-Increment (`++a`)**: The variable is incremented **first**, and then the new value is used.
+
+Let’s explain this in a step-by-step way.
+
+### Step-by-Step Breakdown
+
+**Setting initial values**:
+
+```javascript
+let a = 10;
 let b = 5;
-</code></pre>
-<p>At this point:</p><ul><li><code>a = 10</code></li><li><code>b = 5</code></li></ul><p><strong>Evaluating the expression</strong>: <code>c = a++ + ++b</code></p><ul><li><strong><code>a++</code> (Post-Increment)</strong>:The <strong>current value</strong> of <code>a</code> (which is 10) is used in the expression.After using the current value, <code>a</code> is incremented. So, <code>a</code> becomes <strong>11</strong>, but this new value isn't used in the calculation right now—only <strong>10</strong> is used.</li><li><strong><code>++b</code> (Pre-Increment)</strong>:The value of <code>b</code> is incremented <strong>first</strong>, so <code>b</code> becomes <strong>6</strong>.Then, this new value (6) is used in the calculation.</li></ul><p><strong>Performing the calculation</strong>: The expression becomes:</p><pre><code class="language-javascript">c = 10 + 6; // which equals 16
-</code></pre>
-<p><strong>Result</strong>: After this line of code runs:</p><ul><li><code>a = 11</code> (because of the post-increment, <code>a++</code>)</li><li><code>b = 6</code> (because of the pre-increment, <code>++b</code>)</li><li><code>c = 16</code> (the result of the calculation)</li></ul><hr><h3 id="visualizing-post-increment-vs-pre-increment">Visualizing Post-Increment vs. Pre-Increment</h3><p>Here’s a way to visualize the difference between <strong>post-increment</strong> and <strong>pre-increment</strong>:</p><ul><li><strong>Post-Increment (<code>a++</code>)</strong>:<ul><li><strong>Use the current value</strong> of <code>a</code>, then increment it.</li><li>Imagine <code>a</code> is holding up a sign that says "10". You use that "10" for whatever you need, but then behind the scenes, <code>a</code> changes its sign to "11". However, you don’t see this new value yet; it will only appear in the next line of code.</li></ul></li><li><strong>Pre-Increment (<code>++b</code>)</strong>:<ul><li><strong>Increment first</strong>, then use the new value.</li><li>Imagine <code>b</code> is holding a sign that says "5". Before you use it, <code>b</code> changes the sign to "6", and then you use this updated value.</li></ul></li></ul><hr><h3 id="practical-example">Practical Example</h3><p>Let’s take a real-world example to understand this better:</p><p>Imagine you are at a counter buying apples. There are two different types of apple counters:</p><ol><li><strong>Post-Increment Counter</strong>:<ul><li>You take an apple from the counter, and it shows you how many apples it <strong>had</strong> before you took one (10 apples).</li><li>After you take the apple, the counter updates to show 9 apples, but you already took yours based on the previous count.</li></ul></li><li><strong>Pre-Increment Counter</strong>:<ul><li>Before you take an apple, the counter updates itself to show one less apple (6 apples).</li><li>You take the apple based on the new, updated count.</li></ul></li></ol><hr><h3 id="common-mistake-for-beginners">Common Mistake for Beginners</h3><p>One common mistake for beginners is thinking that <code>a++</code> immediately increments <code>a</code> before it’s used. As we’ve seen, this isn’t the case. In fact, <strong>post-increment</strong> waits until after the value has been used before increasing the variable.</p><p>Here’s an incorrect assumption beginners might make:</p><pre><code class="language-javascript">let a = 10;
+```
+
+At this point:
+
+-   `a = 10`
+-   `b = 5`
+
+**Evaluating the expression**: `c = a++ + ++b`
+
+-   **`a++` (Post-Increment)**:The **current value** of `a` (which is 10) is used in the expression.After using the current value, `a` is incremented. So, `a` becomes **11**, but this new value isn't used in the calculation right now—only **10** is used.
+-   **`++b` (Pre-Increment)**:The value of `b` is incremented **first**, so `b` becomes **6**.Then, this new value (6) is used in the calculation.
+
+**Performing the calculation**: The expression becomes:
+
+```javascript
+c = 10 + 6; // which equals 16
+```
+
+**Result**: After this line of code runs:
+
+-   `a = 11` (because of the post-increment, `a++`)
+-   `b = 6` (because of the pre-increment, `++b`)
+-   `c = 16` (the result of the calculation)
+
+* * *
+
+### Visualizing Post-Increment vs. Pre-Increment
+
+Here’s a way to visualize the difference between **post-increment** and **pre-increment**:
+
+-   **Post-Increment (`a++`)**:
+    -   **Use the current value** of `a`, then increment it.
+    -   Imagine `a` is holding up a sign that says "10". You use that "10" for whatever you need, but then behind the scenes, `a` changes its sign to "11". However, you don’t see this new value yet; it will only appear in the next line of code.
+-   **Pre-Increment (`++b`)**:
+    -   **Increment first**, then use the new value.
+    -   Imagine `b` is holding a sign that says "5". Before you use it, `b` changes the sign to "6", and then you use this updated value.
+
+* * *
+
+### Practical Example
+
+Let’s take a real-world example to understand this better:
+
+Imagine you are at a counter buying apples. There are two different types of apple counters:
+
+1.  **Post-Increment Counter**:
+    -   You take an apple from the counter, and it shows you how many apples it **had** before you took one (10 apples).
+    -   After you take the apple, the counter updates to show 9 apples, but you already took yours based on the previous count.
+2.  **Pre-Increment Counter**:
+    -   Before you take an apple, the counter updates itself to show one less apple (6 apples).
+    -   You take the apple based on the new, updated count.
+
+* * *
+
+### Common Mistake for Beginners
+
+One common mistake for beginners is thinking that `a++` immediately increments `a` before it’s used. As we’ve seen, this isn’t the case. In fact, **post-increment** waits until after the value has been used before increasing the variable.
+
+Here’s an incorrect assumption beginners might make:
+
+```javascript
+let a = 10;
 let b = a++;
 console.log(b); // They might expect b to be 11, but it's actually 10
-</code></pre>
-<p>Why is <code>b</code> equal to <code>10</code> and not <code>11</code>? This is because the value of <code>a</code> was used <strong>before</strong> it was incremented, so <code>b</code> is assigned <code>10</code>, and then <code>a</code> is incremented to <code>11</code> afterward.</p><hr><h3 id="remember-this">Remember This</h3><ul><li><strong>Post-Increment (<code>a++</code>)</strong>: Use the current value first, then increment afterward.</li><li><strong>Pre-Increment (<code>++a</code>)</strong>: Increment the value first, then use the new value.</li><li><strong>Order matters!</strong> When you see <code>a++</code> and <code>++b</code> in an expression, remember that the position of <code>++</code> (before or after) changes when the increment happens in relation to the expression.</li></ul><hr><h3 id="now-you-should-understand">Now You Should Understand</h3><p>Understanding the difference between <strong>post-increment</strong> (<code>a++</code>) and <strong>pre-increment</strong> (<code>++b</code>) is essential for working effectively with JavaScript. By following the step-by-step breakdown in this article, you should now have a clearer picture of how these operators work and how they can affect your calculations.</p><p>Common mistakes is natural, but as you continue learning JavaScript it will help you to avoid common mistakes and build a strong foundation for more advanced programming techniques.</p><p>Keep make mistakes, keep learning.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Why is `b` equal to `10` and not `11`? This is because the value of `a` was used **before** it was incremented, so `b` is assigned `10`, and then `a` is incremented to `11` afterward.
+
+* * *
+
+### Remember This
+
+-   **Post-Increment (`a++`)**: Use the current value first, then increment afterward.
+-   **Pre-Increment (`++a`)**: Increment the value first, then use the new value.
+-   **Order matters!** When you see `a++` and `++b` in an expression, remember that the position of `++` (before or after) changes when the increment happens in relation to the expression.
+
+* * *
+
+### Now You Should Understand
+
+Understanding the difference between **post-increment** (`a++`) and **pre-increment** (`++b`) is essential for working effectively with JavaScript. By following the step-by-step breakdown in this article, you should now have a clearer picture of how these operators work and how they can affect your calculations.
+
+Common mistakes is natural, but as you continue learning JavaScript it will help you to avoid common mistakes and build a strong foundation for more advanced programming techniques.
+
+Keep make mistakes, keep learning.

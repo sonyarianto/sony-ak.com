@@ -5,32 +5,116 @@ description: "In a world where developers work across multiple teams and languag
 tags: ["javascript","typescript","api","performance","email"]
 ---
 
-<p>In a world where developers work across multiple teams and languages, it’s not uncommon to encounter <strong>consistent typos in data structures</strong>—especially when backend developers define API objects with misspelled property names. One classic example? The infamous misspelling of <code>"parms"</code> instead of <code>"params"</code>. While it’s a small slip, it can create a lot of friction in a TypeScript project, especially when your frontend code expects correctly named properties.</p><p>But instead of chasing these typos across your entire codebase, <strong>TypeScript’s mapped types offer a brilliant solution</strong>.</p><hr><h2 id="understanding-mapped-types"><strong>Understanding Mapped Types</strong></h2><p>A <strong>mapped type</strong> in TypeScript lets you create new types by transforming the keys and values of an existing type. Think of it as a way to apply a function over the keys of an object, allowing you to:</p><ul><li><strong>Rename properties</strong> based on a condition.</li><li><strong>Change value types</strong>.</li><li><strong>Filter out certain properties</strong>.</li><li>Even <strong>recursively map</strong> nested objects.</li></ul><p>Here’s a simple example that transforms one property name:</p><pre><code class="language-typescript">type ParamsToParms&lt;T&gt; = {
+In a world where developers work across multiple teams and languages, it’s not uncommon to encounter **consistent typos in data structures**—especially when backend developers define API objects with misspelled property names. One classic example? The infamous misspelling of `"parms"` instead of `"params"`. While it’s a small slip, it can create a lot of friction in a TypeScript project, especially when your frontend code expects correctly named properties.
+
+But instead of chasing these typos across your entire codebase, **TypeScript’s mapped types offer a brilliant solution**.
+
+* * *
+
+## **Understanding Mapped Types**
+
+A **mapped type** in TypeScript lets you create new types by transforming the keys and values of an existing type. Think of it as a way to apply a function over the keys of an object, allowing you to:
+
+-   **Rename properties** based on a condition.
+-   **Change value types**.
+-   **Filter out certain properties**.
+-   Even **recursively map** nested objects.
+
+Here’s a simple example that transforms one property name:
+
+```typescript
+type ParamsToParms<T> = {
   [K in keyof T as K extends "parms" ? "params" : K]: T[K];
 };
-</code></pre><p>This type does the following:</p><ul><li>Iterates over all keys <code>K</code> in the input type <code>T</code>.</li><li>If a key is exactly <code>"parms"</code>, it gets renamed to <code>"params"</code>.</li><li>If not, the key stays the same.</li><li>The value type for each key remains unchanged.</li></ul><hr><h2 id="why-this-trick-is-hilarious-and-practical"><strong>Why This Trick is Hilarious (and Practical)</strong></h2><p>The humor comes from how <strong>elegant yet simple</strong> this solution is. Instead of arguing with your backend team or manually fixing misspelled keys, you can simply <strong>let TypeScript handle it for you</strong>. It’s a clever hack that feels like it’s “cheating,” but it actually leverages TypeScript’s strengths perfectly.</p><p>Here’s an example:</p><pre><code class="language-typescript">type Example = {
+```
+
+This type does the following:
+
+-   Iterates over all keys `K` in the input type `T`.
+-   If a key is exactly `"parms"`, it gets renamed to `"params"`.
+-   If not, the key stays the same.
+-   The value type for each key remains unchanged.
+
+* * *
+
+## **Why This Trick is Hilarious (and Practical)**
+
+The humor comes from how **elegant yet simple** this solution is. Instead of arguing with your backend team or manually fixing misspelled keys, you can simply **let TypeScript handle it for you**. It’s a clever hack that feels like it’s “cheating,” but it actually leverages TypeScript’s strengths perfectly.
+
+Here’s an example:
+
+```typescript
+type Example = {
   foo: string;
   readonly parms: string;
 };
 
-type FixedExample = ParamsToParms&lt;Example&gt;;
-</code></pre><p><code>FixedExample</code> automatically becomes:</p><pre><code class="language-typescript">{
+type FixedExample = ParamsToParms<Example>;
+```
+
+`FixedExample` automatically becomes:
+
+```typescript
+{
   foo: string;
   readonly params: string;
 }
-</code></pre><hr><h2 id="beyond-parms-generalizing-the-approach"><strong>Beyond "parms": Generalizing the Approach</strong></h2><p>This mapped type isn’t limited to just one typo. You can <strong>expand the logic</strong> to correct multiple common mistakes:</p><pre><code class="language-typescript">type RenameKeys&lt;T&gt; = {
+```
+
+* * *
+
+## **Beyond "parms": Generalizing the Approach**
+
+This mapped type isn’t limited to just one typo. You can **expand the logic** to correct multiple common mistakes:
+
+```typescript
+type RenameKeys<T> = {
   [K in keyof T as K extends "parms" ? "params" :
                   K extends "usrname" ? "username" :
                   K extends "emial" ? "email" :
                   K]: T[K];
 };
-</code></pre><p>This will correct:</p><ul><li><code>"parms"</code> to <code>"params"</code></li><li><code>"usrname"</code> to <code>"username"</code></li><li><code>"emial"</code> to <code>"email"</code></li></ul><p>You can extend this list as needed, especially in projects where you know common naming issues will crop up.</p><hr><h2 id="considering-deep-nesting"><strong>Considering Deep Nesting</strong></h2><p>What if these misspelled keys appear inside <strong>nested objects</strong>? You can create a <strong>recursive mapped type</strong> to drill down into the object structure:</p><pre><code class="language-typescript">type DeepRename&lt;T&gt; = {
+```
+
+This will correct:
+
+-   `"parms"` to `"params"`
+-   `"usrname"` to `"username"`
+-   `"emial"` to `"email"`
+
+You can extend this list as needed, especially in projects where you know common naming issues will crop up.
+
+* * *
+
+## **Considering Deep Nesting**
+
+What if these misspelled keys appear inside **nested objects**? You can create a **recursive mapped type** to drill down into the object structure:
+
+```typescript
+type DeepRename<T> = {
   [K in keyof T as K extends "parms" ? "params" :
                   K extends "usrname" ? "username" :
-                  K]: T[K] extends object ? DeepRename&lt;T[K]&gt; : T[K];
+                  K]: T[K] extends object ? DeepRename<T[K]> : T[K];
 };
-</code></pre><p>Now, even deeply nested properties will get corrected automatically. This is invaluable in large APIs where typos might appear in nested data.</p><hr><h2 id="considerations-and-limitations"><strong>Considerations and Limitations</strong></h2><p>While this approach is powerful, <strong>there are important considerations</strong>:</p><ol><li><strong>Type Safety vs Runtime</strong>: These transformations happen at <strong>compile-time only</strong>. If your backend still sends the misspelled key (<code>parms</code>), the actual JavaScript object will still have the typo unless you also transform the data at runtime.</li><li><strong>Avoid Overcorrection</strong>: Be cautious not to accidentally rename properties that are valid. For example, if someone genuinely intended <code>"parms"</code>, this type will still rename it.</li><li><strong>API Evolution</strong>: This technique is great for patching inconsistent APIs temporarily, but the best solution is always to <strong>fix the source data</strong>.</li><li><strong>Performance</strong>: There’s no performance penalty at runtime because TypeScript’s type system is erased during compilation. However, overly complex recursive types can slow down <strong>type checking</strong> in large projects.</li></ol><hr><h2 id="final-thoughts"><strong>Final Thoughts</strong></h2><p>This hilarious and surprisingly effective technique highlights how <strong>TypeScript’s type system can go beyond just “type checking”</strong>—it can actually <strong>transform your data model</strong> to adapt to human mistakes. Whether you’re battling the <code>"parms"</code> typo or any other repeated misspelling, <strong>mapped types</strong> offer an elegant, maintainable solution.</p><p>So next time your backend team ships an API with <code>"parms"</code>, don’t worry—<strong>TypeScript’s got your back</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Now, even deeply nested properties will get corrected automatically. This is invaluable in large APIs where typos might appear in nested data.
+
+* * *
+
+## **Considerations and Limitations**
+
+While this approach is powerful, **there are important considerations**:
+
+1.  **Type Safety vs Runtime**: These transformations happen at **compile-time only**. If your backend still sends the misspelled key (`parms`), the actual JavaScript object will still have the typo unless you also transform the data at runtime.
+2.  **Avoid Overcorrection**: Be cautious not to accidentally rename properties that are valid. For example, if someone genuinely intended `"parms"`, this type will still rename it.
+3.  **API Evolution**: This technique is great for patching inconsistent APIs temporarily, but the best solution is always to **fix the source data**.
+4.  **Performance**: There’s no performance penalty at runtime because TypeScript’s type system is erased during compilation. However, overly complex recursive types can slow down **type checking** in large projects.
+
+* * *
+
+## **Final Thoughts**
+
+This hilarious and surprisingly effective technique highlights how **TypeScript’s type system can go beyond just “type checking”**—it can actually **transform your data model** to adapt to human mistakes. Whether you’re battling the `"parms"` typo or any other repeated misspelling, **mapped types** offer an elegant, maintainable solution.
+
+So next time your backend team ships an API with `"parms"`, don’t worry—**TypeScript’s got your back**.

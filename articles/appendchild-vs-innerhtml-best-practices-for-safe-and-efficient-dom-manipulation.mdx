@@ -5,8 +5,56 @@ description: "When we are manipulating the DOM, sometimes we use innerHTML, so w
 tags: ["html","security","performance"]
 ---
 
-<p>When we are manipulating the DOM, sometimes we use innerHTML, so we can finish our work quickly, but did you know there is a better way and is best practice, namely using appendChild.</p><p>The following is the explanation.</p><p>Using <code>appendChild</code> is generally considered a better practice compared to using <code>innerHTML</code>. Here’s why:</p><h3 id="1-security">1. <strong>Security</strong>:</h3><ul><li><strong><code>innerHTML</code></strong> can introduce security risks like <strong>Cross-Site Scripting (XSS)</strong> attacks, since it directly parses and inserts HTML content into the DOM. If the content is user-generated or dynamic and not properly sanitized, malicious scripts could be executed.</li><li><strong><code>appendChild</code></strong>, on the other hand, works with DOM elements, making it safer as it doesn't interpret strings as HTML. Instead, you directly manipulate the DOM tree.</li></ul><h3 id="2-performance">2. <strong>Performance</strong>:</h3><ul><li><strong><code>innerHTML</code></strong> re-parses the entire HTML content every time it’s called, potentially causing performance issues, especially for large or complex DOM structures.</li><li><strong><code>appendChild</code></strong> is more efficient when adding individual nodes, as it simply inserts the element into the existing DOM without re-parsing the entire content.</li></ul><h3 id="3-preserving-event-listeners">3. <strong>Preserving Event Listeners</strong>:</h3><ul><li><strong><code>innerHTML</code></strong> will remove and replace all content inside an element, which means any attached event listeners or states on those elements will be lost.</li><li><strong><code>appendChild</code></strong> adds elements without affecting existing ones, thus preserving any previously attached event listeners.</li></ul><p>While <strong><code>innerHTML</code></strong> is easier to use for adding simple HTML content, <strong><code>appendChild</code></strong> is more robust, secure, and performant, especially for manipulating individual elements. It is the recommended method when working with DOM elements programmatically.</p><h3 id="but-why-people-mostly-using-innerhtml"><strong>But why people mostly using innerHTML?</strong></h3><p>People often use <code>innerHTML</code> because of its simplicity and ease of use, especially for quick tasks. Here are the main reasons:</p><h3 id="1-ease-of-use">1. <strong>Ease of Use</strong>:</h3><ul><li><strong>Quick and Simple</strong>: <code>innerHTML</code> allows developers to insert or modify HTML content as a string without needing to create and append multiple elements manually. It's a single line solution for updating an element’s content.</li><li><strong>String-Based</strong>: Since it's string-based, developers can easily concatenate dynamic data into HTML templates, making it convenient for rapid development.</li></ul><h3 id="2-familiarity">2. <strong>Familiarity</strong>:</h3><ul><li>Many developers start learning DOM manipulation with <code>innerHTML</code>, as it's widely mentioned in tutorials and examples. Its immediate impact on the webpage makes it an attractive option for beginners.</li></ul><h3 id="3-bulk-updates">3. <strong>Bulk Updates</strong>:</h3><ul><li><strong>Updating Multiple Elements</strong>: If a developer needs to update a large block of HTML content at once, <code>innerHTML</code> provides a straightforward way to replace all the inner content of an element.</li></ul><h3 id="4-lack-of-awareness-of-alternatives">4. <strong>Lack of Awareness of Alternatives</strong>:</h3><ul><li>Some developers may not be fully aware of the alternatives like <code>appendChild</code> or the potential downsides of <code>innerHTML</code> in terms of security and performance. They may continue using it out of habit or a lack of understanding of best practices.</li></ul><h3 id="5-legacy-code-and-compatibility">5. <strong>Legacy Code and Compatibility</strong>:</h3><ul><li>In older codebases or projects where rapid development was prioritized, <code>innerHTML</code> was often used. Maintaining consistency with legacy code can lead developers to continue using it.</li></ul><h3 id="finally">Finally</h3><p>While <code>innerHTML</code> is convenient for small tasks or non-sensitive projects, its security risks (XSS vulnerabilities), performance concerns, and potential to break event listeners make it less ideal for modern, secure applications. Developers may opt for <code>appendChild</code> or other DOM manipulation methods as they gain more experience with best practices and modern web development.</p><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When we are manipulating the DOM, sometimes we use innerHTML, so we can finish our work quickly, but did you know there is a better way and is best practice, namely using appendChild.
 
+The following is the explanation.
+
+Using `appendChild` is generally considered a better practice compared to using `innerHTML`. Here’s why:
+
+### 1\. **Security**:
+
+-   **`innerHTML`** can introduce security risks like **Cross-Site Scripting (XSS)** attacks, since it directly parses and inserts HTML content into the DOM. If the content is user-generated or dynamic and not properly sanitized, malicious scripts could be executed.
+-   **`appendChild`**, on the other hand, works with DOM elements, making it safer as it doesn't interpret strings as HTML. Instead, you directly manipulate the DOM tree.
+
+### 2\. **Performance**:
+
+-   **`innerHTML`** re-parses the entire HTML content every time it’s called, potentially causing performance issues, especially for large or complex DOM structures.
+-   **`appendChild`** is more efficient when adding individual nodes, as it simply inserts the element into the existing DOM without re-parsing the entire content.
+
+### 3\. **Preserving Event Listeners**:
+
+-   **`innerHTML`** will remove and replace all content inside an element, which means any attached event listeners or states on those elements will be lost.
+-   **`appendChild`** adds elements without affecting existing ones, thus preserving any previously attached event listeners.
+
+While **`innerHTML`** is easier to use for adding simple HTML content, **`appendChild`** is more robust, secure, and performant, especially for manipulating individual elements. It is the recommended method when working with DOM elements programmatically.
+
+### **But why people mostly using innerHTML?**
+
+People often use `innerHTML` because of its simplicity and ease of use, especially for quick tasks. Here are the main reasons:
+
+### 1\. **Ease of Use**:
+
+-   **Quick and Simple**: `innerHTML` allows developers to insert or modify HTML content as a string without needing to create and append multiple elements manually. It's a single line solution for updating an element’s content.
+-   **String-Based**: Since it's string-based, developers can easily concatenate dynamic data into HTML templates, making it convenient for rapid development.
+
+### 2\. **Familiarity**:
+
+-   Many developers start learning DOM manipulation with `innerHTML`, as it's widely mentioned in tutorials and examples. Its immediate impact on the webpage makes it an attractive option for beginners.
+
+### 3\. **Bulk Updates**:
+
+-   **Updating Multiple Elements**: If a developer needs to update a large block of HTML content at once, `innerHTML` provides a straightforward way to replace all the inner content of an element.
+
+### 4\. **Lack of Awareness of Alternatives**:
+
+-   Some developers may not be fully aware of the alternatives like `appendChild` or the potential downsides of `innerHTML` in terms of security and performance. They may continue using it out of habit or a lack of understanding of best practices.
+
+### 5\. **Legacy Code and Compatibility**:
+
+-   In older codebases or projects where rapid development was prioritized, `innerHTML` was often used. Maintaining consistency with legacy code can lead developers to continue using it.
+
+### Finally
+
+While `innerHTML` is convenient for small tasks or non-sensitive projects, its security risks (XSS vulnerabilities), performance concerns, and potential to break event listeners make it less ideal for modern, secure applications. Developers may opt for `appendChild` or other DOM manipulation methods as they gain more experience with best practices and modern web development.
+
+Hope it helps.

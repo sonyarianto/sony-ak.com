@@ -5,10 +5,69 @@ description: "When managing a website, it's essential to ensure that all variati
 tags: ["bash","web-server","testing","security","seo"]
 ---
 
-<p>When managing a website, it's essential to ensure that all variations of your domain URL consistently redirect to your desired primary URL. In this case, the primary URL is <code>https://example.com</code>. Proper redirection not only provides a smoother user experience but also improves SEO by consolidating domain authority.</p><p>Imagine you have domain <code>example.com</code> and your boss ask you to use <code>https://example.com</code> as the main URL, not the one with <code>www</code>.</p><p>In this guide, we'll walk you through testing common URL variations to ensure that they correctly redirect to your primary URL (<code>https://example.com</code>). The common scenarios we'll focus on are:</p><ul><li>Redirecting <code>http://example.com</code> to <code>https://example.com</code></li><li>Redirecting <code>http://www.example.com</code> to <code>https://example.com</code></li><li>Redirecting <code>https://www.example.com</code> to <code>https://example.com</code></li></ul><h3 id="step-1-verify-the-redirection-setup">Step 1: Verify the Redirection Setup</h3><p>First, you need to set up your web server (Apache, Nginx, etc.) to properly handle these redirections. Read <a href="__GHOST_URL__/best-practices-for-setting-up-a-web-domain-example-com-with-https-and-redirects/" rel="noreferrer">this article related to that</a>.</p><h3 id="step-2-test-redirection-using-browser-tools">Step 2: Test Redirection Using Browser Tools</h3><p>You can test one-by-one of your URLs on the browser, and all should go to https://example.com</p><h3 id="step-3-use-curl-for-cli-testing">Step 3: Use Curl for CLI Testing</h3><p>For a more detailed look at the redirection process, especially for automated or server-side testing, you can use <code>curl</code> from the command line. The <code>curl</code> tool allows you to see HTTP headers and the steps of redirection.</p><p>Test redirection from <code>http://example.com</code>, run this <code>curl -I -L http://example.com</code></p><p>Test redirection from <code>http://www.example.com</code>, run this <code>curl -I -L http://www.example.com</code></p><p>Test redirection from <code>https://www.example.com</code>, run this <code>curl -I -L https://www.example.com</code></p><h4 id="expected-output">Expected Output:</h4><p>When you run these commands, you should see a sequence of <code>301</code> or <code>302</code> status codes leading to the final destination URL. For example:</p><pre><code>HTTP/1.1 301 Moved Permanently
-Location: https://example.com/
-</code></pre><p>This indicates that the redirection is working as expected.</p><h3 id="step-4-use-online-tools">Step 4: Use Online Tools</h3><p>There are many tools for doing redirection test on the internet. One of my favorite is called httpstatus.io.</p><figure class="kg-card kg-bookmark-card"><a class="kg-bookmark-container" href="https://httpstatus.io"><div class="kg-bookmark-content"><div class="kg-bookmark-title">Bulk URL HTTP Status Code, Header &amp; Redirect Checker</div><div class="kg-bookmark-description">Redirect checker to easily check status codes, response headers, and redirect chains.</div><div class="kg-bookmark-metadata"><img class="kg-bookmark-icon" src="__GHOST_URL__/content/images/icon/favicon.png" alt=""><span class="kg-bookmark-author">httpstatus.io</span></div></div><div class="kg-bookmark-thumbnail"><img src="__GHOST_URL__/content/images/thumbnail/httpstatus-og-image.jpg" alt="" onerror="this.style.display = 'none'"></div></a></figure><p>You can do bulk test like this.</p><figure class="kg-card kg-image-card"><img src="__GHOST_URL__/content/images/2024/09/image.png" class="kg-image" alt="" loading="lazy" width="1528" height="610" srcset="__GHOST_URL__/content/images/size/w600/2024/09/image.png 600w, __GHOST_URL__/content/images/size/w1000/2024/09/image.png 1000w, __GHOST_URL__/content/images/2024/09/image.png 1528w" sizes="(min-width: 720px) 720px"></figure><p>Try it yourself.</p><h3 id="finally">Finally</h3><p>Ensuring proper redirection to a single primary URL, like <code>https://example.com</code>, is critical for maintaining a seamless user experience, enhancing SEO, and protecting your website from potential security vulnerabilities related to HTTP. Testing redirection using tools like <code>curl</code>, SEO analyzers or web based online testing service will help ensure that all domain variations behave consistently, bringing users to your desired URL every time.</p><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When managing a website, it's essential to ensure that all variations of your domain URL consistently redirect to your desired primary URL. In this case, the primary URL is `https://example.com`. Proper redirection not only provides a smoother user experience but also improves SEO by consolidating domain authority.
 
+Imagine you have domain `example.com` and your boss ask you to use `https://example.com` as the main URL, not the one with `www`.
+
+In this guide, we'll walk you through testing common URL variations to ensure that they correctly redirect to your primary URL (`https://example.com`). The common scenarios we'll focus on are:
+
+-   Redirecting `http://example.com` to `https://example.com`
+-   Redirecting `http://www.example.com` to `https://example.com`
+-   Redirecting `https://www.example.com` to `https://example.com`
+
+### Step 1: Verify the Redirection Setup
+
+First, you need to set up your web server (Apache, Nginx, etc.) to properly handle these redirections. Read [this article related to that](__GHOST_URL__/best-practices-for-setting-up-a-web-domain-example-com-with-https-and-redirects/).
+
+### Step 2: Test Redirection Using Browser Tools
+
+You can test one-by-one of your URLs on the browser, and all should go to https://example.com
+
+### Step 3: Use Curl for CLI Testing
+
+For a more detailed look at the redirection process, especially for automated or server-side testing, you can use `curl` from the command line. The `curl` tool allows you to see HTTP headers and the steps of redirection.
+
+Test redirection from `http://example.com`, run this `curl -I -L http://example.com`
+
+Test redirection from `http://www.example.com`, run this `curl -I -L http://www.example.com`
+
+Test redirection from `https://www.example.com`, run this `curl -I -L https://www.example.com`
+
+#### Expected Output:
+
+When you run these commands, you should see a sequence of `301` or `302` status codes leading to the final destination URL. For example:
+
+```
+HTTP/1.1 301 Moved Permanently
+Location: https://example.com/
+```
+
+This indicates that the redirection is working as expected.
+
+### Step 4: Use Online Tools
+
+There are many tools for doing redirection test on the internet. One of my favorite is called httpstatus.io.
+
+[
+
+Bulk URL HTTP Status Code, Header & Redirect Checker
+
+Redirect checker to easily check status codes, response headers, and redirect chains.
+
+![](__GHOST_URL__/content/images/icon/favicon.png)httpstatus.io
+
+![](__GHOST_URL__/content/images/thumbnail/httpstatus-og-image.jpg)
+
+](https://httpstatus.io)
+
+You can do bulk test like this.
+
+![](__GHOST_URL__/content/images/2024/09/image.png)
+
+Try it yourself.
+
+### Finally
+
+Ensuring proper redirection to a single primary URL, like `https://example.com`, is critical for maintaining a seamless user experience, enhancing SEO, and protecting your website from potential security vulnerabilities related to HTTP. Testing redirection using tools like `curl`, SEO analyzers or web based online testing service will help ensure that all domain variations behave consistently, bringing users to your desired URL every time.
+
+Hope it helps.

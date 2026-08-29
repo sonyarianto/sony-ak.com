@@ -2,46 +2,76 @@
 title: "Laravel Tip: firstWhere() vs where()->first() – Which One Should You Use?"
 date: "2025-05-03T04:38:43.000Z"
 description: "When working with Eloquent in Laravel, you’ve likely come across two ways to fetch the first matching model from the database: Currency::where('code', 'CAD')-&g..."
-tags: ["laravel","career","productivity"]
+tags: ["php","laravel","career","productivity"]
 ---
 
-<p>When working with <strong>Eloquent</strong> in Laravel, you’ve likely come across two ways to fetch the first matching model from the database:</p><pre><code class="language-php">Currency::where('code', 'CAD')-&gt;first();
-</code></pre><p>or</p><pre><code class="language-php">Currency::firstWhere('code', 'CAD');
-</code></pre><p>At first glance, they seem interchangeable—and for the most part, they are. But let’s break them down to understand the nuances and <strong>choose the right tool for the right situation</strong>.</p><hr><h3 id="%F0%9F%86%9A-the-comparison">🆚 The Comparison</h3><h4 id="where-first"><code>where()-&gt;first()</code></h4><p>This has been around since the early days of Laravel. It’s straightforward and widely used:</p><pre><code class="language-php">Currency::where('code', 'CAD')-&gt;first();
-</code></pre><ul><li><strong>Highly flexible</strong> – you can chain multiple <code>where()</code> conditions, <code>orderBy()</code>, <code>with()</code>, scopes, etc.</li><li><strong>Familiar syntax</strong> – used throughout Laravel documentation and many community examples.</li><li>Ideal for <strong>building dynamic queries</strong>.</li></ul><h4 id="firstwhere"><code>firstWhere()</code></h4><p>Introduced in Laravel 6 for Collections and added to Eloquent in Laravel 8:</p><pre><code class="language-php">Currency::firstWhere('code', 'CAD');
-</code></pre><ul><li><strong>Clean and concise</strong> – perfect for simple filters.</li><li>Reduces boilerplate when all you need is the first match on a single field.</li><li>Slightly more <strong>readable</strong>, especially for newcomers or one-liner code.</li></ul><hr><h3 id="%F0%9F%A7%A9-when-to-use-which">🧩 When to Use Which?</h3><p>Here’s a simple rule of thumb:</p>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Use Case</th>
-<th>Prefer</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Single simple condition</td>
-<td><strong><code inline="">firstWhere()</code></strong></td>
-</tr>
-<tr>
-<td>Multiple conditions</td>
-<td><strong><code inline="">where()-&gt;first()</code></strong></td>
-</tr>
-<tr>
-<td>Need <code inline="">orderBy</code>, <code inline="">limit</code>, scopes</td>
-<td><strong><code inline="">where()-&gt;first()</code></strong></td>
-</tr>
-<tr>
-<td>Just want clarity and quick lookup</td>
-<td><strong><code inline="">firstWhere()</code></strong></td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h3 id="%F0%9F%A4%94-other-considerations">🤔 Other Considerations</h3><ul><li><strong>Readability</strong> matters. If your project or team prioritizes brevity and expressive code, <code>firstWhere()</code> might be your go-to.</li><li><strong>Consistency</strong> is also important. If your codebase predominantly uses one style, it may be best to stick with it unless there’s a compelling reason to switch.</li><li><strong>Chaining with Eloquent scopes</strong> (e.g., <code>-&gt;active()</code>) only works with <code>where()</code> style. <code>firstWhere()</code> does <strong>not</strong> support chaining.</li></ul><p>If you're using <strong>dynamic field names</strong>, <code>where()-&gt;first()</code> gives you better control:</p><pre><code class="language-php">$field = 'code';
-Currency::where($field, 'CAD')-&gt;first();
-</code></pre><hr><h3 id="%F0%9F%93%9D-finally">📝 Finally</h3><p>Both methods do the job. But like most things in Laravel, <strong>elegance lies in intention</strong>. If you’re fetching something quickly with minimal logic, <code>firstWhere()</code> is your friend. If you’re crafting a more robust or reusable query, stick with <code>where()-&gt;first()</code>.</p><p><strong>Pick the right tool for the job, and your code will thank you.</strong></p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When working with **Eloquent** in Laravel, you’ve likely come across two ways to fetch the first matching model from the database:
 
+```php
+Currency::where('code', 'CAD')->first();
+```
+
+or
+
+```php
+Currency::firstWhere('code', 'CAD');
+```
+
+At first glance, they seem interchangeable—and for the most part, they are. But let’s break them down to understand the nuances and **choose the right tool for the right situation**.
+
+* * *
+
+### 🆚 The Comparison
+
+#### `where()->first()`
+
+This has been around since the early days of Laravel. It’s straightforward and widely used:
+
+```php
+Currency::where('code', 'CAD')->first();
+```
+
+-   **Highly flexible** – you can chain multiple `where()` conditions, `orderBy()`, `with()`, scopes, etc.
+-   **Familiar syntax** – used throughout Laravel documentation and many community examples.
+-   Ideal for **building dynamic queries**.
+
+#### `firstWhere()`
+
+Introduced in Laravel 6 for Collections and added to Eloquent in Laravel 8:
+
+```php
+Currency::firstWhere('code', 'CAD');
+```
+
+-   **Clean and concise** – perfect for simple filters.
+-   Reduces boilerplate when all you need is the first match on a single field.
+-   Slightly more **readable**, especially for newcomers or one-liner code.
+
+* * *
+
+### 🧩 When to Use Which?
+
+Here’s a simple rule of thumb:
+
+* * *
+
+### 🤔 Other Considerations
+
+-   **Readability** matters. If your project or team prioritizes brevity and expressive code, `firstWhere()` might be your go-to.
+-   **Consistency** is also important. If your codebase predominantly uses one style, it may be best to stick with it unless there’s a compelling reason to switch.
+-   **Chaining with Eloquent scopes** (e.g., `->active()`) only works with `where()` style. `firstWhere()` does **not** support chaining.
+
+If you're using **dynamic field names**, `where()->first()` gives you better control:
+
+```php
+$field = 'code';
+Currency::where($field, 'CAD')->first();
+```
+
+* * *
+
+### 📝 Finally
+
+Both methods do the job. But like most things in Laravel, **elegance lies in intention**. If you’re fetching something quickly with minimal logic, `firstWhere()` is your friend. If you’re crafting a more robust or reusable query, stick with `where()->first()`.
+
+**Pick the right tool for the job, and your code will thank you.**

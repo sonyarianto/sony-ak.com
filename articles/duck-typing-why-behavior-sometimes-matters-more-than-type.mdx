@@ -5,17 +5,88 @@ description: "In the world of software engineering , developers often debate whe
 tags: ["javascript","typescript","rust","python","testing"]
 ---
 
-<p>In the world of <strong>software engineering</strong>, developers often debate whether <strong>type safety</strong> or <strong>flexibility</strong> should take priority. One concept that sits at the heart of this discussion is <strong>duck typing</strong>. The term itself is drawn from an old saying:</p><p><em>“If it looks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck.”</em></p><p>Translated into programming: if an object behaves like the thing we need, then we can treat it as such—regardless of its declared type.</p><hr><h2 id="what-is-duck-typing">What Is Duck Typing?</h2><p><strong>Duck typing</strong> is a style of programming where the <strong>capabilities of an object</strong> matter more than the <strong>class it belongs to</strong>. Instead of asking “Is this object of type X?”, you ask “Can this object do what I need it to do?”</p><p>This is most common in <strong>dynamically typed languages</strong> such as Python, Ruby, and JavaScript. Instead of enforcing type constraints at compile time, the program evaluates at <strong>runtime</strong> whether an object supports the required methods or properties.</p><hr><h2 id="practical-example">Practical Example</h2><p>Let’s look at a simple <strong>JavaScript</strong> case:</p><pre><code class="language-javascript">function makeItQuack(obj) {
+In the world of **software engineering**, developers often debate whether **type safety** or **flexibility** should take priority. One concept that sits at the heart of this discussion is **duck typing**. The term itself is drawn from an old saying:
+
+_“If it looks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck.”_
+
+Translated into programming: if an object behaves like the thing we need, then we can treat it as such—regardless of its declared type.
+
+* * *
+
+## What Is Duck Typing?
+
+**Duck typing** is a style of programming where the **capabilities of an object** matter more than the **class it belongs to**. Instead of asking “Is this object of type X?”, you ask “Can this object do what I need it to do?”
+
+This is most common in **dynamically typed languages** such as Python, Ruby, and JavaScript. Instead of enforcing type constraints at compile time, the program evaluates at **runtime** whether an object supports the required methods or properties.
+
+* * *
+
+## Practical Example
+
+Let’s look at a simple **JavaScript** case:
+
+```javascript
+function makeItQuack(obj) {
   obj.quack(); // expects object to have a quack() method
 }
 
-const duck = { quack: () =&gt; console.log("Quack!") };
-const person = { quack: () =&gt; console.log("I can imitate a duck.") };
+const duck = { quack: () => console.log("Quack!") };
+const person = { quack: () => console.log("I can imitate a duck.") };
 
 makeItQuack(duck);   // Quack!
 makeItQuack(person); // I can imitate a duck.
-</code></pre><p>Here, both <code>duck</code> and <code>person</code> can be passed into <code>makeItQuack</code> because both implement <code>quack()</code>. The function never cares about what “type” the object really is.</p><hr><h2 id="advantages-of-duck-typing">Advantages of Duck Typing</h2><ul><li><strong>Flexibility</strong> – You don’t need rigid inheritance or interfaces. Any object that behaves correctly can be used.</li><li><strong>Reduced boilerplate</strong> – Developers don’t need to declare a lot of formal type structures.</li><li><strong>Encourages polymorphism</strong> – Different objects can be swapped easily, as long as they support the required behavior.</li></ul><hr><h2 id="disadvantages-of-duck-typing">Disadvantages of Duck Typing</h2><ul><li><strong>Errors appear at runtime</strong> – If the required method isn’t present, the program crashes only when it tries to use it.</li><li><strong>Harder debugging</strong> – Without explicit type hints, it can be difficult to track what kinds of objects a function expects.</li><li><strong>Readability issues</strong> – For large systems, it becomes harder for new developers to quickly understand what “shape” of object is expected.</li></ul><hr><h2 id="duck-typing-vs-static-typing">Duck Typing vs. Static Typing</h2><p>To understand duck typing better, it helps to contrast it with <strong>static typing</strong>, which is used in languages like <strong>Go, Rust, Java, and C#</strong>:</p><ul><li><strong>Static typing</strong>: The compiler enforces type rules. If you pass an object of the wrong type, the code won’t even compile. This provides <strong>safety</strong> and <strong>clarity</strong>, but at the cost of flexibility.</li><li><strong>Duck typing</strong>: The language trusts the programmer. Objects are accepted as long as they behave properly, but mistakes won’t surface until runtime.</li></ul><p>A hybrid approach exists too. For example, <strong>TypeScript</strong> uses <strong>structural typing</strong>, which is similar to duck typing but with compile-time checks. This lets you enjoy flexibility while catching errors early.</p><hr><h2 id="other-considerations">Other Considerations</h2><ol><li><strong>Testing becomes critical</strong><br>In duck-typed systems, strong unit and integration tests act as your safety net. They catch errors that a compiler otherwise would.</li><li><strong>Interfaces without declarations</strong><br>Even if you don’t formally declare an interface, you can still define an <em>implicit contract</em>. For instance, if your function expects something that has <code>.save()</code> and <code>.delete()</code>, then any object implementing those two methods will work.</li><li><strong>Refactoring risks</strong><br>Changing method names or object structures can silently break parts of your code, since there’s no type checker to warn you.</li><li><strong>When to use</strong><br>Duck typing shines in <strong>prototyping, scripting, and rapid development</strong>, where flexibility and speed matter more than strict guarantees. In <strong>mission-critical or large-scale systems</strong>, static typing or hybrid approaches usually offer better long-term safety.</li></ol><hr><h2 id="finally">Finally</h2><p>Duck typing is a powerful idea: <strong>judge objects by what they can do, not by what they are</strong>. It gives developers freedom, promotes polymorphism, and reduces boilerplate code. But it also shifts responsibility from the compiler to the developer, meaning <strong>discipline, testing, and clear coding practices</strong> become essential.</p><p>In short:</p><ul><li>Use duck typing when you want <strong>flexibility and speed</strong>.</li><li>Prefer static typing when you need <strong>safety and clarity</strong>.</li><li>And remember, sometimes the best choice is a <strong>blend</strong> of both worlds, depending on your project’s needs.</li></ul><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+Here, both `duck` and `person` can be passed into `makeItQuack` because both implement `quack()`. The function never cares about what “type” the object really is.
+
+* * *
+
+## Advantages of Duck Typing
+
+-   **Flexibility** – You don’t need rigid inheritance or interfaces. Any object that behaves correctly can be used.
+-   **Reduced boilerplate** – Developers don’t need to declare a lot of formal type structures.
+-   **Encourages polymorphism** – Different objects can be swapped easily, as long as they support the required behavior.
+
+* * *
+
+## Disadvantages of Duck Typing
+
+-   **Errors appear at runtime** – If the required method isn’t present, the program crashes only when it tries to use it.
+-   **Harder debugging** – Without explicit type hints, it can be difficult to track what kinds of objects a function expects.
+-   **Readability issues** – For large systems, it becomes harder for new developers to quickly understand what “shape” of object is expected.
+
+* * *
+
+## Duck Typing vs. Static Typing
+
+To understand duck typing better, it helps to contrast it with **static typing**, which is used in languages like **Go, Rust, Java, and C#**:
+
+-   **Static typing**: The compiler enforces type rules. If you pass an object of the wrong type, the code won’t even compile. This provides **safety** and **clarity**, but at the cost of flexibility.
+-   **Duck typing**: The language trusts the programmer. Objects are accepted as long as they behave properly, but mistakes won’t surface until runtime.
+
+A hybrid approach exists too. For example, **TypeScript** uses **structural typing**, which is similar to duck typing but with compile-time checks. This lets you enjoy flexibility while catching errors early.
+
+* * *
+
+## Other Considerations
+
+1.  **Testing becomes critical**  
+    In duck-typed systems, strong unit and integration tests act as your safety net. They catch errors that a compiler otherwise would.
+2.  **Interfaces without declarations**  
+    Even if you don’t formally declare an interface, you can still define an _implicit contract_. For instance, if your function expects something that has `.save()` and `.delete()`, then any object implementing those two methods will work.
+3.  **Refactoring risks**  
+    Changing method names or object structures can silently break parts of your code, since there’s no type checker to warn you.
+4.  **When to use**  
+    Duck typing shines in **prototyping, scripting, and rapid development**, where flexibility and speed matter more than strict guarantees. In **mission-critical or large-scale systems**, static typing or hybrid approaches usually offer better long-term safety.
+
+* * *
+
+## Finally
+
+Duck typing is a powerful idea: **judge objects by what they can do, not by what they are**. It gives developers freedom, promotes polymorphism, and reduces boilerplate code. But it also shifts responsibility from the compiler to the developer, meaning **discipline, testing, and clear coding practices** become essential.
+
+In short:
+
+-   Use duck typing when you want **flexibility and speed**.
+-   Prefer static typing when you need **safety and clarity**.
+-   And remember, sometimes the best choice is a **blend** of both worlds, depending on your project’s needs.

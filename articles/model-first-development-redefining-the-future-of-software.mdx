@@ -5,8 +5,95 @@ description: "In the past decade, the rise of AI —and more specifically, Large
 tags: ["api","testing","security","performance","architecture"]
 ---
 
-<p>In the past decade, the rise of <strong>AI</strong>—and more specifically, <strong>Large Language Models (LLMs)</strong>—has not only reshaped what’s possible but also <strong>how we build software</strong>. The traditional model of writing code, integrating APIs, and then layering features on top is giving way to a <strong>new paradigm</strong>: <strong>Model-First Development</strong>. This approach isn’t just about embedding AI as a backend service or as a tool to speed up coding—it’s about making <strong>AI models the core of both the development process and the final product experience</strong>.</p><p>Let’s break this down and explore why <strong>Model-First Development</strong> is not just a trend but a fundamental shift in how we create technology.</p><hr><h2 id="why-model-first"><strong>Why Model-First?</strong></h2><p>At its core, <strong>Model-First Development</strong> recognizes that:</p><ul><li><strong>AI models are not just tools; they’re collaborators</strong>.</li><li><strong>The interaction between humans and computers is moving from procedural logic to adaptive intelligence</strong>.</li><li><strong>Developers and users alike are expecting experiences where the system understands, anticipates, and evolves</strong>.</li></ul><p>Rather than treating the AI model as something to sprinkle into an app at the last minute (for search, chat, or recommendations), <strong>Model-First puts the model at the center</strong>. The product is designed around what the model can do, and the code, architecture, and tooling follow from that.</p><hr><h2 id="optimizing-for-llms-the-new-developer-mindset"><strong>Optimizing for LLMs: The New Developer Mindset</strong></h2><p>If the <strong>model</strong> is central, then everything around it needs to adapt:</p><h3 id="1%EF%B8%8F%E2%83%A3-source-code-optimization"><strong>1️⃣ Source Code Optimization</strong></h3><ul><li><strong>Dynamic and declarative logic</strong> becomes more important than static, imperative code.</li><li><strong>Model invocations (via APIs or SDKs) are integrated directly</strong> into the core logic, not isolated in helper classes.</li><li><strong>Fallbacks, retries, and context handling</strong> are designed up front to deal with model unpredictability.</li></ul><h3 id="2%EF%B8%8F%E2%83%A3-documentation-for-models"><strong>2️⃣ Documentation for Models</strong></h3><ul><li>Instead of just writing human-readable docs, we need <strong>context-rich, machine-readable documentation</strong>—think OpenAPI specs, GraphQL schemas, or even embedding semantic metadata.</li><li><strong>Examples and live playgrounds</strong> should be part of the documentation, enabling both humans and AI models to experiment and learn.</li><li>Consider adding <strong>embedding indexes of documentation</strong>, so the AI can "read" and retrieve relevant context in real-time.</li></ul><h3 id="3%EF%B8%8F%E2%83%A3-tooling-evolution"><strong>3️⃣ Tooling Evolution</strong></h3><ul><li><strong>IDE extensions with AI assistants</strong> aren’t just nice-to-haves—they’re integral. These tools can suggest code completions that align with model-driven behavior.</li><li><strong>Auto-generated APIs and SDKs</strong> that align with model behavior can accelerate development while ensuring consistency.</li><li><strong>Vector databases and semantic search tooling</strong> should be part of the developer’s toolkit to manage context retrieval efficiently.</li></ul><h3 id="4%EF%B8%8F%E2%83%A3-abstracting-complexity"><strong>4️⃣ Abstracting Complexity</strong></h3><ul><li><strong>Prompt middleware layers</strong>: Instead of calling static APIs, you’ll build layers where the prompt (or intent) determines the system behavior.</li><li><strong>Semantic contracts</strong>: Move beyond CRUD APIs to semantic APIs where the request describes intent, and the model interprets and acts.</li><li><strong>Memory and context handling</strong>: Design your app to maintain dynamic context (user preferences, recent actions) so the model can respond intelligently.</li></ul><hr><h2 id="from-development-tool-to-runtime-engine"><strong>From Development Tool to Runtime Engine</strong></h2><p>Here’s a key idea many miss: <strong>AI shouldn’t just be a development-time assistant—it should be part of the runtime fabric of the application</strong>.</p><p>Consider:</p><ul><li><strong>Dynamic UX</strong>: Interfaces adapt in real time based on model outputs. For example, an app can adjust its flow, personalize content, or proactively suggest actions.</li><li><strong>Embedded Intelligence</strong>: Models handle real-time decision-making—whether it’s routing requests, composing personalized emails, or generating reports.</li><li><strong>Natural Language Interfaces</strong>: Move beyond traditional forms and buttons. Let users <strong>converse naturally</strong> with your system, and design your code to translate that into action.</li></ul><hr><h2 id="other-considerations-you-might-be-missing"><strong>Other Considerations You Might Be Missing</strong></h2><p>While the core principles are solid, there are other aspects worth thinking about:</p><ul><li><strong>Performance and Cost</strong>: LLMs are powerful but resource-intensive. Design your architecture to <strong>cache responses</strong>, use <strong>smaller specialized models when possible</strong>, and <strong>offload computation to edge or client-side</strong> when appropriate.</li><li><strong>Security and Compliance</strong>: Model-first means your system could handle sensitive data in unpredictable ways. You’ll need <strong>robust data governance</strong>, <strong>prompt sanitization</strong>, and <strong>access controls</strong>.</li><li><strong>Versioning and Rollback</strong>: Models evolve. Your abstractions need to <strong>version model behaviors and handle rollbacks</strong> when updates introduce regressions.</li><li><strong>Evaluation and Monitoring</strong>: Traditional testing doesn’t fully apply. You’ll need <strong>live evaluation systems</strong>, <strong>A/B testing of model variants</strong>, and <strong>continuous feedback loops</strong>.</li><li><strong>Developer Education</strong>: Not every engineer is trained in prompt engineering or model tuning. Invest in <strong>training and documentation</strong> to bring your team up to speed.</li></ul><hr><h2 id="the-big-shift"><strong>The Big Shift</strong></h2><p>In summary, <strong>Model-First Development</strong> is about more than just adding a chatbot or recommendation engine to your app. It’s a <strong>complete rethink of how we design, build, and run software</strong> in the era of AI.</p><ul><li><strong>The model defines the core experience.</strong></li><li><strong>Code, documentation, and tooling adapt to the model’s strengths and limitations.</strong></li><li><strong>Applications are designed to use models dynamically, not just during development but at runtime.</strong></li></ul><p>This isn’t just about efficiency; it’s about <strong>creating experiences that feel natural, adaptive, and intelligent</strong>—experiences where users feel like they’re interacting with something that truly understands them.</p><hr><h3 id="ready-to-dive-in"><strong>Ready to Dive In?</strong></h3><p>If you’re serious about embracing <strong>Model-First Development</strong>, here’s what I’d suggest:</p><ol><li>Start experimenting with <strong>embedding models directly into runtime logic</strong>.</li><li>Redesign your <strong>APIs and UX to adapt dynamically to model outputs</strong>.</li><li>Invest in <strong>tooling, documentation, and team education</strong> to support this shift.</li><li>And above all, <strong>think of the model as a co-creator, not just a tool</strong>.</li></ol><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In the past decade, the rise of **AI**—and more specifically, **Large Language Models (LLMs)**—has not only reshaped what’s possible but also **how we build software**. The traditional model of writing code, integrating APIs, and then layering features on top is giving way to a **new paradigm**: **Model-First Development**. This approach isn’t just about embedding AI as a backend service or as a tool to speed up coding—it’s about making **AI models the core of both the development process and the final product experience**.
 
+Let’s break this down and explore why **Model-First Development** is not just a trend but a fundamental shift in how we create technology.
+
+* * *
+
+## **Why Model-First?**
+
+At its core, **Model-First Development** recognizes that:
+
+-   **AI models are not just tools; they’re collaborators**.
+-   **The interaction between humans and computers is moving from procedural logic to adaptive intelligence**.
+-   **Developers and users alike are expecting experiences where the system understands, anticipates, and evolves**.
+
+Rather than treating the AI model as something to sprinkle into an app at the last minute (for search, chat, or recommendations), **Model-First puts the model at the center**. The product is designed around what the model can do, and the code, architecture, and tooling follow from that.
+
+* * *
+
+## **Optimizing for LLMs: The New Developer Mindset**
+
+If the **model** is central, then everything around it needs to adapt:
+
+### **1️⃣ Source Code Optimization**
+
+-   **Dynamic and declarative logic** becomes more important than static, imperative code.
+-   **Model invocations (via APIs or SDKs) are integrated directly** into the core logic, not isolated in helper classes.
+-   **Fallbacks, retries, and context handling** are designed up front to deal with model unpredictability.
+
+### **2️⃣ Documentation for Models**
+
+-   Instead of just writing human-readable docs, we need **context-rich, machine-readable documentation**—think OpenAPI specs, GraphQL schemas, or even embedding semantic metadata.
+-   **Examples and live playgrounds** should be part of the documentation, enabling both humans and AI models to experiment and learn.
+-   Consider adding **embedding indexes of documentation**, so the AI can "read" and retrieve relevant context in real-time.
+
+### **3️⃣ Tooling Evolution**
+
+-   **IDE extensions with AI assistants** aren’t just nice-to-haves—they’re integral. These tools can suggest code completions that align with model-driven behavior.
+-   **Auto-generated APIs and SDKs** that align with model behavior can accelerate development while ensuring consistency.
+-   **Vector databases and semantic search tooling** should be part of the developer’s toolkit to manage context retrieval efficiently.
+
+### **4️⃣ Abstracting Complexity**
+
+-   **Prompt middleware layers**: Instead of calling static APIs, you’ll build layers where the prompt (or intent) determines the system behavior.
+-   **Semantic contracts**: Move beyond CRUD APIs to semantic APIs where the request describes intent, and the model interprets and acts.
+-   **Memory and context handling**: Design your app to maintain dynamic context (user preferences, recent actions) so the model can respond intelligently.
+
+* * *
+
+## **From Development Tool to Runtime Engine**
+
+Here’s a key idea many miss: **AI shouldn’t just be a development-time assistant—it should be part of the runtime fabric of the application**.
+
+Consider:
+
+-   **Dynamic UX**: Interfaces adapt in real time based on model outputs. For example, an app can adjust its flow, personalize content, or proactively suggest actions.
+-   **Embedded Intelligence**: Models handle real-time decision-making—whether it’s routing requests, composing personalized emails, or generating reports.
+-   **Natural Language Interfaces**: Move beyond traditional forms and buttons. Let users **converse naturally** with your system, and design your code to translate that into action.
+
+* * *
+
+## **Other Considerations You Might Be Missing**
+
+While the core principles are solid, there are other aspects worth thinking about:
+
+-   **Performance and Cost**: LLMs are powerful but resource-intensive. Design your architecture to **cache responses**, use **smaller specialized models when possible**, and **offload computation to edge or client-side** when appropriate.
+-   **Security and Compliance**: Model-first means your system could handle sensitive data in unpredictable ways. You’ll need **robust data governance**, **prompt sanitization**, and **access controls**.
+-   **Versioning and Rollback**: Models evolve. Your abstractions need to **version model behaviors and handle rollbacks** when updates introduce regressions.
+-   **Evaluation and Monitoring**: Traditional testing doesn’t fully apply. You’ll need **live evaluation systems**, **A/B testing of model variants**, and **continuous feedback loops**.
+-   **Developer Education**: Not every engineer is trained in prompt engineering or model tuning. Invest in **training and documentation** to bring your team up to speed.
+
+* * *
+
+## **The Big Shift**
+
+In summary, **Model-First Development** is about more than just adding a chatbot or recommendation engine to your app. It’s a **complete rethink of how we design, build, and run software** in the era of AI.
+
+-   **The model defines the core experience.**
+-   **Code, documentation, and tooling adapt to the model’s strengths and limitations.**
+-   **Applications are designed to use models dynamically, not just during development but at runtime.**
+
+This isn’t just about efficiency; it’s about **creating experiences that feel natural, adaptive, and intelligent**—experiences where users feel like they’re interacting with something that truly understands them.
+
+* * *
+
+### **Ready to Dive In?**
+
+If you’re serious about embracing **Model-First Development**, here’s what I’d suggest:
+
+1.  Start experimenting with **embedding models directly into runtime logic**.
+2.  Redesign your **APIs and UX to adapt dynamically to model outputs**.
+3.  Invest in **tooling, documentation, and team education** to support this shift.
+4.  And above all, **think of the model as a co-creator, not just a tool**.

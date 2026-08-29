@@ -5,50 +5,189 @@ description: "When you type a website address like httpbin.org into your browser
 tags: ["security","performance","debugging","design","productivity"]
 ---
 
-<p>When you type a website address like <strong>httpbin.org</strong> into your browser, a series of invisible yet intricate processes take place to resolve that human-readable name into an <strong>IP address</strong>. The image above captures one such process — a <strong>DNS (Domain Name System)</strong> response packet, analyzed using <strong>Wireshark</strong>.</p><p>In this article, we will break down each layer of this packet, explore what happens under the hood, and discuss additional considerations that help in understanding modern network communication.</p><figure class="kg-card kg-embed-card"><blockquote class="twitter-tweet"><p lang="in" dir="ltr">Inilah yang kemarin saya ajarkan secara offline ke <a href="https://twitter.com/__r17x?ref_src=twsrc%5Etfw">@__r17x</a>. Soal paket memaket. <br><br>Senin saya mungkin akan kerja dari café ga tau jam berapa sampainya tapi pastinya di atas jam 12. <br><br>Kalo beberapa dateng mungkin nanti bisa diadakan Liqa' kecil2an soal Jaringan ⤵️ <a href="https://t.co/1cRbsmE0R2">pic.twitter.com/1cRbsmE0R2</a></p>— Clair 光 (@lynxluna) <a href="https://twitter.com/lynxluna/status/1977301522947191030?ref_src=twsrc%5Etfw">October 12, 2025</a></blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></figure><hr><h2 id="1-overview-of-the-packet"><strong>1. Overview of the Packet</strong></h2><p>At a glance, this packet represents a <strong>DNS query response</strong> — that is, the reply sent from a <strong>DNS server</strong> to a <strong>client</strong> after successfully resolving a domain name.</p><p>Here are the key participants in this capture:</p><ul><li><strong>Client IP:</strong> <code>192.168.3.96</code></li><li><strong>DNS Server IP:</strong> <code>192.168.3.71</code></li><li><strong>Queried Domain:</strong> <code>httpbin.org</code></li><li><strong>Response Type:</strong> <strong>Standard query response</strong> (no error)</li><li><strong>Transport Protocol:</strong> <strong>UDP</strong> (User Datagram Protocol)</li><li><strong>Port:</strong> Source 53 (DNS), Destination 58432 (Client)</li></ul><p>In simpler terms, the client asked, <em>“What is the IP address of httpbin.org?”</em> and the DNS server replied with multiple answers.</p><hr><h2 id="2-understanding-the-layered-structure"><strong>2. Understanding the Layered Structure</strong></h2><p>The packet structure follows the <strong>OSI Model</strong>, where each layer encapsulates the one above it. The packet you observed contains four primary layers:</p><h3 id="a-ethernet-ii-layer-2-%E2%80%93-data-link-layer"><strong>a. Ethernet II (Layer 2 – Data Link Layer)</strong></h3><p>This is the physical transmission layer that handles communication between devices on the same local network (LAN).<br>It includes:</p><ul><li><strong>Source MAC Address:</strong> <code>RealtekSemic_6a:11:20</code></li><li><strong>Destination MAC Address:</strong> <code>RealtekSemic_68:11:20</code></li><li><strong>Type:</strong> IPv4 (<code>0x0800</code>)</li></ul><p>Ethernet frames ensure that the data reaches the correct network interface card (NIC) on the target device.</p><hr><h3 id="b-internet-protocol-version-4-ipv4-%E2%80%93-layer-3"><strong>b. Internet Protocol Version 4 (IPv4 – Layer 3)</strong></h3><p>This is the <strong>Network Layer</strong>, responsible for routing packets between different networks.<br>It defines:</p><ul><li><strong>Source IP:</strong> <code>192.168.3.71</code> (the DNS server)</li><li><strong>Destination IP:</strong> <code>192.168.3.96</code> (the client)</li><li><strong>Protocol:</strong> 17 (which indicates <strong>UDP</strong>)</li><li><strong>TTL (Time to Live):</strong> Limits how long the packet stays in circulation.</li></ul><p>This layer is crucial for addressing and ensuring that packets can travel across multiple network segments.</p><hr><h3 id="c-user-datagram-protocol-udp-%E2%80%93-layer-4"><strong>c. User Datagram Protocol (UDP – Layer 4)</strong></h3><p>UDP is a <strong>connectionless transport protocol</strong>, meaning it sends data without establishing a persistent session. While it lacks reliability features like TCP (no acknowledgments, retransmission, or sequencing), it is <strong>fast and lightweight</strong>, making it ideal for <strong>DNS</strong>, <strong>VoIP</strong>, and <strong>streaming applications</strong>.</p><p>The key fields here are:</p><ul><li><strong>Source Port:</strong> 53 (standard DNS server port)</li><li><strong>Destination Port:</strong> 58432 (client’s temporary port)</li><li><strong>Length and Checksum:</strong> Used for validation.</li></ul><hr><h3 id="d-domain-name-system-dns-%E2%80%93-layer-7-application-layer"><strong>d. Domain Name System (DNS – Layer 7, Application Layer)</strong></h3><p>At the top of the stack lies the <strong>DNS payload</strong>, which actually carries the human-meaningful data.</p><h4 id="key-fields">Key Fields:</h4><ul><li><strong>Transaction ID:</strong> <code>0xb745</code> – identifies this specific DNS exchange.</li><li><strong>Flags:</strong> <code>0x8180</code> – indicates a <strong>standard query response</strong>, <strong>no error</strong>.</li><li><strong>Questions:</strong> 1</li><li><strong>Answer Resource Records (RRs):</strong> 4</li></ul><h4 id="query-section">Query Section:</h4><pre><code>Name: httpbin.org
+When you type a website address like **httpbin.org** into your browser, a series of invisible yet intricate processes take place to resolve that human-readable name into an **IP address**. The image above captures one such process — a **DNS (Domain Name System)** response packet, analyzed using **Wireshark**.
+
+In this article, we will break down each layer of this packet, explore what happens under the hood, and discuss additional considerations that help in understanding modern network communication.
+
+> Inilah yang kemarin saya ajarkan secara offline ke [@\_\_r17x](https://twitter.com/__r17x?ref_src=twsrc%5Etfw). Soal paket memaket.  
+>   
+> Senin saya mungkin akan kerja dari café ga tau jam berapa sampainya tapi pastinya di atas jam 12.  
+>   
+> Kalo beberapa dateng mungkin nanti bisa diadakan Liqa' kecil2an soal Jaringan ⤵️ [pic.twitter.com/1cRbsmE0R2](https://t.co/1cRbsmE0R2)
+> 
+> — Clair 光 (@lynxluna) [October 12, 2025](https://twitter.com/lynxluna/status/1977301522947191030?ref_src=twsrc%5Etfw)
+
+* * *
+
+## **1\. Overview of the Packet**
+
+At a glance, this packet represents a **DNS query response** — that is, the reply sent from a **DNS server** to a **client** after successfully resolving a domain name.
+
+Here are the key participants in this capture:
+
+-   **Client IP:** `192.168.3.96`
+-   **DNS Server IP:** `192.168.3.71`
+-   **Queried Domain:** `httpbin.org`
+-   **Response Type:** **Standard query response** (no error)
+-   **Transport Protocol:** **UDP** (User Datagram Protocol)
+-   **Port:** Source 53 (DNS), Destination 58432 (Client)
+
+In simpler terms, the client asked, _“What is the IP address of httpbin.org?”_ and the DNS server replied with multiple answers.
+
+* * *
+
+## **2\. Understanding the Layered Structure**
+
+The packet structure follows the **OSI Model**, where each layer encapsulates the one above it. The packet you observed contains four primary layers:
+
+### **a. Ethernet II (Layer 2 – Data Link Layer)**
+
+This is the physical transmission layer that handles communication between devices on the same local network (LAN).  
+It includes:
+
+-   **Source MAC Address:** `RealtekSemic_6a:11:20`
+-   **Destination MAC Address:** `RealtekSemic_68:11:20`
+-   **Type:** IPv4 (`0x0800`)
+
+Ethernet frames ensure that the data reaches the correct network interface card (NIC) on the target device.
+
+* * *
+
+### **b. Internet Protocol Version 4 (IPv4 – Layer 3)**
+
+This is the **Network Layer**, responsible for routing packets between different networks.  
+It defines:
+
+-   **Source IP:** `192.168.3.71` (the DNS server)
+-   **Destination IP:** `192.168.3.96` (the client)
+-   **Protocol:** 17 (which indicates **UDP**)
+-   **TTL (Time to Live):** Limits how long the packet stays in circulation.
+
+This layer is crucial for addressing and ensuring that packets can travel across multiple network segments.
+
+* * *
+
+### **c. User Datagram Protocol (UDP – Layer 4)**
+
+UDP is a **connectionless transport protocol**, meaning it sends data without establishing a persistent session. While it lacks reliability features like TCP (no acknowledgments, retransmission, or sequencing), it is **fast and lightweight**, making it ideal for **DNS**, **VoIP**, and **streaming applications**.
+
+The key fields here are:
+
+-   **Source Port:** 53 (standard DNS server port)
+-   **Destination Port:** 58432 (client’s temporary port)
+-   **Length and Checksum:** Used for validation.
+
+* * *
+
+### **d. Domain Name System (DNS – Layer 7, Application Layer)**
+
+At the top of the stack lies the **DNS payload**, which actually carries the human-meaningful data.
+
+#### Key Fields:
+
+-   **Transaction ID:** `0xb745` – identifies this specific DNS exchange.
+-   **Flags:** `0x8180` – indicates a **standard query response**, **no error**.
+-   **Questions:** 1
+-   **Answer Resource Records (RRs):** 4
+
+#### Query Section:
+
+```
+Name: httpbin.org
 Type: A (Host Address)
 Class: IN (Internet)
-</code></pre><h4 id="answer-section">Answer Section:</h4>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Record</th>
-<th>IP Address</th>
-<th>TTL (seconds)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A</td>
-<td>35.170.234.92</td>
-<td>300</td>
-</tr>
-<tr>
-<td>A</td>
-<td>100.29.147.161</td>
-<td>300</td>
-</tr>
-<tr>
-<td>A</td>
-<td>3.221.229.78</td>
-<td>300</td>
-</tr>
-<tr>
-<td>A</td>
-<td>54.234.120.160</td>
-<td>300</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<p>These are the <strong>IPv4 addresses</strong> associated with <strong>httpbin.org</strong>. The <strong>TTL</strong> (Time to Live) defines how long the client or any caching resolver should store these records before asking again.</p><hr><h2 id="3-why-multiple-ip-addresses"><strong>3. Why Multiple IP Addresses?</strong></h2><p>Seeing multiple A records in a DNS response is completely normal. This is how <strong>load balancing</strong> and <strong>redundancy</strong> are achieved. When a domain like <em>httpbin.org</em> is served by multiple servers, DNS can rotate responses or distribute traffic across them to balance the load and improve availability.</p><p>Modern DNS configurations may also include <strong>geolocation-based routing</strong>, where the DNS server returns the IP address of the nearest or fastest server relative to the client.</p><hr><h2 id="4-the-role-of-udp-and-why-not-tcp"><strong>4. The Role of UDP and Why Not TCP</strong></h2><p>DNS primarily uses <strong>UDP</strong> because of its <strong>low overhead</strong> — each query and response is small enough (usually under 512 bytes) to fit in a single packet.</p><p>However, if:</p><ul><li>the response exceeds 512 bytes, or</li><li>the DNS request involves zone transfers (<strong>AXFR</strong>),</li></ul><p>then <strong>TCP (Transmission Control Protocol)</strong> is used instead to ensure reliable delivery.</p><hr><h2 id="5-additional-considerations"><strong>5. Additional Considerations</strong></h2><h3 id="a-security"><strong>a. Security</strong></h3><p>DNS, in its traditional form, is <strong>unencrypted</strong>. Anyone between the client and server could potentially view or manipulate DNS queries. To mitigate this, modern implementations use:</p><ul><li><strong>DNS over HTTPS (DoH)</strong></li><li><strong>DNS over TLS (DoT)</strong></li></ul><p>These protocols encrypt DNS traffic, enhancing privacy and security.</p><hr><h3 id="b-performance-and-caching"><strong>b. Performance and Caching</strong></h3><p>Each DNS response contains a <strong>TTL</strong> value, dictating how long clients and intermediate resolvers may cache the result. Caching is crucial for performance — it reduces network latency and offloads DNS servers.</p><hr><h3 id="c-dns-response-codes"><strong>c. DNS Response Codes</strong></h3><p>In this example, the response code is <strong>0 (No Error)</strong>. However, other responses exist:</p><ul><li><strong>1 – Format Error</strong></li><li><strong>2 – Server Failure</strong></li><li><strong>3 – Name Error (NXDOMAIN)</strong></li><li><strong>4 – Not Implemented</strong></li><li><strong>5 – Refused</strong></li></ul><p>These codes provide diagnostic insights when a domain cannot be resolved.</p><hr><h3 id="d-packet-inspection-tools"><strong>d. Packet Inspection Tools</strong></h3><p><strong>Wireshark</strong> is a powerful tool for viewing packets in such detail. Each field can be expanded to inspect header values, flags, and even checksum information.<br>For developers or security analysts, <strong>understanding packet structure</strong> helps in debugging DNS-related issues, analyzing malware traffic, and validating network performance.</p><hr><h2 id="6-visual-representation-of-encapsulation"><strong>6. Visual Representation of Encapsulation</strong></h2><p>To visualize the concept, each layer encapsulates the next one inside it:</p><pre><code>[ Ethernet Frame ]
+```
+
+#### Answer Section:
+
+These are the **IPv4 addresses** associated with **httpbin.org**. The **TTL** (Time to Live) defines how long the client or any caching resolver should store these records before asking again.
+
+* * *
+
+## **3\. Why Multiple IP Addresses?**
+
+Seeing multiple A records in a DNS response is completely normal. This is how **load balancing** and **redundancy** are achieved. When a domain like _httpbin.org_ is served by multiple servers, DNS can rotate responses or distribute traffic across them to balance the load and improve availability.
+
+Modern DNS configurations may also include **geolocation-based routing**, where the DNS server returns the IP address of the nearest or fastest server relative to the client.
+
+* * *
+
+## **4\. The Role of UDP and Why Not TCP**
+
+DNS primarily uses **UDP** because of its **low overhead** — each query and response is small enough (usually under 512 bytes) to fit in a single packet.
+
+However, if:
+
+-   the response exceeds 512 bytes, or
+-   the DNS request involves zone transfers (**AXFR**),
+
+then **TCP (Transmission Control Protocol)** is used instead to ensure reliable delivery.
+
+* * *
+
+## **5\. Additional Considerations**
+
+### **a. Security**
+
+DNS, in its traditional form, is **unencrypted**. Anyone between the client and server could potentially view or manipulate DNS queries. To mitigate this, modern implementations use:
+
+-   **DNS over HTTPS (DoH)**
+-   **DNS over TLS (DoT)**
+
+These protocols encrypt DNS traffic, enhancing privacy and security.
+
+* * *
+
+### **b. Performance and Caching**
+
+Each DNS response contains a **TTL** value, dictating how long clients and intermediate resolvers may cache the result. Caching is crucial for performance — it reduces network latency and offloads DNS servers.
+
+* * *
+
+### **c. DNS Response Codes**
+
+In this example, the response code is **0 (No Error)**. However, other responses exist:
+
+-   **1 – Format Error**
+-   **2 – Server Failure**
+-   **3 – Name Error (NXDOMAIN)**
+-   **4 – Not Implemented**
+-   **5 – Refused**
+
+These codes provide diagnostic insights when a domain cannot be resolved.
+
+* * *
+
+### **d. Packet Inspection Tools**
+
+**Wireshark** is a powerful tool for viewing packets in such detail. Each field can be expanded to inspect header values, flags, and even checksum information.  
+For developers or security analysts, **understanding packet structure** helps in debugging DNS-related issues, analyzing malware traffic, and validating network performance.
+
+* * *
+
+## **6\. Visual Representation of Encapsulation**
+
+To visualize the concept, each layer encapsulates the next one inside it:
+
+```
+[ Ethernet Frame ]
      └── [ IPv4 Packet ]
              └── [ UDP Segment ]
                      └── [ DNS Payload ]
-</code></pre><p>This nesting ensures that each layer provides specific functionality — from physical delivery to logical addressing to application-level data exchange.</p><hr><h2 id="7-finally"><strong>7. Finally</strong></h2><p>This packet capture is a beautiful demonstration of how the <strong>internet’s naming system</strong> functions seamlessly in the background. Each layer — from Ethernet to DNS — plays a critical role in enabling communication between machines.</p><p>What may appear as a simple “website lookup” actually involves precise coordination of <strong>protocols</strong>, <strong>addressing schemes</strong>, and <strong>data encapsulation principles</strong> defined decades ago yet still central to the internet today.</p><p>By studying packets like this, network engineers and developers gain insight into the foundations of connectivity, helping them <strong>debug smarter</strong>, <strong>design resilient systems</strong>, and <strong>appreciate the hidden elegance</strong> of network communication.</p><hr><p>Would you like me to extend this article with a <strong>diagram</strong> (e.g., a layered packet flow or encapsulation illustration) that visually represents the relationship between Ethernet, IP, UDP, and DNS layers?</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This nesting ensures that each layer provides specific functionality — from physical delivery to logical addressing to application-level data exchange.
+
+* * *
+
+## **7\. Finally**
+
+This packet capture is a beautiful demonstration of how the **internet’s naming system** functions seamlessly in the background. Each layer — from Ethernet to DNS — plays a critical role in enabling communication between machines.
+
+What may appear as a simple “website lookup” actually involves precise coordination of **protocols**, **addressing schemes**, and **data encapsulation principles** defined decades ago yet still central to the internet today.
+
+By studying packets like this, network engineers and developers gain insight into the foundations of connectivity, helping them **debug smarter**, **design resilient systems**, and **appreciate the hidden elegance** of network communication.
+
+* * *
+
+Would you like me to extend this article with a **diagram** (e.g., a layered packet flow or encapsulation illustration) that visually represents the relationship between Ethernet, IP, UDP, and DNS layers?

@@ -2,26 +2,331 @@
 title: "Git Worktree Deep Dive: Parallel Branches, One Repository, Zero Headache"
 date: "2026-02-22T01:51:38.000Z"
 description: "When people say “Git lets you have multiple branches,” they usually mean logically multiple branches inside one working directory. In real life, though, your wo..."
-tags: ["testing","performance","git","debugging","productivity"]
+tags: ["bash","testing","performance","git","debugging"]
 ---
 
-<p>When people say “Git lets you have multiple branches,” they usually mean <em>logically</em> multiple branches inside one working directory. In real life, though, your working directory can only reflect <strong>one</strong> branch (one commit) at a time. That limitation is why developers constantly juggle <code>git stash</code>, temporary commits, or messy context switches.</p><p><strong><code>git worktree</code></strong> solves this in a clean, first-class way: it lets you check out <strong>multiple branches at the same time</strong>, each in its <strong>own folder</strong>, while sharing the same underlying repository data. If you frequently multitask—hotfixes, review changes, long-running features—worktrees can make your workflow calmer and faster.</p><p>Below is an in-depth explanation of how it works, when it helps, where it bites, and how to use it effectively.</p><hr><h2 id="1-the-mental-model-branch-vs-worktree"><strong>1) The mental model: Branch vs Worktree</strong></h2><h3 id="branch"><strong>Branch</strong></h3><p>A <strong>branch</strong> is just a <strong>name</strong> (a reference) pointing to a commit. It is not a folder. It does not “contain files” by itself. Your <em>working directory</em> materializes one commit at a time.</p><ul><li><strong>Branch</strong> = pointer to a commit (<code>refs/heads/my-branch</code>)</li><li><strong>Working directory</strong> = the files you see on disk right now (checked out from one commit)</li></ul><h3 id="worktree"><strong>Worktree</strong></h3><p>A <strong>worktree</strong> is an <strong>additional working directory</strong> attached to the same repository. Each worktree can have its <strong>own branch checked out</strong>, simultaneously.</p><ul><li><strong>Worktree</strong> = extra checkout folder + metadata linking it to the repo</li><li>Multiple worktrees share the same <code>.git</code> object database (efficient)</li></ul><p><strong>Key idea:</strong> With worktrees, you stop treating “one folder = one branch.” Instead you get “one repo = many folders, each on its own branch.”</p><hr><h2 id="2-why-git-worktree-exists-the-pain-it-removes"><strong>2) Why Git worktree exists (the pain it removes)</strong></h2><p>Common pain without worktrees:</p><ul><li>You’re midway in a feature branch and suddenly need a <strong>hotfix</strong> on <code>main</code>.</li><li>You either:<ul><li><strong>stash</strong> changes (sometimes painful/unsafe if changes are half-baked),</li><li>create a “WIP commit” you later rewrite,</li><li>or keep switching branches and recompiling dependencies repeatedly.</li></ul></li></ul><p>With worktrees:</p><ul><li>Keep feature work open in one folder.</li><li>Create a separate folder for hotfix branch.</li><li>Switch contexts by switching folders, not branches.</li></ul><p>This is especially powerful when your project has:</p><ul><li>expensive builds,</li><li>heavy dependency installs,</li><li>long-running test servers,</li><li>or multiple “states” you want live at once.</li></ul><hr><h2 id="3-how-git-worktree-actually-works-under-the-hood-but-practical"><strong>3) How Git worktree actually works (under the hood, but practical)</strong></h2><p>Your main checkout has a <code>.git</code> directory (or a <code>.git</code> file pointing somewhere). With worktrees:</p><ul><li>There is still <strong>one “main” Git directory</strong> that stores objects, refs, etc.</li><li>Each additional worktree gets:<ul><li>a working directory with files</li><li>a small <code>.git</code> file pointing to metadata stored under the main repo in something like:<ul><li><code>.git/worktrees/&lt;name&gt;/</code></li></ul></li></ul></li></ul><p>Git uses that metadata to ensure safety:</p><ul><li>A branch is typically “locked” to a worktree while checked out there, preventing you from accidentally checking it out elsewhere and corrupting state.</li></ul><hr><h2 id="4-core-commands-you-should-know"><strong>4) Core commands you should know</strong></h2><h3 id="create-a-new-worktree"><strong>Create a new worktree</strong></h3><p>Create a new worktree folder for an existing branch:</p><pre><code class="language-bash">git worktree add ../my-hotfix hotfix/urgent-fix
-</code></pre><ul><li><code>../my-hotfix</code> = path where the new working directory will be created</li><li><code>hotfix/urgent-fix</code> = branch to check out there</li></ul><p>If the branch doesn’t exist yet, create it:</p><pre><code class="language-bash">git worktree add -b hotfix/urgent-fix ../my-hotfix origin/main
-</code></pre><ul><li><code>-b</code> creates the branch</li><li><code>origin/main</code> is the starting point</li></ul><h3 id="list-worktrees"><strong>List worktrees</strong></h3><pre><code class="language-bash">git worktree list
-</code></pre><p>This shows:</p><ul><li>path of each worktree</li><li>which branch/commit it is on</li><li>and whether it’s “locked” or detached</li></ul><h3 id="remove-a-worktree"><strong>Remove a worktree</strong></h3><p>Safest method:</p><pre><code class="language-bash">git worktree remove ../my-hotfix
-</code></pre><p>If the folder was deleted manually, clean up metadata:</p><pre><code class="language-bash">git worktree prune
-</code></pre><h3 id="lock-unlock-prevent-pruning"><strong>Lock / unlock (prevent pruning)</strong></h3><p>If you keep a worktree around for a long time:</p><pre><code class="language-bash">git worktree lock ../my-hotfix
-git worktree unlock ../my-hotfix
-</code></pre><hr><h2 id="5-the-biggest-difference-in-day-to-day-workflow"><strong>5) The biggest difference in day-to-day workflow</strong></h2><h3 id="without-worktrees">Without worktrees</h3><ul><li>One folder</li><li>constant branch switching</li><li>repeated install/build cycles</li><li>risk of stashing or half-commits</li></ul><h3 id="with-worktrees">With worktrees</h3><ul><li>One folder per context</li><li>feature branch stays “warm”</li><li>hotfix branch gets isolated</li><li>you can run two dev servers at once, each from different worktrees</li></ul><p>This is why many people say worktrees feel like “Git branches, but real.”</p><hr><h2 id="6-worktrees-vs-cloning-the-repo-twice"><strong>6) Worktrees vs cloning the repo twice</strong></h2><p>You <em>can</em> clone the same repo into two folders, but worktrees are better in most cases:</p><h3 id="why-worktrees-are-better">Why worktrees are better</h3><ul><li><strong>Disk efficient</strong>: objects are shared</li><li><strong>Faster</strong>: no second clone fetch</li><li><strong>Safer</strong>: branch checkout conflicts are managed</li><li><strong>Cleaner</strong>: one repo identity, many working directories</li></ul><h3 id="when-separate-clones-are-still-useful">When separate clones are still useful</h3><ul><li>You need different Git configs/remotes/credentials per copy</li><li>You want totally separate <code>.git</code> metadata (rare)</li><li>You want isolation across different Git versions/environments</li></ul><hr><h2 id="7-important-gotchas-things-people-discover-late"><strong>7) Important gotchas (things people discover late)</strong></h2><h3 id="1-branches-can-be-%E2%80%9Cin-use%E2%80%9D">1) <strong>Branches can be “in use”</strong></h3><p>If branch <code>feature/x</code> is checked out in a worktree, Git may prevent you from checking it out elsewhere.</p><p>This is a feature: it prevents two worktrees from writing to the same branch state.</p><h3 id="2-each-worktree-is-a-full-working-directory">2) <strong>Each worktree is a full working directory</strong></h3><p>Meaning:</p><ul><li>running <code>npm install</code> in one worktree does not automatically apply to another</li><li>build artifacts are separate per folder</li></ul><p>This is usually good (isolation), but it can surprise people who expected shared <code>node_modules</code>.</p><p><strong>Tip:</strong> If you want shared dependencies, use tooling like:</p><ul><li>pnpm store, bun cache, cargo cache, etc.<br>But avoid symlinking <code>node_modules</code> across worktrees unless you really understand the tradeoffs.</li></ul><h3 id="3-different-worktrees-can-conflict-on-ports">3) <strong>Different worktrees can conflict on ports</strong></h3><p>If you run two dev servers:</p><ul><li>one will fail because port 3000 is taken<br>Use different ports per worktree (or <code>.env.local</code> per folder).</li></ul><h3 id="4-hooks-and-tooling">4) <strong>Hooks and tooling</strong></h3><p>Git hooks are usually stored in the main repo’s <code>.git/hooks</code>. However, your tools might reference relative paths assuming one working directory. Be mindful if scripts assume “repo root is current directory.”</p><hr><h2 id="8-detached-head-worktrees-and-why-you-might-want-them"><strong>8) Detached HEAD worktrees (and why you might want them)</strong></h2><p>A worktree can be created at a specific commit without attaching it to a branch (detached HEAD). Useful for:</p><ul><li>checking out a tagged release for a quick test</li><li>reproducing a historical build</li><li>bisecting without disturbing your active branches</li></ul><p>Example:</p><pre><code class="language-bash">git worktree add ../release-test v1.2.3
-</code></pre><p>If <code>v1.2.3</code> is a tag, you’ll likely be in detached HEAD state.</p><hr><h2 id="9-practical-patterns-that-work-extremely-well"><strong>9) Practical patterns that work extremely well</strong></h2><h3 id="pattern-a-hotfix-without-interrupting-feature">Pattern A: <strong>Hotfix without interrupting feature</strong></h3><ul><li>Worktree 1: <code>feature/big-refactor</code></li><li>Worktree 2: <code>hotfix/payment-timeout</code></li></ul><p>You fix, test, merge hotfix, and your feature worktree never moved.</p><h3 id="pattern-b-code-review-pr-checkout">Pattern B: <strong>Code review / PR checkout</strong></h3><p>Create a worktree just to review a PR branch:</p><pre><code class="language-bash">git fetch origin pull/123/head:pr-123
-git worktree add ../pr-123 pr-123
-</code></pre><p>Now you can run it locally without messing your main workspace.</p><h3 id="pattern-c-release-branch-stability">Pattern C: <strong>Release branch stability</strong></h3><p>Keep a long-lived worktree for <code>release/1.8</code> to cherry-pick fixes while continuing normal work elsewhere.</p><h3 id="pattern-d-matrix-testing">Pattern D: <strong>Matrix testing</strong></h3><p>Have worktrees for:</p><ul><li><code>main</code></li><li><code>feature/x</code></li><li><code>experiment/y</code><br>Run tests in parallel, compare results quickly.</li></ul><hr><h2 id="10-recommendations-and-best-practices"><strong>10) Recommendations and best practices</strong></h2><ul><li>Put worktrees in a predictable structure, e.g.:<ul><li><code>~/code/myrepo/</code> (main)</li><li><code>~/code/myrepo-wt/hotfix-xyz/</code></li><li><code>~/code/myrepo-wt/pr-123/</code></li></ul></li><li>Name branches/worktrees consistently:<ul><li>branch: <code>hotfix/xyz</code>, <code>feature/abc</code></li><li>folder: <code>wt-hotfix-xyz</code>, <code>wt-feature-abc</code></li></ul></li><li>Regularly prune stale metadata:<ul><li><code>git worktree prune</code></li></ul></li><li>Prefer worktrees over stash for long-lived context switching.<ul><li>Stash is fine for tiny interruptions.</li><li>Worktrees are best for “I need to work on this for 1–3 hours.”</li></ul></li></ul><hr><h2 id="11-when-you-should-not-use-worktrees"><strong>11) When you should NOT use worktrees</strong></h2><p>Worktrees are not always the best hammer:</p><ul><li>You are extremely space constrained (multiple <code>node_modules</code> can be large)</li><li>Your project setup assumes only one working directory (some older tooling)</li><li>You rarely context-switch and stashing is enough</li></ul><p>Even then, worktrees remain useful for:</p><ul><li>PR reviews</li><li>quick hotfixes</li><li>testing old tags</li></ul><hr><h2 id="12-a-simple-%E2%80%9Cstarter-workflow%E2%80%9D-you-can-adopt-today"><strong>12) A simple “starter workflow” you can adopt today</strong></h2><ol><li>Keep your main folder on your primary branch:</li></ol><pre><code class="language-bash">cd ~/code/myrepo
-git switch main
-</code></pre><ol start="2"><li>Start a feature in a separate worktree:</li></ol><pre><code class="language-bash">git worktree add -b feature/new-dashboard ../wt-new-dashboard main
-</code></pre><ol start="3"><li>Emergency hotfix arrives:</li></ol><pre><code class="language-bash">git worktree add -b hotfix/login-timeout ../wt-hotfix-login main
-</code></pre><ol start="4"><li>When done:</li></ol><pre><code class="language-bash">git worktree remove ../wt-hotfix-login
-</code></pre><p>This becomes addictive—in a good way.</p><hr><h2 id="other-considerations-you-might-be-missing"><strong>Other considerations you might be missing</strong></h2><ul><li><strong>CI parity:</strong> Having two worktrees lets you quickly reproduce “works on main, fails on branch” issues side-by-side.</li><li><strong>Faster debugging:</strong> You can run a debugger against one worktree while editing another.</li><li><strong>Safer experiments:</strong> Experimental branches stay isolated; no accidental merges or resets in your “real” workspace.</li><li><strong>Better mental clarity:</strong> You associate a physical folder with a task. Less “what branch am I on?” fatigue.</li></ul><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When people say “Git lets you have multiple branches,” they usually mean _logically_ multiple branches inside one working directory. In real life, though, your working directory can only reflect **one** branch (one commit) at a time. That limitation is why developers constantly juggle `git stash`, temporary commits, or messy context switches.
 
+**`git worktree`** solves this in a clean, first-class way: it lets you check out **multiple branches at the same time**, each in its **own folder**, while sharing the same underlying repository data. If you frequently multitask—hotfixes, review changes, long-running features—worktrees can make your workflow calmer and faster.
+
+Below is an in-depth explanation of how it works, when it helps, where it bites, and how to use it effectively.
+
+* * *
+
+## **1) The mental model: Branch vs Worktree**
+
+### **Branch**
+
+A **branch** is just a **name** (a reference) pointing to a commit. It is not a folder. It does not “contain files” by itself. Your _working directory_ materializes one commit at a time.
+
+-   **Branch** = pointer to a commit (`refs/heads/my-branch`)
+-   **Working directory** = the files you see on disk right now (checked out from one commit)
+
+### **Worktree**
+
+A **worktree** is an **additional working directory** attached to the same repository. Each worktree can have its **own branch checked out**, simultaneously.
+
+-   **Worktree** = extra checkout folder + metadata linking it to the repo
+-   Multiple worktrees share the same `.git` object database (efficient)
+
+**Key idea:** With worktrees, you stop treating “one folder = one branch.” Instead you get “one repo = many folders, each on its own branch.”
+
+* * *
+
+## **2) Why Git worktree exists (the pain it removes)**
+
+Common pain without worktrees:
+
+-   You’re midway in a feature branch and suddenly need a **hotfix** on `main`.
+-   You either:
+    -   **stash** changes (sometimes painful/unsafe if changes are half-baked),
+    -   create a “WIP commit” you later rewrite,
+    -   or keep switching branches and recompiling dependencies repeatedly.
+
+With worktrees:
+
+-   Keep feature work open in one folder.
+-   Create a separate folder for hotfix branch.
+-   Switch contexts by switching folders, not branches.
+
+This is especially powerful when your project has:
+
+-   expensive builds,
+-   heavy dependency installs,
+-   long-running test servers,
+-   or multiple “states” you want live at once.
+
+* * *
+
+## **3) How Git worktree actually works (under the hood, but practical)**
+
+Your main checkout has a `.git` directory (or a `.git` file pointing somewhere). With worktrees:
+
+-   There is still **one “main” Git directory** that stores objects, refs, etc.
+-   Each additional worktree gets:
+    -   a working directory with files
+    -   a small `.git` file pointing to metadata stored under the main repo in something like:
+        -   `.git/worktrees/<name>/`
+
+Git uses that metadata to ensure safety:
+
+-   A branch is typically “locked” to a worktree while checked out there, preventing you from accidentally checking it out elsewhere and corrupting state.
+
+* * *
+
+## **4) Core commands you should know**
+
+### **Create a new worktree**
+
+Create a new worktree folder for an existing branch:
+
+```bash
+git worktree add ../my-hotfix hotfix/urgent-fix
+```
+
+-   `../my-hotfix` = path where the new working directory will be created
+-   `hotfix/urgent-fix` = branch to check out there
+
+If the branch doesn’t exist yet, create it:
+
+```bash
+git worktree add -b hotfix/urgent-fix ../my-hotfix origin/main
+```
+
+-   `-b` creates the branch
+-   `origin/main` is the starting point
+
+### **List worktrees**
+
+```bash
+git worktree list
+```
+
+This shows:
+
+-   path of each worktree
+-   which branch/commit it is on
+-   and whether it’s “locked” or detached
+
+### **Remove a worktree**
+
+Safest method:
+
+```bash
+git worktree remove ../my-hotfix
+```
+
+If the folder was deleted manually, clean up metadata:
+
+```bash
+git worktree prune
+```
+
+### **Lock / unlock (prevent pruning)**
+
+If you keep a worktree around for a long time:
+
+```bash
+git worktree lock ../my-hotfix
+git worktree unlock ../my-hotfix
+```
+
+* * *
+
+## **5) The biggest difference in day-to-day workflow**
+
+### Without worktrees
+
+-   One folder
+-   constant branch switching
+-   repeated install/build cycles
+-   risk of stashing or half-commits
+
+### With worktrees
+
+-   One folder per context
+-   feature branch stays “warm”
+-   hotfix branch gets isolated
+-   you can run two dev servers at once, each from different worktrees
+
+This is why many people say worktrees feel like “Git branches, but real.”
+
+* * *
+
+## **6) Worktrees vs cloning the repo twice**
+
+You _can_ clone the same repo into two folders, but worktrees are better in most cases:
+
+### Why worktrees are better
+
+-   **Disk efficient**: objects are shared
+-   **Faster**: no second clone fetch
+-   **Safer**: branch checkout conflicts are managed
+-   **Cleaner**: one repo identity, many working directories
+
+### When separate clones are still useful
+
+-   You need different Git configs/remotes/credentials per copy
+-   You want totally separate `.git` metadata (rare)
+-   You want isolation across different Git versions/environments
+
+* * *
+
+## **7) Important gotchas (things people discover late)**
+
+### 1) **Branches can be “in use”**
+
+If branch `feature/x` is checked out in a worktree, Git may prevent you from checking it out elsewhere.
+
+This is a feature: it prevents two worktrees from writing to the same branch state.
+
+### 2) **Each worktree is a full working directory**
+
+Meaning:
+
+-   running `npm install` in one worktree does not automatically apply to another
+-   build artifacts are separate per folder
+
+This is usually good (isolation), but it can surprise people who expected shared `node_modules`.
+
+**Tip:** If you want shared dependencies, use tooling like:
+
+-   pnpm store, bun cache, cargo cache, etc.  
+    But avoid symlinking `node_modules` across worktrees unless you really understand the tradeoffs.
+
+### 3) **Different worktrees can conflict on ports**
+
+If you run two dev servers:
+
+-   one will fail because port 3000 is taken  
+    Use different ports per worktree (or `.env.local` per folder).
+
+### 4) **Hooks and tooling**
+
+Git hooks are usually stored in the main repo’s `.git/hooks`. However, your tools might reference relative paths assuming one working directory. Be mindful if scripts assume “repo root is current directory.”
+
+* * *
+
+## **8) Detached HEAD worktrees (and why you might want them)**
+
+A worktree can be created at a specific commit without attaching it to a branch (detached HEAD). Useful for:
+
+-   checking out a tagged release for a quick test
+-   reproducing a historical build
+-   bisecting without disturbing your active branches
+
+Example:
+
+```bash
+git worktree add ../release-test v1.2.3
+```
+
+If `v1.2.3` is a tag, you’ll likely be in detached HEAD state.
+
+* * *
+
+## **9) Practical patterns that work extremely well**
+
+### Pattern A: **Hotfix without interrupting feature**
+
+-   Worktree 1: `feature/big-refactor`
+-   Worktree 2: `hotfix/payment-timeout`
+
+You fix, test, merge hotfix, and your feature worktree never moved.
+
+### Pattern B: **Code review / PR checkout**
+
+Create a worktree just to review a PR branch:
+
+```bash
+git fetch origin pull/123/head:pr-123
+git worktree add ../pr-123 pr-123
+```
+
+Now you can run it locally without messing your main workspace.
+
+### Pattern C: **Release branch stability**
+
+Keep a long-lived worktree for `release/1.8` to cherry-pick fixes while continuing normal work elsewhere.
+
+### Pattern D: **Matrix testing**
+
+Have worktrees for:
+
+-   `main`
+-   `feature/x`
+-   `experiment/y`  
+    Run tests in parallel, compare results quickly.
+
+* * *
+
+## **10) Recommendations and best practices**
+
+-   Put worktrees in a predictable structure, e.g.:
+    -   `~/code/myrepo/` (main)
+    -   `~/code/myrepo-wt/hotfix-xyz/`
+    -   `~/code/myrepo-wt/pr-123/`
+-   Name branches/worktrees consistently:
+    -   branch: `hotfix/xyz`, `feature/abc`
+    -   folder: `wt-hotfix-xyz`, `wt-feature-abc`
+-   Regularly prune stale metadata:
+    -   `git worktree prune`
+-   Prefer worktrees over stash for long-lived context switching.
+    -   Stash is fine for tiny interruptions.
+    -   Worktrees are best for “I need to work on this for 1–3 hours.”
+
+* * *
+
+## **11) When you should NOT use worktrees**
+
+Worktrees are not always the best hammer:
+
+-   You are extremely space constrained (multiple `node_modules` can be large)
+-   Your project setup assumes only one working directory (some older tooling)
+-   You rarely context-switch and stashing is enough
+
+Even then, worktrees remain useful for:
+
+-   PR reviews
+-   quick hotfixes
+-   testing old tags
+
+* * *
+
+## **12) A simple “starter workflow” you can adopt today**
+
+1.  Keep your main folder on your primary branch:
+
+```bash
+cd ~/code/myrepo
+git switch main
+```
+
+2.  Start a feature in a separate worktree:
+
+```bash
+git worktree add -b feature/new-dashboard ../wt-new-dashboard main
+```
+
+3.  Emergency hotfix arrives:
+
+```bash
+git worktree add -b hotfix/login-timeout ../wt-hotfix-login main
+```
+
+4.  When done:
+
+```bash
+git worktree remove ../wt-hotfix-login
+```
+
+This becomes addictive—in a good way.
+
+* * *
+
+## **Other considerations you might be missing**
+
+-   **CI parity:** Having two worktrees lets you quickly reproduce “works on main, fails on branch” issues side-by-side.
+-   **Faster debugging:** You can run a debugger against one worktree while editing another.
+-   **Safer experiments:** Experimental branches stay isolated; no accidental merges or resets in your “real” workspace.
+-   **Better mental clarity:** You associate a physical folder with a task. Less “what branch am I on?” fatigue.

@@ -5,8 +5,23 @@ description: "As web developers, optimizing the performance of our applications 
 tags: ["javascript","performance","productivity","logging","realtime"]
 ---
 
-<p>As web developers, optimizing the performance of our applications is always a priority. Balancing the execution of tasks while ensuring the user experience remains smooth is a key part of that process. One useful tool to achieve this is <code><strong>requestIdleCallback</strong></code>, a feature in JavaScript that allows you to schedule non-urgent tasks to be run when the browser is idle. If you’re just starting out, don’t worry—this guide will walk you through what <code>requestIdleCallback</code> does and how you can leverage it in your projects.</p><h3 id="what-is-requestidlecallback">What is <code>requestIdleCallback</code>?</h3><p>In simple terms, <code><strong>requestIdleCallback</strong></code> is a way to tell the browser: “Hey, I have a task that’s not urgent, so you can run it whenever you’re free.” This is useful because web pages often have higher-priority tasks like rendering or responding to user interactions, which need to happen as quickly as possible. By using <code>requestIdleCallback</code>, you can schedule lower-priority tasks, such as analytics, background data syncing, or any computational tasks that don’t need immediate execution, to run <strong>when the browser has idle time</strong>.</p><p>This helps improve performance, as it reduces the chances of causing a lag or delay in more critical operations. The browser decides when to execute your task, ensuring it doesn't interfere with more important work, like rendering the page or handling user input.</p><h3 id="how-does-requestidlecallback-work">How Does <code>requestIdleCallback</code> Work?</h3><p>To use <code>requestIdleCallback</code>, you simply provide it with a function to run during idle periods. That function receives a <code>deadline</code> object, which provides information about how much idle time is left. You can use this information to check whether the browser still has time to complete your task, and if not, you can reschedule the remaining work for the next idle period.</p><p>Here's a basic example to demonstrate how it works:</p><pre><code class="language-javascript">function performNonUrgentTask(deadline) {
-  while (deadline.timeRemaining() &gt; 0) {
+As web developers, optimizing the performance of our applications is always a priority. Balancing the execution of tasks while ensuring the user experience remains smooth is a key part of that process. One useful tool to achieve this is `**requestIdleCallback**`, a feature in JavaScript that allows you to schedule non-urgent tasks to be run when the browser is idle. If you’re just starting out, don’t worry—this guide will walk you through what `requestIdleCallback` does and how you can leverage it in your projects.
+
+### What is `requestIdleCallback`?
+
+In simple terms, `**requestIdleCallback**` is a way to tell the browser: “Hey, I have a task that’s not urgent, so you can run it whenever you’re free.” This is useful because web pages often have higher-priority tasks like rendering or responding to user interactions, which need to happen as quickly as possible. By using `requestIdleCallback`, you can schedule lower-priority tasks, such as analytics, background data syncing, or any computational tasks that don’t need immediate execution, to run **when the browser has idle time**.
+
+This helps improve performance, as it reduces the chances of causing a lag or delay in more critical operations. The browser decides when to execute your task, ensuring it doesn't interfere with more important work, like rendering the page or handling user input.
+
+### How Does `requestIdleCallback` Work?
+
+To use `requestIdleCallback`, you simply provide it with a function to run during idle periods. That function receives a `deadline` object, which provides information about how much idle time is left. You can use this information to check whether the browser still has time to complete your task, and if not, you can reschedule the remaining work for the next idle period.
+
+Here's a basic example to demonstrate how it works:
+
+```javascript
+function performNonUrgentTask(deadline) {
+  while (deadline.timeRemaining() > 0) {
     console.log("Doing a low-priority task...");
     // Simulate part of the task being completed
   }
@@ -19,13 +34,42 @@ tags: ["javascript","performance","productivity","logging","realtime"]
 
 // Schedule the task during the browser's idle time
 requestIdleCallback(performNonUrgentTask);
-</code></pre><p>In this example, the <code><strong>performNonUrgentTask</strong></code> function runs when the browser is idle. The <code>deadline</code> object helps us determine how much time is available in the current idle period. If there isn’t enough time to finish the task, it can be rescheduled for the next idle period using <code>requestIdleCallback</code> again.</p><h3 id="why-use-requestidlecallback">Why Use <code>requestIdleCallback</code>?</h3><p>When building modern web applications, you often need to perform tasks that aren’t time-sensitive. For instance, tracking user behavior, performing background calculations, or syncing some data in the background. Without a smart scheduling mechanism, doing all these tasks in real-time can potentially slow down the website, leading to poor performance, unresponsive pages, and frustrated users.</p><p><strong><code>requestIdleCallback</code> steps in as a solution</strong> by allowing you to push these non-urgent tasks to moments when the browser isn’t busy with more critical tasks. This ensures that user interactions (like clicking, scrolling, or typing) and page rendering remain smooth and responsive.</p><h3 id="key-points-to-keep-in-mind">Key Points to Keep in Mind</h3><p>While <code>requestIdleCallback</code> is a powerful tool, it’s important to use it wisely. Here are some things to keep in mind:</p><ol><li><strong>Not guaranteed to run immediately:</strong> Since the browser decides when it has idle time, it may not execute your task right away. This is why <code>requestIdleCallback</code> is best suited for tasks that are not time-sensitive.</li><li><strong>Idle time varies:</strong> Different devices and browsers may have varying amounts of idle time, especially on slower machines or when many applications are running in the background. So your tasks should be designed in a way that they can run in short chunks if necessary.</li><li><strong>Fallback for older browsers:</strong> Some older browsers don’t support <code>requestIdleCallback</code>. For those cases, you can provide a fallback using <code>setTimeout</code> to schedule the task after a delay.</li></ol><pre><code class="language-javascript">if ('requestIdleCallback' in window) {
+```
+
+In this example, the `**performNonUrgentTask**` function runs when the browser is idle. The `deadline` object helps us determine how much time is available in the current idle period. If there isn’t enough time to finish the task, it can be rescheduled for the next idle period using `requestIdleCallback` again.
+
+### Why Use `requestIdleCallback`?
+
+When building modern web applications, you often need to perform tasks that aren’t time-sensitive. For instance, tracking user behavior, performing background calculations, or syncing some data in the background. Without a smart scheduling mechanism, doing all these tasks in real-time can potentially slow down the website, leading to poor performance, unresponsive pages, and frustrated users.
+
+**`requestIdleCallback` steps in as a solution** by allowing you to push these non-urgent tasks to moments when the browser isn’t busy with more critical tasks. This ensures that user interactions (like clicking, scrolling, or typing) and page rendering remain smooth and responsive.
+
+### Key Points to Keep in Mind
+
+While `requestIdleCallback` is a powerful tool, it’s important to use it wisely. Here are some things to keep in mind:
+
+1.  **Not guaranteed to run immediately:** Since the browser decides when it has idle time, it may not execute your task right away. This is why `requestIdleCallback` is best suited for tasks that are not time-sensitive.
+2.  **Idle time varies:** Different devices and browsers may have varying amounts of idle time, especially on slower machines or when many applications are running in the background. So your tasks should be designed in a way that they can run in short chunks if necessary.
+3.  **Fallback for older browsers:** Some older browsers don’t support `requestIdleCallback`. For those cases, you can provide a fallback using `setTimeout` to schedule the task after a delay.
+
+```javascript
+if ('requestIdleCallback' in window) {
   requestIdleCallback(performNonUrgentTask);
 } else {
   setTimeout(performNonUrgentTask, 0);
 }
-</code></pre><ol start="4"><li><strong>Prioritize your tasks:</strong> Don’t use <code>requestIdleCallback</code> for tasks that are crucial to the user experience, like rendering the page or handling user input. Save it for tasks that can afford to wait, such as logging data, fetching additional non-essential information, or performing analytics.</li></ol><h3 id="the-role-of-timeremaining">The Role of <code>timeRemaining()</code></h3><p>One aspect that might seem tricky is <strong><code>deadline.timeRemaining()</code></strong>. This method returns the amount of time (in milliseconds) that the browser expects to remain idle. You can use this to determine whether you should continue running your task or stop and reschedule it for later.</p><p>By checking <code>timeRemaining()</code>, you ensure that your low-priority task doesn’t overstay its welcome, allowing the browser to maintain a responsive user interface. It’s a way to politely step aside if more important work comes up.</p><h3 id="finally">Finally</h3><p>In the fast-paced world of web development, <strong>optimizing your app for smooth performance is essential</strong>. With <strong><code>requestIdleCallback</code></strong>, you have the power to schedule low-priority tasks in a way that minimizes their impact on the user experience. By allowing the browser to run these tasks during its idle periods, you free up resources for more critical operations, leading to a more responsive and fluid interface.</p><p>Next time you find yourself needing to handle a background process, consider whether it can wait for the browser’s downtime—and let <code>requestIdleCallback</code> handle it gracefully. It’s a simple, yet effective way to keep your app running smoothly without sacrificing performance where it matters most.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+4.  **Prioritize your tasks:** Don’t use `requestIdleCallback` for tasks that are crucial to the user experience, like rendering the page or handling user input. Save it for tasks that can afford to wait, such as logging data, fetching additional non-essential information, or performing analytics.
+
+### The Role of `timeRemaining()`
+
+One aspect that might seem tricky is **`deadline.timeRemaining()`**. This method returns the amount of time (in milliseconds) that the browser expects to remain idle. You can use this to determine whether you should continue running your task or stop and reschedule it for later.
+
+By checking `timeRemaining()`, you ensure that your low-priority task doesn’t overstay its welcome, allowing the browser to maintain a responsive user interface. It’s a way to politely step aside if more important work comes up.
+
+### Finally
+
+In the fast-paced world of web development, **optimizing your app for smooth performance is essential**. With **`requestIdleCallback`**, you have the power to schedule low-priority tasks in a way that minimizes their impact on the user experience. By allowing the browser to run these tasks during its idle periods, you free up resources for more critical operations, leading to a more responsive and fluid interface.
+
+Next time you find yourself needing to handle a background process, consider whether it can wait for the browser’s downtime—and let `requestIdleCallback` handle it gracefully. It’s a simple, yet effective way to keep your app running smoothly without sacrificing performance where it matters most.

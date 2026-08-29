@@ -5,12 +5,15 @@ description: "Below is a multi-atom Jotai Vanilla example (via CDN) that demonst
 tags: ["react","html","security","design","json"]
 ---
 
-<h2 id="example-profile-counter-todos-no-framework-single-file">Example: Profile + Counter + Todos (no framework, single file)</h2><pre><code class="language-html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-  &lt;meta charset="UTF-8" /&gt;
-  &lt;title&gt;Jotai Vanilla – Multi-Atom Example&lt;/title&gt;
-  &lt;style&gt;
+## Example: Profile + Counter + Todos (no framework, single file)
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Jotai Vanilla – Multi-Atom Example</title>
+  <style>
     body { font-family: system-ui, Arial, sans-serif; line-height: 1.4; margin: 24px; }
     .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
     .row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
@@ -19,50 +22,50 @@ tags: ["react","html","security","design","json"]
     ul { padding-left: 20px; }
     li { display: flex; justify-content: space-between; align-items: center; margin: 4px 0; }
     small { color: #666; }
-  &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;h1&gt;Jotai Vanilla – Multi-Atom Demo&lt;/h1&gt;
+  </style>
+</head>
+<body>
+  <h1>Jotai Vanilla – Multi-Atom Demo</h1>
 
-  &lt;div class="card"&gt;
-    &lt;h2&gt;Profile&lt;/h2&gt;
-    &lt;div class="row"&gt;
-      &lt;label for="name"&gt;Name:&lt;/label&gt;
-      &lt;input id="name" type="text" placeholder="Your name" /&gt;
-      &lt;span id="greeting"&gt;&lt;/span&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  <div class="card">
+    <h2>Profile</h2>
+    <div class="row">
+      <label for="name">Name:</label>
+      <input id="name" type="text" placeholder="Your name" />
+      <span id="greeting"></span>
+    </div>
+  </div>
 
-  &lt;div class="card"&gt;
-    &lt;h2&gt;Counter&lt;/h2&gt;
-    &lt;div class="row"&gt;
-      &lt;label for="step"&gt;Step:&lt;/label&gt;
-      &lt;input id="step" type="number" min="1" step="1" value="1" /&gt;
-      &lt;small&gt;(how much to add/subtract)&lt;/small&gt;
-    &lt;/div&gt;
+  <div class="card">
+    <h2>Counter</h2>
+    <div class="row">
+      <label for="step">Step:</label>
+      <input id="step" type="number" min="1" step="1" value="1" />
+      <small>(how much to add/subtract)</small>
+    </div>
 
-    &lt;div class="row" style="font-size:1.5em;"&gt;
-      &lt;strong&gt;Count:&lt;/strong&gt; &lt;span id="count"&gt;0&lt;/span&gt;
-      &lt;span&gt; | Doubled: &lt;span id="doubled"&gt;0&lt;/span&gt;&lt;/span&gt;
-    &lt;/div&gt;
+    <div class="row" style="font-size:1.5em;">
+      <strong>Count:</strong> <span id="count">0</span>
+      <span> | Doubled: <span id="doubled">0</span></span>
+    </div>
 
-    &lt;div class="row"&gt;
-      &lt;button id="decrement"&gt;–&lt;/button&gt;
-      &lt;button id="increment"&gt;+&lt;/button&gt;
-      &lt;button id="reset"&gt;Reset All&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    <div class="row">
+      <button id="decrement">–</button>
+      <button id="increment">+</button>
+      <button id="reset">Reset All</button>
+    </div>
+  </div>
 
-  &lt;div class="card"&gt;
-    &lt;h2&gt;Todos&lt;/h2&gt;
-    &lt;div class="row"&gt;
-      &lt;input id="todoInput" type="text" placeholder="Add a todo..." /&gt;
-      &lt;button id="addTodo"&gt;Add&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;ul id="todoList"&gt;&lt;/ul&gt;
-  &lt;/div&gt;
+  <div class="card">
+    <h2>Todos</h2>
+    <div class="row">
+      <input id="todoInput" type="text" placeholder="Add a todo..." />
+      <button id="addTodo">Add</button>
+    </div>
+    <ul id="todoList"></ul>
+  </div>
 
-  &lt;script type="module"&gt;
+  <script type="module">
     import { atom, createStore } from "https://esm.sh/jotai@2.13.0/vanilla";
 
     // ---------- Store ----------
@@ -75,31 +78,31 @@ tags: ["react","html","security","design","json"]
     const todosAtom = atom([]); // array of { id, title }
 
     // ---------- Derived atoms (read-only) ----------
-    const doubledAtom = atom((get) =&gt; get(countAtom) * 2);
-    const greetingAtom = atom((get) =&gt; `Hello, ${get(nameAtom)}!`);
+    const doubledAtom = atom((get) => get(countAtom) * 2);
+    const greetingAtom = atom((get) => `Hello, ${get(nameAtom)}!`);
 
     // ---------- Action atoms (write-only) ----------
-    const incrementAtom = atom(null, (get, set) =&gt; {
+    const incrementAtom = atom(null, (get, set) => {
       set(countAtom, get(countAtom) + get(stepAtom));
     });
 
-    const decrementAtom = atom(null, (get, set) =&gt; {
+    const decrementAtom = atom(null, (get, set) => {
       set(countAtom, get(countAtom) - get(stepAtom));
     });
 
-    const addTodoAtom = atom(null, (get, set, title) =&gt; {
+    const addTodoAtom = atom(null, (get, set, title) => {
       const trimmed = String(title || "").trim();
       if (!trimmed) return;
       const next = [...get(todosAtom), { id: Date.now(), title: trimmed }];
       set(todosAtom, next);
     });
 
-    const removeTodoAtom = atom(null, (get, set, id) =&gt; {
-      const next = get(todosAtom).filter((t) =&gt; t.id !== id);
+    const removeTodoAtom = atom(null, (get, set, id) => {
+      const next = get(todosAtom).filter((t) => t.id !== id);
       set(todosAtom, next);
     });
 
-    const resetAllAtom = atom(null, (_get, set) =&gt; {
+    const resetAllAtom = atom(null, (_get, set) => {
       set(nameAtom, "Guest");
       set(stepAtom, 1);
       set(countAtom, 0);
@@ -130,13 +133,13 @@ tags: ["react","html","security","design","json"]
     } catch { /* ignore parse errors */ }
 
     // subscribe to persist on change
-    store.sub(nameAtom, () =&gt; localStorage.setItem(PERSIST_KEYS.name, store.get(nameAtom)));
-    store.sub(stepAtom, () =&gt; localStorage.setItem(PERSIST_KEYS.step, String(store.get(stepAtom))));
-    store.sub(countAtom, () =&gt; localStorage.setItem(PERSIST_KEYS.count, String(store.get(countAtom))));
-    store.sub(todosAtom, () =&gt; localStorage.setItem(PERSIST_KEYS.todos, JSON.stringify(store.get(todosAtom))));
+    store.sub(nameAtom, () => localStorage.setItem(PERSIST_KEYS.name, store.get(nameAtom)));
+    store.sub(stepAtom, () => localStorage.setItem(PERSIST_KEYS.step, String(store.get(stepAtom))));
+    store.sub(countAtom, () => localStorage.setItem(PERSIST_KEYS.count, String(store.get(countAtom))));
+    store.sub(todosAtom, () => localStorage.setItem(PERSIST_KEYS.todos, JSON.stringify(store.get(todosAtom))));
 
     // ---------- DOM wiring ----------
-    const $ = (id) =&gt; document.getElementById(id);
+    const $ = (id) => document.getElementById(id);
 
     const nameInput = $("name");
     const greetingEl = $("greeting");
@@ -151,12 +154,12 @@ tags: ["react","html","security","design","json"]
     const todoList = $("todoList");
 
     // UI update functions
-    const renderGreeting = () =&gt; { greetingEl.textContent = store.get(greetingAtom); };
-    const renderStep = () =&gt; { stepInput.value = String(store.get(stepAtom)); };
-    const renderCount = () =&gt; { countEl.textContent = String(store.get(countAtom)); };
-    const renderDoubled = () =&gt; { doubledEl.textContent = String(store.get(doubledAtom)); };
-    const renderNameField = () =&gt; { nameInput.value = store.get(nameAtom); };
-    const renderTodos = () =&gt; {
+    const renderGreeting = () => { greetingEl.textContent = store.get(greetingAtom); };
+    const renderStep = () => { stepInput.value = String(store.get(stepAtom)); };
+    const renderCount = () => { countEl.textContent = String(store.get(countAtom)); };
+    const renderDoubled = () => { doubledEl.textContent = String(store.get(doubledAtom)); };
+    const renderNameField = () => { nameInput.value = store.get(nameAtom); };
+    const renderTodos = () => {
       const todos = store.get(todosAtom);
       todoList.innerHTML = "";
       for (const t of todos) {
@@ -165,7 +168,7 @@ tags: ["react","html","security","design","json"]
         span.textContent = t.title;
         const del = document.createElement("button");
         del.textContent = "Delete";
-        del.addEventListener("click", () =&gt; store.set(removeTodoAtom, t.id));
+        del.addEventListener("click", () => store.set(removeTodoAtom, t.id));
         li.appendChild(span);
         li.appendChild(del);
         todoList.appendChild(li);
@@ -173,27 +176,27 @@ tags: ["react","html","security","design","json"]
     };
 
     // subscriptions
-    store.sub(nameAtom, () =&gt; { renderGreeting(); renderNameField(); });
+    store.sub(nameAtom, () => { renderGreeting(); renderNameField(); });
     store.sub(stepAtom, renderStep);
     store.sub(countAtom, renderCount);
     store.sub(doubledAtom, renderDoubled);
     store.sub(todosAtom, renderTodos);
 
     // events
-    nameInput.addEventListener("input", (e) =&gt; store.set(nameAtom, e.target.value));
-    stepInput.addEventListener("change", (e) =&gt; {
+    nameInput.addEventListener("input", (e) => store.set(nameAtom, e.target.value));
+    stepInput.addEventListener("change", (e) => {
       const v = parseInt(e.target.value, 10);
-      store.set(stepAtom, Number.isFinite(v) &amp;&amp; v &gt; 0 ? v : 1);
+      store.set(stepAtom, Number.isFinite(v) && v > 0 ? v : 1);
     });
-    incBtn.addEventListener("click", () =&gt; store.set(incrementAtom));
-    decBtn.addEventListener("click", () =&gt; store.set(decrementAtom));
-    resetBtn.addEventListener("click", () =&gt; store.set(resetAllAtom));
-    addTodoBtn.addEventListener("click", () =&gt; {
+    incBtn.addEventListener("click", () => store.set(incrementAtom));
+    decBtn.addEventListener("click", () => store.set(decrementAtom));
+    resetBtn.addEventListener("click", () => store.set(resetAllAtom));
+    addTodoBtn.addEventListener("click", () => {
       store.set(addTodoAtom, todoInput.value);
       todoInput.value = "";
       todoInput.focus();
     });
-    todoInput.addEventListener("keydown", (e) =&gt; {
+    todoInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         store.set(addTodoAtom, todoInput.value);
         todoInput.value = "";
@@ -207,11 +210,31 @@ tags: ["react","html","security","design","json"]
     renderCount();
     renderDoubled();
     renderTodos();
-  &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💻</div><div class="kg-callout-text">Demo <a href="https://onecompiler.com/html/43t9zwz3s" rel="noreferrer">here</a>.</div></div><hr><h2 id="what-this-demonstrates">What This Demonstrates</h2><ul><li><strong>Multiple independent atoms</strong> for <strong>name</strong>, <strong>step</strong>, <strong>count</strong>, and <strong>todos</strong> keep concerns clean and composable.</li><li><strong>Derived atoms</strong> (<code>doubledAtom</code>, <code>greetingAtom</code>) compute values from other atoms without duplicating logic.</li><li><strong>Write-only action atoms</strong> (<code>incrementAtom</code>, <code>decrementAtom</code>, <code>addTodoAtom</code>, <code>removeTodoAtom</code>, <code>resetAllAtom</code>) encapsulate mutations in one place—keeping UI handlers thin.</li><li><strong>Simple persistence</strong> ensures user state survives reloads without extra libraries.</li><li><strong>Fine-grained subscriptions</strong> (<code>store.sub</code>) update exactly the UI parts that depend on each atom.</li></ul><hr><h2 id="additional-points-and-considerations">Additional Points and Considerations</h2><ul><li><strong>Lock versions</strong> in CDN imports (<strong>important</strong>) to avoid unexpected breaks:<br><code>https://esm.sh/jotai@2.13.0/vanilla</code></li><li>Prefer <strong>more atoms rather than one big object</strong>. It keeps dependencies explicit and re-renders minimal.</li><li>For larger apps, consider <strong>modularizing state</strong> by feature (profile atoms, counter atoms, todos atoms) and <strong>grouping action atoms</strong> per feature.</li><li>If you later adopt React (or Preact), the same mental model applies—your <strong>vanilla store</strong> and atoms can be reused.</li></ul><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+  </script>
+</body>
+</html>
+```
 
+💻
+
+Demo [here](https://onecompiler.com/html/43t9zwz3s).
+
+* * *
+
+## What This Demonstrates
+
+-   **Multiple independent atoms** for **name**, **step**, **count**, and **todos** keep concerns clean and composable.
+-   **Derived atoms** (`doubledAtom`, `greetingAtom`) compute values from other atoms without duplicating logic.
+-   **Write-only action atoms** (`incrementAtom`, `decrementAtom`, `addTodoAtom`, `removeTodoAtom`, `resetAllAtom`) encapsulate mutations in one place—keeping UI handlers thin.
+-   **Simple persistence** ensures user state survives reloads without extra libraries.
+-   **Fine-grained subscriptions** (`store.sub`) update exactly the UI parts that depend on each atom.
+
+* * *
+
+## Additional Points and Considerations
+
+-   **Lock versions** in CDN imports (**important**) to avoid unexpected breaks:  
+    `https://esm.sh/jotai@2.13.0/vanilla`
+-   Prefer **more atoms rather than one big object**. It keeps dependencies explicit and re-renders minimal.
+-   For larger apps, consider **modularizing state** by feature (profile atoms, counter atoms, todos atoms) and **grouping action atoms** per feature.
+-   If you later adopt React (or Preact), the same mental model applies—your **vanilla store** and atoms can be reused.

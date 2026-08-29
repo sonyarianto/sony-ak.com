@@ -5,19 +5,99 @@ description: "In Linux, it’s often important to know how much space a director
 tags: ["bash","linux","performance","git","productivity"]
 ---
 
-<p>In Linux, it’s often important to know <strong>how much space a directory consumes</strong>. Whether you are managing servers, cleaning up development projects, or troubleshooting disk usage, being able to measure directory size quickly is a valuable skill.</p><p>The most reliable way to check this is by using the <strong><code>du</code> (disk usage)</strong> command, along with a few helpful options.</p><hr><h2 id="checking-the-total-size-of-a-directory">Checking the Total Size of a Directory</h2><p>The simplest command to find the total size of any directory is:</p><pre><code class="language-bash">du -sh /path/to/directory
-</code></pre><ul><li><strong><code>du</code></strong>: Short for <em>disk usage</em>.</li><li><strong><code>-s</code> (summary)</strong>: Shows only the total size of the directory, not every single file.</li><li><strong><code>-h</code> (human readable)</strong>: Displays results in KB, MB, or GB instead of raw bytes.</li></ul><p>👉 Example output:</p><pre><code>2.5G    /path/to/directory
-</code></pre><p>This means the folder takes about <strong>2.5 GB</strong> of disk space.</p><hr><h2 id="viewing-sizes-of-subdirectories">Viewing Sizes of Subdirectories</h2><p>Sometimes you need to see <em>which subdirectories</em> are taking up the most space. In that case, run:</p><pre><code class="language-bash">du -h --max-depth=1 /path/to/directory
-</code></pre><p>This lists the size of each immediate subdirectory, plus the total at the end. For example:</p><pre><code>500M    /path/to/directory/logs
+In Linux, it’s often important to know **how much space a directory consumes**. Whether you are managing servers, cleaning up development projects, or troubleshooting disk usage, being able to measure directory size quickly is a valuable skill.
+
+The most reliable way to check this is by using the **`du` (disk usage)** command, along with a few helpful options.
+
+* * *
+
+## Checking the Total Size of a Directory
+
+The simplest command to find the total size of any directory is:
+
+```bash
+du -sh /path/to/directory
+```
+
+-   **`du`**: Short for _disk usage_.
+-   **`-s` (summary)**: Shows only the total size of the directory, not every single file.
+-   **`-h` (human readable)**: Displays results in KB, MB, or GB instead of raw bytes.
+
+👉 Example output:
+
+```
+2.5G    /path/to/directory
+```
+
+This means the folder takes about **2.5 GB** of disk space.
+
+* * *
+
+## Viewing Sizes of Subdirectories
+
+Sometimes you need to see _which subdirectories_ are taking up the most space. In that case, run:
+
+```bash
+du -h --max-depth=1 /path/to/directory
+```
+
+This lists the size of each immediate subdirectory, plus the total at the end. For example:
+
+```
+500M    /path/to/directory/logs
 1.2G    /path/to/directory/data
 800M    /path/to/directory/backups
 2.5G    /path/to/directory
-</code></pre><p>From this output, you can quickly identify the <strong>largest subfolders</strong>.</p><hr><h2 id="hidden-files-and-folders">Hidden Files and Folders</h2><p>Linux directories often contain <strong>hidden files</strong> (those starting with a dot, e.g., <code>.git</code>, <code>.cache</code>). The <code>du</code> command already includes these by default in its calculations, so you don’t need extra options to account for them.</p><p>If you want to specifically analyze hidden folders, you can run:</p><pre><code class="language-bash">du -h --max-depth=1 /path/to/directory/.*
-</code></pre><hr><h2 id="alternative-tools">Alternative Tools</h2><p>Besides <code>du</code>, there are other ways to measure and analyze disk usage:</p><p><strong><code>ncdu</code> (NCurses Disk Usage)</strong> – an interactive tool that makes it easier to navigate large directories:</p><pre><code class="language-bash">sudo apt install ncdu   # Debian/Ubuntu
-ncdu /path/to/directory
-</code></pre><p>With this, you can browse directories in a terminal interface and delete files directly.</p><p><strong><code>ls</code> with sorting</strong> – good for individual file sizes, not directory totals:</p><pre><code class="language-bash">ls -lhS /path/to/directory
-</code></pre><hr><h2 id="key-considerations">Key Considerations</h2><ul><li><strong>Log files</strong>: System logs can grow quickly. Regular cleanup or rotation helps keep them manageable.</li><li><strong>Backups and archives</strong>: Large tarballs or backup directories often take up significant space and can sometimes be moved to external storage.</li><li><strong>Cache directories</strong>: Temporary cache folders may be safely cleared, depending on the application.</li><li><strong>Version control history</strong>: Repositories with large binary files may accumulate hidden storage in <code>.git</code> folders. Running garbage collection (<code>git gc</code>) can reduce size.</li></ul><hr><h2 id="finally">Finally</h2><p>Measuring directory size in Linux is a fundamental skill for system maintenance and project management. With <code>du -sh</code>, you can get a quick overview, while <code>du -h --max-depth=1</code> allows you to explore subdirectory sizes. For more detailed exploration, <code>ncdu</code> provides an interactive experience.</p><p>By keeping an eye on <strong>hidden files</strong>, <strong>logs</strong>, <strong>caches</strong>, and <strong>backups</strong>, you ensure your system stays efficient and avoids sudden “disk full” surprises.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+From this output, you can quickly identify the **largest subfolders**.
+
+* * *
+
+## Hidden Files and Folders
+
+Linux directories often contain **hidden files** (those starting with a dot, e.g., `.git`, `.cache`). The `du` command already includes these by default in its calculations, so you don’t need extra options to account for them.
+
+If you want to specifically analyze hidden folders, you can run:
+
+```bash
+du -h --max-depth=1 /path/to/directory/.*
+```
+
+* * *
+
+## Alternative Tools
+
+Besides `du`, there are other ways to measure and analyze disk usage:
+
+**`ncdu` (NCurses Disk Usage)** – an interactive tool that makes it easier to navigate large directories:
+
+```bash
+sudo apt install ncdu   # Debian/Ubuntu
+ncdu /path/to/directory
+```
+
+With this, you can browse directories in a terminal interface and delete files directly.
+
+**`ls` with sorting** – good for individual file sizes, not directory totals:
+
+```bash
+ls -lhS /path/to/directory
+```
+
+* * *
+
+## Key Considerations
+
+-   **Log files**: System logs can grow quickly. Regular cleanup or rotation helps keep them manageable.
+-   **Backups and archives**: Large tarballs or backup directories often take up significant space and can sometimes be moved to external storage.
+-   **Cache directories**: Temporary cache folders may be safely cleared, depending on the application.
+-   **Version control history**: Repositories with large binary files may accumulate hidden storage in `.git` folders. Running garbage collection (`git gc`) can reduce size.
+
+* * *
+
+## Finally
+
+Measuring directory size in Linux is a fundamental skill for system maintenance and project management. With `du -sh`, you can get a quick overview, while `du -h --max-depth=1` allows you to explore subdirectory sizes. For more detailed exploration, `ncdu` provides an interactive experience.
+
+By keeping an eye on **hidden files**, **logs**, **caches**, and **backups**, you ensure your system stays efficient and avoids sudden “disk full” surprises.

@@ -5,34 +5,232 @@ description: "Windows Subsystem for Linux ( WSL ) is a powerful tool that allows
 tags: ["bash","linux","performance","productivity","cli"]
 ---
 
-<p>Windows Subsystem for Linux (<strong>WSL</strong>) is a powerful tool that allows developers to run Linux distributions directly on Windows without a virtual machine. However, many users only scratch the surface of what WSL's <strong>command-line interface (CLI)</strong> offers. This article explores <strong>essential WSL commands</strong>, <strong>hidden gems</strong>, and <strong>best practices</strong> to enhance your workflow.</p><hr><h2 id="1-managing-wsl-distributions"><strong>1. Managing WSL Distributions</strong></h2><h3 id="listing-installed-distributions"><strong>Listing Installed Distributions</strong></h3><p>To see all installed WSL distributions:</p><pre><code class="language-sh">wsl --list
-</code></pre><p>Or, for more details (running state, WSL version, etc.):</p><pre><code class="language-sh">wsl --list --verbose
-</code></pre><p>Shortcut:</p><pre><code class="language-sh">wsl -l -v
-</code></pre><h3 id="setting-the-default-distribution"><strong>Setting the Default Distribution</strong></h3><p>To change which Linux distribution is used when running <code>wsl</code>:</p><pre><code class="language-sh">wsl --set-default &lt;DistroName&gt;
-</code></pre><p>Shortcut:</p><pre><code class="language-sh">wsl -s &lt;DistroName&gt;
-</code></pre><h3 id="launching-a-specific-distribution"><strong>Launching a Specific Distribution</strong></h3><pre><code class="language-sh">wsl --distribution &lt;DistroName&gt;
-</code></pre><p>or</p><pre><code class="language-sh">wsl -d &lt;DistroName&gt;
-</code></pre><hr><h2 id="2-controlling-wsl-execution"><strong>2. Controlling WSL Execution</strong></h2><h3 id="shutting-down-wsl"><strong>Shutting Down WSL</strong></h3><p>To completely shut down all running WSL instances and free resources:</p><pre><code class="language-sh">wsl --shutdown
-</code></pre><h3 id="stopping-a-specific-distribution"><strong>Stopping a Specific Distribution</strong></h3><p>If you want to <strong>terminate a single distribution</strong> instead of shutting down everything:</p><pre><code class="language-sh">wsl --terminate &lt;DistroName&gt;
-</code></pre><h3 id="running-a-linux-command-without-entering-wsl"><strong>Running a Linux Command Without Entering WSL</strong></h3><p>To execute a Linux command directly from <strong>PowerShell or CMD</strong>:</p><pre><code class="language-sh">wsl --exec &lt;command&gt;
-</code></pre><p>Example:</p><pre><code class="language-sh">wsl --exec ls -la
-</code></pre><p>Shortcut:</p><pre><code class="language-sh">wsl -e &lt;command&gt;
-</code></pre><p>Example:</p><pre><code class="language-sh">wsl -e uname -a
-</code></pre><h3 id="running-a-command-in-a-specific-distribution"><strong>Running a Command in a Specific Distribution</strong></h3><pre><code class="language-sh">wsl -d &lt;DistroName&gt; -- &lt;command&gt;
-</code></pre><p>Example:</p><pre><code class="language-sh">wsl -d Ubuntu -- uname -r
-</code></pre><hr><h2 id="3-managing-wsl-versions"><strong>3. Managing WSL Versions</strong></h2><h3 id="checking-the-default-wsl-version"><strong>Checking the Default WSL Version</strong></h3><pre><code class="language-sh">wsl --status
-</code></pre><h3 id="setting-the-default-wsl-version"><strong>Setting the Default WSL Version</strong></h3><p>To ensure that all <strong>newly installed distributions</strong> use WSL 2 by default:</p><pre><code class="language-sh">wsl --set-default-version 2
-</code></pre><h3 id="converting-between-wsl-1-and-wsl-2"><strong>Converting Between WSL 1 and WSL 2</strong></h3><p>If you want to switch a <strong>specific distribution</strong> to WSL 2:</p><pre><code class="language-sh">wsl --set-version &lt;DistroName&gt; 2
-</code></pre><p>To revert back to WSL 1:</p><pre><code class="language-sh">wsl --set-version &lt;DistroName&gt; 1
-</code></pre><hr><h2 id="4-networking-and-file-access"><strong>4. Networking and File Access</strong></h2><h3 id="opening-the-wsl-filesystem-in-windows-explorer"><strong>Opening the WSL Filesystem in Windows Explorer</strong></h3><p>To quickly access your Linux files from Windows:</p><pre><code class="language-sh">explorer.exe .
-</code></pre><h3 id="accessing-wsl-from-windows-via-wsl"><strong>Accessing WSL from Windows via <code>\wsl$</code></strong></h3><p>You can navigate to WSL files using <strong>Windows File Explorer</strong>:</p><pre><code class="language-sh">\\wsl$\&lt;DistroName&gt;
-</code></pre><h3 id="enabling-wslg-for-gui-apps-on-windows-11"><strong>Enabling WSLg (For GUI Apps on Windows 11)</strong></h3><p>For users running <strong>WSL 2 with GUI support</strong> (Windows 11):</p><pre><code class="language-sh">wsl --set-network &lt;options&gt;
-</code></pre><hr><h2 id="5-keeping-wsl-updated"><strong>5. Keeping WSL Updated</strong></h2><h3 id="updating-the-wsl-kernel"><strong>Updating the WSL Kernel</strong></h3><p>If you are using WSL 2, it's important to keep the <strong>Linux kernel</strong> updated:</p><pre><code class="language-sh">wsl --update
-</code></pre><h3 id="rolling-back-to-the-previous-wsl-kernel"><strong>Rolling Back to the Previous WSL Kernel</strong></h3><p>If a recent update causes issues, you can revert:</p><pre><code class="language-sh">wsl --update rollback
-</code></pre><hr><h2 id="6-advanced-cleanup-and-uninstallation"><strong>6. Advanced Cleanup and Uninstallation</strong></h2><h3 id="unregistering-deleting-a-wsl-distribution"><strong>Unregistering (Deleting) a WSL Distribution</strong></h3><p>This <strong>permanently deletes a WSL distribution</strong>, including all files and settings:</p><pre><code class="language-sh">wsl --unregister &lt;DistroName&gt;
-</code></pre><p>⚠ <strong>Warning:</strong> This action is irreversible.</p><h3 id="freeing-up-resources"><strong>Freeing Up Resources</strong></h3><p>If WSL is using too much memory or behaving oddly, restart it:</p><pre><code class="language-sh">wsl --shutdown
-</code></pre><p>This stops all running instances and <strong>clears allocated RAM</strong>.</p><hr><h2 id="finally-mastering-wsl"><strong>Finally: Mastering WSL</strong></h2><p>WSL is a powerful tool that <strong>bridges the gap between Windows and Linux</strong>, making it easier for developers to work across platforms. By mastering <strong>these CLI commands</strong>, you can manage your distributions efficiently, optimize performance, and integrate WSL seamlessly into your workflow.</p><h3 id="key-takeaways"><strong>Key Takeaways:</strong></h3><ul><li>Use <code>wsl --list -v</code> to check running distributions.</li><li><code>wsl --shutdown</code> and <code>wsl --terminate &lt;DistroName&gt;</code> free up system resources.</li><li>Convert distributions between WSL 1 and WSL 2 using <code>wsl --set-version</code>.</li><li><code>wsl --exec &lt;command&gt;</code> runs Linux commands directly from Windows.</li><li>Keep WSL updated with <code>wsl --update</code> for best performance.</li></ul><p>By using these commands effectively, you can <strong>streamline your development environment</strong> and <strong>get the most out of WSL</strong>. 🚀</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+Windows Subsystem for Linux (**WSL**) is a powerful tool that allows developers to run Linux distributions directly on Windows without a virtual machine. However, many users only scratch the surface of what WSL's **command-line interface (CLI)** offers. This article explores **essential WSL commands**, **hidden gems**, and **best practices** to enhance your workflow.
 
+* * *
+
+## **1\. Managing WSL Distributions**
+
+### **Listing Installed Distributions**
+
+To see all installed WSL distributions:
+
+```sh
+wsl --list
+```
+
+Or, for more details (running state, WSL version, etc.):
+
+```sh
+wsl --list --verbose
+```
+
+Shortcut:
+
+```sh
+wsl -l -v
+```
+
+### **Setting the Default Distribution**
+
+To change which Linux distribution is used when running `wsl`:
+
+```sh
+wsl --set-default <DistroName>
+```
+
+Shortcut:
+
+```sh
+wsl -s <DistroName>
+```
+
+### **Launching a Specific Distribution**
+
+```sh
+wsl --distribution <DistroName>
+```
+
+or
+
+```sh
+wsl -d <DistroName>
+```
+
+* * *
+
+## **2\. Controlling WSL Execution**
+
+### **Shutting Down WSL**
+
+To completely shut down all running WSL instances and free resources:
+
+```sh
+wsl --shutdown
+```
+
+### **Stopping a Specific Distribution**
+
+If you want to **terminate a single distribution** instead of shutting down everything:
+
+```sh
+wsl --terminate <DistroName>
+```
+
+### **Running a Linux Command Without Entering WSL**
+
+To execute a Linux command directly from **PowerShell or CMD**:
+
+```sh
+wsl --exec <command>
+```
+
+Example:
+
+```sh
+wsl --exec ls -la
+```
+
+Shortcut:
+
+```sh
+wsl -e <command>
+```
+
+Example:
+
+```sh
+wsl -e uname -a
+```
+
+### **Running a Command in a Specific Distribution**
+
+```sh
+wsl -d <DistroName> -- <command>
+```
+
+Example:
+
+```sh
+wsl -d Ubuntu -- uname -r
+```
+
+* * *
+
+## **3\. Managing WSL Versions**
+
+### **Checking the Default WSL Version**
+
+```sh
+wsl --status
+```
+
+### **Setting the Default WSL Version**
+
+To ensure that all **newly installed distributions** use WSL 2 by default:
+
+```sh
+wsl --set-default-version 2
+```
+
+### **Converting Between WSL 1 and WSL 2**
+
+If you want to switch a **specific distribution** to WSL 2:
+
+```sh
+wsl --set-version <DistroName> 2
+```
+
+To revert back to WSL 1:
+
+```sh
+wsl --set-version <DistroName> 1
+```
+
+* * *
+
+## **4\. Networking and File Access**
+
+### **Opening the WSL Filesystem in Windows Explorer**
+
+To quickly access your Linux files from Windows:
+
+```sh
+explorer.exe .
+```
+
+### **Accessing WSL from Windows via `\wsl$`**
+
+You can navigate to WSL files using **Windows File Explorer**:
+
+```sh
+\\wsl$\<DistroName>
+```
+
+### **Enabling WSLg (For GUI Apps on Windows 11)**
+
+For users running **WSL 2 with GUI support** (Windows 11):
+
+```sh
+wsl --set-network <options>
+```
+
+* * *
+
+## **5\. Keeping WSL Updated**
+
+### **Updating the WSL Kernel**
+
+If you are using WSL 2, it's important to keep the **Linux kernel** updated:
+
+```sh
+wsl --update
+```
+
+### **Rolling Back to the Previous WSL Kernel**
+
+If a recent update causes issues, you can revert:
+
+```sh
+wsl --update rollback
+```
+
+* * *
+
+## **6\. Advanced Cleanup and Uninstallation**
+
+### **Unregistering (Deleting) a WSL Distribution**
+
+This **permanently deletes a WSL distribution**, including all files and settings:
+
+```sh
+wsl --unregister <DistroName>
+```
+
+⚠ **Warning:** This action is irreversible.
+
+### **Freeing Up Resources**
+
+If WSL is using too much memory or behaving oddly, restart it:
+
+```sh
+wsl --shutdown
+```
+
+This stops all running instances and **clears allocated RAM**.
+
+* * *
+
+## **Finally: Mastering WSL**
+
+WSL is a powerful tool that **bridges the gap between Windows and Linux**, making it easier for developers to work across platforms. By mastering **these CLI commands**, you can manage your distributions efficiently, optimize performance, and integrate WSL seamlessly into your workflow.
+
+### **Key Takeaways:**
+
+-   Use `wsl --list -v` to check running distributions.
+-   `wsl --shutdown` and `wsl --terminate <DistroName>` free up system resources.
+-   Convert distributions between WSL 1 and WSL 2 using `wsl --set-version`.
+-   `wsl --exec <command>` runs Linux commands directly from Windows.
+-   Keep WSL updated with `wsl --update` for best performance.
+
+By using these commands effectively, you can **streamline your development environment** and **get the most out of WSL**. 🚀

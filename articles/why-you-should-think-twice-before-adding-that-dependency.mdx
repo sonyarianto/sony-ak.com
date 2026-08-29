@@ -5,8 +5,87 @@ description: "In the world of software development, it’s tempting to reach for
 tags: ["ci-cd","security","package-manager","http","clean-code"]
 ---
 
-<p>In the world of software development, it’s <strong>tempting to reach for the next shiny library or framework</strong>. After all, who wants to reinvent the wheel when someone else has already packaged it up with a pretty bow?</p><p>But here’s the thing: <strong>every dependency you introduce into your project is a decision to cede control to someone else</strong>. Their priorities, their roadmap, their schedule. And more often than not, those decisions don’t align perfectly with yours.</p><p>Let’s talk about <strong>why avoiding dependencies—or at least minimizing them—should be a core principle of your engineering philosophy</strong>.</p><hr><h3 id="dependencies-lock-you-in"><strong>Dependencies Lock You In</strong></h3><p>Dependencies seem harmless at first. A few lines of <code>import</code> here and a <code>composer install</code> or <code>npm install</code> there. But each dependency:</p><ul><li><strong>Ties your project’s stability to someone else’s codebase</strong>.</li><li><strong>Introduces hidden complexity</strong>—what happens when a minor update introduces a subtle bug that breaks your system?</li><li><strong>Increases your attack surface</strong>—you’re implicitly trusting that maintainers handle security correctly.</li></ul><p>Now imagine this across <strong>dozens of dependencies</strong>, some of which depend on others you didn’t even realize. It’s a house of cards. And when the maintainers of a key package decide to <strong>change directions, drop support, or abandon the project altogether</strong>, you’re the one left holding the bag.</p><hr><h3 id="choose-dependencies-wisely"><strong>Choose Dependencies Wisely</strong></h3><p>That doesn’t mean you should never use dependencies. Some problems are too complex or time-consuming to solve yourself—think <strong>cryptography libraries</strong>, <strong>well-tested HTTP clients</strong>, or <strong>proven serialization frameworks</strong>.</p><p>But the key is to <strong>choose dependencies deliberately</strong>, not out of convenience. Ask yourself:</p><ul><li><strong>Does this library solve a genuinely hard problem that I don’t want to own?</strong></li><li><strong>Is it stable and well-maintained, with a clear roadmap?</strong></li><li><strong>Can I limit its usage to a specific, non-critical layer of my system?</strong></li></ul><p>If you can’t answer “yes” to these, maybe it’s not worth the tradeoff.</p><hr><h3 id="wrap-every-dependency"><strong>Wrap Every Dependency</strong></h3><p>Here’s a rule that will save your sanity later:</p><blockquote><strong>Never let a third-party dependency touch your core logic directly.</strong></blockquote><p>Wrap it. Build an <strong>adapter layer</strong> or a <strong>service wrapper</strong> around it. This gives you control and flexibility. If you need to switch libraries later—or even build your own replacement—it’s a matter of swapping out the wrapper, not untangling calls scattered throughout your codebase.</p><p>This isn’t just about code cleanliness. It’s about <strong>architectural resilience</strong>. Dependencies should feel like plugins, not pillars.</p><hr><h3 id="plan-for-replacement"><strong>Plan for Replacement</strong></h3><p><strong>Expect to replace every dependency eventually.</strong> Even if it’s perfect today, the world changes:</p><ul><li>The library may be abandoned or deprecated.</li><li>A better alternative might emerge.</li><li>Your system’s needs might outgrow what the library can offer.</li></ul><p>If you plan for this from the start—by <strong>keeping dependencies isolated and swappable</strong>—you’ll save yourself months of pain down the line.</p><hr><h3 id="strive-for-zero"><strong>Strive for Zero</strong></h3><p>The truth is, in most projects, you’ll need <strong>some dependencies</strong>. But the <strong>goal isn’t to ban them outright—it’s to minimize them</strong>. When you aim for a system that’s self-reliant, you:</p><ul><li><strong>Gain full control over your codebase’s evolution.</strong></li><li><strong>Reduce unexpected surprises</strong> from breaking changes or vulnerabilities.</li><li><strong>Ensure long-term maintainability</strong> without external crutches.</li></ul><p>It’s a mindset. <strong>Zero dependencies is the ideal</strong>—not always attainable, but a compass that guides your decisions.</p><hr><h3 id="other-considerations-you-shouldn%E2%80%99t-miss"><strong>Other Considerations You Shouldn’t Miss</strong></h3><ul><li><strong>Vendor Lock-in:</strong> Beyond code dependencies, think about <strong>cloud providers, CI/CD tools, and infrastructure-as-code frameworks</strong>. They’re dependencies too.</li><li><strong>License Risks:</strong> Are you sure the library’s license is compatible with your project? Ignoring this can lead to legal headaches.</li><li><strong>Cognitive Overhead:</strong> Every new dependency adds mental load for your team. They need to learn it, understand its quirks, and stay updated on changes.</li><li><strong>Supply Chain Vulnerabilities:</strong> Recent attacks on the software supply chain (remember SolarWinds, log4j?) show that even trusted dependencies can become attack vectors.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p>Software development is as much about <strong>what you don’t add as what you do</strong>. Be intentional. Be cautious. Be prepared.</p><p>Aim for a codebase where <strong>external dependencies are used sparingly, wrapped completely, and replaceable at will</strong>. Strive for zero. Even if you don’t reach it, the discipline will make your system <strong>leaner, more robust, and future-proof</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In the world of software development, it’s **tempting to reach for the next shiny library or framework**. After all, who wants to reinvent the wheel when someone else has already packaged it up with a pretty bow?
 
+But here’s the thing: **every dependency you introduce into your project is a decision to cede control to someone else**. Their priorities, their roadmap, their schedule. And more often than not, those decisions don’t align perfectly with yours.
+
+Let’s talk about **why avoiding dependencies—or at least minimizing them—should be a core principle of your engineering philosophy**.
+
+* * *
+
+### **Dependencies Lock You In**
+
+Dependencies seem harmless at first. A few lines of `import` here and a `composer install` or `npm install` there. But each dependency:
+
+-   **Ties your project’s stability to someone else’s codebase**.
+-   **Introduces hidden complexity**—what happens when a minor update introduces a subtle bug that breaks your system?
+-   **Increases your attack surface**—you’re implicitly trusting that maintainers handle security correctly.
+
+Now imagine this across **dozens of dependencies**, some of which depend on others you didn’t even realize. It’s a house of cards. And when the maintainers of a key package decide to **change directions, drop support, or abandon the project altogether**, you’re the one left holding the bag.
+
+* * *
+
+### **Choose Dependencies Wisely**
+
+That doesn’t mean you should never use dependencies. Some problems are too complex or time-consuming to solve yourself—think **cryptography libraries**, **well-tested HTTP clients**, or **proven serialization frameworks**.
+
+But the key is to **choose dependencies deliberately**, not out of convenience. Ask yourself:
+
+-   **Does this library solve a genuinely hard problem that I don’t want to own?**
+-   **Is it stable and well-maintained, with a clear roadmap?**
+-   **Can I limit its usage to a specific, non-critical layer of my system?**
+
+If you can’t answer “yes” to these, maybe it’s not worth the tradeoff.
+
+* * *
+
+### **Wrap Every Dependency**
+
+Here’s a rule that will save your sanity later:
+
+> **Never let a third-party dependency touch your core logic directly.**
+
+Wrap it. Build an **adapter layer** or a **service wrapper** around it. This gives you control and flexibility. If you need to switch libraries later—or even build your own replacement—it’s a matter of swapping out the wrapper, not untangling calls scattered throughout your codebase.
+
+This isn’t just about code cleanliness. It’s about **architectural resilience**. Dependencies should feel like plugins, not pillars.
+
+* * *
+
+### **Plan for Replacement**
+
+**Expect to replace every dependency eventually.** Even if it’s perfect today, the world changes:
+
+-   The library may be abandoned or deprecated.
+-   A better alternative might emerge.
+-   Your system’s needs might outgrow what the library can offer.
+
+If you plan for this from the start—by **keeping dependencies isolated and swappable**—you’ll save yourself months of pain down the line.
+
+* * *
+
+### **Strive for Zero**
+
+The truth is, in most projects, you’ll need **some dependencies**. But the **goal isn’t to ban them outright—it’s to minimize them**. When you aim for a system that’s self-reliant, you:
+
+-   **Gain full control over your codebase’s evolution.**
+-   **Reduce unexpected surprises** from breaking changes or vulnerabilities.
+-   **Ensure long-term maintainability** without external crutches.
+
+It’s a mindset. **Zero dependencies is the ideal**—not always attainable, but a compass that guides your decisions.
+
+* * *
+
+### **Other Considerations You Shouldn’t Miss**
+
+-   **Vendor Lock-in:** Beyond code dependencies, think about **cloud providers, CI/CD tools, and infrastructure-as-code frameworks**. They’re dependencies too.
+-   **License Risks:** Are you sure the library’s license is compatible with your project? Ignoring this can lead to legal headaches.
+-   **Cognitive Overhead:** Every new dependency adds mental load for your team. They need to learn it, understand its quirks, and stay updated on changes.
+-   **Supply Chain Vulnerabilities:** Recent attacks on the software supply chain (remember SolarWinds, log4j?) show that even trusted dependencies can become attack vectors.
+
+* * *
+
+### **Finally**
+
+Software development is as much about **what you don’t add as what you do**. Be intentional. Be cautious. Be prepared.
+
+Aim for a codebase where **external dependencies are used sparingly, wrapped completely, and replaceable at will**. Strive for zero. Even if you don’t reach it, the discipline will make your system **leaner, more robust, and future-proof**.

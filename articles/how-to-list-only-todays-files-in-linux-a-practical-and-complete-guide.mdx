@@ -2,25 +2,199 @@
 title: "How to List Only Today’s Files in Linux: A Practical and Complete Guide"
 date: "2025-11-15T03:33:58.000Z"
 description: "Managing files efficiently is part of every developer’s daily routine. One common need is to display only the files modified today . While the ls command is oft..."
-tags: ["ci-cd","linux","performance","deployment","productivity"]
+tags: ["bash","ci-cd","linux","performance","deployment"]
 ---
 
-<p>Managing files efficiently is part of every developer’s daily routine. One common need is to display <strong>only the files modified today</strong>. While the <code>ls</code> command is often the first tool people think of, it is important to understand its limitations and the proper alternatives available in Linux.</p><p>This article walks you through the <strong>correct methods</strong>, highlights <strong>important considerations</strong>, and explains <strong>common pitfalls</strong> so you can reliably filter files by date like a pro.</p><hr><h2 id="why-ls-alone-cannot-filter-today%E2%80%99s-files"><strong>Why <code>ls</code> Alone Cannot Filter Today’s Files</strong></h2><p>It is a common misconception that <code>ls</code> can filter files based on dates. Although <code>ls</code> can display timestamps, it <strong>cannot perform date-based filtering</strong> by itself. Any attempt to “filter” using <code>ls</code> relies on using <code>grep</code> on the date string, which can work but is not fully reliable.</p><p>Example (works but not robust):</p><pre><code class="language-bash">ls -lt --time-style=+%F | grep "$(date +%F)"
-</code></pre><p>This approach is <strong>not recommended</strong> because:</p><ul><li>It may fail if your locale or time format differs.</li><li>It does not handle timezones well.</li><li>It cannot detect files touched today but with time formatting differences.</li></ul><p>For accurate results, use <code>find</code>.</p><hr><h2 id="the-correct-and-reliable-way-using-find"><strong>The Correct and Reliable Way: Using <code>find</code></strong></h2><p>The <code>find</code> command is designed for filesystem queries and handles time-based filtering with precision.</p><h3 id="list-only-files-modified-today"><strong>List only files modified today</strong></h3><pre><code class="language-bash">find . -maxdepth 1 -type f -daystart -mtime 0
-</code></pre><h3 id="breakdown">Breakdown:</h3><ul><li><strong><code>.</code></strong> → search in current directory</li><li><strong><code>-maxdepth 1</code></strong> → don’t enter subdirectories</li><li><strong><code>-type f</code></strong> → files only</li><li><strong><code>-daystart</code></strong> → counts time from the start of the current day, not 24 hours backward</li><li><strong><code>-mtime 0</code></strong> → modified between <em>today at 00:00</em> and <em>now</em></li></ul><p>This is the <strong>most accurate</strong> method.</p><hr><h2 id="show-in-a-detailed-listing-similar-to-lsl"><strong>Show in a Detailed Listing (similar to <code>ls -l</code>)</strong></h2><p>If you want the output to look like a normal <code>ls -lh</code> listing:</p><pre><code class="language-bash">find . -maxdepth 1 -type f -daystart -mtime 0 -exec ls -lh {} +
-</code></pre><p>This gives you:</p><ul><li>file size</li><li>permissions</li><li>owner</li><li>timestamp</li><li>human-readable formatting</li></ul><hr><h2 id="including-subdirectories"><strong>Including Subdirectories</strong></h2><p>If you want to scan the entire folder tree:</p><pre><code class="language-bash">find . -type f -daystart -mtime 0
-</code></pre><hr><h2 id="filtering-files-modified-in-the-last-x-hours"><strong>Filtering Files Modified in the Last X Hours</strong></h2><p>Sometimes you want files from the <strong>last 24 hours</strong> (not from 00:00 today).</p><pre><code class="language-bash">find . -type f -mmin -1440
-</code></pre><p>Where:</p><ul><li><strong><code>-mmin -1440</code></strong> means “modified less than 1440 minutes ago”</li></ul><hr><h2 id="filtering-by-creation-time-if-supported"><strong>Filtering by Creation Time (If Supported)</strong></h2><p>Some filesystems (like ext4 with <code>crtime</code>) allow viewing creation time, but standard <code>find</code> <strong>cannot filter by creation time</strong> directly.<br>To inspect a single file’s creation time:</p><pre><code class="language-bash">stat filename
-</code></pre><p>Look at <strong>Birth:</strong> timestamp.</p><hr><h2 id="case-study-why-these-commands-matter"><strong>Case Study: Why These Commands Matter</strong></h2><p>Imagine you're working on:</p><ul><li>log directory cleanups</li><li>CI/CD artifact detection</li><li>daily backup verification</li><li>analyzing newly uploaded files</li></ul><p>Relying on <code>ls</code> can produce <strong>false matches</strong> or <strong>miss files</strong>. Using <code>find</code> ensures precision and stability, especially in production environments.</p><hr><h2 id="additional-tips-and-considerations"><strong>Additional Tips and Considerations</strong></h2><h3 id="1-timezone-awareness"><strong>1. Timezone Awareness</strong></h3><p>Linux timestamps follow system timezone. If you recently changed timezone or use UTC for consistency (common in servers), be aware that “today” depends on system clock.</p><h3 id="2-hidden-files"><strong>2. Hidden Files</strong></h3><p>To include hidden files (<code>.env</code>, <code>.config</code>, etc.):</p><pre><code class="language-bash">find . -maxdepth 1 -daystart -mtime 0 -type f -print
-</code></pre><p>Find does <strong>not</strong> ignore hidden files.</p><h3 id="3-excluding-certain-files"><strong>3. Excluding Certain Files</strong></h3><p>Example: skip <code>.log</code> files:</p><pre><code class="language-bash">find . -maxdepth 1 -type f -daystart -mtime 0 ! -name "*.log"
-</code></pre><h3 id="4-using-xargs-for-performance"><strong>4. Using <code>xargs</code> for Performance</strong></h3><p>If you expect thousands of files:</p><pre><code class="language-bash">find . -type f -daystart -mtime 0 -print0 | xargs -0 ls -lh
-</code></pre><p>This avoids command-execution overhead.</p><h3 id="5-select-using-access-time"><strong>5. Select Using Access Time</strong></h3><p>To filter by <strong>last accessed</strong> today:</p><pre><code class="language-bash">find . -daystart -atime 0 -type f
-</code></pre><h3 id="6-select-using-change-time"><strong>6. Select Using Change Time</strong></h3><p>To filter by metadata changes (permissions, ownership):</p><pre><code class="language-bash">find . -daystart -ctime 0 -type f
-</code></pre><hr><h2 id="finally"><strong>Finally</strong></h2><p>Listing only today’s files in Linux requires a proper understanding of what each tool can and cannot do. While <code>ls</code> is helpful for <em>viewing</em>, <strong><code>find</code> is the correct tool for filtering</strong>.</p><p>To summarize the essential commands:</p><h3 id="most-accurate"><strong>Most Accurate</strong></h3><pre><code class="language-bash">find . -maxdepth 1 -type f -daystart -mtime 0
-</code></pre><h3 id="detailed-view"><strong>Detailed View</strong></h3><pre><code class="language-bash">find . -maxdepth 1 -type f -daystart -mtime 0 -exec ls -lh {} +
-</code></pre><h3 id="search-entire-directory-tree"><strong>Search Entire Directory Tree</strong></h3><pre><code class="language-bash">find . -type f -daystart -mtime 0
-</code></pre><p>With these methods, you can reliably locate <strong>all files modified today</strong>, control the output, and tailor the filtering to your workflow.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+Managing files efficiently is part of every developer’s daily routine. One common need is to display **only the files modified today**. While the `ls` command is often the first tool people think of, it is important to understand its limitations and the proper alternatives available in Linux.
 
+This article walks you through the **correct methods**, highlights **important considerations**, and explains **common pitfalls** so you can reliably filter files by date like a pro.
+
+* * *
+
+## **Why `ls` Alone Cannot Filter Today’s Files**
+
+It is a common misconception that `ls` can filter files based on dates. Although `ls` can display timestamps, it **cannot perform date-based filtering** by itself. Any attempt to “filter” using `ls` relies on using `grep` on the date string, which can work but is not fully reliable.
+
+Example (works but not robust):
+
+```bash
+ls -lt --time-style=+%F | grep "$(date +%F)"
+```
+
+This approach is **not recommended** because:
+
+-   It may fail if your locale or time format differs.
+-   It does not handle timezones well.
+-   It cannot detect files touched today but with time formatting differences.
+
+For accurate results, use `find`.
+
+* * *
+
+## **The Correct and Reliable Way: Using `find`**
+
+The `find` command is designed for filesystem queries and handles time-based filtering with precision.
+
+### **List only files modified today**
+
+```bash
+find . -maxdepth 1 -type f -daystart -mtime 0
+```
+
+### Breakdown:
+
+-   **`.`** → search in current directory
+-   **`-maxdepth 1`** → don’t enter subdirectories
+-   **`-type f`** → files only
+-   **`-daystart`** → counts time from the start of the current day, not 24 hours backward
+-   **`-mtime 0`** → modified between _today at 00:00_ and _now_
+
+This is the **most accurate** method.
+
+* * *
+
+## **Show in a Detailed Listing (similar to `ls -l`)**
+
+If you want the output to look like a normal `ls -lh` listing:
+
+```bash
+find . -maxdepth 1 -type f -daystart -mtime 0 -exec ls -lh {} +
+```
+
+This gives you:
+
+-   file size
+-   permissions
+-   owner
+-   timestamp
+-   human-readable formatting
+
+* * *
+
+## **Including Subdirectories**
+
+If you want to scan the entire folder tree:
+
+```bash
+find . -type f -daystart -mtime 0
+```
+
+* * *
+
+## **Filtering Files Modified in the Last X Hours**
+
+Sometimes you want files from the **last 24 hours** (not from 00:00 today).
+
+```bash
+find . -type f -mmin -1440
+```
+
+Where:
+
+-   **`-mmin -1440`** means “modified less than 1440 minutes ago”
+
+* * *
+
+## **Filtering by Creation Time (If Supported)**
+
+Some filesystems (like ext4 with `crtime`) allow viewing creation time, but standard `find` **cannot filter by creation time** directly.  
+To inspect a single file’s creation time:
+
+```bash
+stat filename
+```
+
+Look at **Birth:** timestamp.
+
+* * *
+
+## **Case Study: Why These Commands Matter**
+
+Imagine you're working on:
+
+-   log directory cleanups
+-   CI/CD artifact detection
+-   daily backup verification
+-   analyzing newly uploaded files
+
+Relying on `ls` can produce **false matches** or **miss files**. Using `find` ensures precision and stability, especially in production environments.
+
+* * *
+
+## **Additional Tips and Considerations**
+
+### **1\. Timezone Awareness**
+
+Linux timestamps follow system timezone. If you recently changed timezone or use UTC for consistency (common in servers), be aware that “today” depends on system clock.
+
+### **2\. Hidden Files**
+
+To include hidden files (`.env`, `.config`, etc.):
+
+```bash
+find . -maxdepth 1 -daystart -mtime 0 -type f -print
+```
+
+Find does **not** ignore hidden files.
+
+### **3\. Excluding Certain Files**
+
+Example: skip `.log` files:
+
+```bash
+find . -maxdepth 1 -type f -daystart -mtime 0 ! -name "*.log"
+```
+
+### **4\. Using `xargs` for Performance**
+
+If you expect thousands of files:
+
+```bash
+find . -type f -daystart -mtime 0 -print0 | xargs -0 ls -lh
+```
+
+This avoids command-execution overhead.
+
+### **5\. Select Using Access Time**
+
+To filter by **last accessed** today:
+
+```bash
+find . -daystart -atime 0 -type f
+```
+
+### **6\. Select Using Change Time**
+
+To filter by metadata changes (permissions, ownership):
+
+```bash
+find . -daystart -ctime 0 -type f
+```
+
+* * *
+
+## **Finally**
+
+Listing only today’s files in Linux requires a proper understanding of what each tool can and cannot do. While `ls` is helpful for _viewing_, **`find` is the correct tool for filtering**.
+
+To summarize the essential commands:
+
+### **Most Accurate**
+
+```bash
+find . -maxdepth 1 -type f -daystart -mtime 0
+```
+
+### **Detailed View**
+
+```bash
+find . -maxdepth 1 -type f -daystart -mtime 0 -exec ls -lh {} +
+```
+
+### **Search Entire Directory Tree**
+
+```bash
+find . -type f -daystart -mtime 0
+```
+
+With these methods, you can reliably locate **all files modified today**, control the output, and tailor the filtering to your workflow.

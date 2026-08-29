@@ -5,16 +5,54 @@ description: "When working with Laravel's Eloquent ORM, it's common to fetch rel
 tags: ["php","laravel","performance"]
 ---
 
-<p>When working with Laravel's Eloquent ORM, it's common to fetch related records based on a specific condition. However, many developers unknowingly retrieve entire model objects when they only need a single field. This not only <strong>wastes memory</strong> but also <strong>slows down queries</strong>, especially when dealing with large datasets.</p><p>A common scenario is fetching a list of company IDs where a given company is the parent. Many developers might write something like this:</p><pre><code class="language-php">$companies = CompanyModel::where('parent_uid', $data['company_uid'])-&gt;get();
-</code></pre><p>This will return a <strong>collection of full CompanyModel objects</strong>, including all columns from the database. If you only need the <code>uid</code> field, there’s a much better way to do it using <strong>pluck()</strong>:</p><pre><code class="language-php">$companies = CompanyModel::where('parent_uid', $data['company_uid'])-&gt;pluck('uid')-&gt;toArray();
-</code></pre><h3 id="why-use-pluck-instead-of-get">Why Use <code>pluck()</code> Instead of <code>get()</code>?</h3><ol><li><strong>Efficiency</strong> – It only fetches the <code>uid</code> column from the database instead of loading full model instances.</li><li><strong>Performance Boost</strong> – Since it returns a lightweight collection (or array), your application consumes less memory.</li><li><strong>Cleaner Code</strong> – You get exactly what you need without looping through unnecessary data.</li></ol><h3 id="understanding-how-pluck-works">Understanding How <code>pluck()</code> Works</h3><p>The <code>pluck()</code> method in Laravel retrieves a <strong>single column's</strong> values from the query results and returns them as a collection. When combined with <code>toArray()</code>, it gives you a <strong>plain PHP array</strong> instead of an Eloquent collection. This is useful when passing data to APIs or performing operations that don't require Eloquent features.</p><h3 id="additional-considerations">Additional Considerations</h3><p>If you need <strong>key-value pairs</strong>, <code>pluck()</code> can also take two arguments. For example, if you want to return an associative array with <code>uid</code> as the key and <code>name</code> as the value:</p><pre><code class="language-php">$companies = CompanyModel::where('parent_uid', $data['company_uid'])-&gt;pluck('name', 'uid')-&gt;toArray();
-</code></pre><p>This results in an array like:</p><pre><code class="language-php">[
-    '123' =&gt; 'Company A',
-    '124' =&gt; 'Company B',
-    '125' =&gt; 'Company C',
-]
-</code></pre><p>This can be useful when you need a structured dataset without fetching the full model.</p><h3 id="when-not-to-use-pluck">When Not to Use <code>pluck()</code></h3><p>While <code>pluck()</code> is great for simple extractions, avoid it if you need to <strong>modify or interact with full model instances</strong>. If additional operations on the model are required, <code>get()</code> is still the better choice.</p><h3 id="finally">Finally</h3><p>By using <strong>pluck() instead of get()</strong>, you ensure that your Laravel queries are <strong>optimized, faster, and memory-efficient</strong>. This small change can make a big difference in performance, especially when dealing with large datasets. Always consider what data you actually need and retrieve only that—your application (and server) will thank you!</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When working with Laravel's Eloquent ORM, it's common to fetch related records based on a specific condition. However, many developers unknowingly retrieve entire model objects when they only need a single field. This not only **wastes memory** but also **slows down queries**, especially when dealing with large datasets.
 
+A common scenario is fetching a list of company IDs where a given company is the parent. Many developers might write something like this:
+
+```php
+$companies = CompanyModel::where('parent_uid', $data['company_uid'])->get();
+```
+
+This will return a **collection of full CompanyModel objects**, including all columns from the database. If you only need the `uid` field, there’s a much better way to do it using **pluck()**:
+
+```php
+$companies = CompanyModel::where('parent_uid', $data['company_uid'])->pluck('uid')->toArray();
+```
+
+### Why Use `pluck()` Instead of `get()`?
+
+1.  **Efficiency** – It only fetches the `uid` column from the database instead of loading full model instances.
+2.  **Performance Boost** – Since it returns a lightweight collection (or array), your application consumes less memory.
+3.  **Cleaner Code** – You get exactly what you need without looping through unnecessary data.
+
+### Understanding How `pluck()` Works
+
+The `pluck()` method in Laravel retrieves a **single column's** values from the query results and returns them as a collection. When combined with `toArray()`, it gives you a **plain PHP array** instead of an Eloquent collection. This is useful when passing data to APIs or performing operations that don't require Eloquent features.
+
+### Additional Considerations
+
+If you need **key-value pairs**, `pluck()` can also take two arguments. For example, if you want to return an associative array with `uid` as the key and `name` as the value:
+
+```php
+$companies = CompanyModel::where('parent_uid', $data['company_uid'])->pluck('name', 'uid')->toArray();
+```
+
+This results in an array like:
+
+```php
+[
+    '123' => 'Company A',
+    '124' => 'Company B',
+    '125' => 'Company C',
+]
+```
+
+This can be useful when you need a structured dataset without fetching the full model.
+
+### When Not to Use `pluck()`
+
+While `pluck()` is great for simple extractions, avoid it if you need to **modify or interact with full model instances**. If additional operations on the model are required, `get()` is still the better choice.
+
+### Finally
+
+By using **pluck() instead of get()**, you ensure that your Laravel queries are **optimized, faster, and memory-efficient**. This small change can make a big difference in performance, especially when dealing with large datasets. Always consider what data you actually need and retrieve only that—your application (and server) will thank you!

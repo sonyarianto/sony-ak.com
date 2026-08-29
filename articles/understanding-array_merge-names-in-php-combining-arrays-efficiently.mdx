@@ -5,32 +5,107 @@ description: "When working with PHP, you might encounter different ways to manip
 tags: ["php","performance","productivity"]
 ---
 
-<p>When working with PHP, you might encounter different ways to manipulate and merge arrays. One such example is this simple but powerful line of code:</p><pre><code class="language-php">$names = array_merge(...$names);
-</code></pre><p>At first glance, it may seem a bit unfamiliar to beginners, but once you understand it, you'll find it extremely useful in certain scenarios. Let's break it down step by step.</p><h3 id="what-is-arraymerge">What is <code>array_merge</code>?</h3><p>The function <code>array_merge</code> is one of PHP's built-in functions for combining arrays. It merges the elements of one or more arrays into a single array. If you pass multiple arrays to it, they will be merged sequentially, and any <strong>numeric keys will be re-indexed</strong>. For example:</p><pre><code class="language-php">$a = [1, 2, 3];
+When working with PHP, you might encounter different ways to manipulate and merge arrays. One such example is this simple but powerful line of code:
+
+```php
+$names = array_merge(...$names);
+```
+
+At first glance, it may seem a bit unfamiliar to beginners, but once you understand it, you'll find it extremely useful in certain scenarios. Let's break it down step by step.
+
+### What is `array_merge`?
+
+The function `array_merge` is one of PHP's built-in functions for combining arrays. It merges the elements of one or more arrays into a single array. If you pass multiple arrays to it, they will be merged sequentially, and any **numeric keys will be re-indexed**. For example:
+
+```php
+$a = [1, 2, 3];
 $b = [4, 5, 6];
 $c = array_merge($a, $b); // $c = [1, 2, 3, 4, 5, 6]
-</code></pre><p>But what happens when you pass <strong>arrays inside an array</strong>, like this?</p><pre><code class="language-php">$names = [['John', 'Jane'], ['Mike', 'Alice']];
-</code></pre><p>In this case, using <code>array_merge</code> directly would not work because it's expecting individual arrays as arguments, not an array of arrays. This is where the "spread" operator (<code>...</code>) comes in.</p><h3 id="what-does-the-spread-operator-do">What does the spread operator (<code>...</code>) do?</h3><p>The spread operator in PHP, represented by <code>...</code>, is a syntactic sugar introduced in PHP 5.6. It <strong>unpacks an array</strong> into individual arguments. So, instead of passing the array <code>$names</code> directly, which contains multiple arrays inside it, the spread operator will unpack the arrays within <code>$names</code> and pass them as separate arguments to <code>array_merge</code>.</p><p>For example:</p><pre><code class="language-php">$names = [['John', 'Jane'], ['Mike', 'Alice']];
+```
+
+But what happens when you pass **arrays inside an array**, like this?
+
+```php
+$names = [['John', 'Jane'], ['Mike', 'Alice']];
+```
+
+In this case, using `array_merge` directly would not work because it's expecting individual arrays as arguments, not an array of arrays. This is where the "spread" operator (`...`) comes in.
+
+### What does the spread operator (`...`) do?
+
+The spread operator in PHP, represented by `...`, is a syntactic sugar introduced in PHP 5.6. It **unpacks an array** into individual arguments. So, instead of passing the array `$names` directly, which contains multiple arrays inside it, the spread operator will unpack the arrays within `$names` and pass them as separate arguments to `array_merge`.
+
+For example:
+
+```php
+$names = [['John', 'Jane'], ['Mike', 'Alice']];
 $merged = array_merge(...$names);
-</code></pre><p>The line <code>array_merge(...$names)</code> effectively becomes:</p><pre><code class="language-php">$merged = array_merge(['John', 'Jane'], ['Mike', 'Alice']);
-</code></pre><p>This results in:</p><pre><code class="language-php">$merged = ['John', 'Jane', 'Mike', 'Alice'];
-</code></pre><h3 id="why-use-arraymergenames">Why use <code>array_merge(...$names)</code>?</h3><p>You might wonder, why not just merge the arrays manually or in a loop? The answer lies in <strong>simplicity and performance</strong>. The spread operator combined with <code>array_merge</code> allows you to <strong>quickly and cleanly combine multiple arrays</strong> in one step, rather than looping through them or using nested merges. It's particularly useful when you have a <strong>dynamic number of arrays</strong> or when the number of arrays is not known beforehand.</p><p>For example, if you have:</p><pre><code class="language-php">$names = [
+```
+
+The line `array_merge(...$names)` effectively becomes:
+
+```php
+$merged = array_merge(['John', 'Jane'], ['Mike', 'Alice']);
+```
+
+This results in:
+
+```php
+$merged = ['John', 'Jane', 'Mike', 'Alice'];
+```
+
+### Why use `array_merge(...$names)`?
+
+You might wonder, why not just merge the arrays manually or in a loop? The answer lies in **simplicity and performance**. The spread operator combined with `array_merge` allows you to **quickly and cleanly combine multiple arrays** in one step, rather than looping through them or using nested merges. It's particularly useful when you have a **dynamic number of arrays** or when the number of arrays is not known beforehand.
+
+For example, if you have:
+
+```php
+$names = [
     ['Anna', 'Bob'],
     ['Charlie', 'David'],
     ['Eve', 'Frank']
 ];
-</code></pre><p>Using <code>array_merge(...$names)</code> gives you:</p><pre><code class="language-php">['Anna', 'Bob', 'Charlie', 'David', 'Eve', 'Frank']
-</code></pre><p>without any need for extra code.</p><h3 id="points-to-remember">Points to Remember</h3><ul><li>The <strong>spread operator</strong> (<code>...</code>) is used to <strong>unpack arrays</strong> in PHP. It takes an array of arrays and spreads them out as individual arguments for the function.</li><li><strong><code>array_merge</code></strong> re-indexes any numeric keys, but <strong>preserves associative keys</strong>. So, if you're dealing with associative arrays, the behavior might differ. For example:</li></ul><pre><code class="language-php">$a = ['name' =&gt; 'John'];
-$b = ['age' =&gt; 30];
-$c = array_merge($a, $b); // ['name' =&gt; 'John', 'age' =&gt; 30]
-</code></pre><ul><li>This technique is especially helpful when you have <strong>multiple arrays nested</strong> inside another array and want to flatten them into a single array.</li></ul><h3 id="other-use-cases">Other Use Cases</h3><p>Beyond merging arrays, the <strong>spread operator</strong> can be used in <strong>function calls</strong> as well. For instance, if you have an array of arguments and want to pass them as individual parameters to a function, the spread operator can help:</p><pre><code class="language-php">function greet($name, $age) {
+```
+
+Using `array_merge(...$names)` gives you:
+
+```php
+['Anna', 'Bob', 'Charlie', 'David', 'Eve', 'Frank']
+```
+
+without any need for extra code.
+
+### Points to Remember
+
+-   The **spread operator** (`...`) is used to **unpack arrays** in PHP. It takes an array of arrays and spreads them out as individual arguments for the function.
+-   **`array_merge`** re-indexes any numeric keys, but **preserves associative keys**. So, if you're dealing with associative arrays, the behavior might differ. For example:
+
+```php
+$a = ['name' => 'John'];
+$b = ['age' => 30];
+$c = array_merge($a, $b); // ['name' => 'John', 'age' => 30]
+```
+
+-   This technique is especially helpful when you have **multiple arrays nested** inside another array and want to flatten them into a single array.
+
+### Other Use Cases
+
+Beyond merging arrays, the **spread operator** can be used in **function calls** as well. For instance, if you have an array of arguments and want to pass them as individual parameters to a function, the spread operator can help:
+
+```php
+function greet($name, $age) {
     return "Hello, my name is $name and I am $age years old.";
 }
 
 $args = ['John', 25];
 echo greet(...$args); // Output: Hello, my name is John and I am 25 years old.
-</code></pre><p>This flexibility allows you to work with <strong>dynamic data</strong> in a clean and efficient manner.</p><h3 id="finally">Finally</h3><p>The line <code>$names = array_merge(...$names);</code> might seem complex at first, but it's actually a <strong>concise way to combine multiple arrays</strong> into one. The <strong>spread operator</strong> (<code>...</code>) unpacks arrays, and <code>array_merge</code> does the heavy lifting of merging them. This approach saves time, reduces code complexity, and can be a handy tool in your PHP toolkit.</p><p>As you dive deeper into PHP, you'll find this technique useful in many situations where arrays need to be combined dynamically. <strong>Mastering this small trick</strong> can make your code more efficient and elegant, helping you write cleaner solutions in your projects.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This flexibility allows you to work with **dynamic data** in a clean and efficient manner.
+
+### Finally
+
+The line `$names = array_merge(...$names);` might seem complex at first, but it's actually a **concise way to combine multiple arrays** into one. The **spread operator** (`...`) unpacks arrays, and `array_merge` does the heavy lifting of merging them. This approach saves time, reduces code complexity, and can be a handy tool in your PHP toolkit.
+
+As you dive deeper into PHP, you'll find this technique useful in many situations where arrays need to be combined dynamically. **Mastering this small trick** can make your code more efficient and elegant, helping you write cleaner solutions in your projects.

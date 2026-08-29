@@ -5,27 +5,119 @@ description: "When working with React Router v7 , a common scenario arises where
 tags: ["react","api","testing","performance","seo"]
 ---
 
-<p>When working with <strong>React Router v7</strong>, a common scenario arises where you want <code>/news</code> itself to return a <strong>404</strong>, while still keeping nested routes like <code>/news/id/5</code> fully functional.</p><p>If you’re coming from v6, the good news is that <strong>v7 uses the same nested route structure</strong>, so the approach remains largely the same. Let’s walk through this step by step.</p><hr><h2 id="the-core-problem">The Core Problem</h2><p>If you only define:</p><pre><code class="language-jsx">&lt;Route path="/news/*" element={&lt;NewsRoutes /&gt;} /&gt;
-</code></pre><ul><li><code><strong>/news</strong></code> → Matches and renders <code>NewsRoutes</code> (not what you want).</li><li><strong><code>/news/id/5</code></strong> → Works fine.</li></ul><p>If you comment it out:</p><pre><code class="language-jsx">{/* &lt;Route path="/news/*" element={&lt;NewsRoutes /&gt;} /&gt; */}
-</code></pre><p>then <strong>both <code>/news</code> and <code>/news/id/5</code> break</strong>, because the router no longer has a rule for those paths.</p><hr><h2 id="the-correct-approach-in-v7-nested-route-definitions">The Correct Approach in v7: Nested Route Definitions</h2><p>The key is to define <code>/news</code> as a <strong>parent route</strong> and handle the base path (<code>/news</code>) separately from its nested paths:</p><pre><code class="language-jsx">&lt;Route path="/news"&gt;
-  &lt;Route index element={&lt;NotFound /&gt;} /&gt; {/* Handles /news */}
-  &lt;Route path="*" element={&lt;NewsRoutes /&gt;} /&gt; {/* Handles /news/* */}
-&lt;/Route&gt;
-</code></pre><h3 id="how-it-works">How it works:</h3><ul><li><code><strong>/news</strong></code> → Hits the <code>index</code> child, showing a <strong>404 Not Found</strong> (or whatever fallback you define).</li><li><code><strong>/news/id/5</strong></code> → Falls through to the <code>*</code> child, rendering your <code>NewsRoutes</code> component.</li></ul><p>This pattern ensures <code>/news</code> doesn’t load content incorrectly, while <code>/news/:id</code> and other dynamic routes still behave properly.</p><hr><h2 id="example-with-a-reusable-404-component">Example With a Reusable 404 Component</h2><p>You’ll usually want a central 404 component:</p><pre><code class="language-jsx">function NotFound() {
-  return &lt;h2&gt;404 - Page Not Found&lt;/h2&gt;;
+When working with **React Router v7**, a common scenario arises where you want `/news` itself to return a **404**, while still keeping nested routes like `/news/id/5` fully functional.
+
+If you’re coming from v6, the good news is that **v7 uses the same nested route structure**, so the approach remains largely the same. Let’s walk through this step by step.
+
+* * *
+
+## The Core Problem
+
+If you only define:
+
+```jsx
+<Route path="/news/*" element={<NewsRoutes />} />
+```
+
+-   `**/news**` → Matches and renders `NewsRoutes` (not what you want).
+-   **`/news/id/5`** → Works fine.
+
+If you comment it out:
+
+```jsx
+{/* <Route path="/news/*" element={<NewsRoutes />} /> */}
+```
+
+then **both `/news` and `/news/id/5` break**, because the router no longer has a rule for those paths.
+
+* * *
+
+## The Correct Approach in v7: Nested Route Definitions
+
+The key is to define `/news` as a **parent route** and handle the base path (`/news`) separately from its nested paths:
+
+```jsx
+<Route path="/news">
+  <Route index element={<NotFound />} /> {/* Handles /news */}
+  <Route path="*" element={<NewsRoutes />} /> {/* Handles /news/* */}
+</Route>
+```
+
+### How it works:
+
+-   `**/news**` → Hits the `index` child, showing a **404 Not Found** (or whatever fallback you define).
+-   `**/news/id/5**` → Falls through to the `*` child, rendering your `NewsRoutes` component.
+
+This pattern ensures `/news` doesn’t load content incorrectly, while `/news/:id` and other dynamic routes still behave properly.
+
+* * *
+
+## Example With a Reusable 404 Component
+
+You’ll usually want a central 404 component:
+
+```jsx
+function NotFound() {
+  return <h2>404 - Page Not Found</h2>;
 }
 
-&lt;Route path="/news"&gt;
-  &lt;Route index element={&lt;NotFound /&gt;} /&gt;
-  &lt;Route path="*" element={&lt;NewsRoutes /&gt;} /&gt;
-&lt;/Route&gt;
-</code></pre><hr><h2 id="react-router-v7-notes">React Router v7 Notes</h2><ul><li><strong>Same API as v6 for nested routes</strong> → v7 focuses on performance, data APIs, and React 18+ features, but the <strong>route definition syntax hasn’t changed</strong>, so the solution applies directly.</li><li><strong><code>createRoutesFromElements</code> and <code>createBrowserRouter</code></strong> still work with this structure if you’re using data routers.</li><li>You can still use <code>&lt;Navigate&gt;</code> for redirects (e.g., redirect <code>/news</code> to <code>/news/latest</code> instead of showing 404).</li></ul><hr><h2 id="other-considerations">Other Considerations</h2><ol><li><strong>SEO Implications</strong><ul><li><code>/news</code> returning a 404 is correct if it’s not a real page.</li><li>If you want Google to index <code>/news</code> as a category page, don’t use this setup—serve a landing page instead.</li></ul></li><li><strong>User Experience</strong><ul><li>This is often friendlier for users if <code>/news</code> doesn’t stand on its own.</li></ul></li><li><strong>Testing</strong><br>Be sure to test all cases:<ul><li><code>/news</code> → 404 (or redirect)</li><li><code>/news/id/5</code> → Works</li><li><code>/news/unknown</code> → Handled by <code>NewsRoutes</code> logic</li><li>Unrelated routes → Still follow your global route rules</li></ul></li><li><strong>Future-Proofing</strong><br>If later you want <code>/news</code> to show a list of articles, just swap out the <code>NotFound</code> with a <code>NewsLandingPage</code> component—no breaking changes to nested routes.</li></ol><p><strong>Global 404 Catch-All</strong><br>At the bottom of your routes, you’ll typically define:</p><pre><code class="language-jsx">&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
-</code></pre><p>You can reuse the same <code>NotFound</code> component inside <code>/news</code> for consistency.</p><p>Instead of a 404, you may prefer a <strong>redirect</strong>:</p><pre><code class="language-jsx">&lt;Route path="/news"&gt;
-  &lt;Route index element={&lt;Navigate to="/home" replace /&gt;} /&gt;
-  &lt;Route path="*" element={&lt;NewsRoutes /&gt;} /&gt;
-&lt;/Route&gt;
-</code></pre><hr><h2 id="finally">Finally</h2><p>With <strong>React Router v7</strong>, handling <code>/news</code> differently from <code>/news/:id</code> is simple:</p><ul><li>Use an <strong><code>index</code> route</strong> for the base <code>/news</code>.</li><li>Use a <strong>wildcard child route</strong> for <code>/news/*</code>.</li></ul><p>This gives you precise control, keeps nested routes working, and avoids SEO or UX pitfalls. The pattern is identical to v6, so you don’t need to relearn anything—just apply it consistently across your app.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+<Route path="/news">
+  <Route index element={<NotFound />} />
+  <Route path="*" element={<NewsRoutes />} />
+</Route>
+```
 
+* * *
+
+## React Router v7 Notes
+
+-   **Same API as v6 for nested routes** → v7 focuses on performance, data APIs, and React 18+ features, but the **route definition syntax hasn’t changed**, so the solution applies directly.
+-   **`createRoutesFromElements` and `createBrowserRouter`** still work with this structure if you’re using data routers.
+-   You can still use `<Navigate>` for redirects (e.g., redirect `/news` to `/news/latest` instead of showing 404).
+
+* * *
+
+## Other Considerations
+
+1.  **SEO Implications**
+    -   `/news` returning a 404 is correct if it’s not a real page.
+    -   If you want Google to index `/news` as a category page, don’t use this setup—serve a landing page instead.
+2.  **User Experience**
+    -   This is often friendlier for users if `/news` doesn’t stand on its own.
+3.  **Testing**  
+    Be sure to test all cases:
+    -   `/news` → 404 (or redirect)
+    -   `/news/id/5` → Works
+    -   `/news/unknown` → Handled by `NewsRoutes` logic
+    -   Unrelated routes → Still follow your global route rules
+4.  **Future-Proofing**  
+    If later you want `/news` to show a list of articles, just swap out the `NotFound` with a `NewsLandingPage` component—no breaking changes to nested routes.
+
+**Global 404 Catch-All**  
+At the bottom of your routes, you’ll typically define:
+
+```jsx
+<Route path="*" element={<NotFound />} />
+```
+
+You can reuse the same `NotFound` component inside `/news` for consistency.
+
+Instead of a 404, you may prefer a **redirect**:
+
+```jsx
+<Route path="/news">
+  <Route index element={<Navigate to="/home" replace />} />
+  <Route path="*" element={<NewsRoutes />} />
+</Route>
+```
+
+* * *
+
+## Finally
+
+With **React Router v7**, handling `/news` differently from `/news/:id` is simple:
+
+-   Use an **`index` route** for the base `/news`.
+-   Use a **wildcard child route** for `/news/*`.
+
+This gives you precise control, keeps nested routes working, and avoids SEO or UX pitfalls. The pattern is identical to v6, so you don’t need to relearn anything—just apply it consistently across your app.

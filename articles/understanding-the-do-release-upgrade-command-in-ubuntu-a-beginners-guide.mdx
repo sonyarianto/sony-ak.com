@@ -5,11 +5,69 @@ description: "If you are an Ubuntu user, whether on a desktop or server, you've 
 tags: ["bash","linux","api","security","performance"]
 ---
 
-<p>If you are an Ubuntu user, whether on a desktop or server, you've likely heard of upgrading your operating system to the latest version. Keeping your system up to date is crucial for security, stability, and access to the latest features. One of the most efficient ways to upgrade your Ubuntu operating system is by using the <strong><code>do-release-upgrade</code></strong> command.</p><h3 id="what-is-do-release-upgrade">What is <code>do-release-upgrade</code>?</h3><p>The <strong><code>do-release-upgrade</code></strong> command is a tool designed to make upgrading from one Ubuntu release to another as seamless as possible. It's a command-line utility that is part of the <strong><code>update-manager-core</code></strong> package, which is typically pre-installed on Ubuntu systems. This tool allows users to upgrade their entire system to the next available version without the need for a fresh installation.</p><p>Unlike regular updates, which install the latest versions of individual software packages within your current release, <strong><code>do-release-upgrade</code></strong> handles <strong>full system upgrades</strong>. This means it moves your operating system from one release (like 20.04 LTS) to the next (like 22.04 LTS).</p><h3 id="why-should-you-use-do-release-upgrade">Why Should You Use <code>do-release-upgrade</code>?</h3><p>Using <strong><code>do-release-upgrade</code></strong> has a number of benefits. The first, and perhaps most important, is that it <strong>keeps your system secure</strong>. Ubuntu releases, especially the <strong>Long-Term Support (LTS)</strong> versions, are supported for a specific period of time (five years for LTS releases). When that time is up, the version you are using will no longer receive security updates, leaving your system vulnerable to attacks. By upgrading to the next release, you ensure that you continue to receive critical updates.</p><p>Additionally, upgrading gives you access to the <strong>latest features and improvements</strong>. Each new Ubuntu release comes with new software, enhancements to system performance, and updates to the user interface. If you're running a server, upgrading can also provide improvements to system stability and newer kernel versions that offer better hardware support.</p><p>One of the key advantages of using <strong><code>do-release-upgrade</code></strong> is that it <strong>preserves your settings and data</strong>. The upgrade process is designed to retain your files, configuration settings, and user preferences. This means you don't need to worry about losing data or having to reconfigure your system, unlike with a fresh installation.</p><h3 id="how-does-the-upgrade-work">How Does the Upgrade Work?</h3><p>The <strong><code>do-release-upgrade</code></strong> command works by connecting to Ubuntu’s repositories over the network, downloading the necessary packages, and upgrading your system in place. When you run the command, it checks if a new release is available for your system and then guides you through the upgrade process. It resolves <strong>package dependencies</strong> and removes obsolete or conflicting software.</p><p>Before running the command, it's important to make sure your current system is up to date. You can do this by running:</p><pre><code class="language-bash">sudo apt update
-sudo apt upgrade
-</code></pre><p>Once your system is updated, you can start the upgrade process with:</p><pre><code class="language-bash">sudo do-release-upgrade
-</code></pre><p>Follow the prompts, and the system will handle the rest. The process might take some time depending on your internet speed and system configuration.</p><h3 id="a-network-based-approach">A Network-based Approach</h3><p>One of the useful aspects of <strong><code>do-release-upgrade</code></strong> is that it’s <strong>network-based</strong>. This means you don’t need to download a separate ISO file or create a bootable USB. The command pulls everything directly from the Ubuntu repositories, ensuring you get the latest, tested packages without the hassle of manually downloading and managing files.</p><p>However, one thing to note is that <strong><code>do-release-upgrade</code></strong> will only upgrade to the <strong>next release in line</strong>. So, if you're running Ubuntu 20.04 LTS, it will upgrade you to 22.04 LTS, not to some intermediate version. If you're on a non-LTS version, it will upgrade to the next regular release or LTS, depending on what's available.</p><h3 id="when-should-you-use-do-release-upgrade">When Should You Use <code>do-release-upgrade</code>?</h3><p>You should consider using <strong><code>do-release-upgrade</code></strong> under several circumstances:</p><ul><li><strong>Your current Ubuntu release is approaching its end of life (EOL)</strong>. Once a release reaches EOL, it will no longer receive updates, leaving your system exposed to security vulnerabilities.</li><li>You want access to <strong>new features, security patches, and hardware support</strong> that come with the latest releases.</li><li>You’re running an older version of Ubuntu and want to stay on a supported, secure version without reinstalling the entire system.</li></ul><p>For those on <strong>LTS releases</strong>, Ubuntu allows you to upgrade from one LTS release to the next, ensuring you stay on stable, long-term supported versions without needing to jump to every interim release.</p><h3 id="handling-system-settings-and-customizations">Handling System Settings and Customizations</h3><p>A key feature of the <strong><code>do-release-upgrade</code></strong> process is its ability to handle system settings and customizations. During the upgrade, the tool tries to preserve as much of your configuration as possible. However, if it encounters conflicts between new software and old settings, it may prompt you to choose whether you want to keep your existing configuration or overwrite it with the new default settings.</p><p>For this reason, it’s a good idea to <strong>back up important files</strong> and configurations before starting the upgrade. Even though <strong><code>do-release-upgrade</code></strong> is designed to be safe, it’s always a good practice to have a backup in case something goes wrong.</p><h3 id="the-simplicity-of-use">The Simplicity of Use</h3><p>For beginners, one of the most reassuring aspects of <strong><code>do-release-upgrade</code></strong> is that it’s designed to be easy to use. Unlike more complex Linux distributions, Ubuntu’s upgrade tool manages all the difficult parts—such as package conflicts and dependency resolution—behind the scenes. You simply follow the instructions and let the system do the rest.</p><p>By using <strong><code>do-release-upgrade</code></strong>, you avoid the headache of performing a fresh installation, migrating data, and reconfiguring your system from scratch. The tool is a straightforward solution that ensures a smooth transition between releases.</p><h3 id="finally">Finally</h3><p>In summary, <strong><code>do-release-upgrade</code></strong> is an essential tool for Ubuntu users who want to keep their systems secure, up to date, and supported. Whether you're a casual user looking to access new features or a system administrator managing servers, using this command ensures a <strong>safe, stable</strong>, and <strong>efficient</strong> upgrade process. It’s a powerful yet beginner-friendly solution that simplifies what could otherwise be a complex task in the world of Linux.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+If you are an Ubuntu user, whether on a desktop or server, you've likely heard of upgrading your operating system to the latest version. Keeping your system up to date is crucial for security, stability, and access to the latest features. One of the most efficient ways to upgrade your Ubuntu operating system is by using the **`do-release-upgrade`** command.
 
+### What is `do-release-upgrade`?
+
+The **`do-release-upgrade`** command is a tool designed to make upgrading from one Ubuntu release to another as seamless as possible. It's a command-line utility that is part of the **`update-manager-core`** package, which is typically pre-installed on Ubuntu systems. This tool allows users to upgrade their entire system to the next available version without the need for a fresh installation.
+
+Unlike regular updates, which install the latest versions of individual software packages within your current release, **`do-release-upgrade`** handles **full system upgrades**. This means it moves your operating system from one release (like 20.04 LTS) to the next (like 22.04 LTS).
+
+### Why Should You Use `do-release-upgrade`?
+
+Using **`do-release-upgrade`** has a number of benefits. The first, and perhaps most important, is that it **keeps your system secure**. Ubuntu releases, especially the **Long-Term Support (LTS)** versions, are supported for a specific period of time (five years for LTS releases). When that time is up, the version you are using will no longer receive security updates, leaving your system vulnerable to attacks. By upgrading to the next release, you ensure that you continue to receive critical updates.
+
+Additionally, upgrading gives you access to the **latest features and improvements**. Each new Ubuntu release comes with new software, enhancements to system performance, and updates to the user interface. If you're running a server, upgrading can also provide improvements to system stability and newer kernel versions that offer better hardware support.
+
+One of the key advantages of using **`do-release-upgrade`** is that it **preserves your settings and data**. The upgrade process is designed to retain your files, configuration settings, and user preferences. This means you don't need to worry about losing data or having to reconfigure your system, unlike with a fresh installation.
+
+### How Does the Upgrade Work?
+
+The **`do-release-upgrade`** command works by connecting to Ubuntu’s repositories over the network, downloading the necessary packages, and upgrading your system in place. When you run the command, it checks if a new release is available for your system and then guides you through the upgrade process. It resolves **package dependencies** and removes obsolete or conflicting software.
+
+Before running the command, it's important to make sure your current system is up to date. You can do this by running:
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+Once your system is updated, you can start the upgrade process with:
+
+```bash
+sudo do-release-upgrade
+```
+
+Follow the prompts, and the system will handle the rest. The process might take some time depending on your internet speed and system configuration.
+
+### A Network-based Approach
+
+One of the useful aspects of **`do-release-upgrade`** is that it’s **network-based**. This means you don’t need to download a separate ISO file or create a bootable USB. The command pulls everything directly from the Ubuntu repositories, ensuring you get the latest, tested packages without the hassle of manually downloading and managing files.
+
+However, one thing to note is that **`do-release-upgrade`** will only upgrade to the **next release in line**. So, if you're running Ubuntu 20.04 LTS, it will upgrade you to 22.04 LTS, not to some intermediate version. If you're on a non-LTS version, it will upgrade to the next regular release or LTS, depending on what's available.
+
+### When Should You Use `do-release-upgrade`?
+
+You should consider using **`do-release-upgrade`** under several circumstances:
+
+-   **Your current Ubuntu release is approaching its end of life (EOL)**. Once a release reaches EOL, it will no longer receive updates, leaving your system exposed to security vulnerabilities.
+-   You want access to **new features, security patches, and hardware support** that come with the latest releases.
+-   You’re running an older version of Ubuntu and want to stay on a supported, secure version without reinstalling the entire system.
+
+For those on **LTS releases**, Ubuntu allows you to upgrade from one LTS release to the next, ensuring you stay on stable, long-term supported versions without needing to jump to every interim release.
+
+### Handling System Settings and Customizations
+
+A key feature of the **`do-release-upgrade`** process is its ability to handle system settings and customizations. During the upgrade, the tool tries to preserve as much of your configuration as possible. However, if it encounters conflicts between new software and old settings, it may prompt you to choose whether you want to keep your existing configuration or overwrite it with the new default settings.
+
+For this reason, it’s a good idea to **back up important files** and configurations before starting the upgrade. Even though **`do-release-upgrade`** is designed to be safe, it’s always a good practice to have a backup in case something goes wrong.
+
+### The Simplicity of Use
+
+For beginners, one of the most reassuring aspects of **`do-release-upgrade`** is that it’s designed to be easy to use. Unlike more complex Linux distributions, Ubuntu’s upgrade tool manages all the difficult parts—such as package conflicts and dependency resolution—behind the scenes. You simply follow the instructions and let the system do the rest.
+
+By using **`do-release-upgrade`**, you avoid the headache of performing a fresh installation, migrating data, and reconfiguring your system from scratch. The tool is a straightforward solution that ensures a smooth transition between releases.
+
+### Finally
+
+In summary, **`do-release-upgrade`** is an essential tool for Ubuntu users who want to keep their systems secure, up to date, and supported. Whether you're a casual user looking to access new features or a system administrator managing servers, using this command ensures a **safe, stable**, and **efficient** upgrade process. It’s a powerful yet beginner-friendly solution that simplifies what could otherwise be a complex task in the world of Linux.

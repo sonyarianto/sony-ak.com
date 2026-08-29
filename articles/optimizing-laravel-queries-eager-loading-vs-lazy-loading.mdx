@@ -2,59 +2,145 @@
 title: "Optimizing Laravel Queries: Eager Loading vs Lazy Loading"
 date: "2025-02-01T02:09:56.000Z"
 description: "When working with Laravel's Eloquent ORM , you might frequently encounter the terms eager loading and lazy loading . These concepts directly impact the performa..."
-tags: ["laravel","performance"]
+tags: ["php","laravel","database","performance"]
 ---
 
-<p>When working with <strong>Laravel's Eloquent ORM</strong>, you might frequently encounter the terms <strong>eager loading</strong> and <strong>lazy loading</strong>. These concepts directly impact the <strong>performance</strong> of your application, especially when dealing with related database models.</p><h2 id="understanding-lazy-loading-default-behavior"><strong>Understanding Lazy Loading (Default Behavior)</strong></h2><p>By default, Eloquent uses <strong>lazy loading</strong>, which means related models are only loaded when they are accessed. This behavior can lead to the <strong>N+1 query problem</strong>, where Laravel executes one query to fetch the main records and then an additional query for each related record.</p><h3 id="example-of-lazy-loading"><strong>Example of Lazy Loading</strong></h3><pre><code class="language-php">$users = User::all();
-foreach ($users as $user) {
-    echo $user-&gt;posts; // Triggers a separate query for each user
-}
-</code></pre><p>This results in multiple database queries:</p><p>Fetch posts for each user separately:</p><pre><code class="language-sql">SELECT * FROM posts WHERE user_id = ?;
-</code></pre><p>(Repeated for every user)</p><p>Fetch all users:</p><pre><code class="language-sql">SELECT * FROM users;
-</code></pre><h3 id="why-lazy-loading-can-be-a-problem"><strong>Why Lazy Loading Can Be a Problem</strong></h3><p>Lazy loading can drastically slow down performance when working with large datasets because it executes <strong>many small queries</strong> instead of a single optimized one.</p><hr><h2 id="eager-loading-a-performance-booster"><strong>Eager Loading: A Performance Booster</strong></h2><p>Eager loading allows you to <strong>load related models upfront</strong> using the <code>with()</code> method, reducing the number of queries.</p><h3 id="example-of-eager-loading"><strong>Example of Eager Loading</strong></h3><pre><code class="language-php">$users = User::with('posts')-&gt;get();
-</code></pre><p>This executes <strong>only two queries</strong>:</p><p>Fetch all posts in one go:</p><pre><code class="language-sql">SELECT * FROM posts WHERE user_id IN (?, ?, ?, ?);
-</code></pre><p>Fetch all users:</p><pre><code class="language-sql">SELECT * FROM users;
-</code></pre><h3 id="benefits-of-eager-loading"><strong>Benefits of Eager Loading:</strong></h3><ul><li>Prevents the <strong>N+1 query problem</strong>.</li><li>Improves <strong>database performance</strong> by reducing queries.</li><li>Fetches related data in <strong>fewer, more efficient queries</strong>.</li></ul><hr><h2 id="when-to-use-lazy-loading-vs-eager-loading"><strong>When to Use Lazy Loading vs. Eager Loading?</strong></h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th><strong>Scenario</strong></th>
-<th><strong>Best Approach</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>You only need related data <strong>sometimes</strong></td>
-<td>Lazy Loading</td>
-</tr>
-<tr>
-<td>You <strong>always</strong> need related data</td>
-<td>Eager Loading</td>
-</tr>
-<tr>
-<td>Large dataset with multiple relationships</td>
-<td>Eager Loading</td>
-</tr>
-<tr>
-<td>Small dataset with occasional relations</td>
-<td>Lazy Loading</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="advanced-considerations"><strong>Advanced Considerations</strong></h2><h3 id="1-eager-loading-with-constraints"><strong>1. Eager Loading with Constraints</strong></h3><p>You can apply conditions to eager loading queries:</p><pre><code class="language-php">$users = User::with(['posts' =&gt; function ($query) {
-    $query-&gt;where('published', true);
-}])-&gt;get();
-</code></pre><p>This ensures only <strong>published</strong> posts are loaded upfront.</p><h3 id="2-nested-eager-loading"><strong>2. Nested Eager Loading</strong></h3><p>If a relationship has another relationship, you can eager load them all:</p><pre><code class="language-php">$users = User::with('posts.comments')-&gt;get();
-</code></pre><p>This will load <strong>users, their posts, and each post's comments</strong> in just a few queries.</p><h3 id="3-preventing-overloading-with-select"><strong>3. Preventing Overloading with <code>select()</code></strong></h3><p>Eager loading can fetch unnecessary columns if not optimized. Use <code>select()</code> to load only required fields:</p><pre><code class="language-php">$users = User::with(['posts' =&gt; function ($query) {
-    $query-&gt;select('id', 'title', 'user_id');
-}])-&gt;get();
-</code></pre><h3 id="4-eager-loading-and-pagination-issue"><strong>4. Eager Loading and Pagination Issue</strong></h3><p>When using Laravel's <code>paginate()</code>, eager loading must be handled carefully because it can result in <strong>large datasets being fetched unnecessarily</strong>.</p><p>❌ <strong>Bad practice:</strong></p><pre><code class="language-php">$users = User::with('posts')-&gt;paginate(10);
-</code></pre><p>This loads <strong>all posts</strong> even if they are not displayed in the current page. Instead, use:</p><p>✅ <strong>Better approach:</strong></p><pre><code class="language-php">$users = User::paginate(10);
-$users-&gt;load('posts');
-</code></pre><p>This ensures only the displayed users' posts are loaded.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>Choosing between <strong>lazy loading</strong> and <strong>eager loading</strong> is crucial for <strong>optimizing database performance</strong> in Laravel applications. Always consider:</p><ul><li><strong>Lazy loading</strong> when related data is rarely needed.</li><li><strong>Eager loading</strong> when related data is frequently accessed to prevent unnecessary queries.</li><li><strong>Constraints and optimizations</strong> to avoid fetching excessive data.</li></ul><p>By applying these best practices, you can <strong>boost your application's efficiency</strong> and ensure smooth performance even with large datasets.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+When working with **Laravel's Eloquent ORM**, you might frequently encounter the terms **eager loading** and **lazy loading**. These concepts directly impact the **performance** of your application, especially when dealing with related database models.
 
+## **Understanding Lazy Loading (Default Behavior)**
+
+By default, Eloquent uses **lazy loading**, which means related models are only loaded when they are accessed. This behavior can lead to the **N+1 query problem**, where Laravel executes one query to fetch the main records and then an additional query for each related record.
+
+### **Example of Lazy Loading**
+
+```php
+$users = User::all();
+foreach ($users as $user) {
+    echo $user->posts; // Triggers a separate query for each user
+}
+```
+
+This results in multiple database queries:
+
+Fetch posts for each user separately:
+
+```sql
+SELECT * FROM posts WHERE user_id = ?;
+```
+
+(Repeated for every user)
+
+Fetch all users:
+
+```sql
+SELECT * FROM users;
+```
+
+### **Why Lazy Loading Can Be a Problem**
+
+Lazy loading can drastically slow down performance when working with large datasets because it executes **many small queries** instead of a single optimized one.
+
+* * *
+
+## **Eager Loading: A Performance Booster**
+
+Eager loading allows you to **load related models upfront** using the `with()` method, reducing the number of queries.
+
+### **Example of Eager Loading**
+
+```php
+$users = User::with('posts')->get();
+```
+
+This executes **only two queries**:
+
+Fetch all posts in one go:
+
+```sql
+SELECT * FROM posts WHERE user_id IN (?, ?, ?, ?);
+```
+
+Fetch all users:
+
+```sql
+SELECT * FROM users;
+```
+
+### **Benefits of Eager Loading:**
+
+-   Prevents the **N+1 query problem**.
+-   Improves **database performance** by reducing queries.
+-   Fetches related data in **fewer, more efficient queries**.
+
+* * *
+
+## **When to Use Lazy Loading vs. Eager Loading?**
+
+* * *
+
+## **Advanced Considerations**
+
+### **1\. Eager Loading with Constraints**
+
+You can apply conditions to eager loading queries:
+
+```php
+$users = User::with(['posts' => function ($query) {
+    $query->where('published', true);
+}])->get();
+```
+
+This ensures only **published** posts are loaded upfront.
+
+### **2\. Nested Eager Loading**
+
+If a relationship has another relationship, you can eager load them all:
+
+```php
+$users = User::with('posts.comments')->get();
+```
+
+This will load **users, their posts, and each post's comments** in just a few queries.
+
+### **3\. Preventing Overloading with `select()`**
+
+Eager loading can fetch unnecessary columns if not optimized. Use `select()` to load only required fields:
+
+```php
+$users = User::with(['posts' => function ($query) {
+    $query->select('id', 'title', 'user_id');
+}])->get();
+```
+
+### **4\. Eager Loading and Pagination Issue**
+
+When using Laravel's `paginate()`, eager loading must be handled carefully because it can result in **large datasets being fetched unnecessarily**.
+
+❌ **Bad practice:**
+
+```php
+$users = User::with('posts')->paginate(10);
+```
+
+This loads **all posts** even if they are not displayed in the current page. Instead, use:
+
+✅ **Better approach:**
+
+```php
+$users = User::paginate(10);
+$users->load('posts');
+```
+
+This ensures only the displayed users' posts are loaded.
+
+* * *
+
+## **Finally**
+
+Choosing between **lazy loading** and **eager loading** is crucial for **optimizing database performance** in Laravel applications. Always consider:
+
+-   **Lazy loading** when related data is rarely needed.
+-   **Eager loading** when related data is frequently accessed to prevent unnecessary queries.
+-   **Constraints and optimizations** to avoid fetching excessive data.
+
+By applying these best practices, you can **boost your application's efficiency** and ensure smooth performance even with large datasets.

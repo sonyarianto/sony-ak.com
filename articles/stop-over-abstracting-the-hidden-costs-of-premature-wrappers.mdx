@@ -5,8 +5,61 @@ description: "In software development, there's a type of developer I like to cal
 tags: ["react","vue","database","api","testing"]
 ---
 
-<p>In software development, there's a type of developer I like to call the <strong>Over-Abstractor</strong>. This is the dev who, upon considering any new library, immediately suggests wrapping it in an abstraction layer "just in case" we want to switch to something else later. It sounds smart at first, but in reality, it introduces more problems than it solves.</p><h3 id="the-temptation-to-wrap-everything">The Temptation to Wrap Everything</h3><p>You’ve probably heard something like this before:</p><ul><li>"Let's create a wrapper around React in case we want to move to Vue later."</li><li>"Let's wrap MUI in case we want to switch to Shadcn later."</li></ul><p>At first glance, this approach seems reasonable. Abstracting dependencies might give the illusion of <strong>future flexibility</strong>. But in practice, it often results in unnecessary complexity and <strong>self-imposed limitations</strong>.</p><h3 id="why-wrapping-is-rarely-worthwhile">Why Wrapping is Rarely Worthwhile</h3><p>Instead of making things easier, abstraction layers introduce several immediate and long-term costs:</p><h4 id="1-you-have-to-maintain-an-additional-abstraction">1. <strong>You Have to Maintain an Additional Abstraction</strong></h4><p>Every wrapper is a piece of code you must create, test, debug, and maintain. Instead of just using the library as it was intended, you’re now managing an extra layer of indirection that requires its own documentation and upkeep.</p><h4 id="2-you-can%E2%80%99t-fully-leverage-the-tool-you-chose">2. <strong>You Can’t Fully Leverage the Tool You Chose</strong></h4><p>When you wrap a library, you’re forced to define a <strong>lowest common denominator API</strong>—one that abstracts away unique features because they may not be supported by whatever library you might move to. This means you’re <strong>crippling</strong> the tool you deliberately chose, making it harder to take advantage of its full potential.</p><h4 id="3-debugging-becomes-harder">3. <strong>Debugging Becomes Harder</strong></h4><p>When a bug arises, you now have two places to investigate: the underlying library and your wrapper. <strong>The more layers you introduce, the harder it is to trace issues.</strong> This is an unnecessary risk that can slow down development and frustrate your team.</p><h4 id="4-the-future-is-unpredictable">4. <strong>The Future is Unpredictable</strong></h4><p>We often justify wrapping things because we think we might switch libraries later. But <strong>how often do these migrations actually happen?</strong> In most cases, you either stick with your choice long-term or the migration ends up being a significant rewrite regardless. The wrapper you built to make migration "easier" is usually <strong>not the thing that makes or breaks a transition</strong>.</p><h4 id="5-libraries-evolve-making-wrappers-obsolete">5. <strong>Libraries Evolve, Making Wrappers Obsolete</strong></h4><p>Libraries and frameworks are constantly improving. Features you think you need to abstract today may be handled natively tomorrow. Your abstraction can quickly become <strong>a pointless relic</strong> that only adds friction instead of helping.</p><h3 id="when-should-you-abstract">When Should You Abstract?</h3><p>This isn't to say that abstraction is always bad. There are times when it makes sense:</p><ul><li><strong>If you actually have multiple implementations today</strong> (e.g., supporting both SQL and NoSQL backends in a real-world scenario).</li><li><strong>If your business logic requires it</strong>, like when defining a domain-specific API that is meant to outlive any specific framework or library.</li><li><strong>If you have a clear migration plan and concrete needs</strong>, rather than just vague "what ifs."</li></ul><p>In most cases, though, <strong>YAGNI (You Ain’t Gonna Need It)</strong> applies. <strong>Abstract when there is a proven, immediate need—not just in case something might change later.</strong></p><h3 id="the-better-approach">The Better Approach</h3><p>Instead of jumping to abstraction, try this:</p><ol><li><strong>Use the library directly.</strong> Take full advantage of its features rather than limiting yourself with a generic wrapper.</li><li><strong>Write good, modular code.</strong> Well-structured code with clear separation of concerns will naturally make it easier to swap dependencies when needed.</li><li><strong>Refactor when necessary.</strong> If you ever do need to switch libraries, you'll have real-world constraints to guide your abstraction, rather than guessing upfront.</li></ol><h3 id="finally">Finally</h3><p>Over-abstraction is a common pitfall among well-intentioned developers. But in reality, it often <strong>adds unnecessary work, hides powerful features, and makes debugging harder.</strong> Instead of fearing commitment to a tool, embrace it fully, and trust that good code structure—not premature wrappers—will make future changes manageable.</p><p>So next time someone says, "Let's create a wrapper just in case," challenge them. Ask, <strong>"What problem are we actually solving today?"</strong> If the answer is "just in case," then you probably don’t need it.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+In software development, there's a type of developer I like to call the **Over-Abstractor**. This is the dev who, upon considering any new library, immediately suggests wrapping it in an abstraction layer "just in case" we want to switch to something else later. It sounds smart at first, but in reality, it introduces more problems than it solves.
 
+### The Temptation to Wrap Everything
+
+You’ve probably heard something like this before:
+
+-   "Let's create a wrapper around React in case we want to move to Vue later."
+-   "Let's wrap MUI in case we want to switch to Shadcn later."
+
+At first glance, this approach seems reasonable. Abstracting dependencies might give the illusion of **future flexibility**. But in practice, it often results in unnecessary complexity and **self-imposed limitations**.
+
+### Why Wrapping is Rarely Worthwhile
+
+Instead of making things easier, abstraction layers introduce several immediate and long-term costs:
+
+#### 1\. **You Have to Maintain an Additional Abstraction**
+
+Every wrapper is a piece of code you must create, test, debug, and maintain. Instead of just using the library as it was intended, you’re now managing an extra layer of indirection that requires its own documentation and upkeep.
+
+#### 2\. **You Can’t Fully Leverage the Tool You Chose**
+
+When you wrap a library, you’re forced to define a **lowest common denominator API**—one that abstracts away unique features because they may not be supported by whatever library you might move to. This means you’re **crippling** the tool you deliberately chose, making it harder to take advantage of its full potential.
+
+#### 3\. **Debugging Becomes Harder**
+
+When a bug arises, you now have two places to investigate: the underlying library and your wrapper. **The more layers you introduce, the harder it is to trace issues.** This is an unnecessary risk that can slow down development and frustrate your team.
+
+#### 4\. **The Future is Unpredictable**
+
+We often justify wrapping things because we think we might switch libraries later. But **how often do these migrations actually happen?** In most cases, you either stick with your choice long-term or the migration ends up being a significant rewrite regardless. The wrapper you built to make migration "easier" is usually **not the thing that makes or breaks a transition**.
+
+#### 5\. **Libraries Evolve, Making Wrappers Obsolete**
+
+Libraries and frameworks are constantly improving. Features you think you need to abstract today may be handled natively tomorrow. Your abstraction can quickly become **a pointless relic** that only adds friction instead of helping.
+
+### When Should You Abstract?
+
+This isn't to say that abstraction is always bad. There are times when it makes sense:
+
+-   **If you actually have multiple implementations today** (e.g., supporting both SQL and NoSQL backends in a real-world scenario).
+-   **If your business logic requires it**, like when defining a domain-specific API that is meant to outlive any specific framework or library.
+-   **If you have a clear migration plan and concrete needs**, rather than just vague "what ifs."
+
+In most cases, though, **YAGNI (You Ain’t Gonna Need It)** applies. **Abstract when there is a proven, immediate need—not just in case something might change later.**
+
+### The Better Approach
+
+Instead of jumping to abstraction, try this:
+
+1.  **Use the library directly.** Take full advantage of its features rather than limiting yourself with a generic wrapper.
+2.  **Write good, modular code.** Well-structured code with clear separation of concerns will naturally make it easier to swap dependencies when needed.
+3.  **Refactor when necessary.** If you ever do need to switch libraries, you'll have real-world constraints to guide your abstraction, rather than guessing upfront.
+
+### Finally
+
+Over-abstraction is a common pitfall among well-intentioned developers. But in reality, it often **adds unnecessary work, hides powerful features, and makes debugging harder.** Instead of fearing commitment to a tool, embrace it fully, and trust that good code structure—not premature wrappers—will make future changes manageable.
+
+So next time someone says, "Let's create a wrapper just in case," challenge them. Ask, **"What problem are we actually solving today?"** If the answer is "just in case," then you probably don’t need it.

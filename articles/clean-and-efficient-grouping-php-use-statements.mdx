@@ -5,19 +5,90 @@ description: "When writing PHP code, especially in frameworks like Laravel or cu
 tags: ["php","laravel","productivity","clean-code"]
 ---
 
-<p>When writing PHP code, especially in frameworks like <strong>Laravel</strong> or custom-built applications, we often find ourselves importing multiple classes from the same <strong>namespace</strong>. For example:</p><pre><code class="language-php">use App\Models\User;
+When writing PHP code, especially in frameworks like **Laravel** or custom-built applications, we often find ourselves importing multiple classes from the same **namespace**. For example:
+
+```php
+use App\Models\User;
 use App\Models\Team;
 use App\Models\Project;
-</code></pre><p>This is clear and functional, but <strong>can it be cleaner</strong>? <strong>Absolutely!</strong> PHP offers a syntax that allows us to group these imports under a <strong>single <code>use</code> statement</strong>:</p><pre><code class="language-php">use App\Models\{User, Team, Project};
-</code></pre><p>This simple change can <strong>enhance code readability</strong>, reduce the number of lines, and make it <strong>easier to maintain</strong>. Let’s explore this concept in depth.</p><hr><h2 id="why-group-use-statements"><strong>Why Group <code>use</code> Statements?</strong></h2><ul><li><strong>Readability</strong>: Instead of cluttering the top of the file with multiple lines of <code>use</code>, you can condense them into a single, concise line.</li><li><strong>Maintainability</strong>: If you ever need to change the namespace (<code>App\Models</code> to, say, <code>App\Entities</code>), you only need to modify it in one place.</li><li><strong>Organization</strong>: Grouping similar imports helps the reader immediately see the relationship between the classes.</li></ul><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><p>While this approach seems like a no-brainer, let’s discuss a few considerations:</p><h3 id="1-php-version-compatibility"><strong>1. PHP Version Compatibility</strong></h3><p>Grouping <code>use</code> statements was introduced in <strong>PHP 7.0</strong>. If your project runs on an older version of PHP (which it <em>shouldn't</em> in 2025), this syntax will not work.</p><h3 id="2-consistency"><strong>2. Consistency</strong></h3><p>It’s good practice to be consistent across your project or team. If you decide to group imports in one file, try to apply it throughout the codebase. Inconsistent styles can confuse developers and code reviewers.</p><h3 id="3-aliasing"><strong>3. Aliasing</strong></h3><p>Grouped <code>use</code> statements also support aliasing, which can be useful when importing classes with the same name but different namespaces:</p><pre><code class="language-php">use App\Models\{User as ModelUser, Team, Project};
-</code></pre><p>This avoids naming conflicts and makes code intent clearer.</p><h3 id="4-importing-functions-and-constants"><strong>4. Importing Functions and Constants</strong></h3><p>In addition to classes, <strong>functions</strong> and <strong>constants</strong> can be grouped (since PHP 7.0+):</p><pre><code class="language-php">use function App\Utils\{formatDate, calculateTax};
+```
+
+This is clear and functional, but **can it be cleaner**? **Absolutely!** PHP offers a syntax that allows us to group these imports under a **single `use` statement**:
+
+```php
+use App\Models\{User, Team, Project};
+```
+
+This simple change can **enhance code readability**, reduce the number of lines, and make it **easier to maintain**. Let’s explore this concept in depth.
+
+* * *
+
+## **Why Group `use` Statements?**
+
+-   **Readability**: Instead of cluttering the top of the file with multiple lines of `use`, you can condense them into a single, concise line.
+-   **Maintainability**: If you ever need to change the namespace (`App\Models` to, say, `App\Entities`), you only need to modify it in one place.
+-   **Organization**: Grouping similar imports helps the reader immediately see the relationship between the classes.
+
+* * *
+
+## **Other Considerations**
+
+While this approach seems like a no-brainer, let’s discuss a few considerations:
+
+### **1\. PHP Version Compatibility**
+
+Grouping `use` statements was introduced in **PHP 7.0**. If your project runs on an older version of PHP (which it _shouldn't_ in 2025), this syntax will not work.
+
+### **2\. Consistency**
+
+It’s good practice to be consistent across your project or team. If you decide to group imports in one file, try to apply it throughout the codebase. Inconsistent styles can confuse developers and code reviewers.
+
+### **3\. Aliasing**
+
+Grouped `use` statements also support aliasing, which can be useful when importing classes with the same name but different namespaces:
+
+```php
+use App\Models\{User as ModelUser, Team, Project};
+```
+
+This avoids naming conflicts and makes code intent clearer.
+
+### **4\. Importing Functions and Constants**
+
+In addition to classes, **functions** and **constants** can be grouped (since PHP 7.0+):
+
+```php
+use function App\Utils\{formatDate, calculateTax};
 use const App\Config\{PI, EULER};
-</code></pre><p>This is especially useful in projects that rely heavily on utility functions or constant definitions.</p><h3 id="5-long-groupings"><strong>5. Long Groupings</strong></h3><p>When grouping a large number of classes or functions, consider breaking the line for readability:</p><pre><code class="language-php">use App\Models\{
+```
+
+This is especially useful in projects that rely heavily on utility functions or constant definitions.
+
+### **5\. Long Groupings**
+
+When grouping a large number of classes or functions, consider breaking the line for readability:
+
+```php
+use App\Models\{
     User, Team, Project, Order, Invoice,
     Payment, Shipment, Customer, Vendor
 };
-</code></pre><p>This makes it easier to scan visually, and avoids horizontal scrolling in your editor.</p><hr><h2 id="common-pitfalls"><strong>Common Pitfalls</strong></h2><ul><li><strong>Namespace Confusion</strong>: Always ensure you’re grouping classes under the correct namespace. Mixing classes from different namespaces in a group import is not allowed.</li><li><strong>Overuse</strong>: Grouped <code>use</code> statements are best used when the imports belong to the same logical namespace. Avoid trying to group everything just to reduce line count.</li><li><strong>Tool Compatibility</strong>: Some static analysis tools or older linters might not fully support grouped <code>use</code> statements. Ensure your tools are updated.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>The <code>use App\Models\{User, Team, Project};</code> syntax is a <strong>small but powerful feature</strong> of PHP. It <strong>improves code quality</strong>, <strong>boosts readability</strong>, and shows a <strong>keen eye for maintainability</strong>. Like all good things in coding, use it <strong>wisely and consistently</strong>.</p><p>If you’ve been manually typing or copy-pasting multiple <code>use</code> lines for the same namespace, it’s time to <strong>refactor your code</strong> and adopt this <strong>modern best practice</strong>.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+This makes it easier to scan visually, and avoids horizontal scrolling in your editor.
+
+* * *
+
+## **Common Pitfalls**
+
+-   **Namespace Confusion**: Always ensure you’re grouping classes under the correct namespace. Mixing classes from different namespaces in a group import is not allowed.
+-   **Overuse**: Grouped `use` statements are best used when the imports belong to the same logical namespace. Avoid trying to group everything just to reduce line count.
+-   **Tool Compatibility**: Some static analysis tools or older linters might not fully support grouped `use` statements. Ensure your tools are updated.
+
+* * *
+
+## **Finally**
+
+The `use App\Models\{User, Team, Project};` syntax is a **small but powerful feature** of PHP. It **improves code quality**, **boosts readability**, and shows a **keen eye for maintainability**. Like all good things in coding, use it **wisely and consistently**.
+
+If you’ve been manually typing or copy-pasting multiple `use` lines for the same namespace, it’s time to **refactor your code** and adopt this **modern best practice**.

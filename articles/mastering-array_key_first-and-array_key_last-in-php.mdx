@@ -5,17 +5,44 @@ description: "When working with arrays in PHP, it's often necessary to access th
 tags: ["php","email"]
 ---
 
-<p>When working with arrays in PHP, it's often necessary to access the <strong>first</strong> or <strong>last</strong> element. Starting from <strong>PHP 7.3</strong>, two dedicated functions — <code>array_key_first()</code> and <code>array_key_last()</code> — make this task more explicit and reliable.</p><hr><h2 id="%F0%9F%94%8D-what-do-these-functions-do">🔍 <strong>What Do These Functions Do?</strong></h2><ul><li><strong><code>array_key_first(array $array)</code></strong><br>Returns the <strong>first key</strong> of the array.</li><li><strong><code>array_key_last(array $array)</code></strong><br>Returns the <strong>last key</strong> of the array.</li></ul><p>Unlike <code>reset()</code> or <code>end()</code>, which operate on the internal pointer and return values, these functions return the <strong>actual keys</strong>. This makes them especially useful when you need to work with both keys and values.</p><hr><h2 id="%F0%9F%A7%AA-basic-example">🧪 <strong>Basic Example</strong></h2><pre><code class="language-php">$array = [1, 2, 3, 4, 5];
+When working with arrays in PHP, it's often necessary to access the **first** or **last** element. Starting from **PHP 7.3**, two dedicated functions — `array_key_first()` and `array_key_last()` — make this task more explicit and reliable.
+
+* * *
+
+## 🔍 **What Do These Functions Do?**
+
+-   **`array_key_first(array $array)`**  
+    Returns the **first key** of the array.
+-   **`array_key_last(array $array)`**  
+    Returns the **last key** of the array.
+
+Unlike `reset()` or `end()`, which operate on the internal pointer and return values, these functions return the **actual keys**. This makes them especially useful when you need to work with both keys and values.
+
+* * *
+
+## 🧪 **Basic Example**
+
+```php
+$array = [1, 2, 3, 4, 5];
 
 $firstKey = array_key_first($array); // 0
 $lastKey = array_key_last($array);   // 4
 
 $firstValue = $array[$firstKey]; // 1
 $lastValue = $array[$lastKey];   // 5
-</code></pre><p>This method works for both <strong>indexed</strong> and <strong>associative arrays</strong>.</p><hr><h2 id="%F0%9F%93%98-example-with-associative-array">📘 <strong>Example with Associative Array</strong></h2><pre><code class="language-php">$user = [
-    'name' =&gt; 'Sony',
-    'email' =&gt; 'sony@example.com',
-    'location' =&gt; 'Jakarta'
+```
+
+This method works for both **indexed** and **associative arrays**.
+
+* * *
+
+## 📘 **Example with Associative Array**
+
+```php
+$user = [
+    'name' => 'Sony',
+    'email' => 'sony@example.com',
+    'location' => 'Jakarta'
 ];
 
 $firstKey = array_key_first($user); // 'name'
@@ -23,14 +50,51 @@ $lastKey = array_key_last($user);   // 'location'
 
 echo $user[$firstKey]; // Sony
 echo $user[$lastKey];  // Jakarta
-</code></pre><p>This is much clearer than using pointer functions like <code>reset()</code> or <code>end()</code>, which can obscure the key being referenced.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-empty-array-behavior">⚠️ <strong>Empty Array Behavior</strong></h2><p>If the array is empty, both functions will return <code>null</code>.</p><pre><code class="language-php">$data = [];
+```
+
+This is much clearer than using pointer functions like `reset()` or `end()`, which can obscure the key being referenced.
+
+* * *
+
+## ⚠️ **Empty Array Behavior**
+
+If the array is empty, both functions will return `null`.
+
+```php
+$data = [];
 
 var_dump(array_key_first($data)); // null
 var_dump(array_key_last($data));  // null
-</code></pre><p>You should always check the array's size before accessing elements based on these keys.</p><hr><h2 id="%F0%9F%94%84-comparison-with-reset-and-end">🔄 <strong>Comparison with <code>reset()</code> and <code>end()</code></strong></h2><p>While <code>reset()</code> and <code>end()</code> return the <strong>value</strong> directly, they also <strong>modify</strong> the internal pointer of the array, which might affect subsequent operations:</p><pre><code class="language-php">reset($array); // sets pointer to the first element
-end($array);   // sets pointer to the last element
-</code></pre><p>In contrast, <code>array_key_first()</code> and <code>array_key_last()</code> are <strong>non-intrusive</strong> — they do not affect the internal pointer.</p><hr><h2 id="%E2%9C%85-why-use-them">✅ <strong>Why Use Them</strong></h2><ul><li>Safer for <strong>read-only operations</strong>.</li><li>Do not interfere with <strong>array iteration</strong>.</li><li>Ideal for <strong>associative arrays</strong> when key awareness is needed.</li><li>Work consistently across all array types.</li></ul><hr><h2 id="%F0%9F%A7%B5-finally">🧵 <strong>Finally</strong></h2><p>The functions <code>array_key_first()</code> and <code>array_key_last()</code> offer a clean and precise way to access array boundaries in PHP. They are a welcome addition to the language, improving code clarity and behavior predictability — especially when dealing with associative arrays or avoiding pointer side effects.</p><p>If you’re using PHP 7.3 or newer, it’s time to make these functions a regular part of your toolkit.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+You should always check the array's size before accessing elements based on these keys.
+
+* * *
+
+## 🔄 **Comparison with `reset()` and `end()`**
+
+While `reset()` and `end()` return the **value** directly, they also **modify** the internal pointer of the array, which might affect subsequent operations:
+
+```php
+reset($array); // sets pointer to the first element
+end($array);   // sets pointer to the last element
+```
+
+In contrast, `array_key_first()` and `array_key_last()` are **non-intrusive** — they do not affect the internal pointer.
+
+* * *
+
+## ✅ **Why Use Them**
+
+-   Safer for **read-only operations**.
+-   Do not interfere with **array iteration**.
+-   Ideal for **associative arrays** when key awareness is needed.
+-   Work consistently across all array types.
+
+* * *
+
+## 🧵 **Finally**
+
+The functions `array_key_first()` and `array_key_last()` offer a clean and precise way to access array boundaries in PHP. They are a welcome addition to the language, improving code clarity and behavior predictability — especially when dealing with associative arrays or avoiding pointer side effects.
+
+If you’re using PHP 7.3 or newer, it’s time to make these functions a regular part of your toolkit.

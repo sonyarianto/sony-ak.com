@@ -5,24 +5,61 @@ description: "JavaScript is designed to handle asynchronous operations gracefull
 tags: ["javascript","api","performance","debugging","productivity"]
 ---
 
-<p>JavaScript is designed to handle <strong>asynchronous operations</strong> gracefully. Whether you are fetching data from APIs, reading files, or executing time-consuming computations, <strong>Promises</strong> give you a structured way to manage asynchronous results.</p><p>Two of the most commonly used Promise combinators are <strong><code>Promise.all</code></strong> and <strong><code>Promise.allSettled</code></strong>. At first glance, they may seem similar, but their behavior can have very different implications for your applications. Let’s dive deep.</p><hr><h2 id="what-is-promiseall">What is <code>Promise.all</code>?</h2><p><code>Promise.all</code> is best thought of as an <strong>all-or-nothing strategy</strong>.</p><ul><li>If <strong>all promises succeed</strong>, you get a single resolved promise containing an array of results.</li><li>If <strong>any promise fails</strong>, the entire <code>Promise.all</code> immediately rejects, discarding results from other promises (even if they already resolved).</li></ul><p><strong>Example:</strong></p><pre><code class="language-js">const fetchUser = fetch("/api/user");
+JavaScript is designed to handle **asynchronous operations** gracefully. Whether you are fetching data from APIs, reading files, or executing time-consuming computations, **Promises** give you a structured way to manage asynchronous results.
+
+Two of the most commonly used Promise combinators are **`Promise.all`** and **`Promise.allSettled`**. At first glance, they may seem similar, but their behavior can have very different implications for your applications. Let’s dive deep.
+
+* * *
+
+## What is `Promise.all`?
+
+`Promise.all` is best thought of as an **all-or-nothing strategy**.
+
+-   If **all promises succeed**, you get a single resolved promise containing an array of results.
+-   If **any promise fails**, the entire `Promise.all` immediately rejects, discarding results from other promises (even if they already resolved).
+
+**Example:**
+
+```js
+const fetchUser = fetch("/api/user");
 const fetchOrders = fetch("/api/orders");
 const fetchPayments = fetch("/api/payments");
 
 Promise.all([fetchUser, fetchOrders, fetchPayments])
-  .then(responses =&gt; {
+  .then(responses => {
     console.log("All succeeded:", responses);
   })
-  .catch(error =&gt; {
+  .catch(error => {
     console.error("At least one failed:", error);
   });
-</code></pre><p>Here, if <code>/api/payments</code> fails, you won’t get results from <code>/api/user</code> or <code>/api/orders</code>, even if they were successful.</p><p><strong>When to use it:</strong></p><ul><li>When <strong>every result is mandatory</strong> for the next operation.</li><li>For example, loading multiple independent pieces of data before rendering a dashboard.</li></ul><hr><h2 id="what-is-promiseallsettled">What is <code>Promise.allSettled</code>?</h2><p><code>Promise.allSettled</code> takes a more <strong>lenient approach</strong>.</p><ul><li>It waits for <strong>all promises to finish</strong>, regardless of success or failure.</li><li>It always resolves (never rejects), returning an array of objects where each object indicates whether the corresponding promise <strong>fulfilled</strong> or <strong>rejected</strong>.</li></ul><p><strong>Example:</strong></p><pre><code class="language-js">const fetchUser = fetch("/api/user");
+```
+
+Here, if `/api/payments` fails, you won’t get results from `/api/user` or `/api/orders`, even if they were successful.
+
+**When to use it:**
+
+-   When **every result is mandatory** for the next operation.
+-   For example, loading multiple independent pieces of data before rendering a dashboard.
+
+* * *
+
+## What is `Promise.allSettled`?
+
+`Promise.allSettled` takes a more **lenient approach**.
+
+-   It waits for **all promises to finish**, regardless of success or failure.
+-   It always resolves (never rejects), returning an array of objects where each object indicates whether the corresponding promise **fulfilled** or **rejected**.
+
+**Example:**
+
+```js
+const fetchUser = fetch("/api/user");
 const fetchOrders = fetch("/api/orders");
 const fetchPayments = fetch("/api/payments");
 
 Promise.allSettled([fetchUser, fetchOrders, fetchPayments])
-  .then(results =&gt; {
-    results.forEach(result =&gt; {
+  .then(results => {
+    results.forEach(result => {
       if (result.status === "fulfilled") {
         console.log("Success:", result.value);
       } else {
@@ -30,48 +67,83 @@ Promise.allSettled([fetchUser, fetchOrders, fetchPayments])
       }
     });
   });
-</code></pre><p><strong>When to use it:</strong></p><ul><li>When <strong>partial success is acceptable</strong>.</li><li>For example, displaying available data to the user (orders and profile) even if one API (payments) fails.</li></ul><hr><h2 id="key-differences-at-a-glance">Key Differences at a Glance</h2>
-<!--kg-card-begin: html-->
-<table>
-<thead>
-<tr>
-<th>Feature</th>
-<th><code inline="">Promise.all</code></th>
-<th><code inline="">Promise.allSettled</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Resolves when</strong></td>
-<td>All promises fulfill</td>
-<td>All promises settle (fulfilled or rejected)</td>
-</tr>
-<tr>
-<td><strong>Rejects when</strong></td>
-<td>Any single promise rejects</td>
-<td>Never rejects</td>
-</tr>
-<tr>
-<td><strong>Result</strong></td>
-<td>Array of values</td>
-<td>Array of objects with <code inline="">status</code> and <code inline="">value</code>/<code inline="">reason</code></td>
-</tr>
-<tr>
-<td><strong>Use Case</strong></td>
-<td>All results required</td>
-<td>Gather results regardless of failure</td>
-</tr>
-</tbody>
-</table>
-<!--kg-card-end: html-->
-<hr><h2 id="real-world-considerations">Real-World Considerations</h2><h3 id="1-performance">1. Performance</h3><p>Both methods execute promises <strong>concurrently</strong>, not sequentially. This means they are <strong>fast</strong> compared to awaiting each promise one by one.</p><h3 id="2-error-handling">2. Error Handling</h3><ul><li>With <code>Promise.all</code>, you must be prepared to catch <strong>a single error</strong> that cancels everything.</li><li>With <code>Promise.allSettled</code>, you must manually handle <strong>both success and failure cases</strong> in your loop.</li></ul><h3 id="3-debugging">3. Debugging</h3><ul><li><code>Promise.all</code> might hide useful information if multiple promises fail, since you only see the first rejection.</li><li><code>Promise.allSettled</code> gives you a <strong>complete report</strong> of successes and failures.</li></ul><h3 id="4-browser-compatibility">4. Browser Compatibility</h3><ul><li>Both methods are well-supported in modern browsers.</li><li>If you are targeting very old environments, <code>Promise.allSettled</code> may need a <strong>polyfill</strong>.</li></ul><hr><h2 id="beyond-all-and-allsettled-other-promise-combinators">Beyond <code>all</code> and <code>allSettled</code>: Other Promise Combinators</h2><p>To complete the picture, JavaScript also provides two more useful methods:</p><ol><ul><li>Returns the result of the <strong>first promise to settle</strong> (fulfilled or rejected).</li><li>Useful for <strong>timeouts</strong> or when you only care about the fastest response.</li><li>Returns the result of the <strong>first promise to fulfill</strong> (ignores rejections).</li><li>Rejects only if <strong>all promises reject</strong>.</li><li>Useful when <strong>one good result is enough</strong> (e.g., querying multiple redundant servers).</li></ul></ol><p><strong><code>Promise.any</code></strong></p><pre><code class="language-js">Promise.any([fetch("/mirror1"), fetch("/mirror2"), fetch("/mirror3")])
-  .then(response =&gt; console.log("First successful response:", response))
-  .catch(() =&gt; console.error("All requests failed"));
-</code></pre><p><strong><code>Promise.race</code></strong></p><pre><code class="language-js">Promise.race([fetch("/api/fast"), fetch("/api/slow")])
-  .then(result =&gt; console.log("Winner:", result))
-  .catch(error =&gt; console.error("Error:", error));
-</code></pre><hr><h2 id="choosing-the-right-tool">Choosing the Right Tool</h2><ul><li>Use <strong><code>Promise.all</code></strong> if you want <strong>all results</strong> or nothing.</li><li>Use <strong><code>Promise.allSettled</code></strong> if you want <strong>a full picture</strong> and can handle partial failures.</li><li>Use <strong><code>Promise.race</code></strong> for <strong>timeouts or first response wins</strong> strategies.</li><li>Use <strong><code>Promise.any</code></strong> if you just need <strong>one successful result</strong> and don’t care which one.</li></ul><hr><h2 id="finally">Finally</h2><p>Understanding the differences between <code>Promise.all</code> and <code>Promise.allSettled</code> (and their siblings <code>race</code> and <code>any</code>) is crucial for building <strong>robust, fault-tolerant, and performant</strong> JavaScript applications.</p><p>In real-world systems, APIs fail, networks drop, and data sources misbehave. Choosing the right promise combinator allows you to decide whether to <strong>fail fast</strong>, <strong>fail gracefully</strong>, or <strong>recover smartly</strong>.</p><p><strong>Pro tip:</strong> Always consider the <strong>business logic</strong> of your application. If one missing dataset renders the whole page useless, <code>Promise.all</code> is your friend. But if you prefer resilience and “show what we can,” then <code>Promise.allSettled</code> shines.</p><h3 id="support-us">Support Us</h3>
-<!--kg-card-begin: html-->
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-<!--kg-card-end: html-->
+```
 
+**When to use it:**
+
+-   When **partial success is acceptable**.
+-   For example, displaying available data to the user (orders and profile) even if one API (payments) fails.
+
+* * *
+
+## Key Differences at a Glance
+
+* * *
+
+## Real-World Considerations
+
+### 1\. Performance
+
+Both methods execute promises **concurrently**, not sequentially. This means they are **fast** compared to awaiting each promise one by one.
+
+### 2\. Error Handling
+
+-   With `Promise.all`, you must be prepared to catch **a single error** that cancels everything.
+-   With `Promise.allSettled`, you must manually handle **both success and failure cases** in your loop.
+
+### 3\. Debugging
+
+-   `Promise.all` might hide useful information if multiple promises fail, since you only see the first rejection.
+-   `Promise.allSettled` gives you a **complete report** of successes and failures.
+
+### 4\. Browser Compatibility
+
+-   Both methods are well-supported in modern browsers.
+-   If you are targeting very old environments, `Promise.allSettled` may need a **polyfill**.
+
+* * *
+
+## Beyond `all` and `allSettled`: Other Promise Combinators
+
+To complete the picture, JavaScript also provides two more useful methods:
+
+-   Returns the result of the **first promise to settle** (fulfilled or rejected).
+-   Useful for **timeouts** or when you only care about the fastest response.
+-   Returns the result of the **first promise to fulfill** (ignores rejections).
+-   Rejects only if **all promises reject**.
+-   Useful when **one good result is enough** (e.g., querying multiple redundant servers).
+
+**`Promise.any`**
+
+```js
+Promise.any([fetch("/mirror1"), fetch("/mirror2"), fetch("/mirror3")])
+  .then(response => console.log("First successful response:", response))
+  .catch(() => console.error("All requests failed"));
+```
+
+**`Promise.race`**
+
+```js
+Promise.race([fetch("/api/fast"), fetch("/api/slow")])
+  .then(result => console.log("Winner:", result))
+  .catch(error => console.error("Error:", error));
+```
+
+* * *
+
+## Choosing the Right Tool
+
+-   Use **`Promise.all`** if you want **all results** or nothing.
+-   Use **`Promise.allSettled`** if you want **a full picture** and can handle partial failures.
+-   Use **`Promise.race`** for **timeouts or first response wins** strategies.
+-   Use **`Promise.any`** if you just need **one successful result** and don’t care which one.
+
+* * *
+
+## Finally
+
+Understanding the differences between `Promise.all` and `Promise.allSettled` (and their siblings `race` and `any`) is crucial for building **robust, fault-tolerant, and performant** JavaScript applications.
+
+In real-world systems, APIs fail, networks drop, and data sources misbehave. Choosing the right promise combinator allows you to decide whether to **fail fast**, **fail gracefully**, or **recover smartly**.
+
+**Pro tip:** Always consider the **business logic** of your application. If one missing dataset renders the whole page useless, `Promise.all` is your friend. But if you prefer resilience and “show what we can,” then `Promise.allSettled` shines.
