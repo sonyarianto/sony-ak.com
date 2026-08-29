@@ -81,7 +81,7 @@
 
 /* Light background for code blocks */
 .prose :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-  --tw-prose-pre-bg: #f6f8fa;
+  --tw-prose-pre-bg: #eef1f5;
   --tw-prose-pre-code: #24292e;
 }
 
