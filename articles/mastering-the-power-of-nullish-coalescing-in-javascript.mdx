@@ -1,0 +1,32 @@
+---
+title: "Mastering the Power of Nullish Coalescing in JavaScript"
+date: "2024-10-07"
+description: "In JavaScript, handling values that may be null or undefined can be a tricky part of coding, especially for beginners. You might have run into situations where ..."
+---
+
+<p>In JavaScript, handling values that may be <code>null</code> or <code>undefined</code> can be a tricky part of coding, especially for beginners. You might have run into situations where you need a fallback value when something is missing or not provided. This is where <strong>nullish coalescing (<code>??</code>)</strong> comes into play—a feature introduced in ECMAScript 2020 that helps deal with <code>null</code> and <code>undefined</code> without misinterpreting other "falsy" values like <code>0</code>, <code>false</code>, or <code>""</code> (empty string).</p><h3 id="why-nullish-coalescing-matters">Why Nullish Coalescing Matters</h3><p>JavaScript has several <strong>falsy values</strong>: <code>0</code>, <code>false</code>, <code>""</code> (empty string), <code>NaN</code>, <code>null</code>, and <code>undefined</code>. When you want to check for a missing or non-existent value, you often reach for <strong>logical OR (<code>||</code>)</strong>. While <code>||</code> is great for setting fallback values, it treats any falsy value as <code>false</code>. This can lead to unexpected behavior.</p><p>Let’s look at an example:</p><pre><code class="language-javascript">const userCount = 0;
+const count = userCount || 10;
+console.log(count); // Outputs: 10
+</code></pre><p>Even though <code>userCount</code> is <code>0</code>, which is a valid value, the logical OR (<code>||</code>) operator considers it falsy and replaces it with <code>10</code>. This can be an issue if you want to preserve falsy values like <code>0</code>, <code>false</code>, or <code>""</code>, while still providing a fallback only for <code>null</code> or <code>undefined</code>.</p><h3 id="enter-the-nullish-coalescing-operator">Enter the Nullish Coalescing Operator (<code>??</code>)</h3><p>The <strong>nullish coalescing operator (<code>??</code>)</strong> fixes this problem. Unlike <code>||</code>, it only checks for <code>null</code> or <code>undefined</code>. Other falsy values like <code>0</code>, <code>false</code>, and <code>""</code> are left untouched.</p><p>Here’s how the previous example works with <code>??</code>:</p><pre><code class="language-javascript">const userCount = 0;
+const count = userCount ?? 10;
+console.log(count); // Outputs: 0
+</code></pre><p>Now, <code>0</code> is correctly preserved because it’s not <code>null</code> or <code>undefined</code>.</p><h3 id="understanding-how-it-works">Understanding How It Works</h3><p>The <strong>nullish coalescing operator</strong> has a simple rule: it checks whether the left-hand side is <code>null</code> or <code>undefined</code>. If it is, it returns the value on the right-hand side. If the left-hand side has <em>any other value</em>, including falsy values like <code>0</code>, <code>false</code>, or <code>""</code>, it leaves the left-hand side as is.</p><pre><code class="language-javascript">const name = null;
+const displayName = name ?? "Guest";
+console.log(displayName); // Outputs: "Guest"
+
+const status = false;
+const displayStatus = status ?? "Online";
+console.log(displayStatus); // Outputs: false
+</code></pre><p>In the first example, <code>name</code> is <code>null</code>, so the fallback value <code>"Guest"</code> is used. In the second example, <code>status</code> is <code>false</code>, but since it's neither <code>null</code> nor <code>undefined</code>, the <code>??</code> operator doesn’t replace it with <code>"Online"</code>.</p><h3 id="common-use-cases">Common Use Cases</h3><p>Here are some scenarios where nullish coalescing can save you from common pitfalls:</p><ul><li><strong>Handling user input</strong>: If you're working with forms or API responses where <code>null</code> or <code>undefined</code> are possible, <code>??</code> can provide a default value without accidentally overriding falsy data.</li></ul><pre><code class="language-javascript">const userInput = "";
+const validatedInput = userInput ?? "Default value";
+console.log(validatedInput); // Outputs: ""
+</code></pre><ul><li><strong>Function parameters</strong>: When setting default values for optional parameters, <code>??</code> ensures you don’t mistakenly replace values like <code>0</code> or <code>false</code>.</li></ul><pre><code class="language-javascript">function calculateTotal(price, discount = 0) {
+  return price - (discount ?? 0);
+}
+
+console.log(calculateTotal(100, 0)); // Outputs: 100
+</code></pre><ul><li><strong>Dealing with API responses</strong>: If an API might return <code>null</code> or <code>undefined</code> for certain fields, you can use <code>??</code> to set a default response without interfering with falsy values.</li></ul><h3 id="finally">Finally</h3><p>The <strong>nullish coalescing operator</strong> is a small but powerful tool that makes handling <code>null</code> or <code>undefined</code> values in JavaScript easier. By understanding the difference between <code>??</code> and <code>||</code>, you can write more reliable code that preserves valid falsy values like <code>0</code> or <code>false</code>, while still providing defaults when necessary. It's a great feature to add to your JavaScript toolkit, especially when dealing with unpredictable or optional data.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

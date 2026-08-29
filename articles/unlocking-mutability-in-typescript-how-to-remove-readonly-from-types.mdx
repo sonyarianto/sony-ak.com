@@ -1,0 +1,33 @@
+---
+title: "Unlocking Mutability in TypeScript: How to Remove readonly from Types"
+date: "2025-04-09"
+description: "TypeScript is powerful for enforcing type safety, and one of its most useful features is the ability to express immutability through the readonly modifier. Howe..."
+---
+
+<p>TypeScript is powerful for enforcing type safety, and one of its most useful features is the ability to express <strong>immutability</strong> through the <code>readonly</code> modifier. However, there are times when we want to <strong>reverse</strong> that behavior — making a type's properties <strong>mutable</strong> again. That's where the <code>Mutable&lt;T&gt;</code> utility type comes in.</p><p>Let’s explore how to use it effectively, and why it’s such a handy trick for TypeScript developers.</p><hr><h2 id="the-problem-readonly-types">The Problem: Readonly Types</h2><p>Imagine you’re working with a data structure where all fields are marked as <code>readonly</code>. This is great for safety — it prevents accidental mutation. But what if, at some point, you <strong>need to modify</strong> that data?</p><p>Here’s an example:</p><pre><code class="language-ts">type Example = {
+  readonly a: string;
+  readonly b: number;
+};
+</code></pre><p>In this case, <code>a</code> and <code>b</code> are locked down — any attempt to change them results in a compile-time error.</p><hr><h2 id="the-solution-mutablet">The Solution: <code>Mutable&lt;T&gt;</code></h2><p>To solve this, you can define a <strong>mapped type</strong> that strips away the <code>readonly</code> modifier from every property.</p><pre><code class="language-ts">type Mutable&lt;T&gt; = {
+  -readonly [K in keyof T]: T[K];
+};
+</code></pre><h3 id="what%E2%80%99s-happening-here">What’s Happening Here?</h3><ul><li><code>keyof T</code>: Gets all keys from the type <code>T</code>.</li><li><code>[K in keyof T]</code>: Iterates over each key.</li><li><code>T[K]</code>: Fetches the corresponding value type.</li><li><code>-readonly</code>: This is the <strong>magic</strong> — it removes the <code>readonly</code> attribute from each key.</li></ul><p>Now, if we apply it to our example:</p><pre><code class="language-ts">type Result = Mutable&lt;Example&gt;;
+</code></pre><p>The resulting type is:</p><pre><code class="language-ts">type Result = {
+  a: string;
+  b: number;
+};
+</code></pre><p>And now you can freely assign new values to <code>a</code> and <code>b</code>.</p><hr><h2 id="why-this-is-useful">Why This Is Useful</h2><ul><li><strong>Refactoring</strong>: Sometimes types change over time. You might start with immutable data but need to make updates later.</li><li><strong>Utility Functions</strong>: You may want to write a utility that manipulates data and don’t want TypeScript blocking you with readonly warnings.</li><li><strong>Interoperability</strong>: Working with third-party types that are <code>readonly</code>, but your logic requires mutable properties.</li></ul><hr><h2 id="other-considerations">Other Considerations</h2><h3 id="1-deep-vs-shallow-mutability">1. <strong>Deep vs. Shallow Mutability</strong></h3><p>This <code>Mutable&lt;T&gt;</code> implementation is <strong>shallow</strong> — it only removes <code>readonly</code> from the <strong>top-level</strong> properties. If a property is itself an object with <code>readonly</code> fields, those are untouched.</p><p><strong>Example:</strong></p><pre><code class="language-ts">type NestedExample = {
+  readonly a: {
+    readonly x: string;
+  };
+};
+</code></pre><p>Using <code>Mutable&lt;NestedExample&gt;</code> will still leave <code>a.x</code> as <code>readonly</code>.</p><p>To handle <strong>deep mutability</strong>, you need a recursive version:</p><pre><code class="language-ts">type DeepMutable&lt;T&gt; = {
+  -readonly [K in keyof T]: T[K] extends object
+    ? DeepMutable&lt;T[K]&gt;
+    : T[K];
+};
+</code></pre><blockquote><strong>Caution</strong>: Recursive types can be powerful but must be used with care to avoid unexpected behavior, especially with arrays and complex union types.</blockquote><hr><h3 id="2-intentionality-matters">2. <strong>Intentionality Matters</strong></h3><p>Mutability is sometimes discouraged in large codebases because it can lead to <strong>unintended side effects</strong>. Use <code>Mutable&lt;T&gt;</code> only when there's a <strong>clear and justified need</strong> to make a value changeable.</p><hr><h3 id="3-interop-with-libraries">3. <strong>Interop with Libraries</strong></h3><p>When using libraries like Redux or Immer that rely on immutability, you’ll often need to <strong>preserve <code>readonly</code></strong> properties. Avoid using <code>Mutable&lt;T&gt;</code> in these contexts unless you’re intentionally stepping outside the pattern.</p><hr><h2 id="finally">Finally</h2><p>The <code>Mutable&lt;T&gt;</code> utility is a <strong>powerful technique</strong> to keep in your TypeScript toolbox. It’s especially useful when dealing with strict types that need to become flexible for valid reasons.</p><p>By understanding how mapped types and modifiers like <code>-readonly</code> work, you gain <strong>fine-grained control</strong> over your types — enabling cleaner, more intentional code.</p><p>So the next time you find yourself battling with immutability, remember: you can take control back — thoughtfully and safely — using a simple yet powerful utility.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

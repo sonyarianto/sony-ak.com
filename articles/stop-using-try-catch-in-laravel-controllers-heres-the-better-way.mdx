@@ -1,0 +1,32 @@
+---
+title: "Stop Using Try-Catch in Laravel Controllers: Here's the Better Way"
+date: "2025-05-03"
+description: "If you’re sprinkling try-catch blocks inside your Laravel controllers, it’s time to stop and take a step back. This pattern might feel safe, like you’re protect..."
+---
+
+<p>If you’re sprinkling <code>try-catch</code> blocks inside your Laravel controllers, it’s time to stop and take a step back. This pattern might feel safe, like you’re protecting your application from breaking. But in reality, it’s often a <strong>code smell</strong> — and there’s a cleaner, more scalable approach built right into Laravel.</p><p>Let’s walk through why <code>try-catch</code> in controllers is a bad idea, and what you should be doing instead.</p><hr><h2 id="why-try-catch-in-controllers-is-a-code-smell"><strong>Why <code>try-catch</code> in Controllers is a Code Smell</strong></h2><h3 id="1-breaks-separation-of-concerns">1. <strong>Breaks Separation of Concerns</strong></h3><p>Controllers should do one thing: <strong>receive input and return a response</strong>. When you put error handling logic directly into them, you’re mixing responsibilities. It makes controllers bloated and harder to test or maintain.</p><hr><h3 id="2-you%E2%80%99re-ignoring-laravel%E2%80%99s-exception-system">2. <strong>You’re Ignoring Laravel’s Exception System</strong></h3><p>Laravel already provides a global exception handler at:</p><pre><code>app/Exceptions/Handler.php
+</code></pre><p>This class is <strong>designed to catch and respond to unhandled exceptions</strong>. It’s where you should centralize error responses, logging, and even custom exception mapping.</p><hr><h3 id="3-inconsistent-error-responses">3. <strong>Inconsistent Error Responses</strong></h3><p>When every controller handles its own exceptions, your API or web app ends up with <strong>inconsistent error formats</strong>. One endpoint might return <code>{ error: "Something went wrong" }</code>, while another might return a stack trace or HTML. That’s not good, especially in a public API.</p><hr><h3 id="4-hides-real-problems">4. <strong>Hides Real Problems</strong></h3><p>Using a broad <code>catch (\Exception $e)</code> block is dangerous — you might be swallowing <strong>critical bugs</strong> that should be fixed, not hidden.</p><hr><h2 id="the-right-way-use-laravel%E2%80%99s-global-handler"><strong>The Right Way: Use Laravel’s Global Handler</strong></h2><p>Laravel routes all exceptions through <code>Handler.php</code>. Here’s how to use it properly.</p><h3 id="1-throw-custom-exceptions">1. <strong>Throw Custom Exceptions</strong></h3><p>In your service or domain layer, throw specific exceptions when something goes wrong:</p><pre><code class="language-php">throw new InsufficientBalanceException("Your balance is too low.");
+</code></pre><h3 id="2-catch-and-format-them-in-handlerphp">2. <strong>Catch and Format Them in Handler.php</strong></h3><p>Open <code>app/Exceptions/Handler.php</code> and modify the <code>render()</code> method:</p><pre><code class="language-php">public function render($request, Throwable $exception)
+{
+    if ($exception instanceof InsufficientBalanceException) {
+        return response()-&gt;json([
+            'error' =&gt; $exception-&gt;getMessage(),
+        ], 400);
+    }
+
+    return parent::render($request, $exception);
+}
+</code></pre><p>Now every time that exception is thrown, it will return a proper response — and your controller stays clean.</p><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><h3 id="%E2%9C%85-validation-use-form-requests">✅ <strong>Validation? Use Form Requests</strong></h3><p>Don’t wrap validation logic in <code>try-catch</code>. Use Laravel’s <code>FormRequest</code>:</p><pre><code class="language-bash">php artisan make:request StoreUserRequest
+</code></pre><p>This way, validation errors are automatically turned into JSON with status 422.</p><hr><h3 id="%E2%9C%85-auth-and-permissions-use-middleware">✅ <strong>Auth and Permissions? Use Middleware</strong></h3><p>Avoid catching permission errors in your controller. Instead, use middleware like <code>auth</code>, <code>can</code>, or custom gates. Let Laravel throw <code>AuthorizationException</code>, and handle it globally.</p><hr><h3 id="%E2%9C%85-want-logs-use-the-report-method">✅ <strong>Want Logs? Use the <code>report()</code> Method</strong></h3><p>If you want to log certain exceptions or send them to an external service like Sentry:</p><pre><code class="language-php">public function report(Throwable $exception)
+{
+    if ($exception instanceof DomainException) {
+        // Send to external service
+    }
+
+    parent::report($exception);
+}
+</code></pre><hr><h2 id="finally"><strong>Finally</strong></h2><p>Writing clean Laravel code means <strong>trusting the framework</strong>. Laravel gives you powerful tools to manage exceptions at a global level. By centralizing your error handling, your code becomes:</p><ul><li>More <strong>readable</strong></li><li>More <strong>testable</strong></li><li>Easier to <strong>maintain</strong></li><li>More <strong>consistent</strong> across endpoints</li></ul><p>So next time you catch yourself typing <code>try { ... } catch (Exception $e)</code> inside a controller, stop. There’s a better way — and it’s already in your Laravel toolbox.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

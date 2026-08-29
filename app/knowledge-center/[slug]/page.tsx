@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { getArticleBySlug, getAllSlugs } from "@/lib/articles";
 
@@ -71,9 +70,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </header>
 
-        <div className="prose prose-lg prose-purple max-w-none">
-          <MDXRemote source={article.content} />
-        </div>
+        <div
+          className="prose prose-lg prose-purple max-w-none"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
       </article>
     </div>
   );

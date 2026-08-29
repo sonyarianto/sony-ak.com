@@ -1,0 +1,60 @@
+---
+title: "REST vs. RPC: Understanding the Core Differences in API Design"
+date: "2025-05-23"
+description: "When it comes to designing web APIs , two common architectural styles often spark debate: REST and RPC . Both use HTTP as a transport layer, but they follow dis..."
+---
+
+<p>When it comes to designing <strong>web APIs</strong>, two common architectural styles often spark debate: <strong>REST</strong> and <strong>RPC</strong>. Both use HTTP as a transport layer, but they follow <strong>distinct philosophies</strong>. Let’s dive deeper to understand what sets them apart, when to use each, and why the underlying transport (like HTTP) doesn't make them the same thing.</p><hr><h3 id="%F0%9F%94%B9-rest-resource-oriented"><strong>🔹 REST: Resource-Oriented</strong></h3><p><strong>REST (Representational State Transfer)</strong> is an architectural style that revolves around <strong>resources</strong> — entities that can be created, retrieved, updated, or deleted. Each resource has a <strong>unique URL</strong>, and you use standard HTTP methods like <strong>GET</strong>, <strong>POST</strong>, <strong>PUT</strong>, and <strong>DELETE</strong> to interact with them.</p><p>For example, if you’re managing users:</p><ul><li><code>GET /users/123</code> retrieves user with ID 123.</li><li><code>POST /users</code> creates a new user.</li><li><code>PUT /users/123</code> updates the user’s details.</li><li><code>DELETE /users/123</code> removes the user.</li></ul><p>REST <strong>embraces HTTP semantics</strong>. It leverages <strong>status codes</strong>, <strong>headers</strong>, and even <strong>caching</strong> mechanisms. It encourages a <strong>uniform interface</strong>, making APIs more predictable and discoverable.</p><p>🔸 <strong>Key traits of REST:</strong></p><ul><li>Strong alignment with HTTP protocol.</li><li>Emphasis on resources (nouns).</li><li>Stateless interactions (each request contains all necessary context).</li><li>Ideal for CRUD-based systems (Create, Read, Update, Delete).</li></ul><hr><h3 id="%F0%9F%94%B8-rpc-action-oriented"><strong>🔸 RPC: Action-Oriented</strong></h3><p><strong>RPC (Remote Procedure Call)</strong>, by contrast, is about <strong>invoking methods on a remote server</strong>, much like calling a function in your local codebase. Instead of focusing on resources, RPC focuses on <strong>actions or procedures</strong>.</p><p>For instance:</p><ul><li><code>POST /getUserById</code> with <code>{ "id": 123 }</code> as payload.</li><li><code>POST /processPayment</code> with details of the payment.</li></ul><p>In RPC, the URL represents a <strong>verb</strong> (like <code>processPayment</code> or <code>syncData</code>), not a noun. The <strong>HTTP method</strong> (often just POST) acts as a simple wrapper to send the request — the semantic weight of HTTP is largely ignored.</p><p>🔸 <strong>Key traits of RPC:</strong></p><ul><li>Emphasis on actions (verbs) rather than resources.</li><li>Often uses custom endpoints (like <code>/doSomething</code>).</li><li>HTTP is treated as a mere transport layer, not part of the contract.</li><li>Common in microservices or internal APIs where speed and flexibility are key.</li></ul><hr><h3 id="%F0%9F%94%8D-can-rpc-use-http-or-rest-as-its-underlying-layer"><strong>🔍 Can RPC Use HTTP or REST as Its Underlying Layer?</strong></h3><p>Here’s where confusion often arises. <strong>Yes, RPC can use HTTP as its underlying transport</strong>. You can design RPC-style APIs over HTTP/1.1 or HTTP/2, sending JSON or even binary data. However, this doesn’t make it <strong>RESTful</strong>.</p><p>The key distinction is that <strong>REST leverages the semantics of HTTP itself</strong>:</p><ul><li>REST uses <strong>HTTP methods</strong> to mean something: GET is safe and idempotent, POST creates, DELETE removes.</li><li>REST uses <strong>HTTP status codes</strong> (like 200, 404, 500) to communicate success or errors.</li><li>REST APIs are typically <strong>stateless</strong> and designed for easy caching, scaling, and discoverability.</li></ul><p>In contrast, <strong>RPC over HTTP</strong> (like <strong>JSON-RPC</strong>, <strong>XML-RPC</strong>, or custom JSON APIs) simply <strong>uses HTTP as a tunnel</strong>. The server is essentially a black box that executes requested methods, with little regard for HTTP semantics.</p><p><strong>A modern example is gRPC</strong>, which runs on <strong>HTTP/2</strong> and uses <strong>Protocol Buffers</strong>. It’s blazing fast and compact, but it doesn’t follow REST principles.</p><hr><h3 id="%F0%9F%86%9A-key-differences-at-a-glance"><strong>🆚 Key Differences at a Glance</strong></h3>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>REST</th>
+<th>RPC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Style</td>
+<td>Resource-oriented (nouns)</td>
+<td>Action-oriented (verbs)</td>
+</tr>
+<tr>
+<td>URL Meaning</td>
+<td>Identifies resources</td>
+<td>Identifies procedures</td>
+</tr>
+<tr>
+<td>HTTP Semantics</td>
+<td>Strong (GET, POST, PUT, DELETE, status codes)</td>
+<td>Minimal, often just POST with payload</td>
+</tr>
+<tr>
+<td>State Management</td>
+<td>Stateless</td>
+<td>Can be stateful</td>
+</tr>
+<tr>
+<td>Caching</td>
+<td>Supported (via HTTP)</td>
+<td>Usually not designed for caching</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>Public APIs, CRUD, scalable systems</td>
+<td>Microservices, internal APIs, performance-critical</td>
+</tr>
+<tr>
+<td>Example</td>
+<td><code inline="">/users/123</code></td>
+<td><code inline="">/getUserById</code> or <code inline="">/processPayment</code></td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h3 id="%F0%9F%92%A1-additional-considerations"><strong>💡 Additional Considerations</strong></h3><ul><li><strong>Complex Operations:</strong> If you need to model complex business workflows that don’t map cleanly to CRUD, <strong>RPC might be a better fit</strong>. For example, <code>generateMonthlyReport</code> doesn’t align neatly with a RESTful noun.</li><li><strong>Coupling:</strong> RPC-style APIs often result in <strong>tight coupling</strong> between client and server, since the method signatures are predefined and more rigid.</li><li><strong>Developer Experience:</strong> REST APIs tend to be <strong>more discoverable</strong> and easier for third-party developers to understand and integrate with, especially when well-documented.</li><li><strong>Performance:</strong> gRPC (a modern RPC framework) can significantly outperform REST APIs, especially for internal, high-frequency communication between services.</li></ul><hr><h3 id="%F0%9F%94%9A-finally"><strong>🔚 Finally</strong></h3><p>While <strong>REST</strong> and <strong>RPC</strong> might both use <strong>HTTP</strong> as the transport layer, they represent <strong>fundamentally different approaches</strong> to API design:</p><ul><li><strong>REST</strong> leans into HTTP’s native semantics, focusing on <strong>resources</strong> and <strong>stateless interactions</strong>, perfect for public-facing APIs and web applications.</li><li><strong>RPC</strong> focuses on <strong>procedural operations</strong>, giving you the flexibility to model actions and workflows, often preferred for <strong>internal services</strong> and <strong>microservice architectures</strong>.</li></ul><p>Understanding these differences helps you <strong>choose the right approach</strong> based on your system’s requirements, developer experience, and performance needs.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

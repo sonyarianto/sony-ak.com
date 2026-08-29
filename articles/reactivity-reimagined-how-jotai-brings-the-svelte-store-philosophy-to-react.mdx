@@ -1,0 +1,84 @@
+---
+title: "Reactivity Reimagined: How Jotai Brings the Svelte Store Philosophy to React"
+date: "2025-06-20"
+description: "In the world of frontend frameworks, Svelte has long been praised for its simplicity and elegant reactivity model, while React remains the heavyweight champion ..."
+---
+
+<p>In the world of frontend frameworks, <strong>Svelte</strong> has long been praised for its simplicity and elegant reactivity model, while <strong>React</strong> remains the heavyweight champion in terms of ecosystem and community size. But what happens when a library like <strong>Jotai</strong> brings Svelte’s store-like simplicity to the React world?</p><p>If you've worked with <strong>Svelte stores</strong> before and just picked up <strong>Jotai</strong>, you might have found yourself thinking:</p><blockquote>“This feels very familiar.”</blockquote><p>And you're right. <strong>Jotai and Svelte stores are conceptually close cousins</strong> — they both make state management <strong>simple, declarative, and reactive</strong>. Let’s explore the similarities, differences, and when you might want to choose one over the other.</p><hr><h3 id="%F0%9F%A7%A0-the-philosophy-store-as-a-primitive">🧠 The Philosophy: Store as a Primitive</h3><p>Both <strong>Jotai</strong> and <strong>Svelte stores</strong> are grounded in the idea that <strong>state should be a first-class primitive</strong>, not something hidden behind complex boilerplate.</p><h4 id="svelte-example">Svelte Example:</h4><pre><code class="language-js">import { writable } from 'svelte/store';
+
+const count = writable(0);
+</code></pre><h4 id="jotai-example">Jotai Example:</h4><pre><code class="language-ts">import { atom } from 'jotai';
+
+const countAtom = atom(0);
+</code></pre><p>In both, you're <strong>not creating reducers or actions</strong> — you're creating a primitive store (or atom) that can be used directly inside your component.</p><hr><h3 id="%F0%9F%94%81-reactivity-automatic-and-fine-grained">🔁 Reactivity: Automatic and Fine-Grained</h3><p>Both libraries support <strong>automatic subscriptions</strong>, so any component that uses the store will automatically re-render when the value changes.</p><h4 id="in-svelte">In Svelte:</h4><pre><code class="language-svelte">&lt;script&gt;
+  import { count } from './store.js';
+&lt;/script&gt;
+
+&lt;p&gt;Count is {$count}&lt;/p&gt;
+</code></pre><h4 id="in-react-with-jotai">In React with Jotai:</h4><pre><code class="language-tsx">import { useAtom } from 'jotai';
+
+const Counter = () =&gt; {
+  const [count] = useAtom(countAtom);
+  return &lt;p&gt;Count is {count}&lt;/p&gt;;
+};
+</code></pre><p>There's <strong>no need to manually subscribe</strong> or write selectors. You just read the value, and the framework handles the rest.</p><hr><h3 id="%F0%9F%A7%AE-derived-state-made-easy">🧮 Derived State Made Easy</h3><p>Derived or computed values are <strong>declarative and clean</strong> in both systems.</p><h4 id="svelte">Svelte:</h4><pre><code class="language-js">import { derived } from 'svelte/store';
+const doubled = derived(count, $count =&gt; $count * 2);
+</code></pre><h4 id="jotai">Jotai:</h4><pre><code class="language-ts">const doubledAtom = atom((get) =&gt; get(countAtom) * 2);
+</code></pre><p>This approach ensures <strong>separation of concerns</strong>, keeps code readable, and avoids the mess of effect-based calculations.</p><hr><h3 id="%F0%9F%9A%A6-async-state-covered">🚦 Async State? Covered.</h3><p>One area where Jotai stands out slightly is in its <strong>first-class async support</strong>, especially when combined with React Suspense.</p><h4 id="jotai-async-atom">Jotai Async Atom:</h4><pre><code class="language-ts">const userAtom = atom(async () =&gt; {
+  const res = await fetch('/api/user');
+  return await res.json();
+});
+</code></pre><p>You can directly await in the atom and rely on <code>Suspense</code> for loading states. Svelte supports async too, but usually requires <strong>manual async logic</strong> inside derived stores or via subscriptions.</p><hr><h3 id="%F0%9F%93%A6-ecosystem-and-tooling">📦 Ecosystem and Tooling</h3><ul><li><strong>Svelte stores</strong> are tightly integrated with the compiler and SvelteKit.</li><li><strong>Jotai</strong> fits seamlessly into any React app and works well with <strong>React DevTools</strong>, <strong>React Suspense</strong>, and <strong>React Server Components</strong> (with the right setup).</li></ul><p>Jotai also has <strong>extensions</strong> for features like:</p><ul><li><code>atomWithStorage</code> – for syncing with localStorage</li><li><code>atomWithReducer</code>, <code>atomFamily</code>, <code>loadable</code> – for advanced cases</li></ul><hr><h3 id="%F0%9F%94%8D-differences-at-a-glance">🔍 Differences at a Glance</h3>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><strong>Svelte Stores</strong></th>
+<th><strong>Jotai (React)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Framework</td>
+<td>Svelte/SvelteKit</td>
+<td>React (all flavors)</td>
+</tr>
+<tr>
+<td>Reactive mechanism</td>
+<td>Compiler-based fine-grained reactivity</td>
+<td>React reconciliation + hooks</td>
+</tr>
+<tr>
+<td>Usage</td>
+<td><code inline="">$store</code> in template</td>
+<td><code inline="">useAtom()</code> in JSX</td>
+</tr>
+<tr>
+<td>Async support</td>
+<td>Manual / derived()</td>
+<td>Native async support via atoms</td>
+</tr>
+<tr>
+<td>Boilerplate</td>
+<td>Extremely low</td>
+<td>Very low</td>
+</tr>
+<tr>
+<td>Code splitting</td>
+<td>Built-in via compiler</td>
+<td>Requires React Suspense setup</td>
+</tr>
+<tr>
+<td>Ecosystem fit</td>
+<td>Ideal for Svelte</td>
+<td>Ideal for React</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h3 id="%E2%9A%96%EF%B8%8F-so-which-one-feels-better">⚖️ So, Which One Feels Better?</h3><p>If you're working in <strong>Svelte</strong>, its store system is unbeatable in terms of <strong>minimalism and performance</strong>. However, if you're staying in the React ecosystem, <strong>Jotai offers one of the cleanest, most Svelte-like experiences</strong> available for managing state.</p><p>You get the <strong>freedom of atoms</strong>, the <strong>power of composition</strong>, and <strong>no baggage of reducers or contexts</strong> unless you explicitly need them.</p><hr><h3 id="%F0%9F%A7%A9-extra-considerations">🧩 Extra Considerations</h3><ul><li><strong>Performance</strong>: Jotai avoids re-renders by scoping state access via atoms. This makes it <strong>more efficient than using React context directly</strong>.</li><li><strong>Scalability</strong>: For large apps, you can <strong>split atoms into modules</strong>, or <strong>memoize derived atoms</strong>, keeping everything maintainable.</li><li><strong>Server-Side Rendering (SSR)</strong>: Jotai supports SSR, but configuration can be tricky with <code>Suspense</code>. Svelte handles this more natively.</li></ul><hr><h3 id="%F0%9F%A7%B5-finally">🧵 Finally</h3><p>The beauty of <strong>Jotai</strong> lies in how it <strong>bridges the gap between React's power and Svelte's elegance</strong>. If you're coming from Svelte or just appreciate minimal and reactive architecture, Jotai feels like <strong>a breath of fresh air in the React world</strong>.</p><p>So the next time someone says,</p><blockquote>“React state management is too complex,”<br>introduce them to Jotai — and maybe whisper,<br>“It’s kind of like Svelte stores… but for React.”</blockquote><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

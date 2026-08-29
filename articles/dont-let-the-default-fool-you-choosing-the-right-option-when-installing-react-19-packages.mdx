@@ -1,0 +1,36 @@
+---
+title: "Don't Let the Default Fool You: Choosing the Right Option When Installing React 19 Packages"
+date: "2025-04-15"
+description: "If you've recently started a new project with React 19 and tried installing a component library like shadcn/ui , you might have been greeted by a message that l..."
+---
+
+<p>If you've recently started a new project with <strong>React 19</strong> and tried installing a component library like <code>shadcn/ui</code>, you might have been greeted by a message that looks something like this:</p><blockquote><em>"Some packages may fail to install due to peer dependency issues in npm..."</em><br>And then it asks:<br><strong><em>How would you like to proceed?</em></strong>Use <code>--force</code>Use <code>--legacy-peer-deps</code></blockquote><p>Interestingly, <strong><code>--force</code> is selected by default</strong>. But does that mean it's the right choice?</p><p>Let’s slow down and unpack what’s happening behind the scenes — because picking the wrong option here could set your project up for a lot of invisible pain later on.</p><hr><h2 id="%F0%9F%A4%94-what%E2%80%99s-the-real-issue">🤔 What’s the Real Issue?</h2><p>React 19 is still <strong>very new</strong>, and many libraries — including UI frameworks, form utilities, and animation packages — <strong>haven’t updated their peer dependencies</strong> to officially support it yet.<br>npm tries to protect you by enforcing those <strong>peer dependency checks</strong>, but when they fail, you're left with two override options.</p><hr><h2 id="%F0%9F%A5%8Aforce-vslegacy-peer-deps">🥊 <code>--force</code> vs <code>--legacy-peer-deps</code></h2><h3 id="option-1force"><strong>Option 1: <code>--force</code></strong></h3><p>This tells npm:</p><blockquote><em>“Just install everything, I don’t care if dependencies are broken or incompatible.”</em></blockquote><ul><li>✅ It works instantly.</li><li>❌ But you risk <strong>runtime issues</strong>, especially with deeply integrated packages like <code>@radix-ui/react-*</code>, <code>tailwind-variants</code>, or anything tightly coupled to React internals.</li><li>❌ If you later hit a bug, it's harder to tell whether it's your code… or a broken dependency.</li></ul><p>Use this if you're <strong>developing a prototype</strong>, testing, or you're in <strong>full control of the dependency graph</strong>.</p><hr><h3 id="option-2legacy-peer-deps"><strong>Option 2: <code>--legacy-peer-deps</code></strong></h3><p>This tells npm to install the packages <strong>while skipping peer dependency enforcement</strong>, like in the npm v6 days.</p><ul><li>✅ Safer than <code>--force</code>, because it <strong>avoids forcibly overwriting mismatched versions</strong>.</li><li>✅ Works better if you trust the library (like <code>shadcn/ui</code>) to <em>mostly</em> work with React 19, even if they haven't updated the peer dependency fields yet.</li><li>❌ You still need to test, but you’re <strong>less likely to hit breaking conflicts</strong>.</li></ul><p>This is usually the <strong>better default</strong> if you're unsure.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-so-why-isforce-preselected">⚠️ So Why Is <code>--force</code> Preselected?</h2><p>The CLI tool isn’t trying to trick you — it just displays the <strong>first option by default</strong>, which often happens to be <code>--force</code>.</p><p>But don’t mistake convenience for <strong>recommendation</strong>.<br>Think of it as:</p><blockquote><em>"Here’s a way to proceed quickly — <strong>but only do this if you know what you're doing</strong>."</em></blockquote><hr><h2 id="%F0%9F%94%8D-a-smarter-way-forward">🔍 A Smarter Way Forward</h2><p>Before proceeding with either:</p><ul><li><strong>Check if your library supports React 19</strong> officially.<br>For <code>shadcn/ui</code>, you can check here: <a href="https://ui.shadcn.com/react-19">https://ui.shadcn.com/react-19</a></li><li>Watch for <strong>community feedback</strong> in GitHub issues or Discord channels. Many early adopters share what works or breaks.</li></ul><hr><h2 id="%E2%9C%85-tldr-recommendations">✅ TL;DR Recommendations</h2>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Best Option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>You're experimenting or prototyping</td>
+<td><code inline="">--force</code> is fine</td>
+</tr>
+<tr>
+<td>You're building for production or collaborating</td>
+<td>Prefer <code inline="">--legacy-peer-deps</code></td>
+</tr>
+<tr>
+<td>You're unsure and want stability</td>
+<td>Stick with React 18 until dependencies catch up</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="%F0%9F%A7%A0-finally">🧠 Finally</h2><p>Just because a CLI prompt highlights <strong><code>--force</code></strong>, doesn’t mean you should blindly accept it.<br>Modern development is about <strong>stability, maintainability, and trust</strong> in your stack — so it’s worth taking a moment to make the smarter choice.</p><p>Want your project to scale without unexpected surprises?<br>Then always question the defaults.</p><p>Even when they seem convenient.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

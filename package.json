@@ -17,9 +17,9 @@
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.35.0",
     "next": "^16.3.3",
-    "next-mdx-remote": "^6.0.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "turndown": "^7.2.4"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",

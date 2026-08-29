@@ -1,0 +1,64 @@
+---
+title: "The Complete Guide to Updating All Your Apps with Winget"
+date: "2025-10-11"
+description: "Keeping your Windows system up to date is not just about installing security patches. It’s also about maintaining the latest versions of the applications you re..."
+---
+
+<p>Keeping your Windows system up to date is not just about installing security patches. It’s also about maintaining the latest versions of the applications you rely on every day. The <strong>Windows Package Manager (Winget)</strong> makes this process incredibly easy — once you know the right commands and a few useful tricks.</p><p>In this article, we’ll go step-by-step on <strong>how to update all Winget apps</strong>, explain each command, cover what to expect, and share a few expert tips to keep your setup clean, consistent, and safe.</p><hr><h2 id="%F0%9F%A7%A9-what-is-winget">🧩 What Is Winget?</h2><p><strong>Winget</strong> is Microsoft’s official <strong>command-line package manager</strong> for Windows. It lets you <strong>install, upgrade, remove, and manage software</strong> from multiple trusted sources — all from your terminal or PowerShell.</p><p>Instead of manually downloading installers or visiting multiple websites, you can manage everything centrally, much like how Linux users use <code>apt</code> or <code>dnf</code>.</p><p>If you’re running <strong>Windows 10 (version 1809 or later)</strong> or <strong>Windows 11</strong>, Winget is usually already installed by default. You can verify it by typing:</p><pre><code class="language-powershell">winget --version
+</code></pre><p>If it shows a version number, you’re good to go.</p><hr><h2 id="%E2%9A%99%EF%B8%8F-how-to-update-all-apps-at-once">⚙️ How to Update All Apps at Once</h2><p>The simplest command to <strong>update every application installed through Winget</strong> is:</p><pre><code class="language-powershell">winget upgrade --all
+</code></pre><p>That’s it.<br>Winget will automatically check for newer versions and install updates for every app it manages.</p><h3 id="what-happens-under-the-hood">What Happens Under the Hood</h3><ul><li>Winget scans your <strong>installed packages</strong>.</li><li>It compares them with the latest versions available in your configured <strong>sources</strong> (like <code>winget</code>, <code>msstore</code>, or <code>winget-community</code>).</li><li>It sequentially downloads and installs the latest versions for each package it can update.</li></ul><hr><h2 id="%F0%9F%A7%BE-recommended-command-automation-friendly">🧾 Recommended Command (Automation-Friendly)</h2><p>When you want <strong>fully unattended updates</strong>, especially useful for automation or scheduled tasks, use this:</p><pre><code class="language-powershell">winget upgrade --all --accept-source-agreements --accept-package-agreements
+</code></pre><h3 id="explanation-of-flags">Explanation of Flags</h3><ul><li><strong><code>--all</code></strong> → Updates all apps that have newer versions available.</li><li><strong><code>--accept-source-agreements</code></strong> → Automatically accepts repository/source terms (so no manual confirmation).</li><li><strong><code>--accept-package-agreements</code></strong> → Automatically accepts app license agreements (required for unattended mode).</li></ul><p>This is ideal if you plan to run the update command automatically, for example once a week via <strong>Windows Task Scheduler</strong>.</p><hr><h2 id="%F0%9F%94%8D-preview-before-updating">🔍 Preview Before Updating</h2><p>Before running the full upgrade, you can check which apps are due for an update with:</p><pre><code class="language-powershell">winget upgrade
+</code></pre><p>This lists:</p><ul><li>App name</li><li>ID</li><li>Installed version</li><li>Available version</li><li>Source</li></ul><p>This helps you <strong>review updates manually</strong> in case you want to skip certain ones.</p><hr><h2 id="%F0%9F%A7%B9-updating-sources-first">🧹 Updating Sources First</h2><p>Sometimes, Winget might not detect updates if its package sources are outdated.<br>To ensure you’re checking the latest package index, run this before upgrading:</p><pre><code class="language-powershell">winget source update
+</code></pre><p>This refreshes the local cache of available packages — similar to <code>apt update</code> on Linux.</p><hr><h2 id="%F0%9F%A7%B0-optional-update-a-specific-app-only">🧰 Optional: Update a Specific App Only</h2><p>You can target a specific app instead of updating all. For example:</p><pre><code class="language-powershell">winget upgrade Microsoft.Edge
+</code></pre><p>This updates <strong>Microsoft Edge</strong> only.<br>You can replace the ID with any app name or ID from the list shown by <code>winget upgrade</code>.</p><hr><h2 id="%F0%9F%AA%84-automating-the-update-process">🪄 Automating the Update Process</h2><p>If you prefer to <strong>automate Winget updates weekly</strong>, here’s how you can set it up with <strong>Task Scheduler</strong>:</p><ol><li>Open <strong>Task Scheduler</strong> (<code>taskschd.msc</code>).</li><li>Click <strong>Create Basic Task</strong>.</li><li>Name it something like <strong>Winget Auto Update</strong>.</li><li>Choose your frequency (e.g., <em>Weekly</em>).</li><li>In <strong>Action</strong>, choose <strong>Start a program</strong>.</li><li>Check “Run with highest privileges” so it can update system-wide apps.</li></ol><p>In <strong>Add arguments</strong>, paste:</p><pre><code class="language-powershell">-Command "winget upgrade --all --accept-source-agreements --accept-package-agreements"
+</code></pre><p>Set <strong>Program/script</strong> to:</p><pre><code>powershell.exe
+</code></pre><p>Now your system will quietly keep apps up to date in the background.</p><hr><h2 id="%F0%9F%A7%B1-things-to-keep-in-mind">🧱 Things to Keep in Mind</h2><p>Here are some <strong>important considerations</strong> to make your Winget experience smoother:</p><ol><li><strong>Run as Administrator</strong><br>Some updates require elevated privileges. Always open PowerShell or CMD as Administrator for full success rates.</li><li><strong>Microsoft Store Apps</strong><br>Winget can list Microsoft Store apps, but some of them are updated automatically by the Store itself, so Winget may skip them.</li><li><strong>Apps Not Installed via Winget</strong><br>Programs installed manually (e.g., downloaded <code>.exe</code> or <code>.msi</code> files) won’t be updated by Winget unless they were originally installed through it.</li><li><strong>Interactive Installers</strong><br>A few apps still use interactive installers that require user clicks, even when triggered by Winget. These can’t be fully automated yet.</li><li><strong>System Reboots</strong><br>Some updates (e.g., system utilities or drivers) may require a reboot to complete installation.</li></ol><p><strong>Third-Party Sources</strong><br>Winget supports multiple repositories (sources). You can check yours using:</p><pre><code class="language-powershell">winget source list
+</code></pre><p>And add others if needed:</p><pre><code class="language-powershell">winget source add --name customRepo https://example.com/source.json
+</code></pre><hr><h2 id="%F0%9F%92%A1-pro-tip-combine-winget-with-powershell-modules">💡 Pro Tip: Combine Winget with PowerShell Modules</h2><p>If you want richer control — such as logging update activity or sending notifications — you can wrap Winget commands in a <strong>PowerShell script</strong>.<br>For instance:</p><pre><code class="language-powershell">$logFile = "$env:USERPROFILE\Documents\winget-update-log.txt"
+Start-Transcript -Path $logFile -Append
+
+Write-Host "Starting Winget updates..."
+winget source update
+winget upgrade --all --accept-source-agreements --accept-package-agreements
+
+Write-Host "All updates completed!"
+Stop-Transcript
+</code></pre><p>This keeps a running log of all updates in your Documents folder — helpful for auditing or troubleshooting.</p><hr><h2 id="%F0%9F%A7%AD-summary">🧭 Summary</h2>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code inline="">winget upgrade</code></td>
+<td>Lists apps with updates available</td>
+</tr>
+<tr>
+<td><code inline="">winget upgrade --all</code></td>
+<td>Updates all eligible apps</td>
+</tr>
+<tr>
+<td><code inline="">winget upgrade --all --accept-source-agreements --accept-package-agreements</code></td>
+<td>Unattended update of all apps</td>
+</tr>
+<tr>
+<td><code inline="">winget source update</code></td>
+<td>Refreshes package index</td>
+</tr>
+<tr>
+<td><code inline="">winget upgrade &lt;app&gt;</code></td>
+<td>Updates a specific app only</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="%F0%9F%8F%81-finally">🏁 Finally</h2><p>Using <strong>Winget</strong> to update your apps is one of the cleanest, fastest, and safest ways to keep your Windows environment consistent and secure.<br>By combining simple commands with automation and regular maintenance, you can completely eliminate the hassle of manual updates.</p><p>So, the next time you wonder whether your software is outdated, just open your terminal and run:</p><pre><code class="language-powershell">winget upgrade --all
+</code></pre><p>That’s your one-stop command to keep your digital workspace clean, secure, and up to date.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

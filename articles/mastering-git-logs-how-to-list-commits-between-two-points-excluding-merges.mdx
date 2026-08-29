@@ -1,0 +1,36 @@
+---
+title: "Mastering Git Logs: How to List Commits Between Two Points (Excluding Merges)"
+date: "2025-10-02"
+description: "When working with Git, it’s common to review a series of commits between two points in history. Maybe you want to generate release notes , review code history ,..."
+---
+
+<p>When working with Git, it’s common to review a series of commits between two points in history. Maybe you want to <strong>generate release notes</strong>, <strong>review code history</strong>, or <strong>export commit data</strong> for auditing. But if you’ve worked with teams, you’ll often see <strong>merge commits</strong> cluttering the history, which aren’t always useful in such reports.</p><p>This article will walk you through how to <strong>list commits from a specific commit hash up to the latest (HEAD)</strong> while excluding merge commits, and also include details such as the <strong>commit hash, author, date, subject, and description</strong>.</p><hr><h2 id="the-core-command">The Core Command</h2><p>Let’s say you want all commits starting from commit:</p><pre><code>fd78c6c93fa424234aba70f15f125a6382b07038
+</code></pre><p>and ending at the latest commit (<code>HEAD</code>). The following command gives you exactly that:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038..HEAD --no-merges \
+  --pretty=format:"%H%nAuthor: %an &lt;%ae&gt;%nDate: %ad%nSubject: %s%n%b%n---"
+</code></pre><hr><h2 id="breaking-it-down">Breaking It Down</h2><ul><li><code>fd78c6c93fa424234aba70f15f125a6382b07038..HEAD</code><br>Defines the commit range: <strong>from that commit (exclusive) up to HEAD (inclusive)</strong>.</li><li><code>--no-merges</code><br>Excludes <strong>merge commits</strong>, so you only see meaningful changes.</li><li><code>--pretty=format:"..."</code><br>Allows custom formatting. Here, we show:<ul><li><strong>%H</strong> → Full commit hash</li><li><strong>%an</strong> → Author name</li><li><strong>%ae</strong> → Author email</li><li><strong>%ad</strong> → Author date (uses your Git config format)</li><li><strong>%s</strong> → Commit subject (the short message)</li><li><strong>%b</strong> → Commit body (the description, if any)</li><li><strong>%n</strong> → New line</li><li><strong>---</strong> → Separator between commits for readability</li></ul></li></ul><hr><h2 id="example-output">Example Output</h2><pre><code>c1a2b3d4e5f6g7h8i9j0
+Author: John Doe &lt;john@example.com&gt;
+Date: Mon Oct 2 10:25:33 2025 +0700
+Subject: Fix login issue
+Added validation for empty tokens to prevent crash
+
+---
+a1b2c3d4e5f6g7h8i9j0
+Author: Jane Smith &lt;jane@example.com&gt;
+Date: Sun Sep 28 14:12:09 2025 +0700
+Subject: Improve logging
+Refactored error handler and added stack trace
+
+---
+</code></pre><p>This makes it <strong>easy to read, share, or even generate release notes</strong> from your commit history.</p><hr><h2 id="including-the-starting-commit">Including the Starting Commit</h2><p>By default, the syntax <code>A..B</code> does <strong>not include commit A</strong>. If you also want to include the starting commit, you can use:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038^..HEAD --no-merges
+</code></pre><p>The <code>^</code> means “the parent of that commit,” which effectively includes the starting commit itself in the range.</p><hr><h2 id="date-formatting-options">Date Formatting Options</h2><p>If you need dates in a <strong>consistent machine-readable format</strong> (for example, for CSV export or scripting), you can replace <code>%ad</code> with <code>%ai</code>:</p><ul><li><code>%ad</code> → Author date (human-readable, e.g., “Mon Oct 2 10:25:33 2025 +0700”)</li><li><code>%ai</code> → Author date in ISO 8601 format (e.g., “2025-10-02 10:25:33 +0700”)</li></ul><hr><h2 id="exporting-to-a-file">Exporting to a File</h2><p>Sometimes, you want to <strong>save the output for documentation or reporting</strong>. Just redirect the command to a file:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038..HEAD --no-merges \
+  --pretty=format:"%H%nAuthor: %an &lt;%ae&gt;%nDate: %ai%nSubject: %s%n%b%n---" &gt; commit-history.txt
+</code></pre><p>Now you’ll have a clean text file with all commit details.</p><hr><h2 id="csv-or-script-friendly-format">CSV or Script-Friendly Format</h2><p>If you want to export in a single-line format (easier for Excel or parsing), you can try:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038..HEAD --no-merges \
+  --pretty=format:"%H|%an|%ae|%ai|%s|%b"
+</code></pre><p>This will output each commit as a <strong>pipe-delimited row</strong>, which can be easily imported into a spreadsheet or processed by scripts.</p><hr><h2 id="additional-considerations">Additional Considerations</h2><p><strong>Patch Mode</strong><br>If you need the actual code changes too:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038..HEAD --no-merges -p
+</code></pre><p><strong>Filtering by File or Directory</strong><br>To see changes only related to a specific file:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038..HEAD --no-merges -- path/to/file
+</code></pre><p><strong>Filtering by Author</strong><br>If you only want commits by a specific author:</p><pre><code class="language-bash">git log fd78c6c93fa424234aba70f15f125a6382b07038..HEAD --no-merges --author="John Doe"
+</code></pre><hr><h2 id="finally">Finally</h2><p>With just a small adjustment to <code>git log</code>, you can <strong>extract meaningful commit histories</strong> that exclude merges and show all the details you care about: <strong>hash, author, date, subject, and description</strong>. This approach is useful not only for personal review but also for creating <strong>release notes, audit logs, and changelogs</strong> in a clear, human-readable format.</p><p>If you often generate such logs, consider wrapping the command into a <strong>Git alias</strong> or script so it becomes part of your daily workflow.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,30 @@
+---
+title: "Understanding self vs static in PHP: Why Your Interface Implementation May Fail"
+date: "2025-05-03"
+description: "When working with interfaces and return types in modern PHP (especially PHP 8.0 and PHP 8.1+), you might run into a confusing but very real error: Fatal error: ..."
+---
+
+<p>When working with <strong>interfaces and return types</strong> in modern PHP (especially PHP 8.0 and PHP 8.1+), you might run into a confusing but very real error:</p><blockquote><code>Fatal error: Declaration of B::new(): B must be compatible with A::new(): static</code></blockquote><p>This error trips up many developers because it seems like you're doing everything right. After all, <code>self</code> and <code>static</code> often <em>feel</em> interchangeable. But <strong>PHP's type system sees them very differently</strong>—especially in the context of interfaces and inheritance.</p><hr><h3 id="the-root-of-the-problem">The Root of the Problem</h3><p>Let's start with an example:</p><pre><code class="language-php">interface A
+{
+    public static function new(): static;
+}
+
+final class B implements A
+{
+    public static function new(): self // ❌ Fatal error
+    {
+        return new self();
+    }
+}
+</code></pre><p>You may think that since <code>B</code> is <code>final</code>, there’s no way <code>static</code> and <code>self</code> can differ. <strong>True at runtime</strong>, but <strong>not true at compile time</strong>.</p><hr><h3 id="static-%E2%89%A0-self"><code>static</code> ≠ <code>self</code></h3><p>Here’s the key difference:</p><ul><li><strong><code>self</code></strong> refers to the class where the method is <em>declared</em>.</li><li><strong><code>static</code></strong> uses <strong>late static binding</strong>, which means it refers to the class that is <em>called</em>, even in a child class.</li></ul><p>Even in a <code>final class</code>, PHP treats <code>self</code> and <code>static</code> as <strong>distinct types</strong> in terms of method signatures. That’s why using <code>self</code> where <code>static</code> is expected causes a <strong>fatal error</strong>.</p><hr><h3 id="the-correct-fix">The Correct Fix</h3><p>To resolve the error, update the return type to match the interface exactly:</p><pre><code class="language-php">final class B implements A
+{
+    public static function new(): static // ✅ Now valid
+    {
+        return new static();
+    }
+}
+</code></pre><p>Even though the class is <code>final</code>, <strong>type declarations must align exactly</strong> with the interface definition. PHP won't assume <code>self</code> is “good enough.”</p><hr><h3 id="why-php-is-strict-here">Why PHP Is Strict Here</h3><p>PHP’s strictness ensures that:</p><ul><li><strong>Interfaces can be relied upon</strong>: other code using the interface can safely expect the return type to be what was promised.</li><li><strong>Inheritance behaves correctly</strong>: if someday the class is not <code>final</code>, or if <code>A</code> is reused by another class, it still works.</li></ul><p>Even when a class is <code>final</code>, PHP doesn't relax these rules to avoid <em>accidental breaking changes</em> later.</p><hr><h3 id="bonus-other-considerations">Bonus: Other Considerations</h3><ul><li><strong>Trait methods</strong> also must match return types when implementing an interface indirectly.</li><li><strong>Covariant return types</strong> (introduced in PHP 7.4) allow child classes to return more specific types, but not less specific.</li><li><strong>Abstract classes</strong> must follow the same contract rules as interfaces regarding <code>static</code> return types.</li></ul><hr><h3 id="finally">Finally</h3><p>To avoid frustrating fatal errors:</p><ul><li>Always <strong>match interface return types exactly</strong>—even if it seems redundant.</li><li><strong>Never substitute <code>self</code> for <code>static</code></strong> when the contract explicitly says <code>static</code>.</li><li>Use <code>static</code> in return types when you want to <strong>support late static binding</strong>.</li></ul><hr><p>Understanding the subtleties between <code>self</code>, <code>static</code>, and even <code>parent</code> in PHP will help you write more <strong>robust</strong>, <strong>future-proof</strong>, and <strong>contract-safe</strong> code.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,39 @@
+---
+title: "Exploring the Power of CSS :has() for Parent-Child Hover Interactions"
+date: "2024-10-19"
+description: "When you start diving deeper into CSS, you’ll often come across more advanced selectors that allow you to manipulate elements in creative ways. One of those sel..."
+---
+
+<p>When you start diving deeper into CSS, you’ll often come across more advanced selectors that allow you to manipulate elements in creative ways. One of those selectors is the <code>:has()</code> pseudo-class, a relatively new addition to CSS that brings exciting capabilities to how we style elements.</p><p>For beginners, understanding how CSS selectors work can sometimes feel like learning a new language. Don’t worry—<strong><code>:has()</code> opens up possibilities that are both intuitive and powerful</strong>. It allows you to style an element based on the presence or state of its descendants, and in this article, we’ll focus on how it can be used in a <strong>parent-child hover interaction</strong>.</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">For you that want to quickly see the demo, <a href="https://play.tailwindcss.com/HMx2lX14G9" rel="noreferrer">see here</a>.</div></div><h3 id="how-hover-interactions-usually-work">How Hover Interactions Usually Work</h3><p>Typically, when we think about hover effects in CSS, we imagine hovering over an element and changing its appearance. This is done with the <code>:hover</code> pseudo-class:</p><pre><code class="language-css">.child:hover {
+    background-color: lightblue;
+}
+</code></pre><p>The code above is simple: when you hover over a <code>.child</code> element, its background color changes to light blue. But what if we want to create a more <strong>interactive behavior</strong> between the parent and all its children? What if we want to change not just the hovered child but <strong>the appearance of other children that are not being hovered</strong>?</p><h3 id="enter-the-has-selector">Enter the <code>:has()</code> Selector</h3><p>With <code>:has()</code>, we can do something that wasn’t possible in CSS until now—style a parent element based on what’s happening with its children. This opens up a whole new level of control.</p><p>Let’s walk through an example where we apply hover effects to <strong>both</strong> the hovered child and the other children in a container:</p><pre><code class="language-css">.parent:has(.child:hover) .child:not(:hover) {
+    background-color: lightcoral;
+}
+</code></pre><h3 id="what%E2%80%99s-happening-here">What’s Happening Here?</h3><p>Let’s break this down so it’s easier to digest:</p><ul><li><code><strong>.parent:has(.child:hover)</strong></code>: This targets the <code>.parent</code> element, but only when it has a <code>.child</code> element inside it that is being hovered.</li><li><code><strong>.child:not(:hover)</strong></code>: This targets all the <code>.child</code> elements inside the <code>.parent</code> that are <strong>not being hovered</strong>. Essentially, when one child is hovered, this rule will apply to the rest of the children.</li></ul><p>This allows us to create a scenario where hovering over one child will affect the other children.</p><h3 id="example-of-how-it-works">Example of How It Works</h3><p>Imagine you have three child elements inside a parent container. Each one starts with a light gray background. When you hover over one of the children, that child changes to light blue, while the others that are not hovered over change to light coral. This creates a <strong>dynamic, interactive experience</strong> where all elements inside the parent container respond to the hover action.</p><p>Here’s what the complete CSS might look like:</p><pre><code class="language-css">.parent {
+    display: flex;
+    gap: 10px;
+}
+
+.child {
+    padding: 10px;
+    background-color: lightgray;
+    transition: background-color 0.3s ease;
+}
+
+.child:hover {
+    background-color: lightblue;
+}
+
+.parent:has(.child:hover) .child:not(:hover) {
+    background-color: lightcoral;
+}
+</code></pre><p>In this case, the children inside the <code>.parent</code> container react to the hover event based on their state. The <strong><code>:has()</code> selector</strong> is crucial because it allows the parent to check if any child is being hovered, and then apply the necessary styles to the rest.</p><h3 id="why-this-matters">Why This Matters</h3><p>The introduction of <code>:has()</code> is a <strong>game-changer for web developers</strong>, both beginners and experienced alike. It gives you the ability to manipulate relationships between elements without needing JavaScript. Before <code>:has()</code>, if you wanted to achieve this type of behavior, you’d typically have to rely on JavaScript to detect when a child element was hovered and then apply styles accordingly.</p><p><strong>Now, CSS alone can handle these interactions</strong>, which not only makes your code simpler but also more efficient and easier to maintain.</p><h3 id="expanding-the-use-of-has">Expanding the Use of <code>:has()</code></h3><p>Beyond hover interactions, the <code>:has()</code> pseudo-class can be used for many other cases. For instance, you can use it to <strong>style form inputs</strong> based on whether they are empty or filled, or to create <strong>dynamic layouts</strong> that adapt based on the presence of certain elements within a container.</p><pre><code class="language-css">/* Example of using :has() to style a form when inputs are filled */
+.form:has(input:valid) {
+    border: 2px solid green;
+}
+</code></pre><p>In this example, the <code>:has()</code> selector applies a green border to a form only when one of its input fields is valid. This means you can create <strong>reactive layouts</strong> purely with CSS, making your forms more responsive and intuitive to user actions.</p><h3 id="browser-support">Browser Support</h3><p>Before you start using <code>:has()</code> everywhere, it’s worth noting that <strong>not all browsers support it yet</strong>. Currently, it works in most modern browsers, but you should always check for <strong>compatibility</strong> to ensure it fits with your target audience. As of now, Chrome, Edge, and Safari have support, while Firefox support is still in development.</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">See the <a href="https://play.tailwindcss.com/HMx2lX14G9" rel="noreferrer">demo again here</a>.</div></div><h3 id="finally">Finally</h3><p>The <code>:has()</code> pseudo-class opens up a lot of new possibilities for <strong>creating more dynamic and responsive designs with CSS</strong>. In our hover interaction example, it enables us to style child elements based on the actions taken on sibling elements—all without writing any JavaScript.</p><p>As you get more comfortable with CSS, you’ll discover how useful <code>:has()</code> can be in various scenarios. Whether you're building complex layouts, enhancing form interactions, or creating engaging hover effects, <code>:has()</code> is a powerful tool in your CSS toolkit. So go ahead and experiment with it in your projects—there's a lot to explore!</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,63 @@
+---
+title: "Conditional Query Logic in Laravel: Mastering when() in the Query Builder"
+date: "2025-08-20"
+description: "In Laravel’s Query Builder , when() is a fluent helper for conditionally modifying a query . It lets you apply additional clauses only if a condition is met , w..."
+---
+
+<p>In Laravel’s <strong>Query Builder</strong>, <strong><code>when()</code></strong> is a fluent helper for <strong>conditionally modifying a query</strong>. It lets you apply additional clauses <strong>only if a condition is met</strong>, without breaking your chain with <code>if</code> statements.</p><hr><h2 id="what-when-does">What <code>when()</code> Does</h2><pre><code class="language-php">// Signature (conceptual)
+Builder::when(mixed $value, callable $callback, ?callable $default = null)
+</code></pre><ul><li><strong><code>$value</code></strong>: The condition. If it evaluates <strong>truthy</strong>, Laravel runs <strong><code>$callback</code></strong>.</li><li><strong><code>$callback($query, $value)</code></strong>: Receives the current builder instance and the raw <strong><code>$value</code></strong>.</li><li><strong><code>$default($query, $value)</code></strong> <em>(optional)</em>: Runs when <strong><code>$value</code></strong> is <strong>falsy</strong>.</li></ul><p><strong>Key idea:</strong> Write <strong>one linear chain</strong> and “branch” inside it where needed.</p><hr><h2 id="why-use-when">Why Use <code>when()</code></h2><ul><li><strong>Readability:</strong> Keeps complex, conditional logic <strong>in-chain</strong>, avoiding nested <code>if</code>s.</li><li><strong>Safety:</strong> Encourages <strong>proper grouping</strong> (parentheses) through closures.</li><li><strong>Expressiveness:</strong> Provides an <strong>else</strong> branch via the third parameter.</li><li><strong>Composability:</strong> Multiple conditional blocks can be <strong>stacked</strong> clearly.</li></ul><hr><h2 id="practical-patterns-query-builder-only">Practical Patterns (Query Builder Only)</h2><blockquote>All examples use <strong><code>DB::table('...')</code></strong> and <strong>Query Builder</strong> methods.</blockquote><h3 id="1-conditional-where-explicit-null-check">1) Conditional <code>where</code> (explicit null-check)</h3><pre><code class="language-php">$query = DB::table('orders')
+    -&gt;select('id', 'status', 'created_at')
+    -&gt;when($status !== null, function ($q) use ($status) {
+        $q-&gt;where('status', $status);
+    });
+</code></pre><p><strong>Why explicit <code>!== null</code>?</strong> Because <code><strong>0</strong></code> or <code>'0'</code> may be <strong>valid</strong> but <strong>falsy</strong> in PHP. Be explicit if those values matter.</p><hr><h3 id="2-conditional-where-with-an-else-branch">2) Conditional <code>where</code> with an <strong>else</strong> branch</h3><pre><code class="language-php">$query = DB::table('orders')
+    -&gt;select('id', 'status', 'created_at')
+    -&gt;when($status,
+        function ($q, $status) {
+            $q-&gt;where('status', $status);
+        },
+        function ($q) {
+            $q-&gt;whereIn('status', ['new', 'processing']); // sensible default
+        }
+    );
+</code></pre><p><strong>Tip:</strong> The <strong>third argument</strong> is your <strong>“else”</strong>.</p><hr><h3 id="3-passing-the-value-directly-through-when">3) Passing the value directly through <code>when()</code></h3><pre><code class="language-php">$query = DB::table('products')
+    -&gt;select('id', 'title', 'price')
+    -&gt;when($search, function ($q, $search) {
+        $q-&gt;where(function ($sub) use ($search) {
+            $sub-&gt;where('title', 'like', "%{$search}%")
+                -&gt;orWhere('sku', 'like', "%{$search}%");
+        });
+    });
+</code></pre><p><strong>Benefit:</strong> No need to <code>use ($search)</code> if you rely on the second parameter.</p><hr><h3 id="4-grouping-with-closures-to-preserve-sql-precedence">4) Grouping with closures to <strong>preserve SQL precedence</strong></h3><pre><code class="language-php">$query = DB::table('invoices')
+    -&gt;select('id', 'customer_id', 'due_date')
+    -&gt;when($customerId !== null, function ($q) use ($customerId) {
+        $q-&gt;where(function ($sub) use ($customerId) {
+            $sub-&gt;where('customer_id', $customerId)
+                -&gt;orWhereNull('customer_id');
+        });
+    });
+</code></pre><p><strong>Why the inner closure?</strong> It becomes <strong><code>(customer_id = ? OR customer_id IS NULL)</code></strong>, ensuring the <strong>OR</strong> doesn’t “leak” across the whole query.</p><hr><h3 id="5-conditional-date-range">5) Conditional <strong>date range</strong></h3><pre><code class="language-php">$query = DB::table('logs')
+    -&gt;select('id', 'level', 'created_at')
+    -&gt;when($dateRange, function ($q, $dateRange) {
+        $q-&gt;whereBetween('created_at', [$dateRange['from'], $dateRange['to']]);
+    });
+</code></pre><p><strong>Advice:</strong> Normalize inputs beforehand (e.g., convert empty strings to <code>null</code>) so your conditions remain predictable.</p><hr><h3 id="6-conditional-joins-and-selects">6) Conditional <strong>joins</strong> and <strong>selects</strong></h3><pre><code class="language-php">$query = DB::table('tickets as t')
+    -&gt;select('t.id', 't.subject')
+    -&gt;when($withStats, function ($q) {
+        $q-&gt;leftJoin('ticket_stats as s', 's.ticket_id', '=', 't.id')
+          -&gt;addSelect('s.response_time', 's.resolution_time');
+    });
+</code></pre><p><strong>Consideration:</strong> Extra joins increase cost—only add them when needed.</p><hr><h3 id="7-stacking-multiple-when-blocks">7) Stacking multiple <code>when()</code> blocks</h3><pre><code class="language-php">$query = DB::table('users')
+    -&gt;select('id', 'email', 'role', 'created_at')
+    -&gt;when($role, fn ($q, $role) =&gt; $q-&gt;where('role', $role))
+    -&gt;when($active !== null, fn ($q) =&gt; $q-&gt;where('is_active', (int) $active))
+    -&gt;when($createdAfter, fn ($q, $d) =&gt; $q-&gt;where('created_at', '&gt;=', $d));
+</code></pre><p><strong>Guideline:</strong> Keep each block <strong>focused</strong> on a single responsibility.</p><hr><h2 id="common-pitfalls-and-how-to-avoid-them">Common Pitfalls (and How to Avoid Them)</h2><ul><li><strong>Truthiness traps:<br><code>0</code></strong>, <code>'0'</code>, <code>''</code>, <code>[]</code>, <code>false</code>, <code>null</code> are <strong>falsy</strong> in PHP.<br>Use <code><strong>!== null</strong></code> when <code>0</code> is a <strong>valid</strong> filter.</li><li><strong>Ungrouped <code>orWhere</code>:</strong><br><code>-&gt;orWhere(...)</code> on the root builder can <strong>change meaning</strong> of the whole query.<br><strong>Always group</strong> related ORs:<br><code>-&gt;where(fn($sub) =&gt; $sub-&gt;where(...)-&gt;orWhere(...))</code>.</li><li><strong>Heavy defaults in the third parameter:</strong><br>If your <strong>else</strong> branch is complex, consider <strong>pre-normalizing inputs</strong> or splitting the logic before building the query.</li><li><strong>Over-selecting columns:</strong><br>Large selects slow down hydration and transport. Prefer <strong>narrow selects</strong> (only the fields you need).</li></ul><hr><h2 id="performance-considerations">Performance Considerations</h2><ul><li><strong>Indexes matter:</strong><ul><li>Add indexes for frequently filtered columns (e.g., <code>status</code>, <code>customer_id</code>, dates).</li><li>For patterns like <code><strong>OR column IS NULL</strong></code>, ensure the main column is indexed; consider schema design that avoids frequent <code>NULL</code> if possible.</li></ul></li><li><strong>Avoid unnecessary joins:</strong><br>Join only when the condition demands it (use <strong>conditional joins with <code>when()</code></strong>).</li><li><strong>Pagination with conditions:</strong><br>Apply all <code>when()</code> filters <strong>before</strong> calling <code>paginate()</code>/<code>simplePaginate()</code> to ensure consistent page counts.</li></ul><hr><h2 id="testing-debugging">Testing &amp; Debugging</h2><ul><li><strong>Test both branches:</strong> Ensure you cover <strong>truthy</strong> and <strong>falsy</strong> paths for every <code>when()</code>.</li><li><strong>Inspect SQL in dev:</strong><ul><li>Use <code>DB::enableQueryLog()</code> and <code>DB::getQueryLog()</code> (for small tests).</li></ul></li><li><strong>Input normalization:</strong> Convert empty strings to <code>null</code>, trim whitespace, and coerce types <strong>before</strong> building the query.</li></ul><p>Or hook into the query listener:</p><pre><code class="language-php">DB::listen(function ($query) {
+    logger()-&gt;debug($query-&gt;sql, $query-&gt;bindings);
+});
+</code></pre><hr><h2 id="additional-considerations-you-might-be-missing">Additional Considerations You Might Be Missing</h2><ul><li><strong>Chaining <code>when()</code> with value passing:</strong> Prefer <code>-&gt;when($value, fn($q, $value) =&gt; ...)</code> to reduce <code>use(...)</code> captures.</li><li><strong>Collections also have <code>when()</code>:</strong> Laravel <strong>Collections</strong> support <code>when()</code> too, but it’s separate from the <strong>Query Builder</strong> version. Don’t mix their semantics.</li><li><strong>Consistency across endpoints:</strong> Define a common <strong>filtering policy</strong> (e.g., how to treat empty strings vs. null) to avoid subtle bugs between controllers.</li><li><strong>Security:</strong> When building dynamic filters, keep using <strong>Query Builder bindings</strong> (never concatenate raw user input into SQL).</li></ul><hr><h2 id="finally">Finally</h2><ul><li><strong><code>when()</code></strong> enables <strong>clean, conditional query construction</strong> in the <strong>Query Builder</strong>.</li><li>Use <strong>explicit null checks</strong> when values like <strong><code>0</code></strong> are valid.</li><li><strong>Group OR conditions</strong> with closures to preserve SQL precedence.</li><li>Keep performance in mind: <strong>indexes</strong>, <strong>narrow selects</strong>, and <strong>conditional joins</strong>.</li><li>Test <strong>both branches</strong> and normalize inputs <strong>before</strong> building queries.</li></ul><p>Applied well, <code>when()</code> keeps your query code <strong>readable, safe, and extensible</strong>—exactly what you need for evolving filter-heavy endpoints.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

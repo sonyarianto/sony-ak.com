@@ -1,0 +1,164 @@
+---
+title: "Highlighting Code with Shiki: A Simple Guide for Modern Web Development"
+date: "2024-12-21"
+description: "In modern web development, presenting code in a readable and aesthetically pleasing way is crucial for developers, especially when sharing or demonstrating snip..."
+---
+
+<p>In modern web development, presenting code in a readable and aesthetically pleasing way is crucial for developers, especially when sharing or demonstrating snippets on your website or application. One of the most popular tools for this is <strong>Shiki</strong>, a syntax highlighter based on the <strong>TextMate grammars</strong> and <strong>VS Code themes</strong>. In this article, we'll walk you through how to integrate <strong>Shiki</strong> into a simple HTML page, customize your own theme, and highlight code dynamically with <strong>JavaScript modules</strong>.</p><p>Exciting? Don't have time? Just see below quick demo.</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text"><a href="https://onecompiler.com/html/433sammgu" rel="noreferrer">Quick demo</a></div></div><h4 id="setting-up-shiki-for-syntax-highlighting">Setting Up Shiki for Syntax Highlighting</h4><p>Shiki is designed to highlight code with a familiar look and feel of <strong>VS Code</strong>. It supports a wide range of programming languages, from JavaScript to TypeScript, Python, and more. The setup process is relatively simple and can be done directly in the browser using an <strong>ES module</strong>, making it highly compatible with modern web applications.</p><p>To begin, you’ll need to import Shiki into your HTML file. The easiest way is by using <strong>CDN links</strong>. In the example below, we use a link to <strong>esm.sh</strong> (or alternatively, <strong>esm.run</strong>) for a specific version of Shiki. You just need to ensure you specify the exact version of Shiki you intend to use, such as version <strong>1.24.4</strong>:</p><pre><code class="language-html">&lt;script type="module"&gt;
+  import { codeToHtml } from 'https://esm.sh/shiki@1.24.4';
+&lt;/script&gt;
+</code></pre><p>This import makes the <code>codeToHtml</code> function available, which is the primary function for converting your code into HTML with syntax highlighting.</p><h4 id="customizing-your-highlighting-theme">Customizing Your Highlighting Theme</h4><p>One of the key features of Shiki is its ability to support custom themes. You can create your own theme to match your website’s design and feel. Here, we define a custom theme called <strong>my-theme</strong>. This theme consists of several <strong>syntax rules</strong> that define the <strong>foreground colors</strong> for different elements like keywords, strings, and functions:</p><pre><code class="language-javascript">const myTheme = {
+  name: 'my-theme',
+  settings: [
+    {
+      scope: ['keyword', 'storage.type'],
+      settings: { foreground: '#FD8DA3' }
+    },
+    {
+      scope: ['string', 'entity.name.tag'],
+      settings: { foreground: '#77D5A3' }
+    },
+    {
+      scope: ['entity.name.function', 'entity.name'],
+      settings: { foreground: '#BD9CFE' }
+    },
+    {
+      scope: ['variable'],
+      settings: { foreground: '#92A9FF' }
+    },
+  ]
+}
+</code></pre><p>This custom theme allows you to modify the colors of various code components. For example, keywords and types like <strong><code>keyword</code></strong> and <strong><code>storage.type</code></strong> will be displayed in <strong>#FD8DA3</strong>, while <strong>strings</strong> and <strong>tags</strong> will have a different color (<strong>#77D5A3</strong>). You can adjust the color values to fit your preferences.</p><h4 id="displaying-highlighted-code">Displaying Highlighted Code</h4><p>Once you’ve defined your theme, it’s time to use <strong><code>codeToHtml</code></strong> to highlight your code. Here’s an example where we highlight a simple <strong>React component</strong> written in <strong>TypeScript</strong>:</p><pre><code class="language-javascript">const foo = document.getElementById('foo');
+foo.innerHTML = await codeToHtml(`import { useState } from "react"
+
+export function LikeCounter() {
+  const [likes, setLikes] = useState(0);
+  return &lt;&gt;
+    &lt;div&gt;{likes}&lt;/div&gt;
+    &lt;button onClick={ () =&gt; setLikes(likes + 1) }&gt;Like&lt;/button&gt;
+    &lt;button onClick={ () =&gt; setLikes(0) }&gt;Reset&lt;/button&gt;
+  &lt;/&gt;`, {
+    lang: 'tsx',
+    theme: myTheme
+});
+</code></pre><p>Here, <strong><code>codeToHtml</code></strong> takes two parameters:</p><ol><li>The <strong>code string</strong> you want to highlight.</li><li>An <strong>options object</strong> that contains the <strong>language</strong> (e.g., <code>tsx</code> for TypeScript and JSX combined) and your custom <strong>theme</strong>.</li></ol><p>The code snippet will then be inserted into the <strong>HTML element</strong> with the <code>id="foo"</code>, dynamically generating a highlighted version of the code right on the page.</p><h4 id="points-to-consider">Points to Consider</h4><p>While Shiki is a great tool for syntax highlighting, there are a few things to keep in mind to ensure you get the best results:</p><ul><li><strong>Performance</strong>: Since Shiki works in the browser, it may cause slight delays on pages with large code blocks. To mitigate this, you can consider using <strong>server-side rendering</strong> or <strong>caching</strong>.</li><li><strong>Custom Themes</strong>: Creating a <strong>custom theme</strong> can be time-consuming, especially if you want fine-grained control over every syntax element. However, the payoff is a highly personalized look for your code.</li><li><strong>Language Support</strong>: While Shiki supports a wide range of languages, there may be instances where it doesn’t support a specific language or feature. Always test with your code before deploying.</li></ul><h4 id="enhancing-the-user-experience">Enhancing the User Experience</h4><p>You can further improve the user experience by adding features like:</p><ol><li><strong>Line Numbers</strong>: Consider integrating <strong>line numbers</strong> into the highlighted code for better readability.</li><li><strong>Copy to Clipboard</strong>: Implement a "copy to clipboard" button next to the highlighted code to make it easier for users to copy and use your code.</li><li><strong>Dark Mode</strong>: Ensure that your theme works well in both <strong>light</strong> and <strong>dark</strong> modes by testing it on different backgrounds and adjusting contrast levels.</li></ol><h3 id="full-code-sample">Full Code Sample</h3><pre><code class="language-html">&lt;body&gt;
+  &lt;div id="foo"&gt;&lt;/div&gt;
+
+  &lt;script type="module"&gt;
+    // be sure to specify the exact version
+    import { codeToHtml } from 'https://esm.sh/shiki@1.24.4'
+    // or
+    // import { codeToHtml } from 'https://esm.run/shiki@1.24.4'
+    
+    const myTheme  = {
+  name: 'my-theme',
+  settings: [
+    {
+      scope: ['keyword', 'storage.type'],
+      settings: {
+        foreground: '#FD8DA3'
+      }
+    },
+    {
+      scope: ['string', 'entity.name.tag'],
+      settings: {
+        foreground: '#77D5A3'
+      }
+    },
+    {
+      scope: ['entity.name.function', 'entity.name'],
+      settings: {
+        foreground: '#BD9CFE'
+      }
+    },
+    {
+      scope: ['variable'],
+      settings: {
+        foreground: '#92A9FF'
+      }
+    },
+  ]
+}
+
+    const foo = document.getElementById('foo')
+    foo.innerHTML = await codeToHtml(`import { useState } from "react"
+
+export function LikeCounter() {
+  const [likes, setLikes] = useState(0)
+  return &lt;&gt;
+    &lt;div&gt;{likes}&lt;/div&gt;
+    &lt;button onClick={ () =&gt; setLikes(likes + 1) }&gt;Like&lt;/button&gt;
+    &lt;button onClick={ () =&gt; setLikes(0) }&gt;Reset&lt;/button&gt;
+  &lt;/&gt;
+}`, {
+      lang: 'tsx',
+      theme: myTheme
+    })
+    
+    
+  &lt;/script&gt;
+&lt;/body&gt;</code></pre><p>and here is the result</p>
+<!--kg-card-begin: html-->
+<body>
+  <div id="foo"></div>
+
+  <script type="module">
+    // be sure to specify the exact version
+    import { codeToHtml } from 'https://esm.sh/shiki@1.24.4'
+    // or
+    // import { codeToHtml } from 'https://esm.run/shiki@1.24.4'
+    
+    const myTheme  = {
+  name: 'my-theme',
+  settings: [
+    {
+      scope: ['keyword', 'storage.type'],
+      settings: {
+        foreground: '#FD8DA3'
+      }
+    },
+    {
+      scope: ['string', 'entity.name.tag'],
+      settings: {
+        foreground: '#77D5A3'
+      }
+    },
+    {
+      scope: ['entity.name.function', 'entity.name'],
+      settings: {
+        foreground: '#BD9CFE'
+      }
+    },
+    {
+      scope: ['variable'],
+      settings: {
+        foreground: '#92A9FF'
+      }
+    },
+  ]
+}
+
+    const foo = document.getElementById('foo')
+    foo.innerHTML = await codeToHtml(`import { useState } from "react"
+
+export function LikeCounter() {
+  const [likes, setLikes] = useState(0)
+  return <>
+    <div>{likes}</div>
+    <button onClick={ () => setLikes(likes + 1) }>Like</button>
+    <button onClick={ () => setLikes(0) }>Reset</button>
+  </>
+}`, {
+      lang: 'tsx',
+      theme: myTheme
+    })
+    
+    
+  </script>
+</body>
+<!--kg-card-end: html-->
+<h4 id="finally">Finally</h4><p>Shiki provides an easy, elegant way to highlight code in modern web applications. With its flexibility, <strong>customizable themes</strong>, and ability to highlight a wide range of languages, it’s a valuable tool for developers who want to showcase their code with style. Whether you’re building a developer blog, a documentation site, or just want to make your code snippets look better, Shiki can make your project stand out.</p><p>By following the steps outlined above, you can quickly set up Shiki in your project and start using it for dynamic, customizable code highlighting. Just remember to keep performance and customizability in mind as you implement this tool to ensure the best experience for your users.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

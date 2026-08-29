@@ -1,0 +1,36 @@
+---
+title: "When to Write Database Migration Scripts: Right Away or Later?"
+date: "2025-04-17"
+description: "Introduction One of the most common debates among backend developers, especially when starting a new project with PostgreSQL and an ORM, is: \"Should we create m..."
+---
+
+<p><strong>Introduction</strong></p><p>One of the most common debates among backend developers, especially when starting a new project with PostgreSQL and an ORM, is: <strong>"Should we create migration scripts from the beginning, or wait until the schema stabilizes?"</strong></p><p>The answer is not a simple yes or no. It depends heavily on the <strong>stage of your project</strong>, <strong>the nature of your data</strong>, and <strong>your future plans for scaling</strong>. Let's dive into a real-world perspective on when, why, and how you should approach database migrations.</p><hr><p><strong>Why You Should Create Migration Scripts From the Beginning</strong></p><p>Even in your very first iteration, setting up migration scripts provides significant benefits:</p><ul><li><strong>Consistency Across Environments:</strong> Migration scripts ensure your local, staging, and production databases remain synchronized. No more "it works on my machine" issues.</li><li><strong>Version Control for Your Database:</strong> Just as you track changes in code using Git, migrations track changes in your database schema.</li><li><strong>Ease of Onboarding New Developers:</strong> New team members can spin up the database with a single command, instead of manually replicating schema from documentation (or worse, guessing).</li><li><strong>Smooth CI/CD Integration:</strong> Automated deployments almost always assume that database migrations can be applied without manual intervention.</li><li><strong>Rollback Capability:</strong> If a migration introduces a bug, a well-written migration script allows easy rollback without catastrophic downtime.</li></ul><hr><p><strong>But What About the Argument: "Let's Wait Until the Schema Stabilizes"?</strong></p><p>You might hear:</p><blockquote>"Let's not write migration scripts yet. If the schema changes, we might have to reset data."</blockquote><p>This argument <strong>makes sense</strong> under specific circumstances:</p><ul><li>If you're still in <strong>pure prototyping phase</strong>, where tables change every day.</li><li>If there's <strong>no real user data yet</strong>, so dropping tables isn't risky.</li></ul><p>In such cases, <strong>deferring migration scripts is acceptable temporarily</strong>. You are trading short-term speed for long-term discipline. However, be warned: <strong>the longer you delay, the harder it gets</strong> to reintroduce migrations later without chaos.</p><p>Once real users interact with your app, <strong>you must stop manual schema changes</strong> and <strong>start using migrations exclusively</strong>.</p><hr><p><strong>How to Avoid "Resetting" Data When Schema Changes</strong></p><p>Another common fear: "Won't migrations wipe out my data if the schema changes?"</p><p>The answer: <strong>only if you handle migrations incorrectly</strong>.</p><p>Modern migration tools (like Prisma Migrate, Sequelize, TypeORM, Flyway, Golang-Migrate, Diesel CLI) support <strong>non-destructive changes</strong>:</p><ul><li>Adding columns (with default values)</li><li>Adding new tables</li><li>Modifying indexes</li><li>Adding constraints</li></ul><p>All without deleting your existing data.</p><p><strong>Good migrations use <code>ALTER TABLE</code>, not <code>DROP TABLE</code>.</strong></p><p>If you need more complicated changes (like splitting a column into two), you can write "data migration" steps inside the migration script itself.</p><hr><p><strong>Best Practice Recommendation</strong></p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th align="left">Project Stage</th>
+<th align="left">Recommended Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Early prototyping (solo, volatile schema)</td>
+<td align="left">Manual schema OK, but document changes carefully</td>
+</tr>
+<tr>
+<td align="left">Preparing MVP launch</td>
+<td align="left">Start writing proper migrations</td>
+</tr>
+<tr>
+<td align="left">Production (real users, real data)</td>
+<td align="left">Mandatory: every change via migration only</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<p>When in doubt, <strong>default to creating migration scripts early</strong>. It's easier to delete an unnecessary migration later than to reverse-engineer schema changes from memory.</p><hr><p><strong>Other Important Considerations</strong></p><ul><li><strong>Migration Naming:</strong> Use clear, timestamped filenames. Example: <code>20240418_add_last_login_to_users.sql</code></li><li><strong>Migration Rollbacks:</strong> Always think about how to revert a migration before you write it. Some ORMs support automatic down-migrations; others require manual writing.</li><li><strong>Backup Your Data:</strong> Before applying complex migrations, especially in production, ensure you have a fresh backup.</li><li><strong>Data Migration Planning:</strong> Schema changes often need data updates. Plan your migrations to avoid downtime or inconsistencies.</li><li><strong>Continuous Delivery:</strong> In a mature pipeline, database migrations are applied automatically during deploys. Plan your migration process to be idempotent and safe for reruns.</li></ul><hr><p><strong>Finally</strong></p><p><strong>Writing migration scripts early is not about bureaucracy; it is about investing in your project's long-term health.</strong></p><p>If you're just hacking a weekend project, maybe you can skip them temporarily. But if you're serious about your product — especially anything involving user data — <strong>treat your database with the same care you treat your application code</strong>.</p><p>Your future self (and your team) will thank you.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

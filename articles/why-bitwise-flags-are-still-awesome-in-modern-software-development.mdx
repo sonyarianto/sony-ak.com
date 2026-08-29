@@ -1,0 +1,71 @@
+---
+title: "Why Bitwise Flags Are Still Awesome in Modern Software Development"
+date: "2025-04-15"
+description: "In the world of software engineering, we often reach for arrays, enums, or boolean fields to represent multiple selections. But there's a classic trick that rem..."
+---
+
+<p>In the world of software engineering, we often reach for arrays, enums, or boolean fields to represent multiple selections. But there's a classic trick that remains incredibly relevant, especially for <strong>performance-critical applications</strong> — using <strong>bitwise operators</strong> to represent <strong>multi-select options</strong> in a single number.</p><p>Yes, we’re talking about <strong>bitwise flags</strong> — a compact, elegant way to express multiple states in just <strong>one integer</strong>. It's not just efficient — it’s fast, scalable, and surprisingly fun to use once you get the hang of it.</p><hr><h2 id="the-concept-one-number-many-states"><strong>The Concept: One Number, Many States</strong></h2><p>Suppose you want to allow users to pick their preferred notification methods: email, SMS, push, and in-app notifications. Rather than storing them in an array or multiple boolean fields, you can use powers of 2 to represent each option:</p><pre><code>EMAIL    = 1  (2⁰)
+SMS      = 2  (2¹)
+PUSH     = 4  (2²)
+IN_APP   = 8  (2³)
+</code></pre><p>Now, a user who selects <strong>EMAIL</strong> and <strong>PUSH</strong> would have a combined value of:</p><pre><code>1 (EMAIL) | 4 (PUSH) = 5
+</code></pre><hr><h2 id="real-examples-across-languages"><strong>Real Examples Across Languages</strong></h2><h3 id="%E2%9C%85-javascript">✅ JavaScript</h3><pre><code class="language-js">const EMAIL = 1;
+const SMS = 2;
+const PUSH = 4;
+const IN_APP = 8;
+
+let preferences = EMAIL | PUSH; // 5
+
+// Check if PUSH is enabled
+if (preferences &amp; PUSH) {
+  console.log("Push enabled");
+}
+
+// Add IN_APP
+preferences |= IN_APP;
+
+// Remove EMAIL
+preferences &amp;= ~EMAIL;
+</code></pre><hr><h3 id="%E2%9C%85-go">✅ Go</h3><pre><code class="language-go">const (
+	EMAIL  = 1 &lt;&lt; iota // 1
+	SMS                // 2
+	PUSH               // 4
+	IN_APP             // 8
+)
+
+func main() {
+	prefs := EMAIL | PUSH
+
+	if prefs&amp;PUSH != 0 {
+		fmt.Println("Push enabled")
+	}
+
+	// Add IN_APP
+	prefs |= IN_APP
+
+	// Remove EMAIL
+	prefs &amp;= ^EMAIL
+}
+</code></pre><hr><h3 id="%E2%9C%85-php">✅ PHP</h3><pre><code class="language-php">define('EMAIL', 1);
+define('SMS', 2);
+define('PUSH', 4);
+define('IN_APP', 8);
+
+$preferences = EMAIL | PUSH;
+
+if ($preferences &amp; PUSH) {
+    echo "Push enabled\n";
+}
+
+// Add IN_APP
+$preferences |= IN_APP;
+
+// Remove EMAIL
+$preferences &amp;= ~EMAIL;
+</code></pre><hr><h2 id="why-use-bitwise-flags"><strong>Why Use Bitwise Flags?</strong></h2><h3 id="1-memory-performance"><strong>1. Memory &amp; Performance</strong></h3><p>Storing multiple states in <strong>a single small integer</strong> is both memory-efficient and fast for bitwise operations. This matters in <strong>large datasets</strong>, <strong>embedded systems</strong>, or <strong>games</strong>, where every byte and CPU cycle counts.</p><h3 id="2-simpler-storage"><strong>2. Simpler Storage</strong></h3><p>No need for complex join tables or arrays. Just <strong>one integer column</strong> can represent all selections.</p><h3 id="3-efficient-queries"><strong>3. Efficient Queries</strong></h3><p>In SQL:</p><pre><code class="language-sql">-- Get all users who have PUSH notifications enabled
+SELECT * FROM users WHERE (preferences &amp; 4) &gt; 0;
+</code></pre><hr><h2 id="use-cases"><strong>Use Cases</strong></h2><ul><li>Role-based permissions (<code>READ</code>, <code>WRITE</code>, <code>DELETE</code>)</li><li>Feature flags</li><li>Input device states</li><li>Game status flags (e.g., <code>IS_FLYING</code>, <code>IS_INVISIBLE</code>)</li><li>Hardware register configurations</li></ul><hr><h2 id="what-you-should-watch-out-for"><strong>What You Should Watch Out For</strong></h2><p>Bitwise flags are great, <strong>but not perfect</strong>:</p><ul><li>They’re <strong>not self-descriptive</strong>. A value like <code>13</code> doesn’t mean much unless you decode it.</li><li><strong>Dynamic option sets</strong> are hard to manage. Adding a new flag means updating code and constants.</li><li><strong>Debugging</strong> needs lookup helpers or comments to be readable.</li></ul><hr><h2 id="design-recommendations"><strong>Design Recommendations</strong></h2><ul><li>Always use <strong>named constants</strong> for each flag.</li><li>Document bit values clearly.</li><li>Provide <strong>helpers to decode</strong> bitfields for readability.</li><li>If the options may change frequently, use a flexible format like JSON instead.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>Bitwise flags may feel like an old-school trick, but they’re a <strong>highly effective design choice</strong> for modern systems where <strong>speed</strong>, <strong>simplicity</strong>, and <strong>scalability</strong> matter.</p><p>Whether you're working with backend APIs, game engines, or system-level code — <strong>don’t underestimate what you can do with just a few bits</strong>.</p><p>Bitwise flags are a beautiful reminder that sometimes, <strong>clever low-level thinking</strong> solves high-level problems.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

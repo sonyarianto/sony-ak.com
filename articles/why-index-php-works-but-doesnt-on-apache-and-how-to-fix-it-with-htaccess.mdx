@@ -1,0 +1,32 @@
+---
+title: "Why index.php Works But / Doesn't on Apache – And How to Fix It with .htaccess"
+date: "2025-07-08"
+description: "If you're setting up a PHP application on an Apache web server , you may run into a strange issue: Visiting https://example.com/myapp/index.php works perfectly,..."
+---
+
+<p>If you're setting up a PHP application on an <strong>Apache web server</strong>, you may run into a strange issue:<br>Visiting <code>https://example.com/myapp/index.php</code> works perfectly, but when you try <code>https://example.com/myapp/</code>, it either shows a <strong>403 Forbidden</strong>, <strong>404 Not Found</strong>, or <strong>directory listing</strong>, depending on your setup.</p><p>So what's going on? And how do you fix it?</p><hr><h2 id="%F0%9F%A7%A9-the-problem-apache-needs-direction">🧩 The Problem: Apache Needs Direction</h2><p>Apache does not automatically know that <code>/</code> should resolve to <code>index.php</code> unless:</p><ul><li><strong><code>DirectoryIndex</code></strong> is set correctly, or</li><li><strong>mod_rewrite</strong> is enabled and <code>.htaccess</code> is configured to redirect requests.</li></ul><p>By default, Apache will look for an <code>index.html</code>, <code>index.php</code>, or whatever is defined in its <code>DirectoryIndex</code> directive. But when you're using <strong>routing</strong> in your PHP app (e.g., Laravel, CodeIgniter, or a custom router), it’s not just about serving the index file — it’s about <strong>redirecting all requests</strong> to that file so your router can handle it.</p><hr><h2 id="%F0%9F%94%A7-the-solution-use-htaccess-with-modrewrite">🔧 The Solution: Use <code>.htaccess</code> with mod_rewrite</h2><p>To make <code>https://example.com/myapp/</code> load the same as <code>index.php</code>, you’ll need a <code>.htaccess</code> file in your <code>/myapp</code> directory that uses <strong>mod_rewrite</strong> to route all requests to <code>index.php</code>.</p><p>Here’s the recommended <code>.htaccess</code> content:</p><pre><code class="language-apache">&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine On
+    RewriteBase /myapp/
+
+    # Serve existing files and directories as-is
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Otherwise, redirect to index.php
+    RewriteRule ^ index.php [L]
+&lt;/IfModule&gt;
+</code></pre><h3 id="%F0%9F%93%8C-explanation">📌 Explanation:</h3><ul><li><strong><code>RewriteEngine On</code></strong>: Enables the rewrite engine.</li><li><strong><code>RewriteBase /myapp/</code></strong>: Tells Apache where this app is located.</li><li><strong><code>RewriteCond</code></strong> lines: If the request is <strong>not</strong> an actual file or folder…</li><li><code><strong>RewriteRule ^ index.php</strong></code>: …rewrite it to <code>index.php</code>.</li></ul><hr><h2 id="%F0%9F%94%8D-checklist-things-you-must-check">🔍 Checklist: Things You Must Check</h2><h3 id="%E2%9C%85-1-modrewrite-is-enabled">✅ 1. <strong>mod_rewrite is enabled</strong></h3><p>Make sure Apache has the rewrite module enabled:</p><pre><code class="language-bash">sudo a2enmod rewrite
+sudo systemctl restart apache2
+</code></pre><h3 id="%E2%9C%85-2-apache-is-configured-to-allow-htaccess-overrides">✅ 2. <strong>Apache is configured to allow .htaccess overrides</strong></h3><p>In your Apache config (e.g., <code>/etc/apache2/sites-available/000-default.conf</code>), make sure the directory block includes:</p><pre><code class="language-apache">&lt;Directory /var/www/html/myapp&gt;
+    AllowOverride All
+    Require all granted
+&lt;/Directory&gt;
+</code></pre><p>Restart Apache after editing:</p><pre><code class="language-bash">sudo systemctl restart apache2
+</code></pre><h3 id="%E2%9C%85-3-file-permissions-and-ownership">✅ 3. <strong>File permissions and ownership</strong></h3><p>Make sure Apache can read your <code>.htaccess</code> and <code>index.php</code> files:</p><pre><code class="language-bash">sudo chown -R www-data:www-data /var/www/html/myapp
+sudo chmod -R 755 /var/www/html/myapp
+</code></pre><hr><h2 id="%E2%9A%A0%EF%B8%8F-common-mistakes-to-avoid">⚠️ Common Mistakes to Avoid</h2><ul><li><strong>Missing <code>.htaccess</code></strong> in the target folder (<code>/myapp</code>).</li><li><code>.htaccess</code> file exists but <code>mod_rewrite</code> is disabled.</li><li>Wrong <strong>RewriteBase</strong> (if you copy it from a different setup and forget to update).</li><li>Apache is set to <code>AllowOverride None</code> — which disables <code>.htaccess</code> usage altogether.</li></ul><hr><h2 id="%F0%9F%A7%A0-bonus-use-directoryindex-as-fallback">🧠 Bonus: Use <code>DirectoryIndex</code> as Fallback</h2><p>You can also add a fallback in your <code>.htaccess</code>:</p><pre><code class="language-apache">DirectoryIndex index.php
+</code></pre><p>But again — this helps only when you're not relying on routing and just want to load the file. For frameworks or apps with dynamic routes (e.g., <code>/user/profile/3</code>), the rewrite rule is essential.</p><hr><h2 id="%F0%9F%9A%80-finally">🚀 Finally</h2><p>To ensure that visiting <code>/myapp/</code> loads your app just like <code>index.php</code>, you <strong>must configure Apache to rewrite requests</strong> using <code>.htaccess</code> and <code>mod_rewrite</code>. It’s not just a convenience — it’s <strong>essential for routing in modern PHP applications</strong>.</p><p>Once configured properly, your users can visit cleaner URLs, and your app can handle routing logic seamlessly through <code>index.php</code>.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

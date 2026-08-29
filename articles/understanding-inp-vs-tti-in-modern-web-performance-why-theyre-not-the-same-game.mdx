@@ -1,0 +1,55 @@
+---
+title: "Understanding INP vs. TTI in Modern Web Performance: Why They’re Not the Same Game"
+date: "2025-05-21"
+description: "In the world of frontend performance metrics, it’s easy to get lost in the sea of acronyms. Two that often cause confusion—especially in Single Page Application..."
+---
+
+<p>In the world of frontend performance metrics, it’s easy to get lost in the sea of acronyms. Two that often cause confusion—especially in Single Page Applications (SPAs)—are <strong>TTI (Time to Interactive)</strong> and <strong>INP (Interaction to Next Paint)</strong>.</p><p>They may seem similar on the surface, but they actually <strong>serve different purposes</strong> and <strong>measure different aspects</strong> of user experience. In this article, we’ll break down what each metric truly measures, when and why they matter, and how to optimize for them in modern web apps like those built with React, Vue, or Hono.</p><hr><h2 id="tti-it%E2%80%99s-about-readiness"><strong>TTI: It’s About Readiness</strong></h2><p><strong>TTI (Time to Interactive)</strong> answers a basic but critical question:</p><blockquote><em>How soon after page load can a user reliably interact with the app?</em></blockquote><p>It measures the time from the moment the page begins loading to when the <strong>main thread has been idle long enough</strong> that input handlers can execute without major delay.</p><p>In other words, <strong>TTI is about initial hydration</strong>, particularly in server-rendered or static sites that hydrate client-side code. It tells you whether your app is “ready” to be used. For example:</p><ul><li>Has JavaScript finished parsing?</li><li>Have key UI components mounted?</li><li>Is the thread free of long tasks that block input handling?</li></ul><p>If your page loads quickly but the main thread is still <strong>busy running scripts</strong>, it can <em>feel</em> slow to the user—even if everything looks like it's in place. That’s where TTI comes into play.</p><hr><h2 id="inp-it%E2%80%99s-about-real-world-interactions"><strong>INP: It’s About Real-World Interactions</strong></h2><p>Now here’s the twist.</p><p><strong>INP (Interaction to Next Paint)</strong> is <em>not</em> about the page becoming interactive. It’s about how your page <strong>stays responsive</strong> <strong>after</strong> it’s interactive.</p><p>INP observes user input during the page’s lifecycle and captures the <strong>worst interaction latency</strong>. It focuses on:</p><ul><li>When a user <strong>clicks</strong>, <strong>taps</strong>, or presses a key</li><li>How long the app takes to <strong>respond visually</strong></li><li>Whether that response is <strong>delayed</strong> due to JavaScript, layout shifts, or paint operations</li></ul><p>If a user clicks a button and sees a UI change within 50ms, that’s great. If another click results in a 300ms delay before anything changes on screen—that’s what <strong>INP flags</strong>.</p><hr><h2 id="key-differences-tti-vs-inp"><strong>Key Differences: TTI vs. INP</strong></h2>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>TTI</th>
+<th>INP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Focus</td>
+<td>Initial interactivity</td>
+<td>Ongoing user interaction responsiveness</td>
+</tr>
+<tr>
+<td>Triggers</td>
+<td>Page load and JavaScript parsing</td>
+<td>Actual user input (click, keypress, tap)</td>
+</tr>
+<tr>
+<td>When It Happens</td>
+<td>During page load</td>
+<td>Throughout the entire session</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>SSR hydration, script prioritization</td>
+<td>UI latency, animation jank, blocking handlers</td>
+</tr>
+<tr>
+<td>Interaction Requirement</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Visual Feedback Required?</td>
+<td>No</td>
+<td><strong>Yes</strong> — must result in next paint</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="common-misunderstanding-route-changes-and-inp"><strong>Common Misunderstanding: Route Changes and INP</strong></h2><p>A common question is:</p><blockquote>“If my app changes route after an interaction, will it be measured by INP?”</blockquote><p>The answer is <strong>no, not directly</strong>.</p><p><strong>INP only tracks interactions that result in paint.</strong> If your route change (e.g., using React Router) <em>immediately triggers a visual update</em> after a user clicks a button or link, then <strong>that part can be counted</strong>. But if the interaction results in a full page change or navigation where the rendering happens on the next page (e.g., Next.js or SPA with delayed rendering), <strong>that won’t be captured</strong> as part of INP.</p><p>In short, <strong>navigational interactions are not measured</strong> unless they produce <strong>in-situ visual changes</strong> that are part of the interaction response itself.</p><hr><h2 id="so-where-does-the-code-live"><strong>So Where Does the Code Live?</strong></h2><p>It’s often said that if an interaction impacts UI, it lives in the <strong>client</strong>. That’s true. INP is a <strong>client-side metric</strong>, and it applies to any JavaScript code that handles events and modifies the DOM.</p><p>If your button click:</p><ul><li>Sends a network request, then updates UI</li><li>Shows a modal or spinner</li><li>Expands an accordion</li><li>Plays an animation</li></ul><p>Then <strong>INP tracks the delay</strong> between input and next visual feedback. If you defer too much work using <code>setTimeout</code>, or block the thread with heavy logic, <strong>INP will suffer</strong>.</p><hr><h2 id="optimization-tips-for-better-inp"><strong>Optimization Tips for Better INP</strong></h2><ul><li><strong>Debounce smartly</strong>, but avoid unnecessary delays in paint</li><li>Move <strong>non-critical logic outside the interaction frame</strong> (e.g., defer analytics, logging)</li><li>Break large tasks using <code>requestIdleCallback</code>, <code>requestAnimationFrame</code>, or chunking</li><li>Minimize <strong>layout thrashing</strong> and expensive reflows</li><li>Avoid <strong>synchronous blocking</strong> operations in event handlers</li><li>Optimize <strong>third-party scripts</strong>, especially if they intercept user input</li></ul><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><ul><li><strong>INP is a field metric</strong>, meaning it's measured from <strong>real users in the wild</strong>, not in lab tests.</li><li><strong>TTI is mostly a lab metric</strong>, so it helps in development but doesn’t reflect real user frustration after the app becomes “interactive.”</li><li>Browsers like Chrome use <strong>Interaction Observer</strong> (and eventually Event Timing API) to measure INP. So make sure your app renders <em>meaningfully and fast</em> on actual user devices—not just your high-end MacBook.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>Understanding <strong>INP</strong> and <strong>TTI</strong> is crucial for modern web developers. You can't optimize what you don't measure—and these two metrics highlight <strong>two different bottlenecks</strong>:</p><ul><li><strong>TTI tells you when your app is ready to be used.</strong></li><li><strong>INP tells you whether your app actually feels good to use.</strong></li></ul><p>They’re both essential. But if you're already loading things fast and hydrating early, the next step is ensuring your app <strong>responds smoothly to every tap, click, and keystroke</strong>.</p><p>That’s what users care about—and what INP is built to measure.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

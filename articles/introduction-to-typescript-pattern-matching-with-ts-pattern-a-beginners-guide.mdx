@@ -1,0 +1,53 @@
+---
+title: "Introduction to TypeScript Pattern Matching with ts-pattern: A Beginner's Guide"
+date: "2024-10-20"
+description: "If you're working with TypeScript, you probably appreciate the type-safety and structure it brings to JavaScript. However, when it comes to writing complex logi..."
+---
+
+<p>If you're working with TypeScript, you probably appreciate the type-safety and structure it brings to JavaScript. However, when it comes to writing complex logic, like handling different data structures, it's easy to fall into the trap of long <code>if-else</code> chains or <code>switch</code> statements that can quickly become messy and hard to maintain. This is where <strong>pattern matching</strong> can help you write more concise, readable, and <strong>type-safe</strong> code.</p><p><strong><code>ts-pattern</code></strong> is a lightweight TypeScript library that introduces pattern matching to your codebase. It allows you to define patterns for different structures and take actions based on those patterns. This means cleaner logic, better readability, and fewer bugs.</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">Quick demo if you curious. <a href="https://playcode.io/2052326" rel="noreferrer">See here</a>.</div></div><h4 id="what-is-pattern-matching">What is Pattern Matching?</h4><p>At its core, <strong>pattern matching</strong> is a way to check a given value against specific patterns and then branch your logic based on which pattern matches. It’s common in functional programming languages like Haskell or Scala, but TypeScript traditionally relies on <code>if-else</code> or <code>switch-case</code> to handle different types of data. With <code>ts-pattern</code>, you get an intuitive, type-safe way to match your data against patterns in a more declarative style.</p><p>Imagine you’re dealing with shapes in a program: circles, squares, and triangles. Instead of having a big <code>if</code> block that checks for the type of shape and then calculates the area, you can use <code>ts-pattern</code> to simplify this task.</p><h3 id="why-use-ts-pattern">Why Use <code>ts-pattern</code>?</h3><p>The <strong><code>match</code> function</strong> in <code>ts-pattern</code> is the heart of the library. It allows you to take a value, define patterns that describe its possible shapes or states, and match the value to one of those patterns.</p><p>Here’s an example:</p><pre><code class="language-javascript">import { match } from 'ts-pattern';
+
+type Shape = 
+  | { type: 'circle'; radius: number }
+  | { type: 'square'; side: number };
+
+const shape: Shape = { type: 'circle', radius: 10 };
+
+const area = match(shape)
+  .with({ type: 'circle' }, (shape) =&gt; Math.PI * shape.radius ** 2)
+  .with({ type: 'square' }, (shape) =&gt; shape.side ** 2)
+  .exhaustive();
+
+console.log(area); // Output: 314.159...
+</code></pre><p>In this example, instead of manually checking the type of the shape, the <strong><code>match</code></strong> function does it for us. The <strong>patterns</strong> we define using <code>.with</code> match the structure of the data, and the corresponding function is run when the pattern is matched. This results in more readable code that is also <strong>type-safe</strong>.</p><h3 id="key-concepts">Key Concepts</h3><h4 id="1-type-safety">1. <strong>Type Safety</strong></h4><p>One of the best features of <code>ts-pattern</code> is that it's fully <strong>type-safe</strong>. Since it’s built for TypeScript, it takes advantage of TypeScript's types and will throw an error if you forget to handle one of the possible cases. This ensures your code is robust and reduces runtime errors.</p><p>For example, if you add a new shape, say a <strong>triangle</strong>, TypeScript will let you know that you're missing this case in your pattern matching, thanks to the <strong><code>.exhaustive()</code></strong> method. This feature ensures all possible cases are accounted for.</p><pre><code class="language-javascript">.match({ type: 'triangle' }, () =&gt; { /* handle triangle */ })
+</code></pre><h4 id="2-exhaustiveness-checks">2. <strong>Exhaustiveness Checks</strong></h4><p>The <code>.exhaustive()</code> method forces you to handle every possible pattern. If you forget to match one, the TypeScript compiler will give you an error. This is incredibly useful when working with complex data models or when new cases are added, as it prevents bugs from unhandled patterns.</p><h4 id="3-declarative-code">3. <strong>Declarative Code</strong></h4><p>One thing you'll notice when using <code>ts-pattern</code> is how <strong>declarative</strong> your code becomes. You're essentially telling the program what to do in different scenarios, rather than writing procedural logic step by step. This makes the intent of the code clearer, which is great for maintainability and readability.</p><h3 id="more-than-just-type-matching">More Than Just Type Matching</h3><p>While the above example shows <strong>type matching</strong>, <code>ts-pattern</code> is capable of much more. You can match <strong>nested objects</strong>, <strong>arrays</strong>, and even <strong>specific values</strong>. Let’s look at a more advanced example:</p><pre><code class="language-javascript">const data = { status: 'success', value: 42 };
+
+const result = match(data)
+  .with({ status: 'success', value: 42 }, () =&gt; 'Special Success!')
+  .with({ status: 'success' }, () =&gt; 'Generic Success')
+  .with({ status: 'error' }, () =&gt; 'Error')
+  .exhaustive();
+
+console.log(result); // Output: "Special Success!"
+</code></pre><p>In this case, we’re matching not just on the <code>status</code> field but also on the <code>value</code>. The flexibility to match specific values within objects makes <strong><code>ts-pattern</code></strong> a great tool for handling any kind of structured data.</p><h3 id="handling-nested-objects">Handling Nested Objects</h3><p>Sometimes, you’re working with more complex, <strong>nested data structures</strong>. Pattern matching can dive into these structures and match based on deeply nested fields.</p><pre><code class="language-javascript">const user = { profile: { name: 'John', age: 30 }, active: true };
+
+const isActive = match(user)
+  .with({ profile: { name: 'John' }, active: true }, () =&gt; 'John is active')
+  .with({ active: false }, () =&gt; 'User is inactive')
+  .exhaustive();
+
+console.log(isActive); // Output: "John is active"
+</code></pre><p>This flexibility allows you to write clean, readable code without resorting to nested <code>if</code> statements.</p><h3 id="matching-arrays-and-tuples">Matching Arrays and Tuples</h3><p>Another feature that makes <strong><code>ts-pattern</code></strong> powerful is the ability to match arrays or tuples. This is particularly useful when dealing with sequences of data or functions that return multiple values:</p><pre><code class="language-javascript">const point = [1, 2] as const;
+
+const quadrant = match(point)
+  .with([x =&gt; x &gt; 0, y =&gt; y &gt; 0], () =&gt; 'First quadrant')
+  .with([x =&gt; x &lt; 0, y =&gt; y &gt; 0], () =&gt; 'Second quadrant')
+  .with([x =&gt; x &lt; 0, y =&gt; y &lt; 0], () =&gt; 'Third quadrant')
+  .with([x =&gt; x &gt; 0, y =&gt; y &lt; 0], () =&gt; 'Fourth quadrant')
+  .exhaustive();
+
+console.log(quadrant); // Output: "First quadrant"
+</code></pre><p>In this example, we’re matching <strong>tuples</strong> using conditions, making <strong>ts-pattern</strong> an elegant solution for working with structured data.</p><h3 id="summary-why-ts-pattern">Summary: Why <code>ts-pattern</code>?</h3><p>If you’re still using <code>if-else</code> chains or <code>switch</code> statements in your TypeScript code, it might be time to consider adopting <strong><code>ts-pattern</code></strong>. Here are some of the main reasons to use it:</p><ul><li><strong>Cleaner code</strong>: By separating the patterns from the logic, you end up with code that’s much more readable and maintainable.</li><li><strong>Type-safety</strong>: You can confidently handle complex data knowing that TypeScript is keeping an eye on your patterns.</li><li><strong>Exhaustiveness</strong>: No more missing cases or forgotten conditions.</li><li><strong>Versatility</strong>: Whether you’re dealing with simple objects, arrays, or deeply nested data, <code>ts-pattern</code> has you covered.</li></ul><p>For beginners looking to take their TypeScript skills to the next level, <strong>ts-pattern</strong> is a great tool to explore. It simplifies code, improves readability, and makes maintaining your application easier over time. So, if you’re looking for a way to write better logic with TypeScript, start using <strong><code>ts-pattern</code></strong> today!</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">Demo <a href="https://playcode.io/2052326" rel="noreferrer">here</a>.</div></div><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

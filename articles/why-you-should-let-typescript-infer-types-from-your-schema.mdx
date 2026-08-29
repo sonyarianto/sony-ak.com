@@ -1,0 +1,37 @@
+---
+title: "Why You Should Let TypeScript Infer Types from Your Schema"
+date: "2025-04-01"
+description: "When working with TypeScript , you might have seen advice like \"let the types be inferred instead of manually defining them.\" If you are wondering what this mea..."
+---
+
+<p>When working with <strong>TypeScript</strong>, you might have seen advice like <em>"let the types be inferred instead of manually defining them."</em> If you are wondering what this means and why many developers recommend it, this article will help you understand the concept, benefits, and some practical considerations you might be overlooking.</p><hr><h2 id="what-is-type-inference">What is Type Inference?</h2><p>In simple terms, <strong>inference</strong> means <strong>TypeScript will automatically figure out the type of a value without you telling it explicitly</strong>. TypeScript looks at your code, understands what structure a value has, and assigns an appropriate type to it.</p><p>For example:</p><pre><code class="language-ts">const username = "John"; // inferred as string
+const age = 30;          // inferred as number
+</code></pre><p>You did not write <code>: string</code> or <code>: number</code> manually, but TypeScript still knows the types.</p><p>The same logic applies when you define complex structures like <strong>schemas</strong> for objects, APIs, or databases.</p><hr><h2 id="manual-typing-vs-inferred-typing">Manual Typing vs. Inferred Typing</h2><p>Many beginners manually write types like this:</p><pre><code class="language-ts">type User = {
+    name: string;
+    age: number;
+};
+</code></pre><p>Then later, they also define the schema for validation:</p><pre><code class="language-ts">const userSchema = {
+    name: "string",
+    age: "number",
+};
+</code></pre><p>This creates a problem called <strong>duplication of knowledge</strong>. You are writing the same information twice:</p><ul><li>Once for TypeScript types.</li><li>Once for validation or runtime logic.</li></ul><p><strong>Duplicating types manually is dangerous</strong> because when you update the schema, you might forget to update the type, or vice versa, causing mismatches between validation and type checking.</p><hr><h2 id="inference-example-with-zod">Inference Example with Zod</h2><p>Modern libraries like <strong>Zod</strong>, <strong>Yup</strong>, or <strong>Prisma</strong> allow you to infer types automatically:</p><pre><code class="language-ts">import { z } from "zod";
+
+const userSchema = z.object({
+    name: z.string(),
+    age: z.number(),
+});
+
+// Inferred Type
+type User = z.infer&lt;typeof userSchema&gt;;
+</code></pre><p>Now you don't need to write <code>type User</code> manually. TypeScript will automatically create it based on the schema.</p><p>This approach is:</p><ul><li><strong>Cleaner</strong> (less code)</li><li><strong>More consistent</strong> (no chance of mismatch)</li><li><strong>Less error-prone</strong> (schema is the single source of truth)</li></ul><hr><h2 id="why-inference-is-considered-best-practice">Why Inference is Considered Best Practice</h2><ol><li><strong>Single Source of Truth</strong><br>The schema becomes the only place where you define your structure. Types come directly from it.</li><li><strong>Automatic Type Updates</strong><br>Change the schema, and the types are instantly updated without extra effort.</li><li><strong>Reduced Maintenance Cost</strong><br>Less code to maintain and fewer places where bugs can hide.</li><li><strong>Guaranteed Sync Between Runtime and Compile-time</strong><br>Many bugs in TypeScript projects come from types and validation being out of sync. Inference removes this risk.</li><li><strong>Better DX (Developer Experience)</strong><br>Your IDE will still give you full IntelliSense, auto-complete, and documentation, but you write less boilerplate.</li></ol><hr><h2 id="other-things-you-should-consider">Other Things You Should Consider</h2><h3 id="%E2%9C%85-schema-libraries-matter">✅ Schema Libraries Matter</h3><p>Not every library supports inference smoothly. <strong>Zod</strong> is currently one of the most popular choices because of its first-class TypeScript support.</p><h3 id="%E2%9C%85-custom-errors-and-validation-messages">✅ Custom Errors and Validation Messages</h3><p>Even when you infer types, you are still free to customize error messages and add validations. Inference does not limit expressiveness.</p><h3 id="%E2%9C%85-nested-and-complex-types">✅ Nested and Complex Types</h3><p>Inference works just as well for nested objects, arrays, enums, and unions.</p><pre><code class="language-ts">const productSchema = z.object({
+    id: z.string(),
+    tags: z.array(z.string()),
+    stock: z.number().min(0),
+});
+
+type Product = z.infer&lt;typeof productSchema&gt;;
+</code></pre><p>This avoids you having to manually construct deep and potentially repetitive types.</p><h3 id="%E2%9C%85-trade-off-sometimes-you-still-need-custom-types">✅ Trade-off: Sometimes You Still Need Custom Types</h3><p>In some situations, you may still want to manually declare additional types, especially if they are:</p><ul><li>Not directly derived from a schema.</li><li>More abstract (e.g., generic types).</li><li>Needed separately from validation logic.</li></ul><p>But for most <strong>data models</strong>, <strong>API contracts</strong>, and <strong>validation schemas</strong>, inference should be your default.</p><hr><h2 id="finally">Finally</h2><p>In modern TypeScript projects, it is strongly recommended to let your types be <strong>inferred</strong> from your <strong>schema</strong> instead of manually defining them. This leads to:</p><ul><li>Cleaner and more maintainable code.</li><li>Consistency between your validation and your types.</li><li>A better overall developer experience.</li></ul><p>Adopting this habit early will save you time, reduce errors, and make your codebase much easier to scale and maintain.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

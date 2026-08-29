@@ -1,0 +1,77 @@
+---
+title: "How to Use Hash Functions in Google Sheets: SHA256, MD5, and Beyond"
+date: "2025-07-25"
+description: "Hashing is a common technique used in software development to generate unique identifiers , verify integrity , or anonymize data . If you're working inside Goog..."
+---
+
+<p>Hashing is a common technique used in software development to generate <strong>unique identifiers</strong>, <strong>verify integrity</strong>, or <strong>anonymize data</strong>. If you're working inside <strong>Google Sheets</strong>, you might wonder: <em>can I create a hash like SHA256 or MD5 directly in a spreadsheet?</em> The short answer is: <strong>not natively</strong>, but with a small script, it becomes very easy.</p><p>This guide will walk you through <strong>how to implement and use hash functions in Google Sheets</strong>, including <strong>SHA256</strong>, <strong>MD5</strong>, <strong>SHA512</strong>, and others. We'll also cover some <strong>real-world use cases</strong>, and things to <strong>watch out for</strong> when using hashes in a spreadsheet environment.</p><hr><h2 id="%F0%9F%A7%A0-what-is-a-hash-function">🧠 What Is a Hash Function?</h2><p>A <strong>hash function</strong> takes some input (a string, number, etc.) and returns a fixed-size string of characters, which usually appears random. For example:</p><pre><code>Input: "hello"
+SHA256: 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+</code></pre><p>Hash functions are used for:</p><ul><li><strong>Generating unique keys</strong> from input data</li><li><strong>Anonymizing personal information</strong> (e.g., emails)</li><li><strong>Verifying data integrity</strong> (i.e., checking if something changed)</li><li><strong>Password hashing</strong> (note: Google Sheets is not ideal for secure password storage)</li></ul><hr><h2 id="%E2%9A%A0%EF%B8%8F-what-google-sheets-offers-by-default">⚠️ What Google Sheets Offers by Default</h2><p>Google Sheets does <strong>not</strong> offer any built-in formula like <code>=SHA256()</code> or <code>=MD5()</code>. You can't hash data directly using normal spreadsheet functions like <code>=SUM()</code> or <code>=CONCAT()</code>.</p><p>But Google Sheets is built on top of Google Apps Script, which <strong>does allow hashing</strong> via the <code>Utilities.computeDigest()</code> function.</p><hr><h2 id="%F0%9F%9B%A0%EF%B8%8F-how-to-add-hashing-to-google-sheets">🛠️ How to Add Hashing to Google Sheets</h2><p>Here's how to create your own <strong>custom hashing function</strong> in less than 1 minute:</p><h3 id="step-1-open-apps-script">Step 1: Open Apps Script</h3><ol><li>In your Google Sheet, click <strong>Extensions → Apps Script</strong>.</li><li>Remove any existing code and paste the following:</li></ol><pre><code class="language-javascript">function hash(input, algorithm) {
+  algorithm = algorithm || Utilities.DigestAlgorithm.SHA_256;
+  const bytes = Utilities.computeDigest(algorithm, input);
+  return bytes.map(b =&gt; ('0' + (b &amp; 0xFF).toString(16)).slice(-2)).join('');
+}
+</code></pre><p>Optional: Add aliases if you want simpler functions:</p><pre><code class="language-javascript">function SHA256(input) {
+  return hash(input, Utilities.DigestAlgorithm.SHA_256);
+}
+
+function SHA512(input) {
+  return hash(input, Utilities.DigestAlgorithm.SHA_512);
+}
+
+function MD5(input) {
+  return hash(input, Utilities.DigestAlgorithm.MD5);
+}
+</code></pre><h3 id="step-2-save-the-project">Step 2: Save the Project</h3><ul><li>Name the project <code>HashFunctions</code> or anything you like.</li><li>Click <strong>File → Save</strong> and close the editor.</li></ul><hr><h2 id="%F0%9F%A7%AA-how-to-use-it-in-sheets">🧪 How to Use It in Sheets</h2><p>You can now use your new hash function just like a built-in formula:</p><pre><code class="language-excel">=SHA256("Hello world")
+</code></pre><p>Or if you want to hash the value from a cell:</p><pre><code class="language-excel">=SHA256(A2)
+</code></pre><p>Or use the generic function with algorithm parameter:</p><pre><code class="language-excel">=hash(A2, "SHA_512")
+=hash(A2, "MD5")
+</code></pre><hr><h2 id="%F0%9F%94%8D-supported-hash-algorithms">🔍 Supported Hash Algorithms</h2><p>Here are the available options via <code>Utilities.DigestAlgorithm</code>:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Constant String</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SHA-256</strong></td>
+<td><code inline="">"SHA_256"</code></td>
+<td>Strong, widely used, ideal for unique keys</td>
+</tr>
+<tr>
+<td><strong>SHA-512</strong></td>
+<td><code inline="">"SHA_512"</code></td>
+<td>Stronger, longer hash</td>
+</tr>
+<tr>
+<td><strong>SHA-384</strong></td>
+<td><code inline="">"SHA_384"</code></td>
+<td>Less common, still secure</td>
+</tr>
+<tr>
+<td><strong>SHA-1</strong></td>
+<td><code inline="">"SHA_1"</code></td>
+<td>Deprecated for security purposes</td>
+</tr>
+<tr>
+<td><strong>MD5</strong></td>
+<td><code inline="">"MD5"</code></td>
+<td>Fast but <strong>insecure</strong>, avoid for sensitive data</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="%F0%9F%8E%AF-use-case-ideas">🎯 Use Case Ideas</h2><p>Here are some examples of where hashing in Sheets can be useful:</p><ul><li>Detecting changes to data (hash every row and see if hash changes)</li></ul><p>Masking <strong>email addresses</strong> in shared documents:</p><pre><code class="language-excel">=SHA256(LOWER(A2))
+</code></pre><p>Creating a <strong>unique row key</strong> from multiple columns:</p><pre><code class="language-excel">=SHA256(A2 &amp; B2 &amp; C2)
+</code></pre><hr><h2 id="%E2%9A%A0%EF%B8%8F-considerations-and-limitations">⚠️ Considerations and Limitations</h2><p>Before using hash functions extensively in Sheets, keep the following in mind:</p><h3 id="%E2%9C%85-pros">✅ Pros:</h3><ul><li>Easy to implement and use</li><li>Works on any input (text, number, combined fields)</li><li>Makes spreadsheet data cleaner and easier to identify duplicates</li></ul><h3 id="%E2%9D%8C-cons">❌ Cons:</h3><ul><li><strong>No reverse</strong>: hash functions are one-way (you cannot “unhash”)</li><li><strong>Not secure</strong> for storing passwords or secret data</li><li><strong>Quota limits</strong>: Google Apps Script has daily execution quotas</li><li><strong>Performance</strong>: Hashing a large sheet (thousands of rows) may slow down or hit limits</li><li><strong>Case-sensitive</strong>: <code>SHA256("abc")</code> ≠ <code>SHA256("ABC")</code>. Use <code>LOWER()</code> if needed.</li></ul><hr><h2 id="%F0%9F%A7%A9-tips-best-practices">🧩 Tips &amp; Best Practices</h2><ul><li>Use shorter hashes (e.g., <code>LEFT(SHA256(A2), 8)</code>) if you only need unique keys, not full cryptographic hashes.</li></ul><p>Combine multiple cells carefully:</p><pre><code class="language-excel">=SHA256(TEXT(A2, "yyyy-mm-dd") &amp; "|" &amp; B2 &amp; "|" &amp; C2)
+</code></pre><p>Hash with salt (add extra text) if needed:</p><pre><code class="language-excel">=SHA256(A2 &amp; "-salt")
+</code></pre><p>Use <code>LOWER()</code> or <code>UPPER()</code> for consistency:</p><pre><code class="language-excel">=SHA256(LOWER(A2))
+</code></pre><hr><h2 id="%E2%9C%85-finally">✅ Finally</h2><p>While Google Sheets doesn’t have built-in hash functions like <code>=SHA256()</code>, it’s <strong>simple and effective</strong> to create your own using Google Apps Script. Whether you’re building a mini database, anonymizing user info, or ensuring data integrity, hashing can be a <strong>powerful tool</strong>—as long as you understand the limitations.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

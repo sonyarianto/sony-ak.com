@@ -1,0 +1,73 @@
+---
+title: "Building React Applications Without a Build Step or Framework: A Simple Approach"
+date: "2024-10-05"
+description: "In a world where modern web development often comes with complex build tools, package managers, and configuration files, some developers may feel overwhelmed by..."
+---
+
+<p>In a world where modern web development often comes with complex build tools, package managers, and configuration files, some developers may feel overwhelmed by the number of steps needed to get started with React. What if you could bypass these build tools entirely and write React code directly in your HTML file, just like traditional scripting?</p><p>It’s possible! This approach might not be suited for large-scale projects, but it offers a clean and straightforward way to build small apps or experiment with React without the need for a full build process. Whether you're creating a quick prototype or teaching React, this method can be ideal.</p><p>Let's walk through a basic example where React, React Router, and JSX are all used without any build steps. You can simply open your HTML file in a browser and see your app running.</p><h3 id="final-code">Final Code</h3><p>If you are in rush mode, no worries, here is the GitHub repository about this topic, and also the <a href="https://react-without-buildsteps.vercel.app/" rel="noreferrer">demo website</a>.</p><figure class="kg-card kg-bookmark-card"><a class="kg-bookmark-container" href="https://github.com/sonyarianto/react-without-buildsteps"><div class="kg-bookmark-content"><div class="kg-bookmark-title">GitHub - sonyarianto/react-without-buildsteps: Oh boy, this skeleton project is dedicated to CDN fans around the world.</div><div class="kg-bookmark-description">Oh boy, this skeleton project is dedicated to CDN fans around the world. - sonyarianto/react-without-buildsteps</div><div class="kg-bookmark-metadata"><img class="kg-bookmark-icon" src="__GHOST_URL__/content/images/icon/pinned-octocat-093da3e6fa40-2.svg" alt=""><span class="kg-bookmark-author">GitHub</span><span class="kg-bookmark-publisher">sonyarianto</span></div></div><div class="kg-bookmark-thumbnail"><img src="__GHOST_URL__/content/images/thumbnail/react-without-buildsteps-1" alt="" onerror="this.style.display = 'none'"></div></a></figure><p>If you want to read the explanation, just go on.</p><h4 id="the-basic-setup">The Basic Setup</h4><p>First, you need to include a few key libraries via CDN links directly in your HTML file. The core ones are <code>React</code>, <code>ReactDOM</code>, <code>React Router</code>, and <code>Babel</code>. Babel is particularly important here because we want to use JSX syntax, which allows us to write HTML-like syntax in our JavaScript. Browsers don’t natively understand JSX, so Babel transpiles it to regular JavaScript.</p><p>Here’s an example of a simple HTML file with these scripts included:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;React without build steps&lt;/title&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/@remix-run/router@1.19.2/dist/router.umd.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/react-router@6.26.2/dist/umd/react-router.production.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/react-router-dom@6.26.2/dist/umd/react-router-dom.production.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.7/babel.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="root"&gt;&lt;/div&gt;
+  &lt;script type="text/babel" data-presets="env,react"&gt;
+    // React code goes here
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>In this file, we load the required libraries directly from CDNs, which makes it possible to start using React and React Router without any additional setup or configuration.</p><h4 id="writing-react-components">Writing React Components</h4><p>Once the libraries are loaded, you can start writing React components right inside your <code>&lt;script type="text/babel"&gt;</code> tag. The <code>data-presets="env,react"</code> attribute ensures that Babel converts JSX into browser-friendly JavaScript.</p><p>For instance, you can create a simple <code>Header</code> component with navigation buttons and a <code>Footer</code> component to make your app more dynamic:</p><pre><code class="language-javascript">function Header() {
+  const navigate = useNavigate();
+
+  return (
+    &lt;header&gt;
+      &lt;nav&gt;
+        &lt;button onClick={() =&gt; navigate('/')}&gt;Home&lt;/button&gt;
+        &lt;button onClick={() =&gt; navigate('/about')}&gt;About Us&lt;/button&gt;
+      &lt;/nav&gt;
+    &lt;/header&gt;
+  );
+}
+
+function Footer() {
+  return &lt;pre&gt;View the source code to learn how this was built!&lt;/pre&gt;;
+}
+</code></pre><h4 id="routing-with-react-router">Routing with React Router</h4><p>React Router is one of the most commonly used libraries for navigation in React apps. Even without a build step, you can still use it seamlessly. You can set up routes using the <code>createBrowserRouter</code> function from React Router and define paths for each page.</p><p>Here’s an example of setting up routes for a simple two-page app:</p><pre><code class="language-javascript">const router = createBrowserRouter([
+  { path: '/', element: &lt;Home /&gt; },
+  { path: '/about', element: &lt;About /&gt; },
+]);
+
+function Home() {
+  return (
+    &lt;div&gt;
+      &lt;Header /&gt;
+      &lt;h1&gt;Welcome to the Home Page!&lt;/h1&gt;
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function About() {
+  return (
+    &lt;div&gt;
+      &lt;Header /&gt;
+      &lt;h1&gt;About Us&lt;/h1&gt;
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+}
+
+ReactDOM.render(&lt;RouterProvider router={router} /&gt;, document.getElementById('root'));
+</code></pre><p>Here, the app has two routes: the home page (<code>/</code>) and the about page (<code>/about</code>). Each page is represented by a component (<code>Home</code> and <code>About</code>), and the navigation between them is handled with React Router’s <code>useNavigate</code> hook.</p><h4 id="using-jsx-without-a-build-tool">Using JSX Without a Build Tool</h4><p>Since JSX is not natively understood by the browser, Babel takes care of the transpilation on the fly. This is made possible by the <code>&lt;script type="text/babel"&gt;</code> tag. Although using Babel in the browser adds some performance overhead during development, it's a great way to start quickly, especially for small apps or learning purposes.</p><h4 id="advantages-of-skipping-build-steps">Advantages of Skipping Build Steps</h4><p>One of the most immediate benefits of this approach is its simplicity. There's no need for complex build tools like Webpack, no package managers, no configuration files. You just write your HTML, include the necessary libraries, and get to coding. This is especially beneficial when:</p><ul><li>You're building a prototype or proof-of-concept.</li><li>You want to demonstrate a simple example without overwhelming others with a complicated setup.</li><li>You want a lightweight environment for quick experimentation.</li></ul><p>This setup also makes your app easy to share. The entire code is contained within a single HTML file, which can be copied, sent, or hosted with minimal effort.</p><h4 id="potential-limitations">Potential Limitations</h4><p>While this no-build setup is convenient, there are certain limitations. Since all dependencies are loaded from external CDNs, the app relies on network availability and may be slower to load on first visit. Additionally, for larger applications, the lack of build tools like bundlers and compilers may lead to performance bottlenecks.</p><p>You also miss out on features like hot-reloading, TypeScript support, and advanced optimizations offered by tools like Vite or Next.js. These tools also help with code splitting and minification, which are key for production-ready applications.</p><h4 id="finally">Finally</h4><p>Building React apps without a build step offers a refreshing simplicity for small-scale projects or learning purposes. It allows developers to focus on the core of React without worrying about toolchains, dependencies, or configurations. However, this approach does come with limitations, especially when scaling to larger projects or aiming for production-level performance.</p><p>If you’re just starting with React or need to create a quick prototype, this method can be an excellent way to dive in. For more complex applications, though, the conventional build tools might become essential to optimize and manage your code effectively.</p><h3 id="here-is-the-code-again">Here is the code again</h3><figure class="kg-card kg-bookmark-card"><a class="kg-bookmark-container" href="https://github.com/sonyarianto/react-without-buildsteps"><div class="kg-bookmark-content"><div class="kg-bookmark-title">GitHub - sonyarianto/react-without-buildsteps: Oh boy, this skeleton project is dedicated to CDN fans around the world.</div><div class="kg-bookmark-description">Oh boy, this skeleton project is dedicated to CDN fans around the world. - sonyarianto/react-without-buildsteps</div><div class="kg-bookmark-metadata"><img class="kg-bookmark-icon" src="__GHOST_URL__/content/images/icon/pinned-octocat-093da3e6fa40-1.svg" alt=""><span class="kg-bookmark-author">GitHub</span><span class="kg-bookmark-publisher">sonyarianto</span></div></div><div class="kg-bookmark-thumbnail"><img src="__GHOST_URL__/content/images/thumbnail/react-without-buildsteps" alt="" onerror="this.style.display = 'none'"></div></a></figure><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

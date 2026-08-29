@@ -1,0 +1,54 @@
+---
+title: "Mastering JavaScript Export Syntax: A Practical Guide for Developers"
+date: "2025-05-14"
+description: "Everything You Need to Know About export, export default, and Module Aggregation"
+---
+
+<p>If you're building modern JavaScript applications—whether for the browser or Node.js—<strong>ES Modules (ESM)</strong> are now the standard. And to make your codebase clean, maintainable, and modular, understanding how to use the <code>export</code> keyword is <strong>absolutely essential</strong>.</p><p>This article breaks down <strong>everything you need to know about JavaScript <code>export</code> syntax</strong>. It's not just a list of possibilities—it also gives you the <em>why</em> and <em>when</em> behind each pattern.</p><hr><h2 id="%F0%9F%94%B9-why-use-export">🔹 Why Use <code>export</code>?</h2><p>In ES Modules, the <code>export</code> keyword allows you to <strong>share values (variables, functions, classes, constants)</strong> from one file to another. Without it, each <code>.js</code> file is isolated. With it, you can build powerful modular architectures where each file only contains what it needs to.</p><hr><h2 id="%F0%9F%93%A6-types-of-exports-in-javascript">📦 Types of Exports in JavaScript</h2><p>There are <strong>two primary types</strong> of exports:</p><ol><li><strong>Named exports</strong> – you export one or more identifiers explicitly.</li><li><strong>Default exports</strong> – you export one primary thing per file.</li></ol><hr><h2 id="%E2%9C%85-named-exports-precise-and-flexible">✅ Named Exports: Precise and Flexible</h2><p>Use <strong>named exports</strong> when you want to <strong>export multiple values</strong> from a file.</p><pre><code class="language-js">// Exporting declarations directly
+export const PI = 3.14;
+export function add(a, b) { return a + b; }
+export class Circle { constructor(r) { this.r = r; } }
+</code></pre><p>You can also export already-declared variables using an export list:</p><pre><code class="language-js">const min = 1;
+const max = 100;
+export { min, max };
+</code></pre><p>Need to rename exports? Use the <code>as</code> keyword:</p><pre><code class="language-js">export { min as minimum, max as maximum };
+</code></pre><p>You can even <strong>export destructured variables</strong>:</p><pre><code class="language-js">const config = { port: 8080, env: 'production' };
+export const { port, env: environment } = config;
+</code></pre><hr><h2 id="%E2%9C%85-default-exports-one-main-thing">✅ Default Exports: One Main Thing</h2><p>Use a <strong>default export</strong> when your module is focused on one primary value.</p><pre><code class="language-js">// Inline default export
+export default function greet(name) {
+  return `Hello, ${name}!`;
+}
+</code></pre><p>You can also default-export classes or expressions:</p><pre><code class="language-js">export default class User { /* ... */ }
+export default [1, 2, 3];         // valid!
+export default { version: '1.0' }; // also valid
+</code></pre><p>Or even anonymously:</p><pre><code class="language-js">export default function () { /* unnamed function */ }
+export default class { /* unnamed class */ }
+</code></pre><blockquote>🔍 <strong>Important</strong>: A file can only have <strong>one</strong> default export. Named exports, on the other hand, can be unlimited.</blockquote><hr><h2 id="%F0%9F%94%84-mixing-default-and-named-exports-careful">🔄 Mixing Default and Named Exports (Careful!)</h2><p>You <em>can</em> mix both in one file:</p><pre><code class="language-js">export default function handler() { /* ... */ }
+export const config = { runtime: 'edge' };
+</code></pre><p>However, be cautious—<strong>it can lead to confusing imports</strong> on the consumer side, especially for new developers.</p><hr><h2 id="%F0%9F%94%81-re-exporting-and-aggregating-modules">🔁 Re-exporting and Aggregating Modules</h2><p>You can <strong>re-export</strong> values from other modules without importing them:</p><pre><code class="language-js">// Re-export everything
+export * from './utils.js';
+
+// Re-export with namespace
+export * as utils from './utils.js';
+
+// Re-export selected items
+export { validate, format } from './helpers.js';
+
+// Re-export with aliases
+export { default as Logger } from './logger.js';
+</code></pre><p>This is especially useful for building <strong>public APIs</strong> from deeply nested modules.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-common-pitfalls-and-tips">⚠️ Common Pitfalls and Tips</h2><ul><li><strong>Avoid multiple default exports</strong> – it's a syntax error.</li><li><strong>Be consistent</strong> – decide when to use named vs default and stick to it.</li><li><strong>Auto-import tools</strong> in editors like VSCode often default to <code>default import</code>, even if you're using named exports.</li><li><strong>Prefer named exports</strong> for utility libraries (e.g. <code>utils.js</code>), as they are easier to tree-shake and scale.</li><li><strong>Default exports are great for React components</strong>, or a file that exposes a single class/function.</li></ul><hr><h2 id="%F0%9F%93%8C-real-world-examples">📌 Real-World Examples</h2><p><strong>React Example (default + named):</strong></p><pre><code class="language-js">// MyComponent.js
+export default function MyComponent() { /* ... */ }
+export const helper = () =&gt; { /* ... */ };
+</code></pre><pre><code class="language-js">// App.js
+import MyComponent, { helper } from './MyComponent';
+</code></pre><p><strong>Utility Module (only named exports):</strong></p><pre><code class="language-js">// math.js
+export function add(a, b) { return a + b; }
+export function subtract(a, b) { return a - b; }
+</code></pre><pre><code class="language-js">// index.js
+import * as math from './math';
+math.add(1, 2);
+</code></pre><hr><h2 id="%F0%9F%A7%A0-finally">🧠 Finally</h2><p>Understanding <code>export</code> is more than just memorizing syntax. It's about designing a module system that <strong>makes your codebase scalable and intuitive</strong>.</p><p><strong>Use default exports for primary concepts</strong>, and <strong>named exports for everything else</strong>. Don’t be afraid to <strong>group and re-export</strong> modules to keep your import paths clean.</p><blockquote>✅ <strong>Good exports make good codebases.</strong></blockquote><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

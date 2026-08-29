@@ -1,0 +1,46 @@
+---
+title: "Querying Price Ranges in MySQL Without Splitting the Column"
+date: "2025-04-07"
+description: "When designing a restaurant database , it's common to store a price range—for example, \"$8-$4000\"—as a single string. It’s simple, user-friendly, and works well..."
+---
+
+<p>When designing a <strong>restaurant database</strong>, it's common to store a price range—for example, "$8-$4000"—as a single string. It’s simple, user-friendly, and works well for display. However, this structure poses a challenge when you need to <strong>filter or sort</strong> based on the <strong>minimum or maximum price</strong>.</p><p>Instead of creating separate columns for the <strong>lowest</strong> and <strong>highest price</strong>, we can extract and process these values on-the-fly directly from the <code>price_range</code> column using <strong>MySQL string functions</strong>.</p><hr><h2 id="%F0%9F%8E%AF-use-case">🎯 Use Case</h2><p>You want to query something like:</p><ul><li><strong>Restaurants with a minimum price of at least $10</strong></li><li><strong>Restaurants with a maximum price of no more than $100</strong></li><li><strong>Sort by lowest price first</strong></li></ul><p>But your <code>price_range</code> column contains strings like:</p><pre><code>$8-$4000
+$12 - $80
+$50 - $300
+</code></pre><hr><h2 id="%F0%9F%A7%A9-solution-using-mysql-string-functions">🧩 Solution Using MySQL String Functions</h2><p>Here's a sample SQL query that <strong>extracts</strong> the numeric values from <code>price_range</code> for filtering and sorting:</p><pre><code class="language-sql">SELECT
+    *,
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', 1) AS UNSIGNED) AS lowest_price,
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', -1) AS UNSIGNED) AS highest_price
+FROM
+    restaurants
+ORDER BY
+    lowest_price ASC,
+    highest_price DESC;
+</code></pre><hr><h3 id="%F0%9F%94%8D-how-it-works">🔍 How It Works</h3><ul><li><code>REPLACE(price_range, ' ', '')</code>: <strong>Removes spaces</strong></li><li><code>REPLACE(..., '$', '')</code>: <strong>Removes dollar signs</strong></li><li><code>SUBSTRING_INDEX(..., '-', 1)</code>: Extracts the <strong>left part</strong> (lowest price)</li><li><code>SUBSTRING_INDEX(..., '-', -1)</code>: Extracts the <strong>right part</strong> (highest price)</li><li><code>CAST(... AS UNSIGNED)</code>: Converts extracted strings into <strong>numeric values</strong></li></ul><p>This lets you <strong>filter, sort, or group</strong> based on prices without altering your schema.</p><hr><h2 id="%F0%9F%8E%9B-filtering-by-price-range">🎛 Filtering by Price Range</h2><p>Need to query only restaurants with prices between $10 and $100?</p><pre><code class="language-sql">SELECT
+    *,
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', 1) AS UNSIGNED) AS lowest_price,
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', -1) AS UNSIGNED) AS highest_price
+FROM
+    restaurants
+WHERE
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', 1) AS UNSIGNED) &gt;= 10
+    AND CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', -1) AS UNSIGNED) &lt;= 100;
+</code></pre><hr><h2 id="%F0%9F%A7%A0-considerations-best-practices">🧠 Considerations &amp; Best Practices</h2><p>Here are a few things to keep in mind:</p><h3 id="%E2%9A%A0-performance">⚠ Performance</h3><p>These functions are <strong>computed at query time</strong>, which means they <strong>can’t use indexes</strong>. If you expect to run many queries based on price, consider:</p><ul><li>Storing <strong><code>min_price</code></strong> and <strong><code>max_price</code></strong> as separate columns (even if hidden from UI)</li><li>Using <strong>generated columns</strong> with indexing (available in MySQL 5.7+)</li></ul><h3 id="%F0%9F%93%A6-consistency">📦 Consistency</h3><p>Make sure all values in <code>price_range</code> follow a <strong>standard format</strong>. Mixed formats like:</p><pre><code>$8-$40
+USD 10 - 1000
+€15-€100
+</code></pre><p>…will break the logic unless you normalize them first.</p><h3 id="%E2%9C%85-validations">✅ Validations</h3><p>Enforce formatting rules at the <strong>application layer</strong> or with <strong>CHECK constraints</strong> (MySQL 8+) to avoid bad data like:</p><pre><code>"free"
+"tbd"
+"$abc-$xyz"
+</code></pre><h3 id="%F0%9F%94%84-optional-use-a-view">🔄 Optional: Use a View</h3><p>To simplify future queries:</p><pre><code class="language-sql">CREATE VIEW restaurants_with_prices AS
+SELECT
+    *,
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', 1) AS UNSIGNED) AS lowest_price,
+    CAST(SUBSTRING_INDEX(REPLACE(REPLACE(price_range, ' ', ''), '$', ''), '-', -1) AS UNSIGNED) AS highest_price
+FROM
+    restaurants;
+</code></pre><p>Then you can just:</p><pre><code class="language-sql">SELECT * FROM restaurants_with_prices WHERE lowest_price &gt;= 10;
+</code></pre><hr><h2 id="%E2%9C%85-finally">✅ Finally</h2><p>Storing price ranges as a single string is great for UI and simplicity. But when business logic or analytics needs creep in, <strong>parsing the values</strong> with SQL functions offers a practical workaround—<strong>without altering your schema</strong>.</p><p>For better performance or stricter control, you may still consider <strong>splitting the data</strong> in the long run. But for most use cases, this approach is clean, quick, and reliable.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

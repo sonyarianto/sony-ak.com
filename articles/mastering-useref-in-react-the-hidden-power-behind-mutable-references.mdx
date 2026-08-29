@@ -1,0 +1,111 @@
+---
+title: "Mastering useRef in React: The Hidden Power Behind Mutable References"
+date: "2025-10-19"
+description: "When you first dive into React , you often hear about useState and useEffect . But there’s another hook that quietly does a lot of heavy lifting behind the scen..."
+---
+
+<p>When you first dive into <strong>React</strong>, you often hear about <code>useState</code> and <code>useEffect</code>. But there’s another hook that quietly does a lot of heavy lifting behind the scenes — <code><strong>useRef</strong></code>.<br>Although often overlooked, <code>useRef</code> is one of the most powerful tools for handling <strong>persistent values, DOM references, and performance optimization</strong>.</p><p>Let’s explore how and when to use it effectively — with practical examples and deeper insights that developers often miss.</p><hr><h2 id="%F0%9F%94%8D-what-is-useref">🔍 What Is <code>useRef</code>?</h2><p><code>useRef</code> is a React Hook that returns a <strong>mutable object</strong> that persists for the entire lifetime of a component.<br>It looks like this:</p><pre><code class="language-jsx">const ref = useRef(initialValue);
+</code></pre><p>The returned object always has a <strong><code>.current</code></strong> property that you can freely mutate without triggering a re-render.</p><hr><h2 id="%F0%9F%A7%B1-1-accessing-and-controlling-dom-elements">🧱 1. Accessing and Controlling DOM Elements</h2><p>The most common and intuitive use of <code>useRef</code> is <strong>directly referencing DOM elements</strong> — something you can’t easily do with <code>useState</code>.</p><h3 id="example">Example:</h3><pre><code class="language-jsx">import { useRef } from "react";
+
+function FocusInput() {
+  const inputRef = useRef(null);
+
+  const handleFocus = () =&gt; {
+    inputRef.current.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Click the button to focus" /&gt;
+      &lt;button onClick={handleFocus}&gt;Focus Input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre><p>Here, <code>inputRef.current</code> gives direct access to the <code>&lt;input&gt;</code> element in the DOM, allowing you to call <code>.focus()</code>.</p><h3 id="when-to-use"><strong>When to Use:</strong></h3><ul><li>You need <strong>imperative control</strong> (focus, scroll, play, pause, etc.).</li><li>You integrate with <strong>third-party libraries</strong> that need direct DOM access (like D3.js, Leaflet, or video players).</li><li>You want to <strong>measure DOM nodes</strong> (height, width, position).</li></ul><hr><h2 id="%E2%9A%99%EF%B8%8F-2-storing-mutable-data-without-re-renders">⚙️ 2. Storing Mutable Data Without Re-renders</h2><p>Unlike <code>useState</code>, updating <code>useRef.current</code> does <strong>not</strong> trigger a re-render.<br>This makes it perfect for storing data that changes over time but doesn’t affect what’s rendered.</p><h3 id="example-1">Example:</h3><pre><code class="language-jsx">import { useEffect, useRef } from "react";
+
+function Timer() {
+  const countRef = useRef(0);
+
+  useEffect(() =&gt; {
+    const interval = setInterval(() =&gt; {
+      countRef.current += 1;
+      console.log("Count:", countRef.current);
+    }, 1000);
+    return () =&gt; clearInterval(interval);
+  }, []);
+
+  return &lt;p&gt;Check the console for count updates.&lt;/p&gt;;
+}
+</code></pre><p>Even though <code>countRef.current</code> keeps changing, the component <strong>does not re-render</strong>, keeping it performant.</p><h3 id="when-to-use-1"><strong>When to Use:</strong></h3><ul><li>To store <strong>mutable state</strong> that should not trigger re-renders.</li><li>To keep <strong>previous values</strong> for comparison (like previous props or scroll positions).</li><li>To store <strong>timeouts, intervals, or event listeners</strong>.</li></ul><hr><h2 id="%F0%9F%A7%A0-3-storing-previous-values">🧠 3. Storing Previous Values</h2><p>You can also use <code>useRef</code> to <strong>remember previous props or state</strong> across renders.</p><h3 id="example-2">Example:</h3><pre><code class="language-jsx">import { useEffect, useRef } from "react";
+
+function PreviousValue({ value }) {
+  const prevValueRef = useRef();
+
+  useEffect(() =&gt; {
+    prevValueRef.current = value;
+  });
+
+  return (
+    &lt;p&gt;
+      Current: {value}, Previous: {prevValueRef.current}
+    &lt;/p&gt;
+  );
+}
+</code></pre><p>This technique is excellent for <strong>detecting changes</strong> or performing <strong>custom diffing logic</strong> between renders.</p><hr><h2 id="%F0%9F%9A%80-4-avoiding-re-creation-of-functions-or-objects">🚀 4. Avoiding Re-creation of Functions or Objects</h2><p>Each time a component renders, functions and objects are recreated.<br>If you want to store something between renders <strong>without re-instantiation</strong>, <code>useRef</code> helps.</p><h3 id="example-3">Example:</h3><pre><code class="language-jsx">const instanceRef = useRef(createExpensiveObject());
+</code></pre><p>By storing it in a ref, you ensure the object persists throughout the component’s lifetime — improving <strong>performance</strong> and avoiding unnecessary recalculations.</p><hr><h2 id="%E2%9A%A1-5-managing-animation-frames-or-event-handlers">⚡ 5. Managing Animation Frames or Event Handlers</h2><p>In cases like <strong>animations</strong>, <strong>drag events</strong>, or <strong>audio visualizers</strong>, <code>useRef</code> is invaluable for storing data that updates continuously without state overhead.</p><h3 id="example-animation-frame">Example (animation frame):</h3><pre><code class="language-jsx">function AnimatedBox() {
+  const requestRef = useRef();
+
+  const animate = () =&gt; {
+    // animation logic here
+    requestRef.current = requestAnimationFrame(animate);
+  };
+
+  useEffect(() =&gt; {
+    requestRef.current = requestAnimationFrame(animate);
+    return () =&gt; cancelAnimationFrame(requestRef.current);
+  }, []);
+}
+</code></pre><p>Without <code>useRef</code>, you’d struggle to maintain references across frames efficiently.</p><hr><h2 id="%F0%9F%A7%A9-key-differences-useref-vs-usestate">🧩 Key Differences: <code>useRef</code> vs <code>useState</code></h2>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><code inline="">useRef</code></th>
+<th><code inline="">useState</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Causes re-render on update</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Stores mutable value</td>
+<td>✅ Yes</td>
+<td>⚠️ Not directly</td>
+</tr>
+<tr>
+<td>Ideal for DOM manipulation</td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td>Ideal for rendering data</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Value persists between renders</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<p>In short:<br>Use <strong><code>useState</code></strong> for <strong>render-driven data</strong>, and <strong><code>useRef</code></strong> for <strong>logic-driven or DOM-driven data</strong>.</p><hr><h2 id="%F0%9F%92%A1-additional-considerations">💡 Additional Considerations</h2><ol><li><strong>Avoid Overusing <code>useRef</code></strong><br>It’s tempting to use <code>useRef</code> for everything mutable, but overusing it can lead to hard-to-debug side effects. Keep render logic declarative when possible.</li><li><strong>Don’t Rely on <code>useRef</code> for Triggering UI Changes</strong><br>Remember, updating <code>ref.current</code> doesn’t cause React to re-render.<br>If you need the UI to update, stick with <code>useState</code>.</li><li><strong><code>useRef</code> and Strict Mode</strong><br>React’s Strict Mode may call your component function twice during development.<br>Avoid initializing refs with non-idempotent logic directly inside <code>useRef(initialValue)</code>.</li><li><strong><code>useRef</code> in Concurrent Rendering</strong><br>Because refs are mutable and persist across renders, they’re safe in concurrent React, as they don’t interfere with the reconciliation process.</li></ol><hr><h2 id="%F0%9F%A7%AD-finally">🧭 Finally</h2><p>The <code>useRef</code> hook may look simple, but it’s one of React’s most <strong>versatile tools</strong>.<br>Whether you’re <strong>accessing DOM elements</strong>, <strong>keeping state without re-renders</strong>, or <strong>optimizing performance</strong>, mastering <code>useRef</code> separates good React developers from great ones.</p><p>Think of it as your <strong>React memory box</strong> — a place to store anything that should survive re-renders but not control rendering itself.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

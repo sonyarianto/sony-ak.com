@@ -1,0 +1,31 @@
+---
+title: "shouldNeverHappen: A Simple Trick for Catching the Impossible in TypeScript"
+date: "2025-04-09"
+description: "In every codebase, there are situations that should just never happen . Maybe it's a value that should have been validated earlier, or a branch in your logic th..."
+---
+
+<p>In every codebase, there are situations that should just <strong>never happen</strong>. Maybe it's a value that should have been validated earlier, or a branch in your logic that you’re 100% sure will never be executed. And yet… bugs happen.</p><p>Instead of scattering <code>throw new Error(...)</code> statements throughout your code, it’s better to <strong>encapsulate that logic</strong> with a dedicated utility function: <code>shouldNeverHappen</code>.</p><p>Let’s talk about why this pattern is useful, how to use it properly, and a few important <strong>considerations</strong> you might not have thought of.</p><hr><h2 id="%F0%9F%92%A1-what-is-shouldneverhappen">💡 What is <code>shouldNeverHappen</code>?</h2><p>It’s a small helper function that you can call when you hit a <strong>panic-level error</strong>—a defect that indicates your assumptions are broken.</p><p>Here’s a basic version:</p><pre><code class="language-ts">export const shouldNeverHappen = (msg?: string, ...args: any[]): never =&gt; {
+  console.error(msg, ...args);
+  if (isDevEnv()) {
+    debugger;
+  }
+  throw new Error(`This should never happen: ${msg}`);
+};
+</code></pre><p>This is designed to <strong>fail loudly</strong>, <strong>immediately</strong>, and in <strong>developer-friendly ways</strong>:</p><ul><li>Logs to the console</li><li>Breaks into the debugger when in development mode</li><li>Throws an error to stop execution</li></ul><hr><h2 id="%E2%9C%85-why-you-should-use-it">✅ Why You Should Use It</h2><h3 id="1-improves-readability"><strong>1. Improves Readability</strong></h3><p>Using <code>shouldNeverHappen('Missing user')</code> is way more expressive than a raw <code>throw</code> statement. Anyone reading the code knows this is an unexpected failure.</p><h3 id="2-centralized-panic-handling"><strong>2. Centralized Panic Handling</strong></h3><p>If you ever want to add logging, analytics, or alerting, you only need to do it in one place. This is great for production observability (think: <strong>Sentry</strong>, <strong>Datadog</strong>, etc.).</p><h3 id="3-enforces-typescript%E2%80%99s-never"><strong>3. Enforces TypeScript’s <code>never</code></strong></h3><p>Returning <code>never</code> helps TypeScript understand that this function does not return, allowing better control flow analysis and eliminating the need for <code>!</code> non-null assertions.</p><h3 id="4-developer-experience-boost"><strong>4. Developer Experience Boost</strong></h3><p>During development, opening the debugger immediately saves you from guessing where things went wrong. It's like a <strong>smart breakpoint</strong>.</p><hr><h2 id="%F0%9F%A7%AA-example-usage">🧪 Example Usage</h2><pre><code class="language-ts">const user = maybeUser ?? shouldNeverHappen('User expected but missing');
+</code></pre><p>You expect <code>maybeUser</code> to exist, and if it doesn’t, your assumption is broken—fail fast.</p><pre><code class="language-ts">if (!config.allowUpload) {
+  return shouldNeverHappen('Uploads should always be allowed here');
+}
+</code></pre><p>This pattern helps ensure your app never silently continues in a bad state.</p><hr><h2 id="%F0%9F%A7%A0-extra-considerations">🧠 Extra Considerations</h2><h3 id="%E2%9C%85-only-use-for-defects"><strong>✅ Only Use for Defects</strong></h3><p>Don’t use <code>shouldNeverHappen</code> for user input errors, API failures, or things that are expected to go wrong occasionally. This is for <strong>true internal logic failures</strong>, not recoverable runtime issues.</p><h3 id="%F0%9F%93%A6-add-loggingtelemetry-hooks"><strong>📦 Add Logging/Telemetry Hooks</strong></h3><p>Consider extending the utility to report to tools like Sentry:</p><pre><code class="language-ts">import * as Sentry from '@sentry/node';
+
+export const shouldNeverHappen = (msg?: string, ...args: any[]): never =&gt; {
+  console.error(msg, ...args);
+  Sentry.captureException(new Error(msg));
+  if (isDevEnv()) debugger;
+  throw new Error(`This should never happen: ${msg}`);
+};
+</code></pre><h3 id="%F0%9F%8C%90-works-great-with-feature-flags"><strong>🌐 Works Great with Feature Flags</strong></h3><p>If you're doing gradual rollouts or A/B testing, <code>shouldNeverHappen</code> can act as a guardrail for assumptions that should never be broken after rollout.</p><h3 id="%F0%9F%9A%A8-avoid-in-library-code"><strong>🚨 Avoid in Library Code</strong></h3><p>This pattern is great for internal applications, but in published libraries, you should generally use standard error types and let consumers decide how to handle them.</p><hr><h2 id="%F0%9F%A7%B5-bonus-add-context-to-the-error">🧵 Bonus: Add Context to the Error</h2><p>You can pass any number of arguments to provide more context:</p><pre><code class="language-ts">shouldNeverHappen('Unexpected null in payment flow', { transactionId, user });
+</code></pre><p>This makes debugging way easier later.</p><hr><h2 id="%F0%9F%A7%BC-clean-simple-powerful">🧼 Clean, Simple, Powerful</h2><p>The real strength of <code>shouldNeverHappen</code> is that it keeps your codebase <strong>clean</strong>, <strong>consistent</strong>, and <strong>intentional</strong>. It separates real bugs from expected failures, and it does so in a way that improves both the <strong>developer experience</strong> and the <strong>runtime safety</strong> of your application.</p><p>If you’re not using something like this yet—<strong>you should start today.</strong></p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

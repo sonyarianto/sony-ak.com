@@ -1,0 +1,38 @@
+---
+title: "Handling PostgreSQL ENUM Types: Fixing Errors When Filtering ENUM Values in Queries"
+date: "2024-09-25"
+description: "In PostgreSQL, ENUM types are a useful feature that allows developers to define a set of allowed values for a column, adding a layer of data integrity to the da..."
+---
+
+<p>In PostgreSQL, <code>ENUM</code> types are a useful feature that allows developers to define a set of allowed values for a column, adding a layer of data integrity to the database. This guide will focus on an example where filtering <code>ENUM</code> values without the proper type casting causes an error and how to resolve it.</p><h3 id="understanding-the-setup">Understanding the Setup</h3><p>Let’s start by creating an <code>ENUM</code> type for movie ratings, using the standard Motion Picture Association of America (MPAA) ratings:</p><pre><code class="language-sql">CREATE TYPE mpaa_rating AS ENUM ('G', 'PG', 'PG-13', 'R', 'NC-17');
+</code></pre><p>Next, we create a <code>movies</code> table that includes a <code>title</code> and a <code>rating</code>, where <code>rating</code> uses the <code>mpaa_rating</code> enum type.</p><pre><code class="language-sql">CREATE TABLE movies (
+    title VARCHAR(255),
+    rating mpaa_rating
+);
+</code></pre><p>We then insert some sample movie data:</p><pre><code class="language-sql">INSERT INTO movies (title, rating) VALUES
+('Mystery Island', 'PG'),
+('The Lost Diary', 'R'),
+('Galaxy Wars', 'PG-13'),
+('Dream Chasers', 'G'),
+('Forbidden Planet', 'NC-17');
+</code></pre><h3 id="the-issue-filtering-enum-values">The Issue: Filtering <code>ENUM</code> Values</h3><p>Now, let's say you want to query the movies that don’t have an MPAA rating starting with <code>'PG'</code>. Naturally, you might try to write the query as follows:</p><pre><code class="language-sql">SELECT title, rating
+FROM movies
+WHERE rating NOT ILIKE 'PG%'
+GROUP BY title, rating;
+</code></pre><p>This query looks fine at first glance, but it will result in the following error:</p><pre><code>psql:commands.sql:21: ERROR:  operator does not exist: mpaa_rating !~~* unknown
+LINE 3: WHERE rating NOT ILIKE 'PG%'
+                     ^
+HINT:  No operator matches the given name and argument types. You might need to add explicit type casts.</code></pre><h3 id="understanding-the-error">Understanding the Error</h3><p>The error arises because the <code>rating</code> column is of type <code>mpaa_rating</code> (an <code>ENUM</code> type), and PostgreSQL doesn’t automatically allow <code>ENUM</code> values to be used in operations like pattern matching (<code>ILIKE</code>). The database requires a text representation of the <code>ENUM</code> value for such comparisons.</p><h3 id="the-solution-type-casting-with-text">The Solution: Type Casting with <code>::text</code></h3><p>To solve this problem, we need to cast the <code>ENUM</code> type to <code>text</code>. This allows the <code>ENUM</code> values to be treated as plain text, making them compatible with the <code>ILIKE</code> operator.</p><p>Here’s the corrected query:</p><pre><code class="language-sql">SELECT title, rating
+FROM movies
+WHERE rating::text NOT ILIKE 'PG%'
+GROUP BY title, rating;
+</code></pre><p>In this case, the <code>::text</code> casts the <code>rating</code> column from its <code>mpaa_rating</code> enum type to a text string. This allows the <code>ILIKE</code> operator to perform a case-insensitive comparison to find movies whose ratings don’t start with <code>PG</code>.</p><p>Now the data appear correctly.</p><pre><code class="language-sql">      title       | rating 
+------------------+--------
+ Dream Chasers    | G
+ Forbidden Planet | NC-17
+ The Lost Diary   | R
+(3 rows)</code></pre><h3 id="why-the-cast-is-necessary">Why the Cast Is Necessary</h3><p>PostgreSQL <code>ENUM</code> types are stored internally as integers but are displayed as text values. Because of this, operations like pattern matching (<code>ILIKE</code>) or string functions (e.g., <code>LIKE</code>, <code>SUBSTRING</code>) require explicit conversion from <code>ENUM</code> to text.</p><p>Without the cast, PostgreSQL does not know how to apply a text-based operation like <code>ILIKE</code> on an <code>ENUM</code> type, hence the error.</p><h3 id="finally">Finally</h3><p>PostgreSQL’s <code>ENUM</code> types are powerful for maintaining strict data integrity, but certain operations like filtering with <code>ILIKE</code> require special handling. By using explicit type casting (<code>::text</code>), you can work around this limitation and filter <code>ENUM</code> values effectively.</p><p>In summary:</p><ul><li><code>ENUM</code> values must be cast to text when performing text-based operations such as pattern matching (<code>ILIKE</code>).</li><li>PostgreSQL gives clear error messages, allowing you to resolve type mismatches by adding explicit casts.</li></ul><p>This approach ensures that your queries remain flexible and functional while maintaining the benefits of using <code>ENUM</code> types for structured data.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

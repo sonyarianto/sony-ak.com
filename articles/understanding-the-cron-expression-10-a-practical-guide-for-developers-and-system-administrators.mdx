@@ -1,0 +1,62 @@
+---
+title: "Understanding the Cron Expression */10 * * * *: A Practical Guide for Developers and System Administrators"
+date: "2025-11-15"
+description: "Scheduling tasks is a fundamental part of system automation. Whether you're running backups, refreshing caches, syncing data, or triggering routine jobs in your..."
+---
+
+<p>Scheduling tasks is a fundamental part of system automation. Whether you're running backups, refreshing caches, syncing data, or triggering routine jobs in your applications, cron remains one of the most reliable tools available on Unix-like systems. One expression that appears often is:</p><pre><code>*/10 * * * *
+</code></pre><p>At first glance it looks cryptic, but this short line carries a precise instruction. Below is a clear and structured explanation designed for practical use, with additional considerations you should keep in mind when building production-grade systems.</p><hr><h2 id="what-does-10-mean"><strong>What Does <code>*/10 * * * *</code> Mean?</strong></h2><p>In simple terms, this cron expression instructs the system to run a task <strong>every 10 minutes</strong>, indefinitely.</p><h3 id="breakdown-of-the-expression">Breakdown of the Expression</h3><p>Cron uses a five-field format:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+<th>Example Value</th>
+<th>In This Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minute</td>
+<td>0–59</td>
+<td><code inline="">*/10</code></td>
+<td>Every 10 minutes</td>
+</tr>
+<tr>
+<td>Hour</td>
+<td>0–23</td>
+<td><code inline="">*</code></td>
+<td>Every hour</td>
+</tr>
+<tr>
+<td>Day of Month</td>
+<td>1–31</td>
+<td><code inline="">*</code></td>
+<td>Every day</td>
+</tr>
+<tr>
+<td>Month</td>
+<td>1–12</td>
+<td><code inline="">*</code></td>
+<td>Every month</td>
+</tr>
+<tr>
+<td>Day of Week</td>
+<td>0–6</td>
+<td><code inline="">*</code></td>
+<td>Every day of the week</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<h3 id="interpretation">Interpretation</h3><p>Your task will run at:</p><p><strong>00, 10, 20, 30, 40, 50 minutes past every hour of every day.</strong></p><p>This gives <strong>six executions per hour</strong>.</p><hr><h2 id="why-use-10-instead-of-listing-minutes-manually"><strong>Why Use <code>*/10</code> Instead of Listing Minutes Manually?</strong></h2><p>You <em>could</em> write:</p><pre><code>0,10,20,30,40,50 * * * *
+</code></pre><p>However, using <code>*/10</code> brings several advantages:</p><ul><li>It is <strong>cleaner</strong>, especially for more frequent intervals like <code>*/2</code>.</li><li>It automatically respects time adjustments such as daylight saving changes (where applicable).</li><li>It simplifies maintenance because the schedule intent is obvious.</li></ul><hr><h2 id="common-use-cases-for-every-10-minute-jobs"><strong>Common Use Cases for Every-10-Minute Jobs</strong></h2><p>You typically see a schedule like this in:</p><ul><li><strong>Cache warmers</strong> (e.g., regenerating API cache)</li><li><strong>Routine log processing</strong></li><li><strong>Lightweight data synchronization</strong></li><li><strong>Queue cleanup</strong></li><li><strong>Health checks or heartbeat tasks</strong></li><li><strong>Cron-triggered workers for periodic polling</strong></li></ul><p>If your application interacts with external APIs, running every 10 minutes strikes a balance between being responsive and avoiding excessive load.</p><hr><h2 id="important-considerations-before-using-this-schedule"><strong>Important Considerations Before Using This Schedule</strong></h2><h3 id="1-execution-time-must-be-shorter-than-10-minutes">1. <strong>Execution Time Must Be Shorter Than 10 Minutes</strong></h3><p>If your job takes longer than the interval, you may end up with overlapping executions. This can create issues such as:</p><ul><li>Database locks</li><li>Duplicate data processing</li><li>Increased CPU usage</li><li>Collisions in file writes</li></ul><p>To avoid this, consider:</p><ul><li>Locking mechanisms (e.g., flock, Redis lock, database-based locks)</li><li>Using a queueing system like <strong>Kafka</strong>, <strong>RabbitMQ</strong>, or <strong>BullMQ</strong></li><li>Using cron to enqueue tasks instead of executing heavy logic directly</li></ul><h3 id="2-timezone-awareness">2. <strong>Timezone Awareness</strong></h3><p>Cron usually follows the <strong>system timezone</strong>.<br>If your application handles global data, ensure:</p><ul><li>Cron runs in <strong>UTC</strong> (best practice), or</li><li>You explicitly document the timezone behavior</li></ul><p>Since you store all timestamps in UTC (as you prefer), aligning cron with UTC avoids confusion.</p><h3 id="3-logging-and-monitoring">3. <strong>Logging and Monitoring</strong></h3><p>A job running every 10 minutes generates <strong>144 runs per day</strong>.<br>Without proper log rotation or monitoring, logs may:</p><ul><li>Grow excessively large</li><li>Become harder to audit</li><li>Fill up the disk unexpectedly</li></ul><p>Ensure you have:</p><ul><li><strong>Logrotate</strong> or similar mechanism</li><li>Proper tagging with timestamps</li><li>Error notifications (email, Slack, PagerDuty, etc.)</li></ul><h3 id="4-resource-consumption">4. <strong>Resource Consumption</strong></h3><p>Even light jobs, when frequent, can accumulate load.<br>Watch:</p><ul><li>CPU usage</li><li>Memory usage</li><li>I/O pressure</li></ul><p>Tools such as <code>htop</code>, <code>atop</code>, or Prometheus exporters can help detect issues early.</p><h3 id="5-graceful-failures">5. <strong>Graceful Failures</strong></h3><p>Every cron job should:</p><ul><li>Validate input</li><li>Handle exceptions</li><li>Retry smartly</li><li>Produce meaningful error messages</li></ul><p>A failing cron job that runs every 10 minutes can generate <strong>noise</strong> very quickly.</p><h3 id="6-security-considerations">6. <strong>Security Considerations</strong></h3><p>Running scripts in cron introduces attack vectors. Ensure:</p><ul><li>Path variables are explicitly set</li><li>Scripts are not writable by unprivileged users</li><li>Credentials or tokens are securely stored (preferably in environment variables or vaults)</li></ul><h3 id="7-use-absolute-paths">7. <strong>Use Absolute Paths</strong></h3><p>Cron does not run in an interactive shell.<br>Always use <strong>absolute paths</strong>:</p><p>✔ <code>php /var/www/project/artisan schedule:run</code><br>✘ <code>php artisan schedule:run</code></p><p>This eliminates “command not found” or “file not found” issues.</p><hr><h2 id="testing-a-cron-expression-before-deployment"><strong>Testing a Cron Expression Before Deployment</strong></h2><p>A useful trick:</p><pre><code>crontab -l
+</code></pre><p>To test manually:</p><pre><code>/usr/bin/env bash /path/to/script.sh
+</code></pre><p>Or use a simulator (many exist online) to verify timing.</p><p>For debugging, temporarily change:</p><pre><code>*/10 * * * *
+</code></pre><p>to something like:</p><pre><code>* * * * *
+</code></pre><p>to force it to run every minute.</p><hr><h2 id="when-you-should-not-use-10"><strong>When You Should NOT Use <code>*/10 * * * *</code></strong></h2><p>Consider another schedule if:</p><ul><li>Your task must <strong>run at a specific time</strong> (e.g., midnight)</li><li>Your job is too heavy for frequent intervals</li><li>You require <strong>cluster-aware job dispatching</strong></li></ul><p>In more complex systems, it's often better to run cron once per minute and allow the application to decide what should run (Laravel scheduler, Node.js-based schedulers, distributed task managers, etc.).</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>The cron expression <strong><code>*/10 * * * *</code></strong> is a simple yet powerful way to run tasks <strong>every 10 minutes</strong>, and it is commonly used in production systems for routine automation. However, you should always consider execution time, concurrency, logging, resource usage, security, and operational monitoring before deploying such scheduled tasks.</p><p>When used properly, it becomes a reliable backbone for background processes, ensuring your systems stay healthy, synchronized, and responsive.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,47 @@
+---
+title: "React Hook Tip: Handling Events Directly for Cleaner Code"
+date: "2024-10-11"
+description: "When starting out with React, the useEffect hook is often used for various side effects, like data fetching, subscription, or modifying the DOM. But what if I t..."
+---
+
+<p>When starting out with React, the <strong>useEffect</strong> hook is often used for various side effects, like data fetching, subscription, or modifying the DOM. But what if I told you that <strong>using <code>useEffect</code> for handling state updates might not always be the best approach</strong>? In fact, you can make your React code simpler, more readable, and even avoid some unnecessary re-renders by <strong>handling events directly</strong>.</p><p>Let's talk about a common pattern that beginners encounter. Take a chat component, for example. Whenever a new message is added, you want to update the state of your messages and persist them somewhere, like in local storage.</p><p>Here’s one way to handle this (the <strong>indirect</strong> way):</p><pre><code class="language-javascript">function ChatView() {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() =&gt; {
+    persistMessages(messages);
+  }, [messages]);
+
+  return (
+    &lt;div&gt;
+      &lt;NewMessage
+        onSubmit={(message) =&gt; {
+          setMessages([...messages, message]);
+        }}
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre><p>The above approach uses <strong>useEffect</strong> to trigger the <code>persistMessages</code> function every time the <code>messages</code> state changes. At first glance, this looks fine. However, it's <strong>indirect</strong> and can lead to confusion, especially as the component grows. Why? Because now you're thinking in two steps:</p><ol><li>First, set the messages.</li><li>Then, whenever <code>messages</code> change, do something.</li></ol><p>That can quickly become messy, as <strong>useEffect</strong> will trigger whenever <strong>any</strong> state or prop related to the <code>messages</code> changes, even in ways you might not expect.</p><h3 id="the-better-approach-handle-events-directly">The Better Approach: Handle Events Directly</h3><p>Instead of relying on <code>useEffect</code> to manage changes to your state, you can handle everything in the <strong>exact moment the event happens</strong>. Here’s a cleaner, more direct version:</p><pre><code class="language-javascript">function ChatView() {
+  const [messages, setMessages] = useState([]);
+
+  function updateMessages(messages) {
+    setMessages(messages);
+    persistMessages(messages);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;NewMessage
+        onSubmit={(message) =&gt; {
+          updateMessages([...messages, message]);
+        }}
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre><p>In this version, we create an <strong>explicit function</strong> that handles both setting the state and persisting the messages. Now, instead of waiting for <strong>useEffect</strong> to notice the change, you <strong>immediately take care of both actions</strong>—updating the messages and persisting them—right when the user submits a new message.</p><h3 id="why-is-this-better">Why Is This Better?</h3><ol><li><strong>Clarity</strong>: You can easily trace what happens when an event occurs. When a new message is submitted, you directly update the state and persist it.</li><li><strong>Avoid Unnecessary Effects</strong>: You avoid extra work that <strong>useEffect</strong> might trigger unnecessarily, especially when changes in other parts of the component might affect <code>messages</code>.</li><li><strong>Less Cognitive Overhead</strong>: You're not thinking about state changes triggering effects—you’re thinking about actions tied directly to user events.</li></ol><h3 id="other-considerations">Other Considerations</h3><h4 id="avoid-overuse-of-useeffect">Avoid Overuse of <code>useEffect</code></h4><p>While <code>useEffect</code> is a powerful tool in React, beginners often fall into the trap of overusing it. It’s tempting to think of <strong>useEffect</strong> as a "catch-all" for every time something changes. But sometimes, there are better ways to handle logic. <strong>Whenever possible, it's a good idea to place logic where it's directly tied to the event that causes it.</strong></p><h4 id="keep-business-logic-outside-of-jsx">Keep Business Logic Outside of JSX</h4><p>Another trap to avoid is <strong>cramming too much business logic inside JSX elements</strong>. For example, in the first code block, we have an inline function inside <code>onSubmit</code> that updates the messages. That can make the component hard to read. In the second, we've extracted that logic into a reusable function (<code>updateMessages</code>), making the JSX much cleaner.</p><h4 id="embrace-function-composition">Embrace Function Composition</h4><p>Breaking your logic down into smaller, well-named functions (like <code>updateMessages</code>) makes your code <strong>more maintainable</strong> and <strong>easier to test</strong>. If you ever need to change the way messages are updated or persisted, you now have a single place to do that.</p><h3 id="finally">Finally</h3><p>When working with React, it’s tempting to use <code>useEffect</code> for everything. But remember, <strong>not all state changes need to be handled reactively</strong>. Often, handling them directly during the event gives you cleaner and more predictable code.</p><p>If you're handling some logic based on a user action—like submitting a message—<strong>do it directly at the point of action</strong> rather than waiting for the state to change. This way, you keep your code simpler and more understandable, especially as your component grows.</p><h3 id="inspiration">Inspiration</h3><figure class="kg-card kg-embed-card"><blockquote class="twitter-tweet"><p lang="en" dir="ltr">React tip: avoid using useEffect() to handle events when you can you can handle them directly when the event happens.<br><br>❌ "When messages change, do something; on submit, set messages" = confusing<br><br>✅ "On submit, set messages &amp; do something" = clear <a href="https://t.co/zhbZc017yN">pic.twitter.com/zhbZc017yN</a></p>— David K 🎹 (@DavidKPiano) <a href="https://twitter.com/DavidKPiano/status/1844726710559793370?ref_src=twsrc%5Etfw">October 11, 2024</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></figure><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

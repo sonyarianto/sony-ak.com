@@ -1,0 +1,36 @@
+---
+title: "React's setState Batching: Why setCount(count + 1) Doesn’t Do What You Expect"
+date: "2025-05-30"
+description: "If you’ve ever written React code that tries to update state multiple times in a row, like this: setCount(count + 1); setCount(count + 1); you might have notice..."
+---
+
+<p>If you’ve ever written React code that tries to <strong>update state multiple times</strong> in a row, like this:</p><pre><code class="language-jsx">setCount(count + 1);
+setCount(count + 1);
+</code></pre><p>you might have noticed something strange: the <code>count</code> <strong>only increases by 1, not 2</strong>. Why is that? Let’s dive into the mechanics of <strong>React’s state batching</strong>, what’s going on under the hood, and how to get the behavior you expect.</p><hr><h2 id="understanding-the-problem"><strong>Understanding the Problem</strong></h2><p>Here’s a simple React component that demonstrates the issue:</p><pre><code class="language-jsx">function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+    setCount(count + 1);
+  }
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={handleClick}&gt;Increase&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre><p>At first glance, you might think clicking the button would increase the count by <strong>2</strong>. However, it only increases by <strong>1</strong>. Why?</p><hr><h2 id="the-role-of-reacts-batching-mechanism"><strong>The Role of React's Batching Mechanism</strong></h2><p>React batches state updates that occur during a synchronous event (like a button click). This means that multiple <code>setCount</code> calls are <strong>grouped together</strong> and applied as a single update. Importantly, both calls use the <strong>same stale <code>count</code> value</strong> that existed when the function started executing.</p><p>Here’s a step-by-step breakdown:</p><ol><li><code>count</code> starts at <strong>0</strong>.</li><li><code>setCount(count + 1)</code> is called — React <em>schedules</em> a state update to <strong>1</strong>.</li><li><code>setCount(count + 1)</code> is called again — but it’s still referencing the same initial <code>count</code> of <strong>0</strong>, so React <em>schedules</em> the state to be <strong>1</strong> (again).</li></ol><p>When React flushes these updates, it only applies the <strong>last one</strong>, resulting in <code>count</code> increasing by <strong>1</strong>.</p><hr><h2 id="why-this-happens"><strong>Why This Happens</strong></h2><p>React’s batching behavior exists for <strong>performance reasons</strong>. By combining multiple state updates into a single re-render, React avoids unnecessary work and keeps your app running smoothly. However, this behavior can be surprising if you assume each <code>setState</code> call happens <strong>immediately</strong>.</p><hr><h2 id="how-to-make-it-increment-by-2"><strong>How to Make It Increment by 2</strong></h2><p>To fix this, you need to use the <strong>functional updater form</strong> of <code>setCount</code>, which ensures each update gets the <strong>latest state value</strong>. Here’s the corrected version:</p><pre><code class="language-jsx">function handleClick() {
+  setCount(prevCount =&gt; prevCount + 1);
+  setCount(prevCount =&gt; prevCount + 1);
+}
+</code></pre><p>Now, React will:</p><ol><li>Take the current <code>count</code>, increment it by 1.</li><li>Use the <strong>new value</strong> from the first update and increment it by 1 again.</li></ol><p>This gives you the expected <strong>count + 2</strong>.</p><hr><h2 id="considerations-and-gotchas"><strong>Considerations and Gotchas</strong></h2><p>✅ <strong>React’s batching</strong> works not only in function components with <code>useState</code>, but also in class components with <code>this.setState</code>.<br>✅ <strong>Batching behavior</strong> is more aggressive in React 18+ with automatic batching across more contexts (including promises and async functions).<br>✅ If you call <code>setCount</code> with a <strong>new object reference</strong> (e.g., <code>setCount({})</code>) each time, you’ll trigger a re-render, but still, state updates can be batched.</p><hr><h2 id="other-things-you-should-know"><strong>Other Things You Should Know</strong></h2><ul><li><strong>React updates are not synchronous.</strong> Even though you call <code>setCount</code>, the update is scheduled and applied <strong>after the function finishes</strong>.</li><li><strong>Async updates</strong> (like <code>setTimeout</code> or network requests) <strong>break batching</strong>, so multiple <code>setCount</code> calls in those contexts are applied separately.</li><li>If you want <strong>immediate updates</strong> or need to do something right after the state changes, you can use a <code>useEffect</code> that listens for changes to <code>count</code>.</li></ul><hr><h2 id="finally"><strong>Finally</strong></h2><p>React’s <strong>batching of state updates</strong> is a powerful feature designed to optimize performance and reduce unnecessary re-renders. However, it’s crucial to understand <strong>how and when</strong> React batches these updates to avoid unexpected behavior. Whenever you need multiple state updates to rely on the <strong>latest value</strong>, always use the <strong>functional updater form</strong>.</p><p>So the next time you write:</p><pre><code class="language-jsx">setCount(count + 1);
+setCount(count + 1);
+</code></pre><p>Remember: <strong>React batches them, and they’re using the same stale <code>count</code>.</strong></p><p>To make it work, write:</p><pre><code class="language-jsx">setCount(prev =&gt; prev + 1);
+setCount(prev =&gt; prev + 1);
+</code></pre><p>And enjoy seeing the <strong>correct output</strong>!</p><div class="kg-card kg-callout-card kg-callout-card-blue"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">Demo <a href="https://onecompiler.com/react/43kbz5nsz" rel="noreferrer">here</a>.</div></div><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,91 @@
+---
+title: "From json_encode to json.Marshal: A PHP Developer’s Journey into Go’s JSON World"
+date: "2025-04-13"
+description: "As a PHP developer , working with JSON feels like second nature. You build arrays or objects, run json_encode() , and send it off. Done. Need to decode JSON? js..."
+---
+
+<p>As a <strong>PHP developer</strong>, working with JSON feels like second nature. You build arrays or objects, run <code>json_encode()</code>, and send it off. Done. Need to decode JSON? <code>json_decode()</code> and you're ready to manipulate data however you like. <strong>Dynamic, fast, and no fuss.</strong></p><p>But then comes <strong>Go</strong>, with its strong typing, structure-first approach, and something called "marshalling". Suddenly, JSON isn't as plug-and-play anymore.</p><p>Let me walk you through what I learned — and what I wish I knew earlier — when transitioning from PHP’s JSON handling to Go’s.</p><hr><h2 id="1-php-json-the-free-spirited-way"><strong>1. PHP: JSON the Free-Spirited Way</strong></h2><p>In PHP, you can build JSON from scratch without a care for types or structure:</p><pre><code class="language-php">$data = [
+    "name" =&gt; "Sony",
+    "age" =&gt; 30,
+    "skills" =&gt; ["PHP", "Go", "JavaScript"]
+];
+
+echo json_encode($data);
+// Output: {"name":"Sony","age":30,"skills":["PHP","Go","JavaScript"]}
+</code></pre><p>Want to add more fields dynamically?</p><pre><code class="language-php">$data["location"] = ["city" =&gt; "Jakarta"];
+</code></pre><p><strong>No need to define the shape</strong> of the data beforehand. This flexibility is powerful — especially for quick prototypes, APIs, or dynamic systems.</p><hr><h2 id="2-go-json-the-disciplined-way"><strong>2. Go: JSON the Disciplined Way</strong></h2><p>In Go, JSON is a bit like checking into a secure building: <strong>you need your ID, clearance level, and a defined purpose.</strong></p><p>Here’s how you define a structure before working with JSON:</p><pre><code class="language-go">type Person struct {
+	Name   string   `json:"name"`
+	Age    int      `json:"age"`
+	Skills []string `json:"skills"`
+}
+</code></pre><p>And then marshal (encode) it:</p><pre><code class="language-go">person := Person{
+	Name:   "Sony",
+	Age:    30,
+	Skills: []string{"PHP", "Go", "JavaScript"},
+}
+
+jsonData, _ := json.Marshal(person)
+fmt.Println(string(jsonData))
+</code></pre><p>Result:</p><pre><code class="language-json">{"name":"Sony","age":30,"skills":["PHP","Go","JavaScript"]}
+</code></pre><p>It’s verbose compared to PHP, but you get <strong>compile-time safety</strong>, <strong>clear structure</strong>, and <strong>reliable data contracts</strong>.</p><hr><h2 id="3-what-is-%E2%80%9Cmarshalling%E2%80%9D-anyway"><strong>3. What is “Marshalling” Anyway?</strong></h2><p>The terms are intimidating at first, but they’re quite simple:</p><ul><li><strong>Marshalling</strong>: Convert Go data (struct, map, etc.) → JSON<ul><li>Similar to <code>json_encode()</code> in PHP</li></ul></li><li><strong>Unmarshalling</strong>: Convert JSON → Go data (typically struct or map)<ul><li>Similar to <code>json_decode()</code> in PHP</li></ul></li></ul><p>In Go:</p><pre><code class="language-go">jsonStr := `{"name":"Sony","age":30}`
+var person Person
+json.Unmarshal([]byte(jsonStr), &amp;person)
+</code></pre><p>You <em>must</em> provide a pointer (<code>&amp;person</code>) to store the result.</p><hr><h2 id="4-can-go-handle-dynamic-json-like-php"><strong>4. Can Go Handle Dynamic JSON Like PHP?</strong></h2><p>Yes — but with a twist. You need to use <strong><code>map[string]interface{}</code></strong>, Go's version of a dynamic JSON object.</p><pre><code class="language-go">data := map[string]interface{}{
+	"name": "Sony",
+	"age":  30,
+	"skills": []string{
+		"PHP", "Go", "JS",
+	},
+}
+jsonData, _ := json.Marshal(data)
+</code></pre><p>And if you're decoding JSON where the structure is unknown:</p><pre><code class="language-go">var result map[string]interface{}
+json.Unmarshal([]byte(`{"name":"Sony","age":30}`), &amp;result)
+
+fmt.Println(result["name"]) // Sony
+</code></pre><p>But watch out: Go will infer types automatically, and you might need <strong>type assertions</strong> like:</p><pre><code class="language-go">age := result["age"].(float64) // Go treats JSON numbers as float64 by default
+</code></pre><p>This is where Go feels a bit clunky compared to PHP.</p><hr><h2 id="5-considerations-you-might-miss-at-first"><strong>5. Considerations You Might Miss at First</strong></h2><p>Here are things that took me a while to realize:</p><h3 id="%E2%9C%85-struct-tags-matter">✅ <strong>Struct Tags Matter</strong></h3><p>To match JSON field names with Go struct fields, use struct tags:</p><pre><code class="language-go">Name string `json:"name"`
+</code></pre><p>Without this, Go expects JSON to use <code>Name</code>, not <code>name</code>.</p><h3 id="%E2%9C%85-omitempty-tag">✅ <strong>omitempty Tag</strong></h3><p>To skip empty fields in the output:</p><pre><code class="language-go">Email string `json:"email,omitempty"`
+</code></pre><p>If <code>Email</code> is empty, it won't be included in the JSON.</p><h3 id="%E2%9C%85-custom-marshalunmarshal">✅ <strong>Custom Marshal/Unmarshal</strong></h3><p>You can implement <code>MarshalJSON()</code> and <code>UnmarshalJSON()</code> for custom behavior (like formatting time or handling nested JSON logic).</p><h3 id="%E2%9C%85-performance-safety">✅ <strong>Performance &amp; Safety</strong></h3><p>Go’s strict typing reduces runtime surprises. JSON bugs in PHP might go unnoticed until production. In Go, <strong>the compiler catches most of it</strong>.</p><hr><h2 id="6-so-which-is-better"><strong>6. So Which Is Better?</strong></h2><p>That depends on what you’re building:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Use PHP</th>
+<th>Use Go</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quick prototyping</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Dynamic schema</td>
+<td>✅</td>
+<td>⚠️ with map/interface</td>
+</tr>
+<tr>
+<td>Production API</td>
+<td>⚠️</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Strict contracts</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Type safety &amp; speed</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="finally"><strong>Finally</strong></h2><p>PHP makes working with JSON feel like jazz — <strong>improvised and freeform</strong>. Go is more like classical music — <strong>structured, precise, and intentional</strong>.</p><p>Once you get used to defining structs, handling types explicitly, and understanding what marshalling really means, you'll start to appreciate the <strong>clarity and safety</strong> Go offers — especially when building large, maintainable systems.</p><blockquote><strong>Dynamic is convenient. Structured is powerful.</strong><br>In Go, the trade-off is worth it — especially in the long run.</blockquote><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,50 @@
+---
+title: "How to Filter Nested JSON Data in JavaScript: A Practical Guide"
+date: "2025-08-20"
+description: "When working with APIs, the data you receive is often not a flat list, but a nested JSON structure . This introduces challenges when trying to filter or search ..."
+---
+
+<p>When working with APIs, the data you receive is often not a flat list, but a <strong>nested JSON structure</strong>. This introduces challenges when trying to filter or search for specific items. A common issue developers face is attempting to filter at the wrong level of the JSON, which results in <strong>empty arrays</strong> even though the data clearly exists.</p><hr><h2 id="typical-nested-structure">Typical Nested Structure</h2><p>Consider this generalized JSON:</p><pre><code class="language-json">[
+  {
+    "brand": "alpha",
+    "activities": [
+      { "id": 1, "title": "Intro Module", "is_completed": true },
+      { "id": 2, "title": "Advanced Module", "is_completed": false }
+    ]
+  },
+  {
+    "brand": "beta",
+    "activities": [
+      { "id": 3, "title": "Setup Guide", "is_completed": false },
+      { "id": 4, "title": "Final Test", "is_completed": true }
+    ]
+  }
+]
+</code></pre><p>At the top level, you have <strong>brands</strong>. Each brand contains its own list of <strong>activities</strong>, and the <code>is_completed</code> property lives at the activity level, not the brand level.</p><hr><h2 id="the-common-mistake">The Common Mistake</h2><p>Developers often try to filter directly on the top-level array:</p><pre><code class="language-javascript">data.filter(e =&gt; e.brand === 'alpha' &amp;&amp; e.is_completed === false);
+</code></pre><p>This will <strong>always return an empty array</strong>, because the brand objects do not have an <code>is_completed</code> property — only the nested activities do.</p><hr><h2 id="correct-approach-filter-at-the-right-level">Correct Approach: Filter at the Right Level</h2><p>The correct way is to first find the brand, then filter inside its activities:</p><pre><code class="language-javascript">// Find the brand "alpha"
+const alpha = data.find(e =&gt; e.brand === 'alpha');
+
+// Filter its incomplete activities
+const incomplete = alpha.activities.filter(e =&gt; e.is_completed === false);
+
+console.log("Incomplete Alpha activities:", incomplete);
+</code></pre><p>Output:</p><pre><code class="language-json">[
+  { "id": 2, "title": "Advanced Module", "is_completed": false }
+]
+</code></pre><hr><h2 id="flattening-for-easier-filtering">Flattening for Easier Filtering</h2><p>If you want to query across <strong>all brands</strong> at once, flatten the structure:</p><pre><code class="language-javascript">const allActivities = data.flatMap(e =&gt; e.activities);
+
+const incompleteAlpha = allActivities.filter(
+  e =&gt; e.brand === 'alpha' &amp;&amp; e.is_completed === false
+);
+
+console.log("Incomplete Alpha activities:", incompleteAlpha);
+</code></pre><p>Using <code>.flatMap()</code>, you don’t need to drill down brand by brand — you can filter across the entire dataset.</p><hr><h2 id="best-practices-and-considerations">Best Practices and Considerations</h2><ol><li><strong>Performance Considerations</strong><br>For very large datasets, repeated <code>find</code> + <code>filter</code> operations can be costly. Preprocess the data into a <strong>lookup map</strong> if you need frequent queries.</li></ol><p><strong>Readability</strong><br>Encapsulate filtering logic in helper functions:</p><pre><code class="language-javascript">const isIncompleteAlpha = e =&gt; e.brand === 'alpha' &amp;&amp; e.is_completed === false;
+const incompleteAlpha = allActivities.filter(isIncompleteAlpha);
+</code></pre><p><strong>Missing Properties</strong><br>Always account for the possibility that some activities lack <code>is_completed</code>:</p><pre><code class="language-javascript">e.is_completed === false &amp;&amp; "title" in e
+</code></pre><p><strong>Data Types</strong><br>Some APIs return <code>"false"</code> as a string or <code>0</code> as a number. Handle multiple possibilities:</p><pre><code class="language-javascript">e.is_completed === false || e.is_completed === "false" || e.is_completed === 0
+</code></pre><p><strong>Case Sensitivity</strong><br>Ensure brand values are consistent. If not, normalize them:</p><pre><code class="language-javascript">e.brand.toLowerCase() === 'alpha'
+</code></pre><hr><h2 id="finally">Finally</h2><p>The key lesson when dealing with nested JSON is to <strong>filter at the correct level of the hierarchy</strong>. Filtering directly on parent objects will not work if the target property exists only on child objects.</p><ul><li>Use <code>.find()</code> to locate a specific parent, then <code>.filter()</code> inside its children.</li><li>Use <code>.flatMap()</code> when you want to <strong>search across all nested children</strong>.</li><li>Always consider <strong>case, data types, missing fields, and performance</strong>.</li></ul><p>By applying these practices, you’ll avoid the frustrating “empty array” problem and make your filtering logic robust and future-proof.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,36 @@
+---
+title: "Navigating Type Safety in Go When Working with JWTs and JSON"
+date: "2025-09-10"
+description: "When moving from PHP to Go , one of the first things developers notice is how different the two languages treat types . PHP is famously forgiving: it will happi..."
+---
+
+<p>When moving from <strong>PHP</strong> to <strong>Go</strong>, one of the first things developers notice is how different the two languages treat <strong>types</strong>. PHP is famously forgiving: it will happily coerce strings into numbers, numbers into booleans, and so on, often without you realizing it. Go, on the other hand, is <strong>strict and explicit</strong>. It will not let you mix types without you acknowledging the conversion.</p><p>This difference becomes very important when working with <strong>JWTs</strong> and <strong>JSON data</strong>, because most JWT payloads are just JSON objects under the hood. Handling them correctly requires an awareness of Go’s type system, especially when dealing with <strong>interfaces</strong>, <strong>numbers</strong>, and <strong>strings</strong>.</p><hr><h2 id="php-vs-go-type-handling">PHP vs Go: Type Handling</h2><p>In <strong>Go</strong>:</p><pre><code class="language-go">var value interface{} = "123"
+result := value + 1 // ❌ Compile error
+</code></pre><p>Go refuses to compile this because <code>interface{}</code> is not known to be a number. You must <strong>assert</strong> or <strong>convert</strong> explicitly.</p><p>In <strong>PHP</strong>:</p><pre><code class="language-php">$value = "123";
+$result = $value + 1; // Works fine, result is 124
+</code></pre><p>PHP quietly converts the string <code>"123"</code> into an integer.</p><hr><h2 id="json-in-go-why-everything-becomes-interface">JSON in Go: Why Everything Becomes <code>interface{}</code></h2><p>When unmarshalling JSON into a <code>map[string]interface{}</code>, Go has no way to know the exact types of the fields. The <code>encoding/json</code> package uses a set of defaults:</p><ul><li><strong>Strings</strong> → <code>string</code></li><li><strong>Numbers</strong> → <code>float64</code></li><li><strong>Booleans</strong> → <code>bool</code></li><li><strong>Objects</strong> → <code>map[string]interface{}</code></li><li><strong>Arrays</strong> → <code>[]interface{}</code></li></ul><p>This means that a JWT claim like <code>"exp": 1712345678</code> (an integer) becomes a <code><strong>float64</strong></code> in Go. If you expect an <code>int64</code>, you must cast carefully.</p><hr><h2 id="working-with-jwt-claims-in-go">Working with JWT Claims in Go</h2><h3 id="type-assertions-for-strings">Type Assertions for Strings</h3><pre><code class="language-go">sub, ok := claims["sub"].(string)
+if !ok {
+    return errors.New("invalid sub claim: must be a string")
+}
+</code></pre><p>Here, if the type is not <code>string</code>, the assertion fails and you handle it gracefully.</p><h3 id="type-assertions-for-numbers">Type Assertions for Numbers</h3><pre><code class="language-go">expFloat, ok := claims["exp"].(float64)
+if !ok {
+    return errors.New("invalid exp claim: must be a number")
+}
+exp := int64(expFloat)
+</code></pre><p>This avoids subtle bugs where <code>exp</code> is treated as the wrong type.</p><hr><h2 id="struct-based-claims-a-cleaner-approach">Struct-Based Claims: A Cleaner Approach</h2><p>Instead of manually asserting types, you can define a <strong>struct</strong> that matches your claims:</p><pre><code class="language-go">type CustomClaims struct {
+    Sub string `json:"sub"`
+    Exp int64  `json:"exp"`
+}
+
+var claims CustomClaims
+if err := json.Unmarshal(payload, &amp;claims); err != nil {
+    return err
+}
+</code></pre><p>This approach has several benefits:</p><ul><li><strong>Stricter validation</strong> (invalid types cause errors immediately).</li><li><strong>Less boilerplate</strong> (no repeated type assertions).</li><li><strong>Clearer code</strong> (you know exactly what data your JWT should contain).</li></ul><hr><h2 id="additional-considerations">Additional Considerations</h2><ol><li><strong>Leeway for Timestamps</strong><br>JWT timestamps like <code>exp</code> and <code>nbf</code> should account for <strong>clock skew</strong>. Many libraries let you configure a small leeway (e.g., ±30 seconds).</li><li><strong>Custom Types</strong><br>If your JWT contains structured data (arrays or objects), assert them as <code>[]interface{}</code> or <code>map[string]interface{}</code>, then process recursively or map them into a struct.</li><li><strong>Error Handling</strong><br>Always handle type assertion failures. Ignoring them can lead to runtime panics.</li><li><strong>Security</strong><br>Don’t just trust that claims are the right type—validate them. An attacker could craft a JWT where <code>exp</code> is a string instead of a number to bypass checks in sloppy code.</li><li><strong>Library Choice</strong><br>If possible, use a well-established Go JWT library (e.g., <code>golang-jwt/jwt/v5</code>). These libraries already implement strict claim validation, but you should still remain cautious with custom claims.</li></ol><p><strong>Nil Values</strong><br>A missing claim might show up as <code>nil</code>. Always check before asserting:</p><pre><code class="language-go">if claims["role"] == nil {
+    return errors.New("role claim missing")
+}
+</code></pre><hr><h2 id="finally">Finally</h2><p>Working with JWTs and JSON in Go requires more explicit handling than in PHP, but that <strong>explicitness is a strength</strong>. By forcing you to deal with types directly, Go reduces the risk of subtle bugs and increases the reliability of your authentication code.</p><p>The key is to always <strong>assert and convert types carefully</strong>, especially for <strong>numbers</strong> and <strong>strings</strong>. When possible, prefer defining <strong>struct-based claims</strong> over relying on raw maps, and never assume claims are valid just because they exist.</p><p>Type safety in Go might feel rigid at first, but once you embrace it, you’ll find it leads to <strong>clearer, safer, and more maintainable JWT handling</strong>.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

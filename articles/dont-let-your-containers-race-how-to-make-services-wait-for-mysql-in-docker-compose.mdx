@@ -1,0 +1,32 @@
+---
+title: "Don’t Let Your Containers Race: How to Make Services Wait for MySQL in Docker Compose"
+date: "2025-04-15"
+description: "In the world of Docker Compose , defining service dependencies is easy — just list them under depends_on . But if you’ve ever run a PHP app , Directus , or Ghos..."
+---
+
+<p>In the world of <strong>Docker Compose</strong>, defining service dependencies is easy — just list them under <code>depends_on</code>. But if you’ve ever run a <strong>PHP app</strong>, <strong>Directus</strong>, or <strong>Ghost CMS</strong> that talks to <strong>MySQL</strong>, you might have hit this problem:</p><blockquote>“My app container started fine... but immediately crashed with a MySQL connection error.”</blockquote><p>Why? Because <strong><code>depends_on</code> only waits for the container to <em>start</em>, not to be <em>ready</em></strong>.</p><p>Let’s break this down — and solve it properly.</p><hr><h2 id="%F0%9F%A7%A0-why-dependson-isn%E2%80%99t-enough">🧠 Why <code>depends_on</code> Isn’t Enough</h2><p>Here’s what a lot of people do:</p><pre><code class="language-yaml">services:
+  app:
+    build: .
+    depends_on:
+      - mysql
+</code></pre><p>Looks fine, right? But Docker Compose interprets this as:</p><blockquote>“Start <code>mysql</code> before starting <code>app</code>.”</blockquote><p>That’s all. It doesn’t care whether MySQL is done initializing, finished applying migrations, or even <em>able to accept connections</em>.</p><p>If your app hits the database too soon, it’s game over.</p><hr><h2 id="%E2%9C%85-solution-combine-dependson-with-healthcheck">✅ Solution: Combine <code>depends_on</code> With <code>healthcheck</code></h2><p>The real solution is a <strong>two-part approach</strong>:</p><h3 id="1-add-a-healthcheck-to-your-mysql-container">1. Add a <code>healthcheck</code> to your MySQL container:</h3><pre><code class="language-yaml">  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+</code></pre><p>This tells Docker, <em>“Ping MySQL until it responds properly.”</em></p><h3 id="2-tell-your-app-container-to-wait-for-a-healthy-mysql">2. Tell your app container to wait for a <strong>healthy</strong> MySQL:</h3><pre><code class="language-yaml">  app:
+    build: .
+    depends_on:
+      mysql:
+        condition: service_healthy
+</code></pre><p>Now, Docker Compose will wait until MySQL passes the <code>healthcheck</code> before launching the app container.</p><hr><h2 id="%F0%9F%9B%A0-bonus-add-wait-for-itsh-or-dockerize-for-extra-safety">🛠 Bonus: Add <code>wait-for-it.sh</code> or <code>dockerize</code> for Extra Safety</h2><p>Sometimes, even a <code>healthcheck</code> isn't enough. Your app might still try to connect before the DB is truly ready — especially in complex setups.</p><p>You can add a wrapper script like <a href="https://github.com/vishnubob/wait-for-it"><code>wait-for-it.sh</code></a> or <a href="https://github.com/jwilder/dockerize"><code>dockerize</code></a> to your app container.</p><p>Example using <code>wait-for-it.sh</code> in your Dockerfile:</p><pre><code class="language-dockerfile">COPY wait-for-it.sh /usr/local/bin/
+ENTRYPOINT ["wait-for-it.sh", "mysql:3306", "--", "npm", "start"]
+</code></pre><p>This will <strong>pause your app startup</strong> until MySQL’s port is available.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-things-to-watch-out-for">⚠️ Things to Watch Out For</h2><ul><li><strong>No built-in retries:</strong> Most apps will not retry a failed DB connection unless explicitly coded to do so.</li><li><strong>Healthchecks are crucial for reliability</strong>, especially in CI or production setups.</li><li><strong>Beware of silent failures.</strong> Even if the containers are marked as “up”, they might still be broken internally.</li></ul><hr><h2 id="%F0%9F%A7%A9-consider-using-init-containers-in-kubernetes">🧩 Consider Using Init Containers (in Kubernetes)</h2><p>If you’re planning to scale into Kubernetes, similar logic applies — but you’ll use <strong>init containers</strong> or <code><strong>startupProbe</strong></code> instead of Compose’s <code>depends_on</code>.</p><hr><h2 id="%E2%9C%A8-finally">✨ Finally</h2><p>Don’t let your containers race each other to start. Just because Docker says something is “up” doesn’t mean it’s actually <em>ready</em>. That’s a <strong>critical distinction</strong> when working with databases like MySQL or Postgres.</p><p>By combining:</p><ul><li><strong><code>depends_on</code> with <code>condition: service_healthy</code></strong></li><li>A <strong>proper <code>healthcheck</code></strong></li><li>And optionally, a <strong>startup wait script</strong></li></ul><p>…you can avoid those pesky “can’t connect to DB” errors and build a <strong>more reliable stack</strong>.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

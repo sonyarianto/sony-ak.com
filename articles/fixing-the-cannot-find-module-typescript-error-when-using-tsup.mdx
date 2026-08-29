@@ -1,0 +1,24 @@
+---
+title: "Fixing the \"Cannot Find Module 'typescript'\" Error When Using tsup"
+date: "2025-03-28"
+description: "If you're using tsup to bundle your TypeScript project and encounter an error like this: Error: Cannot find module 'typescript' Don't worry—this is a common iss..."
+---
+
+<p>If you're using <strong>tsup</strong> to bundle your TypeScript project and encounter an error like this:</p><pre><code>Error: Cannot find module 'typescript'
+</code></pre><p>Don't worry—this is a common issue, and the fix is straightforward. This article will walk you through the <strong>cause of the issue, how to fix it, and additional considerations</strong> to prevent similar problems in the future.</p><hr><h2 id="why-does-this-error-happen"><strong>Why Does This Error Happen?</strong></h2><p>The error occurs because <strong>tsup</strong> internally relies on TypeScript but doesn't always install it as a dependency. When you run <code>tsup</code> and it tries to process <code>.ts</code> files, it needs TypeScript to be available. If it isn't installed, the build process fails with the "Cannot find module 'typescript'" error.</p><hr><h2 id="how-to-fix-the-error"><strong>How to Fix the Error</strong></h2><h3 id="1-install-typescript"><strong>1. Install TypeScript</strong></h3><p>The quickest and most reliable way to fix this issue is to install TypeScript as a development dependency:</p><pre><code class="language-sh">npm install --save-dev typescript
+</code></pre><p>After the installation, verify that TypeScript is available by running:</p><pre><code class="language-sh">npx tsc --version
+</code></pre><p>This command should return the installed TypeScript version.</p><h3 id="2-re-run-your-build-command"><strong>2. Re-run Your Build Command</strong></h3><p>Once TypeScript is installed, try running your build command again:</p><pre><code class="language-sh">npm run build
+</code></pre><p>This should now complete successfully without the missing module error.</p><hr><h2 id="additional-considerations"><strong>Additional Considerations</strong></h2><h3 id="check-your-packagejson"><strong>Check Your <code>package.json</code></strong></h3><p>To prevent this issue from happening again, ensure that your <code>package.json</code> includes TypeScript in the <code>devDependencies</code> section:</p><pre><code class="language-json">"devDependencies": {
+  "typescript": "^5.3.0"
+}
+</code></pre><p>If TypeScript is missing, manually add it and run:</p><pre><code class="language-sh">npm install
+</code></pre><h3 id="clear-and-reinstall-dependencies"><strong>Clear and Reinstall Dependencies</strong></h3><p>If the issue persists, it could be due to a corrupt or incomplete <code>node_modules</code> folder. Try deleting <code>node_modules</code> and <code>package-lock.json</code>, then reinstalling everything:</p><pre><code class="language-sh">rm -rf node_modules package-lock.json
+npm install
+</code></pre><p>Then run the build command again.</p><h3 id="ensure-tsup-is-up-to-date"><strong>Ensure tsup is Up to Date</strong></h3><p>Using an outdated version of <strong>tsup</strong> may also cause compatibility issues. Upgrade it by running:</p><pre><code class="language-sh">npm update tsup
+</code></pre><p>If you're still encountering issues, try installing the latest version explicitly:</p><pre><code class="language-sh">npm install --save-dev tsup@latest
+</code></pre><h3 id="use-a-typescript-configuration-file-tsconfigjson"><strong>Use a TypeScript Configuration File (<code>tsconfig.json</code>)</strong></h3><p>While <strong>tsup</strong> can work without a <code>tsconfig.json</code> file, having one in your project ensures TypeScript is configured correctly. Run:</p><pre><code class="language-sh">npx tsc --init
+</code></pre><p>This will generate a basic <code>tsconfig.json</code> file, which you can customize as needed.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>The <strong>"Cannot find module 'typescript'"</strong> error is frustrating but easy to fix by ensuring TypeScript is properly installed. By following the steps outlined here—installing TypeScript, verifying dependencies, and keeping your tools up to date—you can avoid similar issues in the future.</p><p>If you're still experiencing problems, check the <strong>tsup</strong> documentation and GitHub issues page, as updates and bug fixes are regularly released.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

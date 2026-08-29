@@ -1,0 +1,47 @@
+---
+title: "Understanding Aggregated Functions in SQL: A Beginner's Journey"
+date: "2024-09-27"
+description: "When you're new to SQL, one of the trickiest things to master is working with aggregated functions such as COUNT() , SUM() , and AVG() . These functions are ess..."
+---
+
+<p>When you're new to SQL, one of the trickiest things to master is working with <strong>aggregated functions</strong> such as <code>COUNT()</code>, <code>SUM()</code>, and <code>AVG()</code>. These functions are essential for summarizing data, but incorrect usage can lead to confusing results.</p><p>In this article, we'll walk through a beginner's experience when trying to count how many stores had a specific movie in stock. Initially, there was confusion regarding the use of <code>COUNT()</code> and the <code>GROUP BY</code> clause, which led to an incorrect query. However, after reflecting on the logic and fixing the query, things became much clearer.</p><h3 id="creating-the-movies-and-inventory-tables">Creating the <code>movies</code> and <code>inventory</code> Tables</h3><p>To provide some context, let’s first define the two tables involved: <code>movies</code> and <code>inventory</code>. These tables store information about movies and the number of copies (inventory) available at different stores.</p><p>Here’s how the tables could be structured:</p><pre><code class="language-sql">-- Creating the `movies` table
+CREATE TABLE movies (
+    movie_id INT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL
+);
+
+-- Creating the `inventory` table
+CREATE TABLE inventory (
+    inventory_id INT PRIMARY KEY,
+    movie_id INT,
+    store_id INT,
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
+);
+</code></pre><h3 id="sample-data-insertion">Sample Data Insertion</h3><p>Now, let's insert some example data into the tables:</p><pre><code class="language-sql">-- Inserting data into the `movies` table
+INSERT INTO movies (movie_id, title) VALUES
+(1, 'Inception'),
+(2, 'The Matrix'),
+(3, 'Interstellar');
+
+-- Inserting data into the `inventory` table
+INSERT INTO inventory (inventory_id, movie_id, store_id) VALUES
+(1, 1, 1), -- Inception in Store 1
+(2, 1, 1), -- Another copy of Inception in Store 1
+(3, 1, 2), -- Inception in Store 2
+(4, 2, 1), -- The Matrix in Store 1
+(5, 3, 3); -- Interstellar in Store 3
+</code></pre><h3 id="data-overview">Data Overview</h3><ul><li>The <code>movies</code> table contains the movies with a unique <code>movie_id</code> and <code>title</code>.</li><li>The <code>inventory</code> table tracks individual copies of movies, stored by <code>store_id</code>. Each row in <code>inventory</code> represents one copy of a movie in a particular store.</li></ul><p>For example:</p><ul><li><strong>Inception</strong> has two copies in <strong>Store 1</strong> and one copy in <strong>Store 2</strong>.</li><li><strong>The Matrix</strong> has one copy in <strong>Store 1</strong>.</li><li><strong>Interstellar</strong> has one copy in <strong>Store 3</strong>.</li></ul><h3 id="problem">Problem</h3><p>Count how many copies of a movie each store has in stock.</p><h3 id="solution">Solution</h3><p>Since each <code>inventory_id</code> represents one copy of the movie, counting the <code>inventory_id</code> will be easy, here is the query.</p><pre><code class="language-sql">SELECT movies.movie_id, title, store_id, COUNT(*) AS stock
+FROM movies
+LEFT OUTER JOIN inventory
+ON inventory.movie_id = movies.movie_id
+GROUP BY movies.movie_id, title, store_id
+ORDER BY movies.movie_id, store_id;
+</code></pre><h3 id="remember">Remember:</h3><ol><li><strong>LEFT OUTER JOIN</strong>: This joins the <code>movies</code> and <code>inventory</code> tables on <code>movie_id</code>. Even if a movie has no inventory in a store, the <code>LEFT OUTER JOIN</code> ensures it will still appear in the results.</li><li><strong>GROUP BY</strong>: The grouping is done by <code>movie_id</code>, <code>title</code>, and <code>store_id</code>. This ensures that the query counts how many copies of each movie are available at each store.</li><li><strong>COUNT(*)</strong>: The <code>COUNT(*)</code> function counts the number of rows in the group, which corresponds to the number of copies of the movie (represented by <code>inventory_id</code>) for each store.</li><li><strong>ORDER BY</strong>: The query results are ordered by <code>movie_id</code> and <code>store_id</code> for better readability, ensuring each movie's inventory is listed by store.</li></ol><h3 id="result">Result</h3><p>If we run the corrected query on our sample data, we would get the following result:</p>
+<!--kg-card-begin: html-->
+<table><thead><tr><th>movie_id</th><th>title</th><th>store_id</th><th>stock</th></tr></thead><tbody><tr><td>1</td><td>Inception</td><td>1</td><td>2</td></tr><tr><td>1</td><td>Inception</td><td>2</td><td>1</td></tr><tr><td>2</td><td>The Matrix</td><td>1</td><td>1</td></tr><tr><td>3</td><td>Interstellar</td><td>3</td><td>1</td></tr></tbody></table>
+<!--kg-card-end: html-->
+<p>This output shows that:</p><ul><li><strong>Inception</strong> has 2 copies in <strong>Store 1</strong> and 1 copy in <strong>Store 2</strong>.</li><li><strong>The Matrix</strong> has 1 copy in <strong>Store 1</strong>.</li><li><strong>Interstellar</strong> has 1 copy in <strong>Store 3</strong>.</li></ul><p>The purpose of having an <code>inventory</code> table is to represent each <strong>physical copy</strong> or instance of a movie in different stores. This table allows you to track each unique copy and its specific details.</p><h3 id="finally">Finally</h3><p>Don’t worry if you make mistakes along the way—SQL is all about trial and error, and every query teaches you something new. Keep practicing, and you’ll develop a solid understanding of how to effectively summarize and work with your data.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

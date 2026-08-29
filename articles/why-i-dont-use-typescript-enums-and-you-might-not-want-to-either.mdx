@@ -1,0 +1,33 @@
+---
+title: "Why I Don’t Use TypeScript Enums (And You Might Not Want To Either)"
+date: "2025-05-13"
+description: "Over the years of working with TypeScript, I've found myself avoiding one particular feature—not because it's broken or doesn't work, but because it just feels ..."
+---
+
+<p>Over the years of working with TypeScript, I've found myself avoiding one particular feature—not because it's broken or doesn't work, but because it just <em>feels wrong</em> in modern, maintainable JavaScript codebases. That feature is <strong><code>enum</code></strong>.</p><p>Now don’t get me wrong: TypeScript enums <em>do</em> work. But if you're aiming for clean, predictable, and portable code, here’s why <strong>I think enums are better left out of most projects</strong>—and what I use instead.</p><hr><h2 id="%F0%9F%A7%A0-1-wysiwyg-what-you-see-is-what-you-get">🧠 1. <strong>WYSIWYG: What You See Is What You Get</strong></h2><p>When I write TypeScript, I want it to feel like a typed version of JavaScript—not some black box that hides complex output. And here’s the problem:</p><pre><code class="language-ts">enum Direction {
+  Up,
+  Down
+}
+</code></pre><p>This compiles to:</p><pre><code class="language-js">var Direction;
+(function (Direction) {
+  Direction[Direction["Up"] = 0] = "Up";
+  Direction[Direction["Down"] = 1] = "Down";
+})(Direction || (Direction = {}));
+</code></pre><p>That’s <strong>not WYSIWYG</strong>. What looked like a clean declaration has now become a <strong>bidirectional object with numeric values</strong> and extra runtime logic. And you don’t realize this until something breaks or bloats your bundle.</p><p>In contrast, if you define directions like this:</p><pre><code class="language-ts">const Direction = {
+  Up: 'Up',
+  Down: 'Down'
+} as const;
+
+type Direction = (typeof Direction)[keyof typeof Direction];
+</code></pre><p>It stays exactly as you wrote it. No surprises, no hidden JS. That’s <strong>what modern TypeScript should feel like</strong>.</p><hr><h2 id="%F0%9F%8C%8D-2-portability-matters">🌍 2. <strong>Portability Matters</strong></h2><p>One of my key principles is: <strong>write once, run anywhere</strong>. But enums introduce friction here too.</p><ul><li><code>const enum</code> won’t work unless your build tool fully supports TypeScript’s emit behavior (and <strong>many don’t</strong>).</li><li>Regular <code>enum</code> creates a runtime object, which means <strong>interoperability with JS becomes messy</strong>, especially in Node environments or mixed JS/TS codebases.</li><li>Tools like Babel and SWC don’t always handle enums gracefully, which limits how flexible your environment setup can be.</li></ul><p>This makes enums a <strong>fragile abstraction</strong> in the context of modern JavaScript tooling.</p><hr><h2 id="%F0%9F%97%A3-3-the-typescript-team-wouldn%E2%80%99t-add-them-today">🗣 3. <strong>The TypeScript Team Wouldn’t Add Them Today</strong></h2><p>This one sealed the deal for me. Multiple TypeScript maintainers have said that if enums were proposed today, <strong>they wouldn’t be added to the language</strong>.</p><p>In fact, TypeScript has evolved toward promoting <strong>string union types + <code>as const</code> objects</strong> as the better alternative. These patterns are:</p><ul><li>Fully type-safe</li><li>Intuitive</li><li>Runtime-compatible</li><li>Tree-shakeable</li></ul><p>If the maintainers themselves don’t love enums, that’s a big <strong>signal</strong> to steer away from them.</p><hr><h2 id="%F0%9F%9B%A0-4-alternatives-are-better-in-every-way">🛠 4. <strong>Alternatives Are Better in Every Way</strong></h2><p>The main use case for enums is giving a list of named constants. But TypeScript gives you <em>cleaner, safer</em>, and <em>more idiomatic</em> ways to do that:</p><pre><code class="language-ts">const Status = {
+  Draft: 'draft',
+  Published: 'published',
+  Archived: 'archived'
+} as const;
+
+type Status = typeof Status[keyof typeof Status];
+</code></pre><p>This gives you <strong>type safety, IDE autocomplete, and runtime predictability</strong>—without the enum baggage.</p><hr><h2 id="%E2%9A%A0%EF%B8%8F-other-considerations">⚠️ Other Considerations</h2><ul><li><strong>Serialization</strong>: Enums can create problems when sending data over the network. The reverse mapping (e.g., <code>Status[1]</code>) often leads to bugs if the server expects a string, not a number.</li><li><strong>Debugging</strong>: Since enums emit objects at runtime, they can bloat logs and stack traces with content that doesn’t match your source code.</li><li><strong>Refactoring</strong>: Unlike plain objects or union types, enums can’t be partially tree-shaken or optimized in the same way—<strong>renaming an enum member has broader implications</strong>.</li></ul><hr><h2 id="%E2%9C%85-tldr-%E2%80%93-why-i-avoid-enums">✅ TL;DR – Why I Avoid Enums</h2><ul><li>❌ <strong>They generate non-obvious JavaScript</strong></li><li>❌ <strong>They don’t always work across platforms or tools</strong></li><li>❌ <strong>They are not recommended by the TS team anymore</strong></li><li>✅ <strong>String unions + <code>as const</code> objects are cleaner, safer, and more portable</strong></li></ul><hr><h2 id="%F0%9F%94%81-finally">🔁 Finally</h2><p>Enums aren’t “bad”. But TypeScript is no longer what it was when enums were first introduced. The ecosystem, tooling, and best practices have evolved—and sticking with enums now feels like choosing legacy patterns in a modern codebase.</p><p>If you value <strong>clarity, consistency, and future-proofing</strong>, you probably don’t need enums anymore. And honestly? You won’t miss them.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

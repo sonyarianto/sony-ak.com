@@ -1,0 +1,43 @@
+---
+title: "Clean and Consistent Imports in Vite: Mastering Path Aliases"
+date: "2025-06-08"
+description: "In modern front-end development, keeping your import paths clean is more than just a matter of aesthetics—it's about maintainability, scalability, and sanity. I..."
+---
+
+<p>In modern front-end development, keeping your import paths clean is more than just a matter of aesthetics—it's about maintainability, scalability, and sanity. If you've ever found yourself typing <code>../../../</code> just to reach a utility file, you're not alone. Luckily, <strong>Vite</strong> supports <strong>path aliasing</strong>, and in this article, we'll walk through how to set it up <strong>properly</strong>, so you can use imports like:</p><pre><code class="language-ts">import { cn } from "@/lib/utils"
+</code></pre><p>instead of:</p><pre><code class="language-ts">import { cn } from "../../lib/utils"
+</code></pre><p>We'll cover Vite, TypeScript, and some caveats you might not be aware of—especially if you're using <strong>React Router 7</strong>, <strong>shadcn/ui</strong>, or other modern stacks.</p><hr><h2 id="setting-up-path-aliases-in-vite">Setting Up Path Aliases in Vite</h2><p>To make <code>@</code> point to your <code>src</code> folder (a popular convention), you need to modify your <code>vite.config.ts</code> or <code>vite.config.js</code> file.</p><h3 id="1-update-vite-configuration">1. Update Vite Configuration</h3><p>In <code>vite.config.ts</code>:</p><pre><code class="language-ts">import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
+</code></pre><blockquote><strong>Important:</strong> Always use <code>path.resolve(__dirname, './src')</code> instead of hardcoding the full path.</blockquote><h3 id="2-update-tsconfigjson-or-jsconfigjson">2. Update <code>tsconfig.json</code> or <code>jsconfig.json</code></h3><p>For your IDE and TypeScript server to recognize the alias, update your <code>tsconfig.json</code> like so:</p><pre><code class="language-json">{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+</code></pre><p>If you're using JavaScript instead of TypeScript, the file will be named <code>jsconfig.json</code> but the structure is the same.</p><h3 id="3-restart-your-ide">3. Restart Your IDE</h3><p>Don't forget this step. Your editor (like VS Code) needs to reload the config to pick up the changes.</p><hr><h2 id="common-pitfalls">Common Pitfalls</h2><h3 id="%E2%9D%8C-import-still-doesnt-resolve">❌ Import still doesn't resolve?</h3><ul><li><strong>Check file casing.</strong> Some systems (like Windows) are case-insensitive; others (like Linux) are not.</li><li><strong>Ensure <code>tsconfig.json</code> is in your project root.</strong> If it's nested or misnamed, it won't be respected.</li><li><strong>Make sure you're using Vite and not something else.</strong> Aliasing strategies vary across bundlers like Webpack, Rollup, etc.</li></ul><hr><h2 id="integrating-with-shadcnui-and-react-router-7">Integrating with shadcn/ui and React Router 7</h2><p>Libraries like <strong>shadcn/ui</strong> often assume your project follows modern conventions, including clean paths. However, <strong>React Router 7</strong> (or any dynamic routing solution) doesn’t care about your aliases—it only matters during the build process. So if things "break" when you deploy, but work locally, it’s almost always a misconfigured alias or base path.</p><p><strong>Pro tip:</strong> If you're deploying to a subdirectory (e.g. <code>/app/</code> instead of <code>/</code>), also set <code>base</code> in <code>vite.config.ts</code>:</p><pre><code class="language-ts">export default defineConfig({
+  base: '/app/',
+  // ...rest of config
+})
+</code></pre><hr><h2 id="bonus-tips">Bonus Tips</h2><h3 id="use-more-than-one-alias">Use More Than One Alias</h3><p>You can define multiple aliases:</p><pre><code class="language-ts">alias: {
+  '@': path.resolve(__dirname, './src'),
+  '@components': path.resolve(__dirname, './src/components'),
+  '@utils': path.resolve(__dirname, './src/lib/utils')
+}
+</code></pre><h3 id="eslint-and-aliases">ESLint and Aliases</h3><p>If you're using ESLint, make sure it understands your alias. Install and configure <code>eslint-import-resolver-alias</code> or use the <code>typescript</code> resolver with the correct settings.</p><h3 id="shadcnui-directory-convention">shadcn/ui Directory Convention</h3><p>If you're organizing your components under something like <code>src/components/ui</code>, it makes sense to add:</p><pre><code class="language-ts">'@ui': path.resolve(__dirname, './src/components/ui')
+</code></pre><hr><h2 id="finally">Finally</h2><p>Setting up path aliases in <strong>Vite</strong> is straightforward, but it requires synchronizing between your <strong>Vite config</strong>, <strong>tsconfig</strong>, and optionally <strong>ESLint</strong>. Once it's done, you'll enjoy:</p><ul><li><strong>Cleaner imports</strong></li><li><strong>Better maintainability</strong></li><li><strong>Consistent developer experience across the team</strong></li></ul><p>If you're using tools like <strong>shadcn/ui</strong>, <strong>React Router</strong>, or any layered architecture, this setup will help keep your project scalable and your codebase elegant.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

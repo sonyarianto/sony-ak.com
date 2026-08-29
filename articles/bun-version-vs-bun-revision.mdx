@@ -1,0 +1,17 @@
+---
+title: "bun --version vs. bun --revision"
+date: "2024-09-17"
+description: "When I wanted to write an issue in Bun's GitHub repository, it said, please include the version of Bun you are using, type bun --revision . This is useful for B..."
+---
+
+<p>When I wanted to write an issue in Bun's GitHub repository, it said, please include the version of Bun you are using, type <code>bun --revision</code>. This is useful for Bun team to exactly know which version when user found the issue.</p><p>Why isn't it <code>bun --version</code>, but instead <code>bun --revision</code>?</p><p>The following is an explanation of the difference between <code>bun --version</code> and <code>bun --revision</code>, which at first glance are similar but different.</p><p>Let's try typing on my machine first.</p><pre><code class="language-bash">bun --version
+# output 1.1.27
+
+bun --revision
+# output 1.1.27+267afa293
+</code></pre>
+<p>Here is the brief explanation.</p><p><strong><code>bun --version</code></strong></p><ul><li><strong>Purpose:</strong> Prints the current version of Bun in a semantic versioning (SemVer) format, such as "1.1.27".</li><li><strong>Output:</strong> Displays the version number that indicates the major, minor, and patch releases of Bun.</li><li><strong>Use Case:</strong> Useful for checking if you have the latest version of Bun installed or when troubleshooting compatibility issues.</li></ul><p><strong><code>bun --revision</code></strong></p><ul><li><strong>Purpose:</strong> Prints the exact Git commit hash that was used to compile the Bun binary you're currently using.</li><li><strong>Output:</strong> Displays a long hexadecimal string representing the specific Git commit.</li><li><strong>Use Case:</strong> Primarily for developers and advanced users who need to identify the precise codebase and bug fixes included in their Bun installation. It's helpful for debugging issues related to specific commits or for reporting bugs to the Bun development team.</li></ul><h3 id="key-differences"><strong>Key Differences:</strong></h3><ul><li><strong>Format:</strong> <code>bun --version</code> outputs a SemVer formatted version number, while <code>bun --revision</code> displays a Git commit hash.</li><li><strong>Level of Detail:</strong> <code>bun --version</code> provides a general overview of the Bun version, while <code>bun --revision</code> offers a more granular view of the specific codebase.</li><li><strong>Use Cases:</strong> <code>bun --version</code> is commonly used for general version checking, while <code>bun --revision</code> is more relevant for developers and troubleshooting specific issues.</li></ul><p>In summary, <code>bun --version</code> provides a general overview of the Bun version, while <code>bun --revision</code> offers a more detailed look at the specific Git commit used to build the binary. Choose the appropriate command based on your specific needs and the level of information required.</p><p>Hope it helps.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

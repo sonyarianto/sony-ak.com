@@ -1,0 +1,127 @@
+---
+title: "Efficient React App Deployment Using rsync: A Practical Guide"
+date: "2025-07-25"
+description: "When it comes to deploying a React application, many developers reach for tools like FTP, scp , or Docker. While those methods have their place, if you need a f..."
+---
+
+<p>When it comes to deploying a React application, many developers reach for tools like FTP, <code>scp</code>, or Docker. While those methods have their place, if you need a <strong>fast, reliable, and incremental way to sync your build directory</strong> (usually <code>dist/</code> or <code>build/</code>), there’s arguably no better tool than <strong><code>rsync</code></strong>.</p><p>This article dives into why <code>rsync</code> is ideal for syncing React builds, how to use it effectively, and the gotchas and best practices you’ll want to be aware of — especially when integrating into a CI/CD pipeline like <strong>Drone CI</strong>.</p><hr><h2 id="%E2%9A%A1-why-use-rsync">⚡ Why Use <code>rsync</code>?</h2><p>Here are a few reasons <code>rsync</code> stands out for syncing front-end build files:</p><ul><li><strong>Incremental transfer</strong>: Only modified files are sent over the wire.</li><li><strong>Built-in deletion logic</strong>: Old files can be removed automatically.</li><li><strong>SSH support</strong>: Secure transmission using private keys.</li><li><strong>Cross-platform</strong>: Works on Linux, macOS, and even Windows via WSL or Git Bash.</li><li><strong>Script-friendly</strong>: Perfect for use in CI/CD pipelines.</li></ul><hr><h2 id="%F0%9F%93%81-the-problem-with-hashed-files">📁 The Problem With Hashed Files</h2><p>Most React/Vite/Webpack builds generate <strong>content-hashed filenames</strong> like:</p><pre><code>app.18e21a0d.js
+vendor.8734dsf8.js
+style.abcd123.css
+</code></pre><p>Every build produces <strong>new filenames</strong>, and the old ones are obsolete. If you deploy without cleaning the destination directory, your users might receive <strong>stale or conflicting assets</strong>, especially when caching is involved.</p><p><strong>This is where <code>--delete</code> becomes critical</strong> in your <code>rsync</code> command.</p><hr><h2 id="%E2%9C%85-the-recommended-rsync-command">✅ The Recommended <code>rsync</code> Command</h2><pre><code class="language-bash">rsync -avzh --delete --info=progress2 ./dist/ user@your-server:/var/www/your-app/
+</code></pre><p>Let’s break this down:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code inline="">-a</code></td>
+<td><strong>Archive mode</strong>: preserves file permissions, timestamps, symbolic links, etc.</td>
+</tr>
+<tr>
+<td><code inline="">-v</code></td>
+<td><strong>Verbose</strong>: prints what’s being transferred. Useful for logs.</td>
+</tr>
+<tr>
+<td><code inline="">-z</code></td>
+<td><strong>Compress</strong> file data during transfer — helps speed on slower networks.</td>
+</tr>
+<tr>
+<td><code inline="">-h</code></td>
+<td><strong>Human-readable</strong> output for file sizes (e.g., <code inline="">4.2M</code> instead of <code inline="">4378923</code>).</td>
+</tr>
+<tr>
+<td><code inline="">--delete</code></td>
+<td><strong>Deletes</strong> files on the target that are no longer present in source (essential for hashed builds).</td>
+</tr>
+<tr>
+<td><code inline="">--info=progress2</code></td>
+<td><strong>Displays total progress</strong> instead of per-file progress (cleaner for large builds).</td>
+</tr>
+<tr>
+<td><code inline="">./dist/</code></td>
+<td>The trailing slash ensures only the <strong>contents</strong> of <code inline="">dist</code> are synced, not the folder itself.</td>
+</tr>
+<tr>
+<td><code inline="">user@your-server:/.../</code></td>
+<td>SSH target and destination directory.</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="%F0%9F%A7%AA-optional-per-file-progress">🧪 Optional: Per-file Progress</h2><p>If you prefer to see progress for <strong>each individual file</strong>, replace <code>--info=progress2</code> with <code>--progress</code>:</p><pre><code class="language-bash">rsync -avzh --delete --progress ./dist/ user@host:/path/
+</code></pre><p>This is more verbose but useful during debugging or manual deployment.</p><hr><h2 id="%F0%9F%94%90-ssh-key-considerations">🔐 SSH Key Considerations</h2><p>When using <code>rsync</code> over SSH (which is most common), you’ll want to ensure:</p><ul><li><strong>Passwordless login</strong> is set up using a <strong>private key</strong>.</li><li>The remote user (e.g., <code>www-data</code>, <code>deployer</code>, <code>ubuntu</code>, etc.) has <strong>write permissions</strong> to the target directory.</li></ul><p>In CI, use:</p><pre><code class="language-bash">-e "ssh -i /path/to/key -o StrictHostKeyChecking=no"
+</code></pre><p>You can even mount the key from a <strong>Drone secret</strong> or environment variable and assign the correct permissions with <code>chmod 600</code>.</p><hr><h2 id="%F0%9F%A4%96-integrating-with-drone-ci">🤖 Integrating with Drone CI</h2><p>Here's a minimal Drone CI pipeline step using <code>rsync</code>:</p><pre><code class="language-yaml">steps:
+  - name: deploy-to-staging
+    image: alpine
+    commands:
+      - apk add --no-cache openssh rsync
+      - chmod 600 /home/drone/staging_key
+      - echo "Syncing dist to staging server..."
+      - rsync -avzh --delete --info=progress2 \
+          -e "ssh -i /home/drone/staging_key -o StrictHostKeyChecking=no" \
+          /var/www/html/my-app/dist/ \
+          user@staging-server:/var/www/html/your-app/
+</code></pre><p>Be sure to:</p><ul><li>Add <code>staging_key</code> as a <strong>secret</strong>.</li><li>Use the correct <strong>user and path</strong>.</li><li>Ensure the <strong><code>dist/</code> folder is already built</strong> before this step runs.</li></ul><hr><h2 id="%F0%9F%9A%A8-things-to-watch-out-for">🚨 Things to Watch Out For</h2>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stale Files Remain</strong></td>
+<td>Always use <code inline="">--delete</code> if your build uses hashed filenames.</td>
+</tr>
+<tr>
+<td><strong>Wrong folder structure</strong></td>
+<td>Use a trailing <code inline="">/</code> on the source path to sync contents, not the directory itself.</td>
+</tr>
+<tr>
+<td><strong>Permission denied</strong></td>
+<td>Double-check remote write permissions for the SSH user.</td>
+</tr>
+<tr>
+<td><strong>Missing tools</strong></td>
+<td>Install <code inline="">rsync</code> and <code inline="">ssh</code> inside CI containers if not present (e.g., Alpine uses <code inline="">apk add</code>).</td>
+</tr>
+<tr>
+<td><strong>CI log spam</strong></td>
+<td>Use <code inline="">--info=progress2</code> instead of <code inline="">--progress</code> to reduce noise.</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="%F0%9F%94%81-alternative-scp-vs-rsync">🔁 Alternative: <code>scp</code> vs <code>rsync</code></h2>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code inline="">scp</code></td>
+<td>Always copies everything — no diffing, no deletion, slower over time.</td>
+</tr>
+<tr>
+<td><code inline="">rsync</code></td>
+<td>Smart diffing, can delete, and more efficient. Better for <strong>frequent and incremental deploys</strong>.</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h2 id="%F0%9F%8F%81-finally">🏁 Finally</h2><p>Using <code>rsync</code> for syncing your React app’s <code>dist/</code> folder is a <strong>clean, fast, and robust</strong> method. It works great locally and scales well to CI/CD environments, especially when you want deterministic builds and clean deployments without stale artifacts.</p><p>If you’re deploying hashed frontend builds and care about efficiency and cache hygiene, <strong><code>rsync --delete</code> is not optional — it’s essential</strong>.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,36 @@
+---
+title: "Understanding the never Type in PHP: When Functions Don’t Return"
+date: "2025-06-20"
+description: "PHP has evolved significantly over the years, adding more robust type systems and better tooling for developers. One of the lesser-known but very powerful addit..."
+---
+
+<p>PHP has evolved significantly over the years, adding more robust type systems and better tooling for developers. One of the lesser-known but very <strong>powerful additions in PHP 8.1</strong> is the <code>never</code> type. If you’ve never encountered it before, don’t worry — it’s not commonly used, but when it is, it can make your code safer, clearer, and more predictable.</p><p>Let’s dive into what the <code>never</code> type is, why it exists, and when you might want to use it.</p><hr><h2 id="%F0%9F%93%8C-what-is-the-never-type">📌 What Is the <code>never</code> Type?</h2><p>The <code>never</code> type is a <strong>return type</strong> introduced in PHP 8.1 that explicitly tells the compiler and the developer:</p><blockquote>“This function will <strong>never return control</strong> back to the caller.”</blockquote><p>In other words, once this function is called, the script's flow <strong>will stop</strong> — either because the function <strong>throws an exception</strong>, <strong>calls <code>exit()</code></strong>, or maybe even <strong>runs an infinite loop</strong> (although that’s a more theoretical use case).</p><pre><code class="language-php">function terminateApp(): never {
+    exit("Application terminated.");
+}
+</code></pre><p>This is different from the <code>void</code> return type. A <code>void</code> function runs and returns <em>nothing</em>, but it still <strong>completes execution</strong>. A <code>never</code> function, on the other hand, <strong>never completes</strong>.</p><hr><h2 id="%E2%9C%85-when-should-you-use-never">✅ When Should You Use <code>never</code>?</h2><p>You should use <code>never</code> only in <strong>very specific situations</strong>, typically when you’re sure that a function <strong>cannot return normally</strong>. Here are some valid use cases:</p><h3 id="1-exception-throwing-functions">1. <strong>Exception-Throwing Functions</strong></h3><pre><code class="language-php">function throwError(string $message): never {
+    throw new RuntimeException($message);
+}
+</code></pre><p>This makes it crystal clear that this function <strong>only throws</strong> and never continues execution.</p><h3 id="2-exit-or-die-scenarios">2. <strong>Exit or Die Scenarios</strong></h3><pre><code class="language-php">function fatalError(string $msg): never {
+    echo $msg;
+    exit(1);
+}
+</code></pre><p>Using <code>never</code> in this context helps signal that the script stops here.</p><h3 id="3-cli-helpers">3. <strong>CLI Helpers</strong></h3><p>CLI tools often need to terminate after printing help text:</p><pre><code class="language-php">function printUsageAndExit(): never {
+    echo "Usage: php tool.php [options]";
+    exit(0);
+}
+</code></pre><h3 id="4-infinite-loops-advanced-use">4. <strong>Infinite Loops (Advanced Use)</strong></h3><p>In rare cases, if your function enters a loop that <em>never</em> breaks:</p><pre><code class="language-php">function runDaemon(): never {
+    while (true) {
+        // Daemon logic
+        sleep(1);
+    }
+}
+</code></pre><p>Although this looks odd in typical PHP applications, it may be valid for long-running CLI services.</p><hr><h2 id="%F0%9F%92%A1-why-use-never-at-all">💡 Why Use <code>never</code> at All?</h2><p>Some might say: <em>"Why not just use <code>void</code> or skip the return type?"</em> — and that’s fair, especially for small scripts. But <code>never</code> brings some <strong>very real advantages</strong>, especially in larger applications:</p><h3 id="%F0%9F%94%8D-better-static-analysis">🔍 Better Static Analysis</h3><p>Tools like PHPStan and Psalm can <strong>more accurately analyze control flow</strong>. If you use <code>never</code>, they’ll know not to expect anything after the function call.</p><h3 id="%F0%9F%93%9A-improved-code-readability">📚 Improved Code Readability</h3><p>Other developers (or even future you) will instantly know: <strong>"This function is a dead-end."</strong> No return, no continuation.</p><h3 id="%F0%9F%A7%AA-safer-refactoring">🧪 Safer Refactoring</h3><p>Imagine you refactor a helper to return data later, forgetting it used to exit. If it was previously marked as <code>never</code>, your IDE or linter will immediately warn you.</p><hr><h2 id="%F0%9F%A4%94-important-considerations">🤔 Important Considerations</h2><p>Before you start sprinkling <code>never</code> everywhere, keep a few things in mind:</p><ul><li><strong>Only use <code>never</code> when absolutely sure</strong> the function will <em>always</em> terminate execution.</li><li>Don’t use <code>never</code> if the function sometimes throws and sometimes returns — that’s invalid and will trigger a fatal error.</li><li><code>never</code> cannot be used for <strong>parameter types</strong>, only <strong>return types</strong>.</li><li>You can't use <code>return;</code> or <code>return null;</code> in a <code>never</code> function — doing so will also cause a fatal error.</li></ul><hr><h2 id="%F0%9F%A7%AA-real-world-example">🧪 Real-World Example</h2><p>Here’s a practical example in the context of a custom exception handler:</p><pre><code class="language-php">function handleFatalError(string $error): never {
+    logErrorToFile($error);
+    http_response_code(500);
+    exit("An internal server error occurred.");
+}
+</code></pre><p>By marking this function as <code>never</code>, you make it clear that the request is over once this function runs — helpful in both API responses and CLI tools.</p><hr><h2 id="%F0%9F%8F%81-finally">🏁 Finally</h2><p>The <code>never</code> type may seem like a niche feature, but in the right situations, it can <strong>enhance the clarity and safety</strong> of your PHP code. It’s especially useful for error handling, script termination, and low-level runtime logic where execution must halt.</p><p><strong>Use it wisely, use it sparingly, but don’t ignore it.</strong></p><p>PHP continues to grow as a mature and type-safe language — and <code>never</code> is one more tool in your toolbox to write clean, intentional code.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

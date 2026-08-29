@@ -1,0 +1,45 @@
+---
+title: "Unlocking the Power of Composer Scripts: A Complete Guide"
+date: "2024-12-31"
+description: "Composer is the go-to dependency manager for PHP projects, but did you know it can do much more than just manage packages? Composer scripts provide a way to aut..."
+---
+
+<p>Composer is the go-to dependency manager for PHP projects, but did you know it can do much more than just manage packages? <strong>Composer scripts</strong> provide a way to automate tasks and streamline your development workflow. Let’s explore how to use this feature, its benefits, and additional tips for making the most of it.</p><h2 id="what-are-composer-scripts">What Are Composer Scripts?</h2><p>In Composer, <strong>scripts are custom commands</strong> you define in your <code>composer.json</code> file. These commands can be:</p><ul><li>Shell commands</li><li>Composer commands</li><li>PHP scripts</li></ul><p>They allow you to automate tasks such as running tests, starting a development server, or cleaning up files. Scripts are executed via the <code>composer run</code> command.</p><h2 id="how-to-define-composer-scripts">How to Define Composer Scripts</h2><p>You define scripts in the <code>scripts</code> section of the <code>composer.json</code> file. Here’s an example:</p><pre><code class="language-json">{
+    "scripts": {
+        "start": "php -S localhost:8000 -t public",
+        "test": "phpunit --configuration phpunit.xml",
+        "build": "npm run build &amp;&amp; php artisan cache:clear"
+    }
+}
+</code></pre><h3 id="key-points">Key Points:</h3><ul><li><strong>Script Names:</strong> The keys under the <code>scripts</code> section are the names of your custom commands (e.g., <code>start</code>, <code>test</code>, <code>build</code>).</li><li><strong>Command Values:</strong> The values are the shell commands to execute.</li></ul><h2 id="running-composer-scripts">Running Composer Scripts</h2><p>To execute a script, use the following command:</p><pre><code class="language-bash">composer run [script-name]
+</code></pre><p>For example:</p><p>To run your tests:</p><pre><code class="language-bash">composer run test
+</code></pre><p>To start the PHP built-in server:</p><pre><code class="language-bash">composer run start
+</code></pre><p>Alternatively, you can skip <code>run</code> and directly call the script by its name:</p><pre><code class="language-bash">composer start
+composer test
+</code></pre><h2 id="passing-arguments-to-scripts">Passing Arguments to Scripts</h2><p>If your scripts accept arguments, you can pass them by using <code>--</code>:</p><pre><code class="language-bash">composer run start -- --port=8080
+</code></pre><p>Here, <code>--port=8080</code> is passed to the underlying script.</p><h2 id="using-predefined-composer-events">Using Predefined Composer Events</h2><p>Composer provides several predefined <strong>lifecycle event scripts</strong> that you can hook into. For example:</p><pre><code class="language-json">{
+    "scripts": {
+        "post-install-cmd": "php artisan migrate",
+        "post-update-cmd": "php artisan cache:clear"
+    }
+}
+</code></pre><h3 id="common-events">Common Events:</h3><ul><li><strong>pre-install-cmd</strong>: Executes before <code>composer install</code>.</li><li><strong>post-install-cmd</strong>: Executes after <code>composer install</code>.</li><li><strong>pre-update-cmd</strong>: Executes before <code>composer update</code>.</li><li><strong>post-update-cmd</strong>: Executes after <code>composer update</code>.</li></ul><p>These hooks are useful for tasks like setting up your application after installing or updating dependencies.</p><h2 id="best-practices-for-composer-scripts">Best Practices for Composer Scripts</h2><ol><li><strong>Keep Scripts Simple:</strong> Avoid adding overly complex logic to your <code>composer.json</code>. For advanced tasks, use dedicated tools or separate scripts.</li><li><strong>Use Descriptive Names:</strong> Choose clear, meaningful names for your scripts to make them easy to remember.</li><li><strong>Version Control:</strong> Always commit your <code>composer.json</code> file to version control so that everyone on your team has access to the same scripts.</li><li><strong>Cross-Environment Compatibility:</strong> Ensure that scripts work on all operating systems if your team uses a mix of environments (e.g., Windows, macOS, Linux).</li></ol><h2 id="hidden-gems-additional-composer-script-tips">Hidden Gems: Additional Composer Script Tips</h2><h3 id="execute-multiple-commands">Execute Multiple Commands</h3><p>You can chain multiple commands using <code>&amp;&amp;</code>:</p><pre><code class="language-json">{
+    "scripts": {
+        "deploy": "composer install &amp;&amp; php artisan migrate &amp;&amp; php artisan cache:clear"
+    }
+}
+</code></pre><h3 id="use-external-scripts">Use External Scripts</h3><p>For more complex tasks, point your Composer script to an external PHP file:</p><pre><code class="language-json">{
+    "scripts": {
+        "custom-task": "php scripts/my-custom-task.php"
+    }
+}
+</code></pre><h3 id="check-for-dependency-compatibility">Check for Dependency Compatibility</h3><p>Run Composer’s <code>check-platform-reqs</code> as part of your scripts to ensure your server meets all requirements:</p><pre><code class="language-json">{
+    "scripts": {
+        "check-env": "composer check-platform-reqs"
+    }
+}
+</code></pre><h2 id="why-use-composer-scripts">Why Use Composer Scripts?</h2><ul><li><strong>Automation:</strong> Save time by automating repetitive tasks.</li><li><strong>Consistency:</strong> Ensure everyone on your team follows the same processes.</li><li><strong>Ease of Use:</strong> Simplify workflows by consolidating commands under a single tool.</li></ul><h2 id="finally">Finally</h2><ul><li><strong>Security:</strong> Be cautious with shell commands in scripts. Avoid hardcoding sensitive data.</li><li><strong>Dependencies:</strong> Ensure all required tools (e.g., PHPUnit, npm) are available in your environment.</li><li><strong>Documentation:</strong> Document your scripts in your project’s README so others know how to use them.</li></ul><p>Composer scripts are a powerful feature that can significantly enhance your development workflow. Whether you’re running tests, building your app, or managing server configurations, Composer scripts make it all easier and more efficient.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

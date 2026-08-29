@@ -1,0 +1,54 @@
+---
+title: "How to Display Time in a Human-Readable Format Using JavaScript’s Intl.RelativeTimeFormat"
+date: "2024-10-15"
+description: "When developing web applications, it's common to display time relative to the current moment. For example, showing how long ago an event occurred, or how soon s..."
+---
+
+<p>When developing web applications, it's common to display time relative to the current moment. For example, showing how long ago an event occurred, or how soon something will happen, like "5 minutes ago" or "in 2 hours". JavaScript has an amazing built-in tool for this called <code>Intl.RelativeTimeFormat</code>. It's a feature designed to make handling relative time easy, especially when working with different locales.</p><p>If you're a beginner and not yet familiar with this, don't worry! In this article, we'll explore how to use this feature, why it's useful, and how to combine it with other JavaScript functions to calculate and format time.</p><h4 id="what-is-intlrelativetimeformat">What is <code>Intl.RelativeTimeFormat</code>?</h4><p><code>Intl.RelativeTimeFormat</code> is part of JavaScript’s internationalization (i18n) API, and it allows you to format relative time in a <strong>human-readable</strong> way. Instead of writing custom logic for things like "2 hours ago" or "in 3 days", this feature takes care of the <strong>formatting</strong> for you. Even better, it can format the time in different <strong>languages</strong> and handle localization.</p><p>Here’s a basic example of how it works:</p><pre><code class="language-javascript">const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+console.log(rtf.format(-1, 'day'));  // "yesterday"
+console.log(rtf.format(1, 'day'));   // "tomorrow"
+console.log(rtf.format(-5, 'minute')); // "5 minutes ago"
+</code></pre><p>In this example:</p><ul><li><strong><code>-1</code></strong> for days means <strong>"yesterday"</strong>.</li><li><strong><code>1</code></strong> for days means <strong>"tomorrow"</strong>.</li><li><strong><code>-5</code></strong> for minutes means <strong>"5 minutes ago"</strong>.</li></ul><p>The <code>'en'</code> parameter tells the function to format the text in English. If we wanted to use a different language, such as French, we could easily switch it to <code>'fr'</code>:</p><pre><code>const rtfFr = new Intl.RelativeTimeFormat('fr', { numeric: 'auto' });
+console.log(rtfFr.format(-2, 'hour')); // "il y a 2 heures"
+</code></pre><p>This flexibility makes it really powerful when building applications that need to support multiple languages.</p><h4 id="how-to-calculate-time-differences">How to Calculate Time Differences</h4><p>While <code>Intl.RelativeTimeFormat</code> is great for formatting, it doesn’t <strong>calculate</strong> the time difference for you. You need to combine it with other JavaScript functions to determine the time gap between two dates. Usually, you’ll want to calculate the difference between <strong>now</strong> and some other date, then format that difference.</p><p>Here’s how you can do that:</p><pre><code class="language-javascript">function getRelativeTime(date) {
+  const now = new Date();
+  const pastDate = new Date(date);
+  
+  const diffInSeconds = Math.floor((pastDate - now) / 1000);
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+  if (Math.abs(diffInSeconds) &lt; 60) {
+    return rtf.format(diffInSeconds, 'second');
+  }
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (Math.abs(diffInMinutes) &lt; 60) {
+    return rtf.format(diffInMinutes, 'minute');
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (Math.abs(diffInHours) &lt; 24) {
+    return rtf.format(diffInHours, 'hour');
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  return rtf.format(diffInDays, 'day');
+}
+</code></pre><p>In this function, we:</p><ul><li><strong>Calculate the time difference</strong> between the given date and the current time (<code>now</code>).</li><li>Convert that difference into seconds, minutes, hours, and days.</li><li>Use <code>Intl.RelativeTimeFormat</code> to output a readable string, like "2 hours ago" or "yesterday."</li></ul><p>This approach makes your code much more readable and reusable, and you no longer need to manually write the logic for handling various time intervals.</p><h4 id="what-happens-with-larger-units">What Happens with Larger Units?</h4><p>You might have wondered: what about <strong>weeks</strong>, <strong>months</strong>, or even <strong>years</strong>? It's easy to extend the logic to handle these longer timeframes. Once you have the number of days, you can convert that into weeks, months, or years.</p><pre><code class="language-javascript">const diffInWeeks = Math.floor(diffInDays / 7);
+if (Math.abs(diffInWeeks) &lt; 4) {
+  return rtf.format(diffInWeeks, 'week');
+}
+
+const diffInMonths = Math.floor(diffInWeeks / 4);
+if (Math.abs(diffInMonths) &lt; 12) {
+  return rtf.format(diffInMonths, 'month');
+}
+
+const diffInYears = Math.floor(diffInMonths / 12);
+return rtf.format(diffInYears, 'year');
+</code></pre><p>With this addition, you can handle relative times like "last week", "in 3 months", or "2 years ago" without any extra hassle.</p><h4 id="important-points-to-remember">Important Points to Remember</h4><ul><li><strong>Locale-specific formatting</strong>: One of the great things about <code>Intl.RelativeTimeFormat</code> is its <strong>locale support</strong>. You can easily switch between languages like <code>'en'</code> (English) or <code>'fr'</code> (French). This is essential for applications targeting a <strong>global audience</strong>.</li><li><strong>Automatic singular/plural handling</strong>: The API automatically handles singular and plural forms for you. So you don’t need to worry about whether it should say "1 day ago" or "2 days ago"—it does that for you.</li><li><strong><code>numeric: 'auto'</code> vs. <code>numeric: 'always'</code></strong>: By default, using <code>numeric: 'auto'</code> allows for natural language terms like "yesterday" or "tomorrow". If you always want numeric values (e.g., "in 1 day" instead of "tomorrow"), you can use <code>numeric: 'always'</code>.</li><li><strong>Time precision</strong>: Depending on your needs, you can choose to display time in <strong>seconds</strong>, <strong>minutes</strong>, <strong>hours</strong>, <strong>days</strong>, <strong>weeks</strong>, <strong>months</strong>, or <strong>years</strong>. This flexibility allows you to show time differences with the appropriate level of detail.</li></ul><h4 id="finally">Finally</h4><p>If you’re building an app that needs to display relative times in a user-friendly format, <code>Intl.RelativeTimeFormat</code> is an excellent tool. It simplifies formatting and localization, and when combined with a simple time difference calculation, it becomes a powerful feature for enhancing your app's user experience.</p><p>By using this API, you no longer need to write custom logic for displaying time in relation to the present, and you can focus more on other aspects of your application. Whether you're creating social media posts, task management tools, or event schedulers, <strong><code>Intl.RelativeTimeFormat</code></strong> will save you a lot of time and effort while providing a more natural and human-readable output for your users.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,52 @@
+---
+title: "PHP Tip: Understanding the php -m Command for Viewing Loaded Modules"
+date: "2024-10-03"
+description: "When working with PHP, especially in environments where extensions and modules play a crucial role in functionality, knowing what is active and available in you..."
+---
+
+<p>When working with PHP, especially in environments where extensions and modules play a crucial role in functionality, knowing what is active and available in your PHP setup is essential. One handy command to get this information is <code>php -m</code>.</p><h3 id="what-is-phpm">What is <code>php -m</code>?</h3><p>The <code>php -m</code> command is a simple yet powerful tool in PHP that lists all the modules currently enabled in your PHP environment. It provides a quick overview of both built-in modules and any additional extensions that have been installed and activated.</p><h3 id="why-is-it-important">Why Is It Important?</h3><p>When you're debugging an issue, setting up a new PHP environment, or working with certain libraries, you may need to check whether a specific extension is installed. Many PHP applications rely on external modules such as <code>pdo_mysql</code> for database interactions or <code>curl</code> for making web requests. Using <code>php -m</code> helps you ensure that the necessary modules are available.</p><h3 id="how-to-use-phpm">How to Use <code>php -m</code></h3><p>To use the <code>php -m</code> command, simply run it in your terminal or command line interface:</p><pre><code class="language-bash">php -m
+</code></pre><p>After running this command, you will see two categories of modules:</p><ol><li><strong>Built-in Modules</strong> – These are modules that come bundled with PHP. Examples include <code>date</code>, <code>spl</code>, <code>json</code>, etc.</li><li><strong>External Extensions</strong> – These are modules that you have installed separately or enabled via your <code>php.ini</code> file. Common extensions include <code>mysqli</code>, <code>mbstring</code>, and <code>gd</code>.</li></ol><p>The output will look something like this:</p><pre><code class="language-bash">[PHP Modules]
+bcmath
+calendar
+Core
+ctype
+curl
+date
+dom
+exif
+fileinfo
+filter
+gd
+hash
+iconv
+intl
+json
+libxml
+mbstring
+mysqli
+mysqlnd
+openssl
+pcre
+PDO
+pdo_mysql
+pdo_pgsql
+Phar
+random
+readline
+Reflection
+session
+SimpleXML
+SPL
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zlib
+
+[Zend Modules]</code></pre><p>The list under <code>[PHP Modules]</code> shows the active PHP extensions, while <code>[Zend Modules]</code> displays any Zend extensions loaded (such as Xdebug).</p><h3 id="common-use-cases-for-phpm">Common Use Cases for <code>php -m</code></h3><ol><li><strong>Checking Installed Extensions</strong><br>If a PHP script throws an error saying a specific module is missing (e.g., <code>mbstring</code>), you can quickly run <code>php -m</code> to verify if the extension is enabled.</li><li><strong>Verifying Extension Configuration</strong><br>After installing a new extension or modifying your <code>php.ini</code> file, running <code>php -m</code> ensures that the changes have been applied correctly.</li><li><strong>Troubleshooting Compatibility Issues</strong><br>Some PHP libraries require certain extensions to function. If an application isn't working as expected, <code>php -m</code> helps identify whether all required modules are present.</li></ol><h3 id="bonus-tip-combine-with-php-version-check">Bonus Tip: Combine with PHP Version Check</h3><p>Another helpful command to use alongside <code>php -m</code> is <code>php -v</code>, which displays the current PHP version. This can be useful when troubleshooting compatibility issues between PHP versions and modules:</p><pre><code class="language-bash">php -v
+</code></pre><h3 id="finally">Finally</h3><p>The <code>php -m</code> command is an essential tool for PHP developers and system administrators. It provides an easy way to see which PHP modules are currently enabled, helping you ensure your environment is properly configured for your applications.</p><p>Next time you're faced with a module-related issue or setting up a new environment, just remember: <code>php -m</code> is your go-to command for a quick module check!</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

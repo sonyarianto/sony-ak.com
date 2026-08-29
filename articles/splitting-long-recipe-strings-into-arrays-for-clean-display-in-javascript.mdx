@@ -1,0 +1,29 @@
+---
+title: "Splitting Long Recipe Strings into Arrays for Clean Display in JavaScript"
+date: "2024-09-22"
+description: "When developing web applications that involve recipes or other instructional content, one common scenario is receiving a long string of instructions typed out b..."
+---
+
+<p>When developing web applications that involve recipes or other instructional content, one common scenario is receiving a long string of instructions typed out by a user. These instructions might be entered as a continuous block of text, with each step separated by a line break or other delimiters. To present this data nicely on a screen, we need to split this long string into an array and structure it in a way that enhances readability.</p><h3 id="the-problem">The Problem</h3><p>Imagine that a user submits a recipe like this:</p><pre><code class="language-text">Step 1: Preheat the oven to 180°C.\r\nStep 2: Mix the dry ingredients in a bowl.\r\nStep 3: Add wet ingredients and stir.\r\nStep 4: Pour the mixture into a baking dish.\r\nStep 5: Bake for 30 minutes.
+</code></pre><p>This long string of instructions contains all the recipe steps, but displaying it in its current form would lead to a cluttered and difficult-to-read block of text. We need a way to split the steps into individual instructions so that each one can be displayed neatly on the page.</p><h3 id="the-solution-splitting-the-string">The Solution: Splitting the String</h3><p>A simple way to solve this problem in JavaScript is to split the string into an array. Each instruction can be separated by recognizing the line breaks (<code>\r\n</code> or <code>\n</code>) and then processed further.</p><p>Here's how to do it:</p><pre><code class="language-javascript">const recipeString = `Step 1: Preheat the oven to 180°C.\r\nStep 2: Mix the dry ingredients in a bowl.\r\nStep 3: Add wet ingredients and stir.\r\nStep 4: Pour the mixture into a baking dish.\r\nStep 5: Bake for 30 minutes.`;
+
+// Splitting the string into an array at each line break
+const recipeSteps = recipeString.split(/\r?\n/);
+
+// Logging to see the array structure
+console.log(recipeSteps);
+</code></pre><p>This will output the following array:</p><pre><code class="language-json">[
+  "Step 1: Preheat the oven to 180°C.",
+  "Step 2: Mix the dry ingredients in a bowl.",
+  "Step 3: Add wet ingredients and stir.",
+  "Step 4: Pour the mixture into a baking dish.",
+  "Step 5: Bake for 30 minutes."
+]
+</code></pre><h3 id="displaying-the-array-nicely-on-the-screen">Displaying the Array Nicely on the Screen</h3><p>Now that we have an array of individual recipe steps, it’s easy to loop through this array and display each step as a paragraph on the screen:</p><pre><code class="language-javascript">recipeSteps.forEach(step =&gt; {
+    document.body.innerHTML += `&lt;p&gt;${step}&lt;/p&gt;`;
+});
+</code></pre><p>This simple loop ensures that each step appears as its own paragraph in the HTML document, resulting in a clean and user-friendly layout.</p><p>Splitting long strings into arrays and displaying each element properly enhances readability and improves the user experience. By using the <code>.split()</code> method and basic loops, you can efficiently transform large blocks of text into well-organized, user-friendly content.</p><p>In this case, the array structure not only makes it easier to manage the data, but also enables other possibilities, such as highlighting certain steps, adding images between steps, or even allowing users to mark steps as completed.</p><h3 id="finally">Finally</h3><p>Handling long strings of text and breaking them down into manageable parts is a common task in web development. By using JavaScript’s <code>.split()</code> method to break a recipe string into an array, and looping through that array to format it for display, you can present user-generated content in a clean and structured way. This approach can be applied to recipes, instructions, lists, or any other form of sequential data that needs to be broken down for clarity.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,44 @@
+---
+title: "Why TypeScript Types in Applications Should Be Simple"
+date: "2025-01-18"
+description: "In the world of TypeScript, developers often hear complaints about complex types being hard to write, understand, and maintain. While this complexity is sometim..."
+---
+
+<p>In the world of TypeScript, developers often hear complaints about <strong>complex types</strong> being hard to write, understand, and maintain. While this complexity is sometimes necessary for <strong>libraries</strong> to accommodate various use cases and offer flexibility, application types are a different story. <strong>Application types should typically be simple.</strong> If they’re not, it’s often a sign of unnecessary complexity that can be refactored. Here, I’ll explore why simplicity matters, how to recognize needless complexity, and ways to keep application types manageable.</p><h2 id="the-case-for-simplicity-in-application-types">The Case for Simplicity in Application Types</h2><p>Applications, unlike libraries, have a <strong>focused scope</strong>. Their types are usually tied to specific business logic and domain models. This gives us a golden opportunity to keep things simple and clean. Here’s why:</p><ol><li><strong>Ease of Maintenance</strong>: Simpler types mean that developers can understand the codebase quickly, even if they’re new to the team.</li><li><strong>Improved Readability</strong>: Types that mirror real-world entities or business concepts are easier to work with than abstract, deeply nested ones.</li><li><strong>Faster Debugging</strong>: When something breaks, you don’t want to unravel a web of convoluted types just to understand the issue.</li><li><strong>Pragmatism Over Perfection</strong>: The goal of application types is functional correctness, not theoretical exhaustiveness. We’re solving specific problems, not every possible problem.</li></ol><h2 id="when-complexity-creeps-in">When Complexity Creeps In</h2><p>Despite the clear benefits of simplicity, complex types sometimes find their way into applications. This is often <strong>needless complexity</strong> that adds little value. Here are some common causes:</p><h3 id="1-overusing-utility-types">1. <strong>Overusing Utility Types</strong></h3><p>Utility types like <code>Partial</code>, <code>Pick</code>, and <code>Omit</code> are powerful tools, but overusing them can create confusion. Instead of patching together types dynamically, it’s often better to define them explicitly.</p><h4 id="example">Example:</h4><p>Instead of:</p><pre><code class="language-typescript">type UserPreview = Pick&lt;User, 'id' | 'name'&gt;;
+</code></pre><p>Prefer:</p><pre><code class="language-typescript">interface UserPreview {
+  id: string;
+  name: string;
+}
+</code></pre><p>This explicit approach makes the type’s structure clear and avoids unnecessary dependencies on the <code>User</code> type.</p><h3 id="2-generic-overload">2. <strong>Generic Overload</strong></h3><p>Generics are a hallmark of TypeScript’s power, but they’re not always necessary in application code. When used excessively, they can make types difficult to understand.</p><h4 id="example-1">Example:</h4><p>Instead of:</p><pre><code class="language-typescript">type ApiResponse&lt;T&gt; = { data: T; error?: string };
+</code></pre><p>If your API response structure is consistent, define concrete types:</p><pre><code class="language-typescript">interface UserResponse {
+  data: User;
+  error?: string;
+}
+
+interface ProductResponse {
+  data: Product;
+  error?: string;
+}
+</code></pre><p>This removes the need for generics in most cases and keeps things simple.</p><h3 id="3-over-abstracting-types">3. <strong>Over-Abstracting Types</strong></h3><p>It’s tempting to make types reusable by abstracting them into complex, dynamic structures. But this can lead to <strong>over-engineering</strong>, where the type no longer reflects the real-world use case.</p><h4 id="example-2">Example:</h4><p>Instead of:</p><pre><code class="language-typescript">type Entity&lt;T&gt; = T &amp; { createdAt: string; updatedAt: string };
+</code></pre><p>If you only need <code>User</code> and <code>Product</code> entities, define them directly:</p><pre><code class="language-typescript">interface User {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
+</code></pre><p>This makes your types more <strong>concrete</strong> and <strong>readable.</strong></p><h2 id="practical-tips-for-managing-types">Practical Tips for Managing Types</h2><p>If you’ve noticed your types becoming unwieldy, here are some strategies to simplify them:</p><h3 id="1-flatten-type-hierarchies">1. <strong>Flatten Type Hierarchies</strong></h3><p>Avoid deeply nested or recursive types. Flattening them improves readability and usability.</p><h3 id="2-divide-and-conquer">2. <strong>Divide and Conquer</strong></h3><p>Break down large, all-encompassing types into smaller, focused ones. Each type should represent a distinct concept.</p><h3 id="3-prefer-interfaces-for-objects">3. <strong>Prefer Interfaces for Objects</strong></h3><p>Use <code>interface</code> instead of <code>type</code> for object shapes. Interfaces are extendable and often more intuitive for other developers.</p><h3 id="4-add-comments-to-explain-intent">4. <strong>Add Comments to Explain Intent</strong></h3><p>Sometimes, complex types are unavoidable. When this happens, <strong>document why</strong> the type exists and what it’s meant to achieve.</p><h3 id="5-revisit-requirements">5. <strong>Revisit Requirements</strong></h3><p>Complex types can sometimes indicate <strong>overengineering</strong> or unclear requirements. Simplifying the business logic may reduce the need for complex types.</p><h2 id="advanced-considerations">Advanced Considerations</h2><ol><li><strong>Align Types with API Contracts</strong> If your application communicates with external APIs, keep your types closely aligned with those contracts. Avoid introducing unnecessary abstractions unless absolutely needed.</li><li><strong>Use Type Guards</strong> Instead of creating overly complex union or conditional types, use <strong>type guards</strong> to handle variations in runtime behavior. This keeps types simple while ensuring runtime safety.</li></ol><h4 id="example-3">Example:</h4><pre><code class="language-typescript">function isAdmin(user: User | Admin): user is Admin {
+  return 'adminId' in user;
+}
+</code></pre><ol start="3"><li><strong>Leverage IDE Features</strong> TypeScript’s tooling is excellent. Leverage <strong>IntelliSense</strong> and editor warnings to catch unnecessary complexity early.</li><li><strong>Keep Types in Context</strong> Ask yourself, “Does this type reflect the real-world concept it represents?” If it doesn’t, rethink the design.</li></ol><h2 id="finally">Finally</h2><p>TypeScript’s type system is incredibly powerful, but with great power comes great responsibility. <strong>Keep your application types simple</strong> by focusing on clarity, maintainability, and alignment with real-world use cases. If you find yourself wrestling with overly complex types, take a step back and ask: <strong>Is this complexity necessary, or can it be refactored?</strong></p><p>By following these principles, you can build a codebase that’s not only type-safe but also enjoyable to work with.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

@@ -1,0 +1,38 @@
+---
+title: "Mastering workspaces in package.json: A Simple Path to Scalable Monorepos"
+date: "2025-05-21"
+description: "As your JavaScript or TypeScript projects grow, maintaining them as a collection of separate Git repositories can become chaotic. That’s where monorepos and wor..."
+---
+
+<p>As your JavaScript or TypeScript projects grow, maintaining them as a collection of separate Git repositories can become chaotic. That’s where <strong>monorepos</strong> and <strong>workspaces</strong> step in to make life easier.</p><p>Whether you're managing a design system, an API, a CLI, or even multiple microservices, the <code>workspaces</code> feature in <code>package.json</code> allows you to organize all related packages within a <strong>single repository</strong>. This article breaks down what <code>workspaces</code> are, why they matter, how they work, and what you need to be aware of when using them.</p><hr><h3 id="what-are-workspaces"><strong>What Are Workspaces?</strong></h3><p>A <strong>workspace</strong> is essentially a standalone npm package located in a subdirectory of your project. With the <code>workspaces</code> field in your root <code>package.json</code>, you tell <code>npm</code> or <code>Yarn</code> to treat these subdirectories as <strong>first-class packages</strong>, which can be <strong>linked locally</strong>, <strong>share dependencies</strong>, and be <strong>managed together</strong>.</p><pre><code class="language-json">{
+  "private": true,
+  "workspaces": ["packages/*"]
+}
+</code></pre><p>This tells the package manager to treat every folder inside <code>packages/</code> as a workspace.</p><blockquote><strong>Important:</strong> Your root <code>package.json</code> must have <code>"private": true</code> to enable workspaces.</blockquote><hr><h3 id="why-use-workspaces"><strong>Why Use Workspaces?</strong></h3><p>Here’s why many developers adopt workspaces in monorepos:</p><ul><li><strong>Local package linking</strong>: No need to publish internal packages just to use them — they're linked instantly.</li><li><strong>Single dependency tree</strong>: Shared dependencies like React or TypeScript are deduplicated.</li><li><strong>Centralized commands</strong>: You can install, test, lint, or build across all packages from one place.</li><li><strong>Atomic installs</strong>: A single <code>npm install</code> (or <code>yarn install</code>) sets everything up.</li><li><strong>Cross-package development</strong>: Changes in one package can instantly affect another that depends on it — no <code>npm publish</code>, no <code>npm install ../relative/path</code>.</li></ul><hr><h3 id="a-simple-example-structure"><strong>A Simple Example Structure</strong></h3><pre><code>my-monorepo/
+├── package.json         ← Root config
+├── packages/
+│   ├── core-lib/
+│   │   └── package.json
+│   ├── api-server/
+│   │   └── package.json
+│   └── frontend-app/
+│       └── package.json
+</code></pre><p>Each of these subdirectories is its own npm package — fully versioned and self-contained — but <strong>aware of each other</strong> thanks to workspaces.</p><hr><h3 id="how-they-interact"><strong>How They Interact</strong></h3><p>Suppose you have <code>@my/core-lib</code> being used by both <code>@my/api-server</code> and <code>@my/frontend-app</code>.</p><h4 id="core-libpackagejson"><code>core-lib/package.json</code>:</h4><pre><code class="language-json">{
+  "name": "@my/core-lib",
+  "version": "1.0.0",
+  "main": "index.js"
+}
+</code></pre><h4 id="api-serverpackagejson"><code>api-server/package.json</code>:</h4><pre><code class="language-json">{
+  "name": "@my/api-server",
+  "dependencies": {
+    "@my/core-lib": "^1.0.0"
+  }
+}
+</code></pre><p>Now, when you run <code>npm install</code> from the root, <strong>npm links <code>@my/core-lib</code> locally</strong> — it won’t fetch it from the npm registry. This makes development <strong>blazingly fast</strong>, and version bumps can be managed manually or with release tools like <a href="https://github.com/changesets/changesets">Changesets</a>.</p><hr><h3 id="commands-at-scale"><strong>Commands at Scale</strong></h3><p>With workspaces, you can:</p><pre><code class="language-bash">npm install         # Installs everything in all workspaces
+npm run build -w @my/core-lib      # Run build only in core-lib
+npm run test --workspaces          # Run test in all workspaces
+</code></pre><p>You can also use powerful tools like <a href="https://lerna.js.org/">Lerna</a> or <a href="https://turbo.build/">TurboRepo</a> on top for <strong>task orchestration</strong>.</p><hr><h3 id="when-should-you-use-workspaces"><strong>When Should You Use Workspaces?</strong></h3><p>Use workspaces if you:</p><ul><li>Maintain multiple packages that need to be developed and versioned together.</li><li>Have a backend, frontend, and shared logic that are logically separated but live in one repo.</li><li>Want better control of internal packages without publishing to npm.</li><li>Prefer a <strong>modular project structure</strong> that supports reuse and clean boundaries.</li></ul><hr><h3 id="things-to-watch-out-for"><strong>Things to Watch Out For</strong></h3><ul><li><strong>Dependency conflicts</strong>: If multiple workspaces use different versions of a package, resolving the tree can get messy.</li><li><strong>Overhead</strong>: For small projects, workspaces may be overkill.</li><li><strong>Tooling compatibility</strong>: Not all older tools or CI systems support workspaces smoothly.</li><li><strong>Deployment</strong>: You'll need to carefully decide how to build and deploy each workspace independently or as a group.</li></ul><hr><h3 id="bonus-tips"><strong>Bonus Tips</strong></h3><ul><li>You can define <strong>custom folder names</strong> like <code>"apps/*"</code> or <code>"modules/*"</code> instead of <code>packages/*</code>.</li><li><code>npm@9+</code> supports <code>npm workspaces foreach</code> to run commands across workspaces with better control.</li><li>Combine with TypeScript’s <a href="https://www.typescriptlang.org/docs/handbook/project-references.html">project references</a> to build TypeScript workspaces incrementally.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p>Workspaces are a <strong>powerful tool</strong> to help scale JavaScript and TypeScript codebases. They promote modularity, reuse, and developer productivity. While they might not be necessary for every project, they’re <strong>essential for monorepos</strong> and large-scale applications with multiple interdependent packages.</p><p>If you're still building projects by copying shared logic between folders or pushing internal libraries to npm just for reuse, it's time to look into workspaces — they’ll simplify your workflow more than you expect.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

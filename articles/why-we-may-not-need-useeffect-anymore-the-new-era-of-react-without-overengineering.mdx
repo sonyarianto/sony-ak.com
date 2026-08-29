@@ -1,0 +1,79 @@
+---
+title: "Why We May Not Need useEffect Anymore — The New Era of React Without Overengineering"
+date: "2025-11-08"
+description: "Introduction For years, useEffect has been the Swiss Army knife of React developers — the go-to tool for everything from fetching data to synchronizing componen..."
+---
+
+<h3 id="introduction">Introduction</h3><p>For years, <strong><code>useEffect</code></strong> has been the <em>Swiss Army knife</em> of React developers — the go-to tool for everything from fetching data to synchronizing component state. But over time, this once-beloved hook became something else: a <strong>crutch</strong>. Developers reached for it instinctively, even when they didn’t need to.</p><p>With the arrival of <strong>React 18</strong>, <strong>React Server Components (RSC)</strong>, and <strong>new data-handling paradigms</strong> in frameworks like <strong>Next.js</strong>, a quiet revolution began. Many of the tasks we once solved with <code>useEffect</code> can now be expressed more <strong>declaratively, efficiently, and cleanly</strong>.</p><p>Let’s unpack why this shift matters, what it means for modern React development, and how to adopt this mindset without losing your sanity.</p><hr><h3 id="1-the-original-purpose-of-useeffect">1. The Original Purpose of <code>useEffect</code></h3><p>The intent of <code>useEffect</code> was simple:</p><blockquote>Allow developers to run <strong>side effects</strong> in function components.</blockquote><p>A <em>side effect</em> means <strong>something that affects the outside world</strong> — a network request, an event listener, a timer, or a DOM mutation.</p><p>Example:</p><pre><code class="language-tsx">useEffect(() =&gt; {
+  document.title = `Welcome, ${user.name}`;
+}, [user.name]);
+</code></pre><p>This is a valid use: it interacts with the DOM and updates it <em>after</em> React renders.</p><p>But over time, <code>useEffect</code> became a <strong>catch-all mechanism</strong> for logic that didn’t belong there. Many developers started using it for:</p><ul><li>Data fetching</li><li>State synchronization</li><li>Derived computations</li><li>Even conditionally rendering data</li></ul><p>And that’s where the trouble began.</p><hr><h3 id="2-the-overuse-problem">2. The Overuse Problem</h3><p>React’s core philosophy is <strong>declarative programming</strong> — describe <em>what</em> the UI should look like given a certain state, and let React handle <em>how</em> to render it.</p><p>When we shove business logic or data synchronization into <code>useEffect</code>, we break that model. The component becomes <strong>imperative</strong>, harder to reason about, and prone to <strong>race conditions</strong> and <strong>infinite loops</strong>.</p><p>Example of misuse:</p><pre><code class="language-tsx">const [fullName, setFullName] = useState('');
+useEffect(() =&gt; {
+  setFullName(`${user.firstName} ${user.lastName}`);
+}, [user]);
+</code></pre><p>This looks innocent, but it’s unnecessary. The full name is <strong>derived state</strong>, which can be computed directly in render:</p><pre><code class="language-tsx">const fullName = `${user.firstName} ${user.lastName}`;
+</code></pre><p>No effect needed.<br>No extra state.<br>No synchronization bugs.</p><hr><h3 id="3-data-fetching-has-moved-on">3. Data Fetching Has Moved On</h3><p>Once upon a time, the canonical way to fetch data was inside <code>useEffect</code>:</p><pre><code class="language-tsx">useEffect(() =&gt; {
+  fetch('/api/user')
+    .then(res =&gt; res.json())
+    .then(setUser);
+}, []);
+</code></pre><p>But this approach triggers <strong>waterfall loading</strong> and <strong>layout shifting</strong>, because the component renders before the data arrives.</p><p>Modern React solves this through <strong>Server Components</strong> and <strong>framework-level data fetching</strong> (e.g., Next.js App Router):</p><pre><code class="language-tsx">export default async function Page() {
+  const user = await getUser();
+  return &lt;Profile user={user} /&gt;;
+}
+</code></pre><p>The component can now load <em>with data already available</em>, no <code>useEffect</code>, no loading flicker, and far better performance.</p><p>Data fetching now belongs to the <strong>server layer</strong>, not the client runtime.</p><hr><h3 id="4-derived-state-should-stay-derived">4. Derived State Should Stay Derived</h3><p>A common smell in React code is using <code>useEffect</code> to update state that depends on other state.</p><p>Bad pattern:</p><pre><code class="language-tsx">const [filtered, setFiltered] = useState([]);
+useEffect(() =&gt; {
+  setFiltered(items.filter(i =&gt; i.active));
+}, [items]);
+</code></pre><p>Better:</p><pre><code class="language-tsx">const filtered = items.filter(i =&gt; i.active);
+</code></pre><p>React’s rendering model already recalculates during updates. Adding effects introduces <em>double rendering</em> and <em>unnecessary complexity</em>.</p><hr><h3 id="5-the-rise-of-usesyncexternalstore-and-reactive-stores">5. The Rise of <code>useSyncExternalStore</code> and Reactive Stores</h3><p>With <strong>React 18’s concurrent rendering</strong>, some patterns that previously required <code>useEffect</code> now have safer alternatives.</p><p>Example: subscribing to an external store.</p><p>Old way:</p><pre><code class="language-tsx">useEffect(() =&gt; {
+  const unsub = store.subscribe(() =&gt; setValue(store.get()));
+  return unsub;
+}, []);
+</code></pre><p>New way:</p><pre><code class="language-tsx">const value = useSyncExternalStore(store.subscribe, store.get);
+</code></pre><p>This hook ensures React’s internal state remains <strong>synchronized with external data sources</strong> safely, even during concurrent rendering.</p><p>Modern libraries like <strong>Zustand</strong>, <strong>Jotai</strong>, and <strong>Valtio</strong> also build on this foundation, offering more predictable, effect-free subscriptions.</p><hr><h3 id="6-ref-based-side-effects-not-effect-based-refs">6. Ref-Based Side Effects, Not Effect-Based Refs</h3><p>Another area where developers lean too much on <code>useEffect</code> is DOM manipulation:</p><pre><code class="language-tsx">useEffect(() =&gt; {
+  inputRef.current.focus();
+}, []);
+</code></pre><p>Modern JSX allows for direct ref callbacks:</p><pre><code class="language-tsx">&lt;input ref={el =&gt; el?.focus()} /&gt;
+</code></pre><p>Cleaner, shorter, and runs exactly when the element mounts — without introducing a full effect cycle.</p><hr><h3 id="7-where-useeffect-still-makes-sense">7. Where <code>useEffect</code> Still Makes Sense</h3><p>Despite all this, <code>useEffect</code> isn’t dead. It still has its place in <strong>true side effects</strong>:</p><ul><li><strong>Subscribing</strong> or <strong>unsubscribing</strong> from WebSocket or event listeners</li><li><strong>Running analytics or logging</strong> after user actions</li><li><strong>Timers, intervals, or animations</strong></li><li><strong>Interfacing with third-party libraries</strong> that depend on DOM presence</li></ul><p>The rule of thumb is:</p><blockquote>If it affects something <em>outside</em> of React’s render cycle, keep it in <code>useEffect</code>.</blockquote><hr><h3 id="8-the-mental-model-shift">8. The Mental Model Shift</h3><p>The deeper idea is that React today encourages developers to <strong>think declaratively</strong>. Rather than orchestrating when things happen, describe <strong>what the UI should represent at any point in time</strong>.</p><p>This change means:</p><ul><li>Data fetching should happen <strong>outside</strong> React or at the framework level.</li><li>State should represent <strong>what’s needed</strong>, not mirror what already exists.</li><li>Effects should be <strong>rare</strong>, explicit, and about the “real world.”</li></ul><p>As Dan Abramov once phrased it:</p><blockquote>“Most of your components should be pure — effects are the exception, not the rule.”</blockquote><hr><h3 id="9-common-migration-opportunities">9. Common Migration Opportunities</h3><p>Here are patterns worth revisiting in existing projects:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Old (with <code inline="">useEffect</code>)</th>
+<th>Better Modern Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fetching in <code inline="">useEffect</code></td>
+<td>Fetch server-side (Next.js / RSC) or use SWR/React Query</td>
+</tr>
+<tr>
+<td>Syncing props to state</td>
+<td>Derive directly in render</td>
+</tr>
+<tr>
+<td>DOM focus in <code inline="">useEffect</code></td>
+<td>Use ref callback</td>
+</tr>
+<tr>
+<td>Custom store subscription</td>
+<td>Use <code inline="">useSyncExternalStore</code></td>
+</tr>
+<tr>
+<td>Memoized calculations</td>
+<td>Use <code inline="">useMemo</code> (if expensive)</td>
+</tr>
+<tr>
+<td>Analytics after render</td>
+<td>Keep as effect — valid side effect</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h3 id="10-other-considerations">10. Other Considerations</h3><ul><li><strong>React Query / SWR</strong> already abstract away the side effects of data fetching. They use internal effects correctly so you don’t have to manage them.</li><li><strong>React Server Components</strong> (RSC) allow zero-client-code fetching, improving performance and removing entire layers of <code>useEffect</code> logic.</li><li><strong>Transitions and Suspense</strong> handle async rendering declaratively — no need for “loading” logic inside effects.</li><li><strong>Framework conventions</strong> (Next.js, Remix, etc.) are aligning around this: your <em>async data</em> belongs on the server, your <em>UI state</em> belongs in components, and your <em>effects</em> belong to the real world.</li></ul><hr><h3 id="11-the-philosophy-moving-forward">11. The Philosophy Moving Forward</h3><p>React is moving toward a world where:</p><ul><li>Most logic is <strong>synchronous, declarative, and server-driven</strong></li><li><code>useEffect</code> becomes <strong>the last resort, not the first instinct</strong></li><li>UI and data fetching are <strong>separated by responsibility</strong></li></ul><p>The end goal?<br><strong>Simpler, faster, and more predictable React code</strong>.</p><p>If you find yourself writing <code>useEffect</code> for something that doesn’t involve a real side effect, it’s a hint:</p><blockquote>There’s probably a cleaner way.</blockquote><hr><h3 id="finally">Finally</h3><p>“We may not need <code>useEffect</code> anymore” doesn’t mean the hook is obsolete. It means we’re finally learning to <strong>respect its purpose</strong>.</p><p>React’s evolution — from client-only rendering to server-aware frameworks — gives us better tools to write <strong>pure, predictable, and declarative code</strong>.</p><p>So next time your hands start typing <code>useEffect(() =&gt; { ... }, [])</code>, pause and ask:</p><blockquote><em>Is this truly a side effect? Or am I just compensating for missing architecture elsewhere?</em></blockquote><p>That small moment of reflection can turn spaghetti logic into elegant, maintainable React — the kind the React team envisioned all along.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

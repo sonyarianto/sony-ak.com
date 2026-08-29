@@ -1,0 +1,47 @@
+---
+title: "Go vs Rust – A Practical Look at Error Handling Philosophies"
+date: "2025-06-06"
+description: "In the world of systems and backend programming, Go and Rust stand out as two modern languages with radically different philosophies. One aims for simplicity an..."
+---
+
+<p>In the world of systems and backend programming, <strong>Go</strong> and <strong>Rust</strong> stand out as two modern languages with radically different philosophies. One aims for <strong>simplicity and pragmatism</strong>, the other for <strong>safety and precision</strong>. A common battleground where their differences become especially clear is <strong>error handling</strong>. If you’ve ever debated which language “feels” better to work with, a simple division function that avoids divide-by-zero errors can reveal a lot.</p><hr><h3 id="go%E2%80%99s-approach-errors-as-values"><strong>Go’s Approach: Errors as Values</strong></h3><p>Go treats errors like <strong>just another return value</strong>. It doesn’t have exceptions or built-in pattern matching. Instead, error handling is kept <strong>minimal, explicit, and readable</strong>.</p><pre><code class="language-go">func div(x, y float64) (float64, error) {
+	if y == 0 {
+		return 0, errors.New("division by zero")
+	}
+	return x / y, nil
+}
+</code></pre><p>This function returns a tuple: a result and an error. If an error occurred, you handle it like this:</p><pre><code class="language-go">if z, err := div(x, y); err != nil {
+	fmt.Println("Error:", err)
+} else {
+	fmt.Println("Result:", z)
+}
+</code></pre><p>The <strong>strength of Go’s model</strong> lies in how lightweight it is. No custom types, no traits or interfaces unless you need them. <strong>Most developers can reason about error flows quickly</strong> without needing additional abstraction.</p><p>But of course, that comes with trade-offs.</p><hr><h3 id="rust%E2%80%99s-approach-type-driven-error-safety"><strong>Rust’s Approach: Type-Driven Error Safety</strong></h3><p>Rust enforces error handling through the type system. A function that can fail <strong>must</strong> return a <code>Result&lt;T, E&gt;</code>. That forces developers to <strong>acknowledge and explicitly handle</strong> the possibility of failure.</p><pre><code class="language-rust">fn div(x: f64, y: f64) -&gt; Result&lt;f64, DivError&gt; {
+	if y == 0.0 {
+		Err(DivError)
+	} else {
+		Ok(x / y)
+	}
+}
+</code></pre><p>This requires defining an error type:</p><pre><code class="language-rust">#[derive(Debug)]
+struct DivError;
+
+impl fmt::Display for DivError {
+	fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+		write!(f, "division by zero")
+	}
+}
+
+impl std::error::Error for DivError {}
+</code></pre><p>And then using it with a <code>match</code> statement:</p><pre><code class="language-rust">match div(x, y) {
+	Ok(z) =&gt; println!("Result: {}", z),
+	Err(e) =&gt; eprintln!("Error: {}", e),
+}
+</code></pre><p>Rust makes sure you <strong>never forget to handle the error case</strong>, which means <strong>fewer runtime surprises</strong>. The compiler is your partner, ensuring you're not skipping essential checks.</p><p>However, it’s <strong>more verbose</strong>, especially for trivial tasks. While this verbosity can be mitigated with libraries like <code>thiserror</code> or <code>anyhow</code>, it’s still more upfront work than in Go.</p><hr><h3 id="other-key-differences"><strong>Other Key Differences</strong></h3><h4 id="1-propagation-and-ergonomics"><strong>1. Propagation and ergonomics</strong></h4><ul><li><strong>Go</strong>: Manual error propagation using <code>if err != nil</code>.</li><li><strong>Rust</strong>: <code>?</code> operator for elegant error propagation.</li></ul><p>Rust:</p><pre><code class="language-rust">fn safe_div(x: f64, y: f64) -&gt; Result&lt;f64, DivError&gt; {
+	let result = div(x, y)?;
+	Ok(result)
+}
+</code></pre><p>Go has no such operator—you always write the error check.</p><h4 id="2-custom-error-types"><strong>2. Custom error types</strong></h4><ul><li><strong>Go</strong>: You usually don’t create custom error types unless necessary.</li><li><strong>Rust</strong>: You often define enums for richer error context, especially in larger codebases.</li></ul><h4 id="3-stack-traces-and-debugging"><strong>3. Stack traces and debugging</strong></h4><ul><li><strong>Go</strong>: Lacks native stack traces for errors unless you wrap or log them yourself.</li><li><strong>Rust</strong>: Full <code>Debug</code> and <code>Display</code> implementations give you rich diagnostics automatically.</li></ul><h4 id="4-safety-philosophy"><strong>4. Safety philosophy</strong></h4><ul><li><strong>Rust</strong> leans toward <strong>preventing bugs at compile time</strong>.</li><li><strong>Go</strong> accepts that some things may fail at runtime and prefers to keep the language simpler.</li></ul><hr><h3 id="which-is-better"><strong>Which Is Better?</strong></h3><p>That’s the wrong question. The right question is: <strong>Which one is better for your context?</strong></p><p>Choose <strong>Go</strong> if:</p><ul><li>You want rapid development and ease of use.</li><li>You prioritize <strong>clear, linear code</strong> and team velocity.</li><li>Your project doesn’t demand complex error modeling.</li></ul><p>Choose <strong>Rust</strong> if:</p><ul><li>You value <strong>compile-time guarantees</strong> and correctness.</li><li>Your system is performance-sensitive or safety-critical.</li><li>You want structured error propagation and rich diagnostics.</li></ul><hr><h3 id="finally"><strong>Finally</strong></h3><p>The comparison of a division function in Go vs Rust isn't just syntax — it's <strong>philosophy</strong>. Go says: "Keep it simple and trust the developer." Rust says: "Be safe and trust the compiler."</p><p>Both are right — just in different ways.</p><p>So instead of arguing which one is better, recognize what each one gives you. Whether you choose Go’s <strong>pragmatism</strong> or Rust’s <strong>precision</strong>, you're making a decision based on your <strong>needs</strong>, not ideology. And that, truly, should settle the debate.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

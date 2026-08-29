@@ -1,0 +1,60 @@
+---
+title: "Writing Clean and Performant React Components: Why You Should Define Subcomponents and Handlers Outside"
+date: "2025-06-18"
+description: "In React development, clarity and performance are crucial. As our applications grow, a clean structure becomes just as important as speed and efficiency. One co..."
+---
+
+<p>In React development, <strong>clarity and performance</strong> are crucial. As our applications grow, a clean structure becomes just as important as speed and efficiency. One common discussion point among developers is:</p><blockquote><em>“Should I define subcomponents and event handler functions inside or outside the main component function?”</em></blockquote><p>This article explores the best practices, trade-offs, and performance implications of that choice, and why many experienced developers—including myself—prefer to <strong>define subcomponents and event handlers outside</strong> the main function body.</p><hr><h2 id="%E2%9C%85-what-we-mean-by-%E2%80%9Cdefining-inside%E2%80%9D-vs-%E2%80%9Coutside%E2%80%9D">✅ <strong>What We Mean by “Defining Inside” vs. “Outside”</strong></h2><p>Let’s start by clarifying the distinction.</p><h3 id="defining-inside-the-component">Defining <strong>inside</strong> the component:</h3><pre><code class="language-tsx">export default function About() {
+  function SubTitle() {
+    return &lt;h2&gt;This is a subtitle&lt;/h2&gt;;
+  }
+
+  const handleClick = () =&gt; {
+    console.log('Clicked!');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;About Page&lt;/h1&gt;
+      &lt;SubTitle /&gt;
+      &lt;button onClick={handleClick}&gt;Click&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre><h3 id="defining-outside-the-component">Defining <strong>outside</strong> the component:</h3><pre><code class="language-tsx">function SubTitle() {
+  return &lt;h2&gt;This is a subtitle&lt;/h2&gt;;
+}
+
+export default function About() {
+  const handleClick = () =&gt; {
+    console.log('Clicked!');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;About Page&lt;/h1&gt;
+      &lt;SubTitle /&gt;
+      &lt;button onClick={handleClick}&gt;Click&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre><p>In both cases, the code works. But there are <strong>subtle differences</strong> in behavior and maintainability.</p><hr><h2 id="%F0%9F%92%A1-why-you-should-define-subcomponents-outside">💡 Why You Should Define Subcomponents Outside</h2><h3 id="1-cleaner-and-more-readable-structure">1. <strong>Cleaner and more readable structure</strong></h3><p>Placing subcomponents outside the main component function declutters your logic. This separation follows the <strong>Single Responsibility Principle</strong>: each function does one thing, and your main component focuses solely on layout and flow.</p><blockquote><strong>Cleaner structure makes onboarding and debugging much easier.</strong></blockquote><hr><h3 id="2-avoids-function-recreation-on-every-render">2. <strong>Avoids function recreation on every render</strong></h3><p>When you define a subcomponent or handler <strong>inside</strong> the main component function, it gets <strong>redeclared on every render</strong>. That’s typically harmless for small components, but it becomes a <strong>performance bottleneck</strong> in larger trees or with memoized children.</p><pre><code class="language-tsx">function Parent() {
+  function Child() {
+    console.log("Rendered");
+    return &lt;div&gt;Child&lt;/div&gt;;
+  }
+
+  return &lt;Child /&gt;;
+}
+</code></pre><p>Every time <code>Parent</code> renders, <code>Child</code> is recreated—breaking <code>React.memo</code>, reinitializing hooks, etc.</p><hr><h3 id="3-enables-reactmemo-and-optimization">3. <strong>Enables <code>React.memo</code> and optimization</strong></h3><p>You can't memoize a component properly if it's recreated on every render. Defining it outside allows you to use:</p><pre><code class="language-tsx">const SubTitle = React.memo(function SubTitle() {
+  return &lt;h2&gt;This is a subtitle&lt;/h2&gt;;
+});
+</code></pre><p>This is extremely useful when your UI grows or your app becomes performance-sensitive.</p><hr><h3 id="4-easier-testing-and-reuse">4. <strong>Easier testing and reuse</strong></h3><p>When your components and handlers are defined separately, you can test them in isolation or reuse them in different places without duplication. This isn't possible if they're buried inside another component.</p><hr><h2 id="%E2%9C%85-why-you-should-define-handlers-outside-the-render-scope">✅ Why You Should Define Handlers Outside the Render Scope</h2><p>We often write event handlers like this:</p><pre><code class="language-tsx">&lt;button onClick={() =&gt; setCount(count + 1)}&gt;Click&lt;/button&gt;
+</code></pre><p>It’s quick—but it creates <strong>a new function on every render</strong>. For simple apps, this is acceptable. But for apps with <strong>many interactive components</strong>, this can trigger <strong>unnecessary re-renders</strong>.</p><p>A cleaner and better-performing version:</p><pre><code class="language-tsx">const handleClick = useCallback(() =&gt; {
+  setCount(prev =&gt; prev + 1);
+}, []);
+</code></pre><p>If your handler doesn't use any props/state, you can even move it <strong>fully outside the component</strong>.</p><hr><h2 id="%E2%9A%96%EF%B8%8F-when-it%E2%80%99s-okay-to-define-inside">⚖️ When It’s Okay to Define Inside</h2><p>There are times when defining a function or subcomponent inside is just fine:</p><ul><li>The function is <strong>very small</strong> and scoped <strong>exclusively</strong> to the component</li><li>There are <strong>no performance bottlenecks</strong></li><li>You're doing quick prototyping or demos</li></ul><blockquote>But even then, be aware that you're sacrificing <strong>some performance and structure</strong> for convenience.</blockquote><hr><h2 id="%F0%9F%A7%A0-other-considerations-you-may-overlook">🧠 Other Considerations You May Overlook</h2><ul><li><strong>Debugging becomes harder</strong> when many functions are defined inline. Stack traces are less clear.</li><li><strong>Component files become too large</strong> and harder to manage if everything is crammed into one function.</li><li>With <strong>custom hooks</strong>, defining handlers inside can interfere with memoization and lifecycle expectations.</li><li>If you're using <strong>server components</strong> (e.g., in Next.js 14+), function scope affects serialization behavior.</li></ul><hr><h2 id="%F0%9F%A7%BE-final-recommendation">🧾 Final Recommendation</h2><p>Define your code with the future in mind:</p><ul><li>🔹 Keep subcomponents <strong>outside</strong> the main function</li><li>🔹 Keep event handlers <strong>separate</strong>, use <code>useCallback</code> if necessary</li><li>🔹 Avoid defining things <strong>inline</strong> unless it's trivial and has no impact</li><li>🔹 Think in terms of <strong>reuse</strong>, <strong>testability</strong>, and <strong>readability</strong></li></ul><p>This approach not only makes your codebase more maintainable but also makes your React application <strong>faster and easier to optimize</strong> later on.</p><hr><h2 id="%F0%9F%8F%81-finally">🏁 Finally</h2><p>Writing performant and scalable React components isn’t just about choosing the right tools—it’s also about <strong>code structure</strong>. By defining subcomponents and event handlers <strong>outside</strong> the main component, you’re embracing a practice that improves <strong>readability, performance, and maintainability</strong> in the long run.</p><blockquote>It’s a small decision with <strong>big architectural impact</strong>. And like all good engineering decisions, it pays off as your app grows.</blockquote><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

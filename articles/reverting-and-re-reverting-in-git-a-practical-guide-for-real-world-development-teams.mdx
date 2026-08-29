@@ -1,0 +1,131 @@
+---
+title: "Reverting and Re-Reverting in Git: A Practical Guide for Real-World Development Teams"
+date: "2025-10-30"
+description: "In fast-moving engineering environments, requirements change, experiments fail, and sometimes features must be rolled back quickly. The git revert command is on..."
+---
+
+<p>In fast-moving engineering environments, requirements change, experiments fail, and sometimes features must be rolled back quickly. The <code>git revert</code> command is one of the most reliable tools for handling these scenarios safely.</p><p>This article explains in a very clear manner how to:</p><ol><li>Revert a commit cleanly</li><li>Understand what really happens inside Git during a revert</li><li>Restore a reverted commit by <strong>reverting the revert</strong></li><li>Avoid common mistakes that cause merge chaos</li><li>Operate safely in collaborative team environments</li></ol><p>This is written in a <strong>real-world tone</strong>, not theoretical textbook style, so you can apply it immediately.</p><hr><h3 id="%E2%9C%85-when-and-why-you-should-use-git-revert">✅ <strong>When and Why You Should Use <code>git revert</code></strong></h3><p>Use <code>git revert</code> in situations where you need to remove code <strong>without rewriting history</strong>, especially when working on shared branches (e.g. <code>development</code>, <code>main</code>, <code>release</code>).</p><p>Typical reasons include:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Reason</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unexpected bug introduced</td>
+<td>Change must be undone safely</td>
+</tr>
+<tr>
+<td>Feature should not be released yet</td>
+<td>Business or product update</td>
+</tr>
+<tr>
+<td>Experiment needs rollback</td>
+<td>A/B or prototype failed</td>
+</tr>
+<tr>
+<td>Hotfix required without losing history</td>
+<td>Better auditability</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<p><strong>Why not reset or force-push?</strong><br>Because resets rewrite history and can break your teammates' local branches. Revert is safe, traceable, and considered <strong>proper team practice</strong>.</p><hr><h3 id="%E2%9C%85-how-git-revert-actually-works">✅ <strong>How <code>git revert</code> Actually Works</strong></h3><p>A revert does <em>not</em> delete a commit.<br>Instead, it <strong>creates a new commit</strong> that applies the <em>opposite</em> changes.</p><p>If the original commit added 10 lines and removed 3, the revert removes those 10 lines and adds back 3.</p><p>Git history remains intact. CI logs remain valid. Pull requests remain readable.</p><p>This is why revert is the correct tool for collaborative work.</p><hr><h3 id="%E2%9C%85-when-you-need-to-restore-the-code-later">✅ <strong>When You Need to Restore the Code Later</strong></h3><p>Sometimes the situation changes again:</p><ul><li>The issue behind the rollback gets fixed</li><li>Business decides to ship the feature after all</li><li>The revert was done reactively and now needs correction</li></ul><p>In this case, do <strong>not re-implement the code manually</strong>, and do <strong>not cherry-pick the old commit</strong> unless absolutely necessary.</p><p>The clean approach is to <strong>revert the revert</strong>.</p><hr><h3 id="%E2%9C%85-re-applying-a-reverted-change-re-revert">✅ <strong>Re-Applying a Reverted Change (Re-Revert)</strong></h3><p>To restore code that was previously reverted, run:</p><pre><code class="language-bash">git revert &lt;hash_of_the_revert_commit&gt;
+</code></pre><p>This tells Git:</p><blockquote>Apply the inverse of the inverse.</blockquote><p>Git brings back the original logic cleanly and safely, respecting history and merge lineage.</p><p><strong>Result:</strong><br>The code returns exactly as it was before the revert, preserving collaboration integrity.</p><hr><h3 id="%E2%9C%85-conflict-handling">✅ <strong>Conflict Handling</strong></h3><p>If team members modified related files after the revert, you may encounter conflicts. This is normal.</p><p>Resolve conflicts manually, then continue:</p><pre><code class="language-bash">git add .
+git revert --continue
+</code></pre><p>If needed, cancel the revert attempt:</p><pre><code class="language-bash">git revert --abort
+</code></pre><hr><h3 id="%E2%9C%85-why-not-cherry-pick-the-original-commit">✅ <strong>Why Not Cherry-Pick the Original Commit?</strong></h3><p>Cherry-pick is tempting, but usually inferior here:</p>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Revert-the-Revert (Best)</th>
+<th>Cherry-Pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preserves logical commit chain</td>
+<td>Can confuse history</td>
+</tr>
+<tr>
+<td>Git understands intent</td>
+<td>Higher chance of semantic conflicts</td>
+</tr>
+<tr>
+<td>Ideal for team repos</td>
+<td>Best only for isolated branches</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<p>Cherry-pick has its place, but <strong>avoiding it when recovering reversions maintains cleaner lineage</strong>.</p><hr><h3 id="%E2%9C%85-team-best-practices">✅ <strong>Team Best Practices</strong></h3>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Write clear commit messages</td>
+<td>Helps future debugging</td>
+</tr>
+<tr>
+<td>Tag releases before changes</td>
+<td>Safety checkpoint</td>
+</tr>
+<tr>
+<td>Do not force-push shared branches</td>
+<td>Prevents chaos</td>
+</tr>
+<tr>
+<td>Communicate reverts on PR &amp; Slack</td>
+<td>Avoids confusion</td>
+</tr>
+<tr>
+<td>Use feature flags where possible</td>
+<td>Prevents needless reverts</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<hr><h3 id="%E2%9C%85-typical-commit-message-templates">✅ <strong>Typical Commit Message Templates</strong></h3><p><strong>Reverting a change:</strong></p><blockquote>Revert: remove feature due to unexpected behavior in staging</blockquote><p><strong>Restoring it later (re-revert):</strong></p><blockquote>Re-apply reverted feature: original issue resolved, ready to proceed</blockquote><p>Clear language prevents future confusion.</p><hr><h3 id="%E2%9C%85-questions-to-ask-before-reverting">✅ <strong>Questions to Ask Before Reverting</strong></h3><ul><li>Does this affect other active feature branches?</li><li>Should QA be notified?</li><li>Are database changes involved?</li><li>Can a feature flag solve this instead?</li><li>Is rollback going to trigger deployments?</li></ul><p>Sometimes revert is technical; other times it is operational and needs communication.</p><hr><h3 id="%E2%9C%85-summary-table">✅ <strong>Summary Table</strong></h3>
+<!--kg-card-begin: html-->
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Undo a commit</td>
+<td><code inline="">git revert &lt;commit&gt;</code></td>
+</tr>
+<tr>
+<td>Undo the undo (restore)</td>
+<td><code inline="">git revert &lt;revert_commit&gt;</code></td>
+</tr>
+<tr>
+<td>Abort during conflict</td>
+<td><code inline="">git revert --abort</code></td>
+</tr>
+<tr>
+<td>Continue after resolving conflict</td>
+<td><code inline="">git revert --continue</code></td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: html-->
+<p><strong>Core wisdom:</strong></p><blockquote>The safest way to undo a revert is to <strong>revert the revert</strong>.</blockquote><hr><h3 id="%F0%9F%8E%AF-finally">🎯 <strong>Finally</strong></h3><p>Mastering this workflow protects your team from:</p><ul><li>Broken branches</li><li>Force-push accidents</li><li>Lost work</li><li>Confusing history</li></ul><p>It also makes you the person in the team who can reverse mistakes calmly and cleanly — a mark of senior engineering maturity.</p><p>Understanding when and how to revert, and when to re-revert, gives you full control over code evolution without hurting collaboration.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

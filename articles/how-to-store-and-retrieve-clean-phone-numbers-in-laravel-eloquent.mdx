@@ -1,0 +1,42 @@
+---
+title: "How to Store and Retrieve Clean Phone Numbers in Laravel Eloquent"
+date: "2025-02-15"
+description: "When working with phone numbers in a Laravel application, it's essential to ensure they are stored in a clean and consistent format in the database. However, wh..."
+---
+
+<p>When working with <strong>phone numbers</strong> in a Laravel application, it's essential to ensure they are stored in a <strong>clean and consistent format</strong> in the database. However, when retrieving the data, we often need to format it correctly for display. In this article, we'll explore how to <strong>clean up phone numbers</strong> in MySQL and then use an <strong>Eloquent accessor</strong> to modify the returned data dynamically.</p><hr><h2 id="step-1-cleaning-phone-number-data-in-mysql"><strong>Step 1: Cleaning Phone Number Data in MySQL</strong></h2><p>Imagine you have a <code>user_details</code> table with the following columns:</p><ul><li><code>phone_country_code</code> (e.g., <code>+44</code> for the UK, <code>+1</code> for the USA)</li><li><code>phone_number</code> (e.g., <code>555-123-4567</code>)</li></ul><p>Sometimes, users enter phone numbers with <strong>spaces, dashes, or special characters</strong>. To clean up this data, we can run the following SQL query:</p><pre><code class="language-sql">UPDATE user_details
+SET
+    phone_country_code = REGEXP_REPLACE(phone_country_code, '[^0-9]', ''),
+    phone_number = REGEXP_REPLACE(phone_number, '[^0-9]', '');
+</code></pre><h3 id="why-do-this"><strong>Why do this?</strong></h3><ul><li>Ensures only <strong>numeric values</strong> are stored.</li><li>Prevents <strong>formatting inconsistencies</strong>.</li><li>Makes phone numbers <strong>easier to process and search</strong> in the database.</li></ul><p>After running this query, phone numbers previously stored as:</p><pre><code>+44 123-456-7890
+</code></pre><p>Would now be stored as:</p><pre><code>44 1234567890
+</code></pre><hr><h2 id="step-2-automatically-formatting-country-codes-in-eloquent"><strong>Step 2: Automatically Formatting Country Codes in Eloquent</strong></h2><p>Now that our database stores <strong>only numbers</strong>, we need a way to <strong>add back the <code>+</code> sign</strong> when retrieving the <code>phone_country_code</code>. Instead of modifying the data directly in the database, we can use an <strong>Eloquent accessor</strong>.</p><h3 id="modify-userdetailphp-model"><strong>Modify <code>UserDetail.php</code> Model</strong></h3><pre><code class="language-php">use Illuminate\Database\Eloquent\Model;
+
+class UserDetail extends Model
+{
+    protected $table = 'user_details';
+    protected $fillable = ['phone_country_code', 'phone_number'];
+
+    // Accessor to add the + sign when retrieving phone_country_code
+    public function getPhoneCountryCodeAttribute($value)
+    {
+        return $value ? '+' . $value : null;
+    }
+}
+</code></pre><h3 id="how-it-works"><strong>How It Works</strong></h3><ul><li>The <code>getPhoneCountryCodeAttribute</code> <strong>automatically appends</strong> <code>+</code> to the stored numeric country code.</li><li>If the value is <code>NULL</code>, it remains <code>NULL</code> to avoid incorrect formatting.</li><li>This ensures the <strong>stored data stays clean</strong>, but the <strong>retrieved data is properly formatted</strong>.</li></ul><p>Now, when we retrieve a record:</p><pre><code class="language-php">$userDetail = UserDetail::find(1);
+echo $userDetail-&gt;phone_country_code; // Output: "+44"
+</code></pre><hr><h2 id="other-considerations"><strong>Other Considerations</strong></h2><h3 id="1-handling-empty-values-gracefully"><strong>1. Handling Empty Values Gracefully</strong></h3><p>If a user has no country code, the accessor should <strong>not</strong> append <code>+</code>. The current implementation handles this correctly with:</p><pre><code class="language-php">return $value ? '+' . $value : null;
+</code></pre><p>However, if you want to <strong>default to a specific country code</strong> (e.g., <code>+1</code> for the USA), you can modify it:</p><pre><code class="language-php">return $value ? '+' . $value : '+1';
+</code></pre><h3 id="2-validating-phone-numbers-before-saving"><strong>2. Validating Phone Numbers Before Saving</strong></h3><p>To ensure <strong>clean input data</strong>, consider using Laravel's validation:</p><pre><code class="language-php">$request-&gt;validate([
+    'phone_country_code' =&gt; 'required|numeric',
+    'phone_number' =&gt; 'required|numeric',
+]);
+</code></pre><p>This prevents users from <strong>saving invalid characters</strong> into the database in the first place.</p><h3 id="3-formatting-phone-numbers-on-output"><strong>3. Formatting Phone Numbers on Output</strong></h3><p>Currently, we're only formatting <code>phone_country_code</code>. If you also want to format <code>phone_number</code>, consider using an accessor for that too:</p><pre><code class="language-php">public function getFormattedPhoneNumberAttribute()
+{
+    return preg_replace("/(\d{3})(\d{3})(\d{4})/", "$1-$2-$3", $this-&gt;phone_number);
+}
+</code></pre><p>This would return <strong>"123-456-7890"</strong> instead of <strong>"1234567890"</strong>.</p><hr><h2 id="finally"><strong>Finally</strong></h2><p>By storing <strong>clean, numeric-only phone numbers</strong> in the database while using <strong>Eloquent accessors</strong> to dynamically format data when needed, you get the best of both worlds:</p><ul><li><strong>Efficient and standardized storage.</strong></li><li><strong>User-friendly formatted output.</strong></li><li><strong>Easier validation and processing.</strong></li></ul><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+

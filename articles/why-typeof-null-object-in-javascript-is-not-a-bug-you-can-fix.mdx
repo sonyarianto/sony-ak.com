@@ -1,0 +1,29 @@
+---
+title: "Why typeof null === \"object\" in JavaScript Is Not a Bug You Can Fix"
+date: "2025-05-09"
+description: "If you’ve been writing JavaScript for any length of time, chances are you’ve come across this puzzling behavior: typeof null; // \"object\" At first glance, this ..."
+---
+
+<p>If you’ve been writing JavaScript for any length of time, chances are you’ve come across this puzzling behavior:</p><pre><code class="language-js">typeof null; // "object"
+</code></pre><p>At first glance, this seems like a <strong>blatant bug</strong>—and you’re not wrong. But it’s more complicated than that. This behavior is one of JavaScript’s most infamous quirks, and understanding the reason behind it will help you <strong>write safer, more intentional code</strong>.</p><hr><h3 id="why-does-this-happen"><strong>Why Does This Happen?</strong></h3><p>The story goes back to the early 1990s, when JavaScript was created in a rush (just 10 days). In the original implementation, JavaScript values were represented as <strong>type-tagged references</strong>. Each type was given a numeric tag:</p><ul><li>Objects: tag <code>0</code></li><li>Integers, floats, strings, etc. had other tags</li></ul><p>The value <code>null</code> was implemented as a <strong>null pointer</strong>, which—coincidentally—also had the binary representation of <code>0</code>.</p><p>So, when <code>typeof</code> checked the tag, it saw <code>0</code> and assumed it was an object. That <strong>design decision was never corrected</strong>, because by the time it was widely noticed, <strong>too much code depended on this behavior</strong>.</p><hr><h3 id="is-it-still-a-bug"><strong>Is It Still a Bug?</strong></h3><p>Technically, yes. But <strong>officially, it’s not considered a bug anymore</strong>. It’s part of the <a href="https://262.ecma-international.org/">ECMAScript specification</a> and will remain that way to avoid breaking legacy applications.</p><hr><h3 id="how-should-you-check-for-null-then"><strong>How Should You Check for <code>null</code> Then?</strong></h3><p>Instead of relying on <code>typeof</code>, use <strong>strict equality</strong>:</p><pre><code class="language-js">if (value === null) {
+    // This is the right way to check for null
+}
+</code></pre><p>Need to check for objects but exclude <code>null</code>? Do this:</p><pre><code class="language-js">if (typeof value === 'object' &amp;&amp; value !== null) {
+    // This is a real object, not null
+}
+</code></pre><hr><h3 id="how-does-typeof-behave-for-other-values"><strong>How Does <code>typeof</code> Behave for Other Values?</strong></h3><p>Here’s a quick overview of <code>typeof</code> results:</p><pre><code class="language-js">typeof undefined           // "undefined"
+typeof true                // "boolean"
+typeof 42                  // "number"
+typeof "hello"             // "string"
+typeof Symbol("id")        // "symbol"
+typeof function() {}       // "function"
+typeof {}                  // "object"
+typeof []                  // "object" (arrays are objects)
+typeof null                // "object" (this is the quirky one)
+</code></pre><hr><h3 id="other-considerations"><strong>Other Considerations</strong></h3><ul><li><strong>Arrays</strong> are also <code>"object"</code> with <code>typeof</code>. To detect an array, use <code>Array.isArray(value)</code>.</li><li><code>typeof</code> is <strong>not reliable</strong> for deep type-checking. It’s best for basic primitives.</li></ul><p>If you need <strong>stronger type detection</strong>, consider using <code>Object.prototype.toString.call(value)</code>:</p><pre><code class="language-js">Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call([]);   // "[object Array]"
+</code></pre><hr><h3 id="finally"><strong>Finally</strong></h3><p>The fact that <code>typeof null === "object"</code> is a <strong>historical accident</strong>, but one that JavaScript has embraced for the sake of backward compatibility. As a developer, the key is to <strong>understand the nuance</strong> and use the right tools (<code>=== null</code>, <code>Array.isArray</code>, or <code>Object.prototype.toString.call</code>) depending on what you’re checking.</p><p>JavaScript isn't perfect—but knowing its quirks makes you a better programmer.</p><h3 id="support-us">Support Us</h3>
+<!--kg-card-begin: html-->
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sonyarianto" data-color="#FFDD00" data-emoji="☕"  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+<!--kg-card-end: html-->
+
