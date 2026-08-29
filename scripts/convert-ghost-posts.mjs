@@ -43,8 +43,8 @@ for (const post of posts) {
     }
 
     const date = published_at
-      ? new Date(published_at).toISOString().split("T")[0]
-      : new Date().toISOString().split("T")[0];
+      ? new Date(published_at).toISOString()
+      : new Date().toISOString();
 
     const description = custom_excerpt || generateDescription(html);
 
