@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getArticleBySlug, getAllSlugs } from "@/lib/articles";
+import BuyMeACoffee from "./BuyMeACoffee";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -74,6 +75,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           className="prose prose-lg prose-purple max-w-none"
           dangerouslySetInnerHTML={{ __html: article.content }}
         />
+
+        <BuyMeACoffee />
       </article>
     </div>
   );
