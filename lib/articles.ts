@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { marked } from "marked";
 
 export interface Article {
   slug: string;
@@ -47,13 +48,16 @@ export function getArticleBySlug(slug: string): Article | null {
   const fileContents = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(fileContents);
 
+  // Convert markdown to HTML
+  const htmlContent = marked(content) as string;
+
   return {
     slug,
     title: data.title || slug,
     date: data.date || new Date().toISOString(),
     description: data.description || "",
     tags: data.tags || [],
-    content,
+    content: htmlContent,
   };
 }
 
