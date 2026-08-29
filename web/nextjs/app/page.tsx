@@ -88,9 +88,7 @@ export default function Home() {
                   </a>
                 </li>
               </ul>
-              <p>
-                Keep learning, stay relevant, relevancy increases value.
-              </p>
+              <p>Keep learning, stay relevant, relevancy increases value.</p>
               <p className="text-sm text-gray-400">
                 &copy; 2003 - {new Date().getFullYear()} by Sony Arianto
                 Kurniawan - All rights reserved.
