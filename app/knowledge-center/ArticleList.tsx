@@ -61,7 +61,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
           placeholder="Search articles..."
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 placeholder-gray-500 backdrop-blur-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
       </div>
 
@@ -71,8 +71,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
           onClick={() => handleTagChange(null)}
           className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
             selectedTag === null
-              ? "border-gray-900 bg-gray-900 text-white"
-              : "border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700"
+              ? "border-gray-900 bg-gray-900 text-white"              : "border-gray-200 bg-white/80 text-gray-500 backdrop-blur-sm hover:border-gray-400 hover:text-gray-700"
           }`}
         >
           All
@@ -84,8 +83,8 @@ export default function ArticleList({ articles }: ArticleListProps) {
             className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
               selectedTag === tag
                 ? "border-gray-900 bg-gray-900 text-white"
-                : "border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700"
-            }`}
+              : "border-gray-200 bg-white/80 text-gray-500 backdrop-blur-sm hover:border-gray-400 hover:text-gray-700"
+          }`}
           >
             {tag}
           </button>
@@ -101,7 +100,7 @@ export default function ArticleList({ articles }: ArticleListProps) {
             <Link
               key={article.slug}
               href={`/knowledge-center/${article.slug}`}
-              className="block rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-md"
+              className="block rounded-lg border border-gray-200 bg-white/80 p-6 backdrop-blur-sm transition-shadow hover:shadow-md"
             >
               <article>
                 <time className="text-sm text-gray-500">
