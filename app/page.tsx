@@ -1,8 +1,10 @@
 import { BookMarked, DoorOpen, Scale } from "lucide-react";
 import Link from "next/link";
+import { getAllArticles } from "@/lib/articles";
 
 /* eslint-disable @next/next/no-img-element */
 export default function Home() {
+  const articleCount = getAllArticles().length;
   return (
     <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
       <img
@@ -77,7 +79,7 @@ export default function Home() {
                     <p className="ml-4">
                       Knowledge Center,{" "}
                       <span className="text-emerald-600">
-                        861 articles & counting.
+                        {articleCount} articles.
                       </span>
                     </p>
                   </Link>
