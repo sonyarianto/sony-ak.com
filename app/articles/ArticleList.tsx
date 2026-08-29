@@ -74,10 +74,10 @@ export default function ArticleList({ articles }: ArticleListProps) {
       <div className="mb-8 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         <button
           onClick={() => handleTagChange(null)}
-          className={`rounded-full px-3 py-1 text-sm ${
+          className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
             selectedTag === null
-              ? "bg-purple-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "border-gray-900 bg-gray-900 text-white"
+              : "border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700"
           }`}
         >
           All
@@ -86,10 +86,10 @@ export default function ArticleList({ articles }: ArticleListProps) {
           <button
             key={tag}
             onClick={() => handleTagChange(selectedTag === tag ? null : tag)}
-            className={`rounded-full px-3 py-1 text-sm ${
+            className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
               selectedTag === tag
-                ? "bg-purple-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "border-gray-900 bg-gray-900 text-white"
+                : "border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700"
             }`}
           >
             {tag}
@@ -123,11 +123,11 @@ export default function ArticleList({ articles }: ArticleListProps) {
                   {article.title}
                 </h2>
                 <p className="mt-2 text-gray-600">{article.description}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-1.5">
                   {article.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
+                      className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-400"
                     >
                       {tag}
                     </span>

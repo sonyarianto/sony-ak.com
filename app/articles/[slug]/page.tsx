@@ -59,11 +59,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {article.title}
           </h1>
           <p className="mt-4 text-lg text-gray-600">{article.description}</p>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-1.5">
             {article.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600"
+                className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-400"
               >
                 {tag}
               </span>
